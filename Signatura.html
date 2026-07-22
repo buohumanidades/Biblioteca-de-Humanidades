@@ -33,12 +33,33 @@
             font-size: 1.8em; 
             margin-top: 0;
         }
+        
+        /* Nuevo estilo para el subtítulo y el número */
         .subtitle { 
-            text-align: center; 
-            font-weight: bold; 
-            color: #7f8c8d; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
             margin-bottom: 25px; 
-            font-size: 0.95em; 
+        }
+        .subtitle-text {
+            font-weight: bold; 
+            color: #0798a3; 
+            font-size: 1.4em; /* Tamaño aumentado */
+            text-align: center;
+        }
+        .number-eight {
+            font-size: 4em; /* Número en grande */
+            font-weight: 900;
+            color: #060352; /* Color */
+            line-height: 1;
+            /* Efecto de relieve y 3D */
+            text-shadow: 
+                1px 1px 0 #f7f7f7, 
+                2px 2px 0 #f7f7f7, 
+                3px 3px 0 #f7f7f7, 
+                4px 4px 6px rgba(0,0,0,0.4),
+                -1px -1px 2px rgba(255, 255, 255, 0.6);
         }
         
         /* Montaje solapado: Foto + Círculo SIGNATURA */
@@ -200,7 +221,12 @@
     <div class="container">
         <!-- Cabecera -->
         <h1>Biblioteca de Humanidades</h1>
-        <div class="subtitle">Estante H-04 • Campus de El Milán</div>
+        
+        <!-- Nuevo contenedor para el texto y el número -->
+        <div class="subtitle">
+            <span class="subtitle-text">Lenguaje, Lingüística, Literatura.</span>
+            <span class="number-eight">8</span>
+        </div>
 
         <!-- Sección solapada -->
         <div class="hero-overlap">
@@ -214,7 +240,7 @@
         <div class="search-area">
             
             <!-- Recuadro para escribir -->
-            <input type="text" id="campoSignatura" class="input-signatura" placeholder="&lt;signatura&gt;">
+            <input type="text" id="campoSignatura" class="input-signatura" placeholder="&lt;Escribe la signatura&gt;">
 
             <!-- Botón PRINCIPAL (Ahora más destacado) -->
             <a href="resultado_local.html" class="action-btn btn-local">
