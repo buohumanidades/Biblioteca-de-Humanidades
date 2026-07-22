@@ -3,100 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estanteria 2 | Información</title>
+    <title>Biblioteca de Humanidades | Búsqueda</title>
     <style>
-        /* Estilos optimizados para lectura en móviles */
-        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 15px; background-color: #f4f6f7; color: #2c3e50; }
-        .container { max-width: 500px; margin: auto; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        /* Estilos generales optimizados para móviles */
+        body { 
+            font-family: Arial, sans-serif; 
+            line-height: 1.6; 
+            margin: 0; 
+            padding: 15px; 
+            background-color: #f4f6f7; 
+            color: #2c3e50; 
+        }
+        .container { 
+            max-width: 500px; 
+            margin: auto; 
+            background: #fff; 
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06); 
+        }
         
-        /* Tipografía académica para la cabecera */
-        h1 { font-family: 'Romana Moderna', serif; color: #1a252f; text-align: center; border-bottom: 2px solid #ecf0f1; padding-bottom: 15px; font-size: 1.8em; margin-top: 0;}
-        .subtitle { text-align: center; font-weight: bold; color: #7f8c8d; margin-bottom: 30px; font-size: 0.9em; }
+        /* Cabecera */
+        h1 { 
+            font-family: 'Romana Moderna', Georgia, serif; 
+            color: #1a252f; 
+            text-align: center; 
+            border-bottom: 2px solid #ecf0f1; 
+            padding-bottom: 15px; 
+            font-size: 1.8em; 
+            margin-top: 0;
+        }
+        .subtitle { 
+            text-align: center; 
+            font-weight: bold; 
+            color: #7f8c8d; 
+            margin-bottom: 25px; 
+            font-size: 0.9em; 
+        }
         
-        h2 { color: #2980b9; font-size: 1.2em; margin-top: 25px; border-left: 4px solid #2980b9; padding-left: 10px;}
-        ul { padding-left: 20px; }
-        li { margin-bottom: 15px; }
-        
-        /* Diseño de los enlaces de las signaturas */
-        .signatura-link { color: #2980b9; font-weight: bold; text-decoration: none; padding: 3px 8px; background-color: #ebf5fb; border-radius: 4px; transition: background-color 0.2s; display: inline-block; margin-top: 5px; font-size: 0.9em;}
-        .signatura-link:hover { background-color: #d6eaf8; }
+        /* Montaje solapado: Foto + Círculo exacto a la imagen */
+        .hero-overlap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0 30px 0;
+        }
 
-        /* Tarjeta dinámica del libro */
-        .book-card { display: flex; gap: 15px; background: #fdfbf7; padding: 15px; border: 1px solid #e8e6e1; margin-top: 15px; border-radius: 8px; }
-        .book-cover { width: 75px; height: 110px; object-fit: cover; border: 1px solid #ddd; border-radius: 4px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);}
-        .book-info { flex: 1; font-size: 0.95em;}
-        .book-info h3 { margin: 0 0 5px 0; font-size: 1.1em; color: #2c3e50; }
-        .loading { font-style: italic; color: #95a5a6; }
+        .shelf-photo {
+            width: 210px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 4px;
+            z-index: 1;
+        }
+
+        .circle-badge {
+            width: 145px;
+            height: 145px;
+            background-color: #dce6f1; /* Fondo claro interior */
+            border: 14px solid #5b9bd5; /* Aro exterior azul */
+            border-radius: 50%;
+            margin-left: -40px; /* Efecto de solapamiento sobre la foto */
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-sizing: border-box;
+            padding: 10px;
+            font-weight: 800;
+            color: #000;
+            font-size: 1.05em;
+            line-height: 1.25;
+        }
+
+        /* Botones de navegación con iconos */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
         
-        /* Botones de acción */
-        .links a { display: block; padding: 12px; background: #ecf0f1; text-decoration: none; color: #2c3e50; margin-bottom: 10px; border-radius: 6px; text-align: center; font-weight: bold; transition: background 0.3s;}
-        .links a:hover { background: #d5dbdb; }
+        .nav-button {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: #ebf5fb;
+            border: 2px solid #2980b9;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #1b4f72;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.2s ease;
+        }
+
+        .nav-button:active, .nav-button:hover {
+            background: #2980b9;
+            color: #ffffff;
+        }
+
+        .btn-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-icon {
+            font-size: 1.2em;
+        }
+
+        /* Servicios Adicionales */
+        h2.section-title { 
+            color: #2980b9; 
+            font-size: 1.2em; 
+            margin-top: 25px; 
+            border-left: 4px solid #2980b9; 
+            padding-left: 10px;
+        }
+
+        .links a { 
+            display: block; 
+            padding: 12px; 
+            background: #ecf0f1; 
+            text-decoration: none; 
+            color: #2c3e50; 
+            margin-bottom: 10px; 
+            border-radius: 6px; 
+            text-align: center; 
+            font-weight: bold; 
+            transition: background 0.3s;
+        }
+        .links a:hover { 
+            background: #d5dbdb; 
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Cabecera -->
         <h1>Biblioteca de Humanidades</h1>
-        <div class="subtitle">Estanteria 2 • Área de Literatura</div>
+        <div class="subtitle">Estante H-04 • Campus de El Milán</div>
 
-        <h2>📘 Áreas de Conocimiento</h2>
-        <ul>
-            <li>
-                <strong>Literatura española</strong><br>
-                Signatura: <a href="https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01='HG860'&START=1&FORM=1" target="_blank" class="signatura-link">HG860/Poem</a> a <span class="signatura-link">HG860/Zorr06nava</span>
-            </li>           
-        </ul>
-
-        <h2>🔍 Fondo Destacado</h2>
-        <p style="font-size: 0.9em; color: #555;">Bibliografía fundamental recomendada en este estante:</p>
-        
-        <!-- Contenedor para los datos de Open Library -->
-        <div class="book-card" id="book-container">
-            <span class="loading">Consultando catálogo...</span>
+        <!-- Sección solapada de foto y círculo -->
+        <div class="hero-overlap">
+            <img src="estantes.jpg" alt="Estantería" class="shelf-photo" onerror="this.src='https://via.placeholder.com/210x140?text=Estantes'">
+            <div class="circle-badge">
+                Necesito<br>encontrar<br>un libro
+            </div>
         </div>
 
-        <h2>💻 Servicios Adicionales</h2>
+        <!-- Accesos con sus iconos correspondientes -->
+        <div class="options-container">
+            <a href="por_materia.html" class="nav-button">
+                <div class="btn-content">
+                    <span class="btn-icon">🔍</span>
+                    <span>Por materia</span>
+                </div>
+                <span>➔</span>
+            </a>
+
+            <a href="se_la_signatura.html" class="nav-button">
+                <div class="btn-content">
+                    <span class="btn-icon">📌</span>
+                    <span>Sé la signatura</span>
+                </div>
+                <span>➔</span>
+            </a>
+        </div>
+
+        <!-- Servicios Adicionales -->
+        <h2 class="section-title">💻 Servicios Adicionales</h2>
         <div class="links">
             <a href="https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=101" target="_blank">Búsqueda general en el catálogo</a>
             <a href="https://buo.uniovi.es/" target="_blank">Portal de la Biblioteca (BUO)</a>
         </div>
     </div>
-
-    <script>
-        // Configura aquí el ISBN del libro que quieras destacar
-        const isbn = "9788467242935"; 
-        
-        // Conexión a la API de Open Library
-        const apiUrl = `https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`;
-
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                const bookKey = `ISBN:${isbn}`;
-                const container = document.getElementById('book-container');
-                
-                if (data[bookKey]) {
-                    const book = data[bookKey];
-                    const title = book.title;
-                    const author = book.authors ? book.authors[0].name : "Autor no registrado";
-                    // Extraer la portada en tamaño M (Mediano)
-                    const coverUrl = `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`;
-                    
-                    container.innerHTML = `
-                        <img src="${coverUrl}" alt="Portada" class="book-cover" onerror="this.src='https://via.placeholder.com/75x110?text=Sin+portada'">
-                        <div class="book-info">
-                            <h3>${title}</h3>
-                            <p><strong>Autor:</strong> ${author}</p>
-                            <p style="color: #7f8c8d; font-size: 0.9em; margin-top: 10px;"><em>Ubicación: Balda superior, lomo azul.</em></p>
-                        </div>
-                    `;
-                } else {
-                    container.innerHTML = `<p style="color: #e74c3c; font-size: 0.9em;">No se encontraron datos para este ISBN en la base de datos.</p>`;
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                document.getElementById('book-container').innerHTML = `<p style="color: #e74c3c; font-size: 0.9em;">Error de conexión al buscar la información del libro.</p>`;
-            });
-    </script>
 </body>
 </html>
