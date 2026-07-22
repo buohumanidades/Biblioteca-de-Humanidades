@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda por Materia | Biblioteca</title>
+    <style>
+        /* Estilos generales optimizados para móviles */
+        body { 
+            font-family: Arial, sans-serif; 
+            line-height: 1.4; 
+            margin: 0; 
+            padding: 15px; 
+            background-color: #f4f6f7; 
+            color: #2c3e50; 
+        }
+        .container { 
+            max-width: 500px; 
+            margin: auto; 
+            background: #fff; 
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06); 
+        }
+        
+        /* Cabecera */
+        h1 { 
+            font-family: 'Romana Moderna', Georgia, serif; 
+            color: #1a252f; 
+            text-align: center; 
+            border-bottom: 2px solid #ecf0f1; 
+            padding-bottom: 12px; 
+            font-size: 1.6em; 
+            margin-top: 0;
+        }
+        .subtitle { 
+            text-align: center; 
+            font-weight: bold; 
+            color: #7f8c8d; 
+            margin-bottom: 20px; 
+            font-size: 0.9em; 
+        }
+        
+        /* Montaje solapado: Foto + Círculo MATERIA */
+        .hero-overlap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0 25px 0;
+        }
+
+        .shelf-photo {
+            width: 200px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 4px;
+            z-index: 1;
+        }
+
+        .circle-badge {
+            width: 135px;
+            height: 135px;
+            background-color: #dce6f1; 
+            border: 12px solid #5b9bd5; 
+            border-radius: 50%;
+            margin-left: -35px; 
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-sizing: border-box;
+            padding: 10px;
+            font-weight: 800;
+            color: #000;
+            font-size: 1.1em;
+        }
+
+        /* Lista de Materias (Ajuste más compacto) */
+        .subject-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px; /* Reducido drásticamente para agrupar más los elementos */
+            margin-bottom: 20px;
+        }
+
+        .subject-link {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* Menos espacio entre icono y texto */
+            padding: 10px 12px; /* Reducción de la altura del botón */
+            background-color: #fdfdfd;
+            border: 1px solid #e0e6ed;
+            border-left: 4px solid #3498db;
+            border-radius: 6px; 
+            text-decoration: none;
+            color: #2c3e50;
+            font-size: 0.95em; /* Texto ligeramente más contenido */
+            transition: all 0.2s ease;
+        }
+
+        .subject-link:hover, .subject-link:active {
+            background-color: #ebf5fb;
+            border-left-color: #2980b9;
+        }
+
+        /* Iconos de la lista */
+        .icon {
+            font-size: 1.2em;
+            flex-shrink: 0; 
+        }
+        
+        .text {
+            line-height: 1.2; 
+        }
+
+        /* Destacar palabras clave */
+        .highlight {
+            font-weight: bold;
+            color: #1b4f72;
+        }
+
+        /* Botón de volver */
+        .back-btn {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            background: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1em;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        .back-btn:active, .back-btn:hover {
+            background: #d5dbdb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Cabecera -->
+        <h1>Biblioteca de Humanidades</h1>
+        <div class="subtitle">Campus de El Milán</div>
+
+        <!-- Sección solapada -->
+        <div class="hero-overlap">
+            <img src="estantes.jpg" alt="Estantería" class="shelf-photo" onerror="this.src='https://via.placeholder.com/200x130?text=Estantes'">
+            <div class="circle-badge">
+                MATERIA
+            </div>
+        </div>
+
+        <!-- Lista de Materias enlazables más compacta -->
+        <div class="subject-list">
+            <a href="mat_generalidades.html" class="subject-link">
+                <span class="icon">🧠</span>
+                <span class="text">Generalidades sobre el lenguaje. Origen y evolución del lenguaje</span>
+            </a>
+            <a href="mat_linguistica.html" class="subject-link">
+                <span class="icon">🗣️</span>
+                <span class="text">Lingüística y filología en general</span>
+            </a>
+            <a href="mat_lengua_inglesa.html" class="subject-link">
+                <span class="icon">💬</span>
+                <span class="text"><span class="highlight">Lengua</span> Inglesa</span>
+            </a>
+            <a href="mat_lenguas_germanicas.html" class="subject-link">
+                <span class="icon">💬</span>
+                <span class="text">Lenguas germánicas</span>
+            </a>
+            <a href="mat_lenguas_romances.html" class="subject-link">
+                <span class="icon">💬</span>
+                <span class="text">Lenguas romances</span>
+            </a>
+            <a href="mat_lengua_italiana.html" class="subject-link">
+                <span class="icon">💬</span>
+                <span class="text">Lengua italiana</span>
+            </a>
+            <a href="mat_lenguas_ibericas.html" class="subject-link">
+                <span class="icon">💬</span>
+                <span class="text">Lenguas ibéricas</span>
+            </a>
+            <a href="mat_lenguas_clasicas.html" class="subject-link">
+                <span class="icon">💬</span>
+                <span class="text">Lenguas clásicas en general</span>
+            </a>
+            <a href="mat_lenguas_eslavas.html" class="subject-link">
+                <span class="icon">💬</span>
+                <span class="text">Lenguas eslavas y bálticas</span>
+            </a>
+            <a href="mat_lenguas_orientales.html" class="subject-link">
+                <span class="icon">💬</span>
+                <span class="text">Lenguas orientales, africanas y otras lenguas</span>
+            </a>
+            
+            <a href="mat_lit_inglesa.html" class="subject-link">
+                <span class="icon">📖</span>
+                <span class="text"><span class="highlight">Literatura</span> inglesa.</span>
+            </a>
+            <a href="mat_lit_alemana.html" class="subject-link">
+                <span class="icon">📖</span>
+                <span class="text">Literatura alemana y austriaca</span>
+            </a>
+            <a href="mat_lit_holandesa.html" class="subject-link">
+                <span class="icon">📖</span>
+                <span class="text">Literatura holandesa, noruega y danesa</span>
+            </a>
+            <a href="mat_lit_francesa.html" class="subject-link">
+                <span class="icon">📖</span>
+                <span class="text">Literatura francesa</span>
+            </a>
+            <a href="mat_lit_italiana.html" class="subject-link">
+                <span class="icon">📖</span>
+                <span class="text">Literatura italiana</span>
+            </a>
+            <a href="mat_lit_rumana.html" class="subject-link">
+                <span class="icon">📖</span>
+                <span class="text">Literatura rumana</span>
+            </a>
+            <a href="mat_lit_espanola.html" class="subject-link">
+                <span class="icon">📖</span>
+                <span class="text">Literatura española</span>
+            </a>
+            <a href="mat_lit_clasicas.html" class="subject-link">
+                <span class="icon">📖</span>
+                <span class="text">Literaturas clásicas</span>
+            </a>
+            <a href="mat_lit_polaca.html" class="subject-link">
+                <span class="icon">📖</span>
+                <span class="text">Literatura polaca, búlgara, checa, serbia</span>
+            </a>
+            <a href="mat_lit_otras.html" class="subject-link">
+                <span class="icon">📖</span>
+                <span class="text">Otras literaturas</span>
+            </a>
+        </div>
+
+        <!-- Botón para regresar al inicio -->
+        <a href="index.html" class="back-btn">⬅ Volver al inicio</a>
+    </div>
+</body>
+</html>
