@@ -243,7 +243,7 @@
             <input type="text" id="campoSignatura" class="input-signatura" placeholder="&lt;Escribe la signatura&gt;">
 
             <!-- Botón PRINCIPAL (Ahora más destacado) -->
-            <a href="resultado_local.html" class="action-btn btn-local">
+            <a href="#" class="action-btn btn-local" onclick="localizarLibro(event)">
                 <span class="icon">🔎</span> Click para localizarlo
             </a>
 
@@ -264,6 +264,49 @@
 
     <!-- Funcionalidad JavaScript -->
     <script>
+        function localizarLibro(event) {
+            event.preventDefault();
+
+            let signatura = document.getElementById("campoSignatura").value.trim();
+
+            if (signatura === "") {
+                alert("Por favor, escribe una signatura.");
+                return;
+            }
+
+            let fichero;
+
+            // Elimina las letras finales después de la última barra
+            if (/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/.test(signatura)) {
+                fichero = signatura.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/, "/");
+            } else {
+                // Elimina la última palabra si son letras
+                fichero = signatura.replace(/\s+[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/, "");
+            }
+
+            // Elimina todas las barras
+            fichero = fichero.replace(/\//g, "");
+
+            const url = encodeURI(fichero + ".html");
+            
+            // Construimos la ruta absoluta (trayectoria) y el nombre del archivo para mostrarlo en el error
+            const rutaCompleta = new URL(url, window.location.href).href;
+            const mensajeError = "La signatura no existe o es incorrecta. Puedes realizar la comprobación en el catálogo\n\nTrayectoria y archivo buscado:\n" + rutaCompleta;
+
+            // Comprueba si el fichero HTML existe en el servidor
+            fetch(url, { method: "HEAD" })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = url;
+                    } else {
+                        alert(mensajeError);
+                    }
+                })
+                .catch(() => {
+                    alert(mensajeError);
+                });
+        }
+        
         function buscarEnCatalogo() {
             // Recogemos el texto que ha escrito el estudiante
             const signatura = document.getElementById("campoSignatura").value.trim();
