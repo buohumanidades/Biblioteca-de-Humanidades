@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biblioteca de Humanidades | Búsqueda</title>
     <style>
-        /* Estilos generales optimizados para móviles */
+        /* Estilos generales optimizados para una experiencia más moderna */
         body { 
-            font-family: Arial, sans-serif; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
             line-height: 1.6; 
             margin: 0; 
             padding: 15px; 
@@ -18,9 +18,9 @@
             max-width: 500px; 
             margin: auto; 
             background: #fff; 
-            padding: 20px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.06); 
+            padding: 25px 20px; 
+            border-radius: 16px; 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08); 
         }
         
         /* Cabecera */
@@ -32,59 +32,33 @@
             padding-bottom: 15px; 
             font-size: 1.8em; 
             margin-top: 0;
+            margin-bottom: 20px;
         }
         
-        /* Nuevo estilo para el subtítulo y el número */
-        .subtitle { 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 25px; 
-        }
-        .subtitle-text {
-            font-weight: bold; 
-            color: #0798a3; 
-            font-size: 1.4em; /* Tamaño aumentado */
-            text-align: center;
-        }
-        .number-eight {
-            font-size: 4em; /* Número en grande */
-            font-weight: 900;
-            color: #060352; /* Color */
-            line-height: 1;
-            /* Efecto de relieve y 3D */
-            text-shadow: 
-                1px 1px 0 #f7f7f7, 
-                2px 2px 0 #f7f7f7, 
-                3px 3px 0 #f7f7f7, 
-                4px 4px 6px rgba(0,0,0,0.4),
-                -1px -1px 2px rgba(255, 255, 255, 0.6);
-        }
-        
-        /* Montaje solapado: Foto + Círculo exacto a la imagen */
+        /* Montaje solapado: Foto + Círculo */
         .hero-overlap {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 20px 0 30px 0;
+            margin: 10px 0 35px 0;
         }
 
         .shelf-photo {
             width: 210px;
             height: 140px;
             object-fit: cover;
-            border-radius: 4px;
+            border-radius: 8px;
             z-index: 1;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
 
         .circle-badge {
-            width: 145px;
-            height: 145px;
-            background-color: #dce6f1; /* Fondo claro interior */
-            border: 14px solid #5b9bd5; /* Aro exterior azul */
+            width: 140px;
+            height: 140px;
+            background-color: #dce6f1;
+            border: 10px solid #5b9bd5;
             border-radius: 50%;
-            margin-left: -40px; /* Efecto de solapamiento sobre la foto */
+            margin-left: -35px;
             z-index: 2;
             display: flex;
             align-items: center;
@@ -93,38 +67,60 @@
             box-sizing: border-box;
             padding: 10px;
             font-weight: 800;
-            color: #000;
+            color: #1a252f;
             font-size: 1.05em;
-            line-height: 1.25;
+            line-height: 1.2;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
-        /* Botones de navegación con iconos */
-        .options-container {
+        /* Estilos del recuadro (Fieldset) y texto incrustado (Legend) */
+        .subjects-fieldset {
+            border: 2px solid #dce6f1; /* Color del borde del recuadro */
+            border-radius: 14px;
+            padding: 15px 15px 20px 15px;
+            margin: 0 0 25px 0;
+            background-color: transparent;
+        }
+
+        .subjects-legend {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 1.15em;
+            padding: 0 12px;
+            margin-left: 5px;
+        }
+
+        /* Contenedor de las 3 nuevas materias dentro del recuadro */
+        .subjects-container {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-bottom: 30px;
+            gap: 12px;
         }
-        
-        .nav-button {
+
+        /* Estilo base para los botones de materias */
+        .subject-btn {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 15px 20px;
-            background: #ebf5fb;
-            border: 2px solid #2980b9;
-            border-radius: 8px;
+            padding: 16px 20px;
+            border-radius: 12px;
             text-decoration: none;
-            color: #1b4f72;
-            font-weight: bold;
+            color: #ffffff;
+            font-weight: 600;
             font-size: 1.1em;
-            transition: all 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        .nav-button:active, .nav-button:hover {
-            background: #2980b9;
-            color: #ffffff;
+        .subject-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.15);
         }
+
+        /* Colores individuales para cada botón de materia */
+        .btn-lang { background: linear-gradient(135deg, #3498db, #2980b9); } 
+        .btn-geo { background: linear-gradient(135deg, #e67e22, #d35400); }  
+        .btn-soc { background: linear-gradient(135deg, #2ecc71, #27ae60); }  
 
         .btn-content {
             display: flex;
@@ -132,33 +128,62 @@
             gap: 12px;
         }
 
-        .btn-icon {
-            font-size: 1.2em;
+        /* Línea separadora visual */
+        .divider {
+            height: 2px;
+            background-color: #ecf0f1;
+            margin: 25px 0;
+            border-radius: 2px;
+        }
+
+        /* Botón de Signatura */
+        .signature-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: #ffffff;
+            border: 2px solid #8e44ad; 
+            border-radius: 12px;
+            text-decoration: none;
+            color: #8e44ad;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.2s ease;
+        }
+
+        .signature-btn:hover {
+            background: #8e44ad;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(142, 68, 173, 0.2);
         }
 
         /* Servicios Adicionales */
         h2.section-title { 
-            color: #2980b9; 
-            font-size: 1.2em; 
-            margin-top: 25px; 
-            border-left: 4px solid #2980b9; 
-            padding-left: 10px;
+            color: #2c3e50; 
+            font-size: 1.15em; 
+            margin-top: 35px; 
+            border-left: 4px solid #34495e; 
+            padding-left: 12px;
         }
 
         .links a { 
             display: block; 
-            padding: 12px; 
-            background: #ecf0f1; 
+            padding: 14px; 
+            background: #f8f9fa; 
             text-decoration: none; 
             color: #2c3e50; 
             margin-bottom: 10px; 
-            border-radius: 6px; 
+            border-radius: 8px; 
             text-align: center; 
-            font-weight: bold; 
+            font-weight: 600; 
+            border: 1px solid #e9ecef;
             transition: background 0.3s;
         }
+        
         .links a:hover { 
-            background: #d5dbdb; 
+            background: #e2e6ea; 
         }
     </style>
 </head>
@@ -166,39 +191,58 @@
     <div class="container">
         <!-- Cabecera -->
         <h1>Biblioteca de Humanidades</h1>
-        
-        <!-- Nuevo contenedor para el texto y el número -->
-        <div class="subtitle">
-            <span class="subtitle-text">Lenguaje, Lingüística, Literatura.</span>
-            <span class="number-eight">8</span>
-        </div>
 
         <!-- Sección solapada de foto y círculo -->
         <div class="hero-overlap">
-            <img src="estantes.jpg" alt="Estantería" class="shelf-photo" onerror="this.src='https://via.placeholder.com/210x140?text=Estantes'">
+            <img src="estantes.jpg" alt="Estantería" class="shelf-photo" onerror="this.src='https://via.placeholder.com/210x140?text=Estantes+de+Biblioteca'">
             <div class="circle-badge">
                 Necesito<br>encontrar<br>un libro
             </div>
         </div>
 
-        <!-- Accesos con sus iconos correspondientes -->
-        <div class="options-container">
-            <a href="materia.html" class="nav-button">
-                <div class="btn-content">
-                    <span class="btn-icon">🔍</span>
-                    <span>Por materia</span>
-                </div>
-                <span>➔</span>
-            </a>
+        <!-- Recuadro con título integrado en la línea superior -->
+        <fieldset class="subjects-fieldset">
+            <legend class="subjects-legend">Por materia</legend>
+            
+            <!-- Botones de navegación divididos en 3 materias principales -->
+            <div class="subjects-container">
+                <a href="8.html" class="subject-btn btn-lang">
+                    <div class="btn-content">
+                        <span class="btn-icon">📖</span>
+                        <span>Lenguaje, Lingüística, Literatura</span>
+                    </div>
+                    <span>➔</span>
+                </a>
 
-            <a href="Signatura.html" class="nav-button">
-                <div class="btn-content">
-                    <span class="btn-icon">📌</span>
-                    <span>Sé la signatura</span>
-                </div>
-                <span>➔</span>
-            </a>
-        </div>
+                <a href="9.html" class="subject-btn btn-geo">
+                    <div class="btn-content">
+                        <span class="btn-icon">🌍</span>
+                        <span>Geografía, Arte e Historia</span>
+                    </div>
+                    <span>➔</span>
+                </a>
+
+                <a href="1.html" class="subject-btn btn-soc">
+                    <div class="btn-content">
+                        <span class="btn-icon">🧠</span>
+                        <span>Filosofía y Ciencias Sociales</span>
+                    </div>
+                    <span>➔</span>
+                </a>
+            </div>
+        </fieldset>
+
+        <!-- Separador visual -->
+        <div class="divider"></div>
+
+        <!-- Acceso por signatura separado -->
+        <a href="Signatura.html" class="signature-btn">
+            <div class="btn-content">
+                <span class="btn-icon">📌</span>
+                <span>Sé la signatura</span>
+            </div>
+            <span>➔</span>
+        </a>
 
         <!-- Servicios Adicionales -->
         <h2 class="section-title">💻 Servicios Adicionales</h2>
