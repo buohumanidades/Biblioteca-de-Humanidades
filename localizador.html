@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procesando Signatura...</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f4f6f7; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            color: #2c3e50;
+        }
+        .loader-container {
+            text-align: center;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            max-width: 400px;
+            width: 90%;
+        }
+        /* Spinner animado que respeta los tonos de la app */
+        .spinner {
+            border: 5px solid #ecf0f1;
+            border-top: 5px solid #2980b9; 
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        h2 {
+            font-family: 'Romana Moderna', Georgia, serif;
+            color: #1a252f;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+        p {
+            color: #7f8c8d;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="loader-container">
+        <div class="spinner"></div>
+        <h2>Buscando ubicación...</h2>
+        <p>Comprobando la signatura en la base de datos de la biblioteca.</p>
+    </div>
+
+    <script>
+        // 1. Capturamos la signatura enviada por la URL desde Signatura.html
+        const params = new URLSearchParams(window.location.search);
+        const sigBuscada = params.get('sig');
+
+        // 2. DICCIONARIO DE SIGNATURAS (Aquí es donde debes incluir todas)
+        // Formato: "NOMBRESIGNATURA" : "nombre_del_html_al_que_redirecciona.html",
+        const baseDatos = {
+            "HGHG860729.09": "Estanteria1_8.html",
+            "HG456": "planta2_pasillo1.html",
+            "HG789": "planta1_pasillo3.html"
+            // Puedes ir añadiendo todas las que necesites aquí debajo...
+        };
+
+        // 3. Lógica para comprobar si la signatura existe y llamar al nuevo HTML
+        setTimeout(() => {
+            if (sigBuscada && baseDatos[sigBuscada]) {
+                // Si la signatura es localizada en nuestra baseDatos, redirige a su archivo
+                window.location.href = baseDatos[sigBuscada];
+            } else {
+                // Si no se localiza, lanzamos el indicador de error igual que en la versión anterior
+                const mensajeError = "La signatura no existe o es incorrecta. Puedes realizar la comprobación en el catálogo\n\nSignatura buscada: " + (sigBuscada || "Ninguna");
+                alert(mensajeError);
+                
+                // Devuelve al usuario a la pantalla anterior automáticamente
+                window.history.back(); 
+            }
+        }, 600); // El retardo de 600ms es solo para que la transición visual sea más fluida
+    </script>
+</body>
+</html>
