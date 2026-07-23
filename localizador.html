@@ -24,7 +24,7 @@
             max-width: 400px;
             width: 90%;
         }
-        /* Spinner animado que respeta los tonos de la app */
+        /* Spinner animado */
         .spinner {
             border: 5px solid #ecf0f1;
             border-top: 5px solid #2980b9; 
@@ -47,12 +47,32 @@
         p {
             color: #7f8c8d;
             font-size: 0.95em;
+            line-height: 1.4;
+        }
+        /* Estilos para el botón de error */
+        .btn-volver {
+            background-color: #e67e22; /* Tono naranja */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-volver:hover {
+            background-color: #d35400; /* Naranja más oscuro al pasar el ratón */
+        }
+        .icono-error {
+            font-size: 3em;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
 
-    <div class="loader-container">
+    <div class="loader-container" id="contenedor-principal">
         <div class="spinner"></div>
         <h2>Buscando ubicación...</h2>
         <p>Comprobando la signatura en la base de datos de la biblioteca.</p>
@@ -63,8 +83,7 @@
         const params = new URLSearchParams(window.location.search);
         const sigBuscada = params.get('sig');
 
-        // 2. DICCIONARIO DE SIGNATURAS (Aquí es donde debes incluir todas)
-        // Formato: "NOMBRESIGNATURA" : "nombre_del_html_al_que_redirecciona.html",
+        // 2. DICCIONARIO DE SIGNATURAS
         const baseDatos = {
             "HG860/729.09": "Estanteria1_8.html",
             "HG860/729": "Estanteria1_8.html",
@@ -72,20 +91,22 @@
             // Puedes ir añadiendo todas las que necesites aquí debajo...
         };
 
-        // 3. Lógica para comprobar si la signatura existe y llamar al nuevo HTML
+        // 3. Lógica para comprobar si la signatura existe
         setTimeout(() => {
             if (sigBuscada && baseDatos[sigBuscada]) {
-                // Si la signatura es localizada en nuestra baseDatos, redirige a su archivo
                 window.location.href = baseDatos[sigBuscada];
             } else {
-                // Si no se localiza, lanzamos el indicador de error igual que en la versión anterior
-                const mensajeError = "La signatura no existe o es incorrecta. Puedes realizar la comprobación en el catálogo\n\nSignatura buscada: " + (sigBuscada || "Ninguna");
-                alert(mensajeError);
-                
-                // Devuelve al usuario a la pantalla anterior automáticamente
-                window.history.back(); 
+                // Modificamos el DOM directamente en lugar de usar alert()
+                const contenedor = document.getElementById('contenedor-principal');
+                contenedor.innerHTML = `
+                    <div class="icono-error">⚠️</div>
+                    <h2>Signatura no encontrada</h2>
+                    <p>La signatura no existe o es incorrecta. Puedes realizar la comprobación en el catálogo.</p>
+                    <p><strong>Signatura buscada:</strong> ${sigBuscada || "Ninguna"}</p>
+                    <button class="btn-volver" onclick="window.history.back()">Volver al buscador</button>
+                `;
             }
-        }, 600); // El retardo de 600ms es solo para que la transición visual sea más fluida
+        }, 600);
     </script>
 </body>
 </html>
