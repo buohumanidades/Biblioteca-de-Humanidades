@@ -205,22 +205,18 @@
         <!-- Zona de búsqueda -->
         <div class="search-area">
             
-            <!-- TEXTO AÑADIDO: Información sobre el libre acceso y el código HG -->
             <p style="text-align: center; color: #34495e; font-size: 0.95em; margin: 0 10px -10px 10px; font-weight: bold;">
                 Recuerda que los libros que se encuentran en las salas son de acceso libre y sus signaturas comienzan por HG.
             </p>
 
-            <!-- Recuadro para escribir (CORREGIDO: coloca el cursor tras la 'G') -->
             <input type="text" id="campoSignatura" class="input-signatura" placeholder="&lt;Escribe la signatura&gt;" 
                    onfocus="if(this.value.trim() === '') { this.value = 'HG'; setTimeout(() => this.setSelectionRange(2, 2), 0); }" 
                    oninput="this.value = this.value.toUpperCase();">
 
-            <!-- Botón PRINCIPAL -->
             <a href="#" class="action-btn btn-local" onclick="localizarLibro(event)">
                 <span class="icon">🔎</span> Click para localizarlo
             </a>
 
-            <!-- Subsección para comprobar en el catálogo de la BUO -->
             <div class="catalog-section">
                 <p class="availability-text">¿Quieres ver si está disponible?</p>
                 
@@ -231,7 +227,6 @@
 
         </div>
 
-        <!-- Botón para regresar al inicio -->
         <a href="index.html" class="back-btn">⬅ Volver al inicio</a>
     </div>
 
@@ -249,35 +244,16 @@
 
             let fichero;
 
-            // Elimina las letras finales después de la última barra
+            // Limpieza de la signatura (se mantiene igual)
             if (/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/.test(signatura)) {
                 fichero = signatura.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/, "/");
             } else {
-                // Elimina la última palabra si son letras
                 fichero = signatura.replace(/\s+[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/, "");
             }
-
-            // Elimina todas las barras
             fichero = fichero.replace(/\//g, "");
 
-            const url = encodeURI(fichero + ".html");
-            
-            // Construimos la ruta absoluta
-            const rutaCompleta = new URL(url, window.location.href).href;
-            const mensajeError = "La signatura no existe o es incorrecta. Puedes realizar la comprobación en el catálogo\n\nTrayectoria y archivo buscado:\n" + rutaCompleta;
-
-            // Comprueba si el fichero HTML existe en el servidor
-            fetch(url, { method: "HEAD" })
-                .then(response => {
-                    if (response.ok) {
-                        window.location.href = url;
-                    } else {
-                        alert(mensajeError);
-                    }
-                })
-                .catch(() => {
-                    alert(mensajeError);
-                });
+            // NUEVO COMPORTAMIENTO: Llamar al nuevo HTML que gestiona las rutas, pasando la signatura buscada
+            window.location.href = "localizador.html?sig=" + encodeURIComponent(fichero);
         }
         
         function buscarEnCatalogo() {
