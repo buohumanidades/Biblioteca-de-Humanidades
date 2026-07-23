@@ -250,7 +250,9 @@
             } else {
                 fichero = signatura.replace(/\s+[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/, "");
             }
-            fichero = fichero.replace(/\//g, "");
+            
+            // CORRECCIÓN: Solo elimina la barra (/) si se encuentra al final de la signatura
+            fichero = fichero.replace(/\/$/, "");
 
             // NUEVO COMPORTAMIENTO: Llamar al nuevo HTML que gestiona las rutas, pasando la signatura buscada
             window.location.href = "localizador.html?sig=" + encodeURIComponent(fichero);
