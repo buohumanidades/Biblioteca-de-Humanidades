@@ -136,7 +136,8 @@
         // 3. Lógica para comprobar si la signatura existe
         setTimeout(() => {
             if (sigBuscada && baseDatos[sigBuscada]) {
-                window.location.href = baseDatos[sigBuscada];
+                // ESTA ES LA LÍNEA CLAVE QUE ENVÍA LA SIGNATURA A LA ESTANTERÍA
+                window.location.href = baseDatos[sigBuscada] + "?sig=" + encodeURIComponent(sigBuscada);
             } else {
                 // Modificamos el DOM directamente en lugar de usar alert()
                 const contenedor = document.getElementById('contenedor-principal');
