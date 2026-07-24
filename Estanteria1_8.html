@@ -10,7 +10,7 @@
             height: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Evita el scroll */
+            overflow: hidden; 
             background-color: #f4f6f7;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
@@ -19,7 +19,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 10px; /* Margen exterior mínimo */
+            padding: 10px; 
             box-sizing: border-box;
         }
 
@@ -28,7 +28,7 @@
             flex-direction: column;
             width: 100%;
             max-width: 500px;
-            height: 100%; /* Ocupa el alto disponible */
+            height: 100%; 
             background: #fff; 
             padding: 15px; 
             border-radius: 12px; 
@@ -43,12 +43,12 @@
             text-align: center; 
             border-bottom: 2px solid #ecf0f1; 
             padding-bottom: 8px; 
-            font-size: 1.4em; /* Letra más pequeña */
+            font-size: 1.4em; 
             margin: 0 0 12px 0;
-            flex-shrink: 0; /* Evita que el título se aplaste */
+            flex-shrink: 0; 
         }
 
-        /* Diseño de la ruta (Más compacto) */
+        /* Diseño de la ruta */
         .location-route {
             background-color: #f8f9fa;
             border-left: 4px solid #3498db;
@@ -57,7 +57,7 @@
             margin-bottom: 12px;
             display: flex;
             flex-direction: column;
-            gap: 6px; /* Menos espacio entre pasos */
+            gap: 6px; 
             flex-shrink: 0;
         }
 
@@ -65,9 +65,35 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 0.95em; /* Letra ajustada */
+            font-size: 0.95em; 
             color: #34495e;
             font-weight: 600;
+        }
+
+        /* Ajustes específicos para el paso de la PLANTA 2 */
+        .step-planta {
+            justify-content: space-between; /* Separa el texto de la izquierda y el de la derecha */
+            width: 100%;
+            padding-right: 5px; 
+            box-sizing: border-box;
+        }
+
+        .planta-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Etiqueta de la signatura a la derecha */
+        .signatura-badge {
+            font-size: 0.85em;
+            color: #d35400; /* Naranja para contrastar e integrarse al entorno */
+            background-color: #fdf2e9;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid #e67e22;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(230, 126, 34, 0.1);
         }
 
         .route-step.final-step {
@@ -86,10 +112,10 @@
             font-size: 1.1em;
         }
 
-        /* Contenedor de la imagen (Se adapta al espacio sobrante) */
+        /* Contenedor de la imagen */
         .image-container {
-            flex-grow: 1; /* Ocupa todo el espacio vertical sobrante */
-            min-height: 0; /* Clave para que Flexbox permita achicar la imagen */
+            flex-grow: 1; 
+            min-height: 0; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -99,10 +125,10 @@
 
         .shelf-image {
             max-width: 100%;
-            max-height: 100%; /* Nunca será más alta que el espacio disponible */
+            max-height: 100%; 
             width: auto;
             height: auto;
-            object-fit: contain; /* Garantiza que se vea entera sin recortar NADA */
+            object-fit: contain; 
             border-radius: 8px;
             box-shadow: 0 3px 8px rgba(0,0,0,0.12);
             border: 1px solid #ecf0f1;
@@ -142,9 +168,15 @@
 
         <!-- Ruta de localización -->
         <div class="location-route">
-            <div class="route-step">
-                <span class="icon">📍</span> PLANTA 2
+            <!-- Paso Planta 2 adaptado -->
+            <div class="route-step step-planta">
+                <div class="planta-left">
+                    <span class="icon">📍</span> PLANTA 2
+                </div>
+                <!-- Aquí se inyectará la signatura -->
+                <div id="display-signatura" class="signatura-badge" style="display: none;"></div>
             </div>
+            
             <div class="route-step">
                 <span class="icon">➡️</span> Sala de la derecha
             </div>
@@ -152,11 +184,11 @@
                 <span class="icon">➡️</span> Estantes de la derecha
             </div>
             <div class="route-step final-step">
-                <span class="icon">📚</span> Estante nº 1 (pegado a la pared)
+                <span class="icon">📚</span> Estante nº 1
             </div>
         </div>
 
-        <!-- Imagen de la estantería (Ajuste inteligente al espacio) -->
+        <!-- Imagen de la estantería -->
         <div class="image-container">
             <img src="Estanteria1_8.jpg" alt="Vista del Estante nº 1" class="shelf-image">
         </div>
@@ -166,5 +198,19 @@
             <span class="icon">🔄</span> Nueva búsqueda
         </a>
     </div>
+
+    <!-- Script para recuperar la signatura de la URL -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const params = new URLSearchParams(window.location.search);
+            const sigBuscada = params.get('sig');
+            
+            if (sigBuscada) {
+                const badge = document.getElementById('display-signatura');
+                badge.textContent = sigBuscada;
+                badge.style.display = 'block'; // Muestra la etiqueta naranja si existe el dato
+            }
+        });
+    </script>
 </body>
 </html>
