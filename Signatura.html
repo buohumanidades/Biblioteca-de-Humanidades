@@ -241,7 +241,9 @@
                 alert("Por favor, escribe una signatura válida.");
                 return;
             }
-
+            // --- LÍNEA CLAVE QUE GUARDA LA SIGNATURA EN EL NAVEGADOR ---
+            sessionStorage.setItem('signaturaActual', signatura);
+            
             let fichero;
 
             // Limpieza de la signatura (se mantiene igual)
