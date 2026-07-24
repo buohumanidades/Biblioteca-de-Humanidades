@@ -201,16 +201,26 @@
 
     <!-- Script para recuperar la signatura de la URL -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const params = new URLSearchParams(window.location.search);
-            const sigBuscada = params.get('sig');
-            
-            if (sigBuscada) {
-                const badge = document.getElementById('display-signatura');
+    function cargarSignatura() {
+        const params = new URLSearchParams(window.location.search);
+        // Busca en la URL o en la memoria del navegador
+        let sigBuscada = params.get('sig') || sessionStorage.getItem('signaturaActual');
+
+        if (sigBuscada) {
+            const badge = document.getElementById('display-signatura');
+            if (badge) {
                 badge.textContent = sigBuscada;
-                badge.style.display = 'block'; // Muestra la etiqueta naranja si existe el dato
+                badge.style.display = 'inline-block';
             }
-        });
-    </script>
+        }
+    }
+
+    // Se ejecuta al cargar la página en cualquier navegador móvil
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', cargarSignatura);
+    } else {
+        cargarSignatura();
+    }
+</script>
 </body>
 </html>
