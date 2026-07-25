@@ -112,24 +112,23 @@
             font-size: 1.1em;
         }
 
-        /* Contenedor de las imágenes */
+       /* Contenedor de las imágenes */
         .image-container {
             flex-grow: 1; 
             min-height: 0; 
             display: flex;
-            justify-content: center; 
-            align-items: center;
-            gap: 10px; 
+            justify-content: space-between; /* Distribuye el espacio uniformemente */
+            align-items: stretch; /* CAMBIO CLAVE: Fuerza a los elementos a estirarse verticalmente */
+            gap: 5px; /* Separación un poco menor para aprovechar el ancho */
             margin-bottom: 12px;
             overflow: hidden;
         }
 
-        /* Fotografías rellenando el alto sin recortes */
+        /* Fotografías forzadas a rellenar el alto sin recortes */
         .shelf-image {
-            flex: 1; 
-            max-width: 32%; 
-            height: 100%; /* Ocupa todo el alto disponible */
-            object-fit: fill; /* Estira la imagen para rellenar sin recortar bordes */
+            width: 32%; /* CAMBIO: Usar un ancho fijo en lugar de max-width */
+            height: 100%; /* Ocupa obligatoriamente todo el alto disponible */
+            object-fit: fill; /* Estira la imagen deformándola ligeramente para rellenar sin recortar bordes */
             border-radius: 8px;
             box-shadow: 0 3px 8px rgba(0,0,0,0.12);
             border: 1px solid #ecf0f1;
