@@ -10,7 +10,7 @@
             height: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Evita el scroll */
+            overflow: hidden; 
             background-color: #f4f6f7;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
@@ -19,7 +19,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 10px; /* Margen exterior mínimo */
+            padding: 10px; 
             box-sizing: border-box;
         }
 
@@ -28,7 +28,7 @@
             flex-direction: column;
             width: 100%;
             max-width: 500px;
-            height: 100%; /* Ocupa el alto disponible */
+            height: 100%; 
             background: #fff; 
             padding: 15px; 
             border-radius: 12px; 
@@ -43,12 +43,12 @@
             text-align: center; 
             border-bottom: 2px solid #ecf0f1; 
             padding-bottom: 8px; 
-            font-size: 1.4em; /* Letra más pequeña */
+            font-size: 1.4em; 
             margin: 0 0 12px 0;
-            flex-shrink: 0; /* Evita que el título se aplaste */
+            flex-shrink: 0; 
         }
 
-        /* Diseño de la ruta (Más compacto) */
+        /* Diseño de la ruta */
         .location-route {
             background-color: #f8f9fa;
             border-left: 4px solid #3498db;
@@ -57,7 +57,7 @@
             margin-bottom: 12px;
             display: flex;
             flex-direction: column;
-            gap: 6px; /* Menos espacio entre pasos */
+            gap: 6px; 
             flex-shrink: 0;
         }
 
@@ -65,55 +65,14 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 0.95em; /* Letra ajustada */
+            font-size: 0.95em; 
             color: #34495e;
             font-weight: 600;
         }
 
-        .route-step.final-step {
-            color: #2980b9;
-            font-size: 1.1em;
-            font-weight: 800;
-            background: #ebf5fb;
-            padding: 6px 12px;
-            border-radius: 6px;
-            margin-left: -10px; 
-            box-shadow: 0 2px 4px rgba(41, 128, 185, 0.15);
-            border: 1px solid #d6eaf8;
-        }
-
-        .icon {
-            font-size: 1.1em;
-        }
-
-        /* Contenedor de las imágenes (Ajuste para 3 imágenes en paralelo) */
-        .image-container {
-            flex-grow: 1; /* Ocupa todo el espacio vertical sobrante */
-            min-height: 0; /* Clave para que Flexbox permita achicar la imagen */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px; /* Espacio entre las fotos para que no queden pegadas */
-            margin-bottom: 12px;
-            overflow: hidden;
-        }
-
-        .shelf-image {
-            flex: 1;
-            max-width: calc(33.333% - 6px); /* Reparte un tercio del ancho restando el espacio del gap */
-            max-height: 100%; /* Nunca será más alta que el espacio disponible */
-            width: 100%;
-            height: auto;
-            object-fit: contain; /* Garantiza que se vean enteras sin recortar NADA */
-            border-radius: 8px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
-            border: 1px solid #ecf0f1;
-            box-sizing: border-box;
-        }
-
-/* Ajustes específicos para el paso de la PLANTA 2 */
+        /* Ajustes específicos para el paso de la PLANTA 2 */
         .step-planta {
-            justify-content: space-between; /* Separa el texto de la izquierda y el de la derecha */
+            justify-content: space-between;
             width: 100%;
             padding-right: 5px; 
             box-sizing: border-box;
@@ -128,7 +87,7 @@
         /* Etiqueta de la signatura a la derecha */
         .signatura-badge {
             font-size: 0.85em;
-            color: #d35400; /* Naranja para contrastar e integrarse al entorno */
+            color: #d35400; 
             background-color: #fdf2e9;
             padding: 4px 10px;
             border-radius: 6px;
@@ -153,29 +112,29 @@
             font-size: 1.1em;
         }
 
-        /* Contenedor de la imagen */
+        /* Contenedor de las imágenes alineadas horizontalmente */
         .image-container {
             flex-grow: 1; 
             min-height: 0; 
             display: flex;
-            justify-content: center;
+            justify-content: center; /* Centra el grupo de imágenes */
             align-items: center;
+            gap: 10px; /* Separación entre las imágenes */
             margin-bottom: 12px;
             overflow: hidden;
         }
 
         .shelf-image {
-            max-width: 100%;
+            flex: 1; /* Permite que las imágenes compartan el espacio equitativamente */
+            max-width: 31%; /* Limita el ancho para que quepan 3 imágenes con el gap */
             max-height: 100%; 
-            width: auto;
+            width: 100%;
             height: auto;
             object-fit: contain; 
             border-radius: 8px;
             box-shadow: 0 3px 8px rgba(0,0,0,0.12);
             border: 1px solid #ecf0f1;
         }
-
-
 
         /* Botón de Nueva Búsqueda */
         .btn-new-search {
@@ -219,23 +178,23 @@
                 <!-- Aquí se inyectará la signatura -->
                 <div id="display-signatura" class="signatura-badge" style="display: none;"></div>
             </div>
-
+            
             <div class="route-step">
                 <span class="icon">➡️</span> Sala de la derecha
             </div>
             <div class="route-step">
-                <span class="icon">➡️</span> Estantes de la derecha
+                <span class="icon">➡️</span> En las estanterías de la derecha
             </div>
             <div class="route-step final-step">
-                <span class="icon">📚</span> Estante nº 3, 4 y 5 
+                <span class="icon">📚</span> Estanterías nº 3, 4 y 5
             </div>
         </div>
 
-        <!-- Imágenes de las estanterías (De izquierda a derecha) -->
+        <!-- Imágenes de las estanterías -->
         <div class="image-container">
-            <img src="Estanteria5_8.jpg" alt="Vista del Estante nº 2" class="shelf-image">
-            <img src="Estanteria4_8.jpg" alt="Vista del Estante nº 3" class="shelf-image">
-            <img src="Estanteria3_8.jpg" alt="Vista del Estante nº 5" class="shelf-image">
+            <img src="Estanteria5_8.jpg" alt="Vista del Estante nº 5" class="shelf-image">
+            <img src="Estanteria4_8.jpg" alt="Vista del Estante nº 4" class="shelf-image">
+            <img src="Estanteria3_8.jpg" alt="Vista del Estante nº 3" class="shelf-image">
         </div>
 
         <!-- Botón para nueva búsqueda -->
@@ -244,12 +203,14 @@
         </a>
     </div>
 
-<!-- Script para recuperar la signatura de la URL -->
+   <!-- Script para recuperar la signatura -->
     <script>
     function cargarSignatura() {
         const params = new URLSearchParams(window.location.search);
-        // Busca en la URL o en la memoria del navegador
-        let sigBuscada = params.get('sig') || sessionStorage.getItem('signaturaActual');
+        
+        // Primero buscamos el texto completo en la memoria del navegador.
+        // Solo si no existe (como respaldo), usamos la signatura recortada de la URL.
+        let sigBuscada = sessionStorage.getItem('signaturaActual') || params.get('sig');
 
         if (sigBuscada) {
             const badge = document.getElementById('display-signatura');
@@ -266,7 +227,6 @@
     } else {
         cargarSignatura();
     }
-</script>
-
+    </script>
 </body>
 </html>

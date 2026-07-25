@@ -181,10 +181,10 @@
                 <span class="icon">➡️</span> Sala de la derecha
             </div>
             <div class="route-step">
-                <span class="icon">➡️</span> Estantes de la derecha
+                <span class="icon">➡️</span> En las estanterías de la derecha
             </div>
             <div class="route-step final-step">
-                <span class="icon">📚</span> Estante nº 1
+                <span class="icon">📚</span> Estantería nº 1
             </div>
         </div>
 
@@ -199,12 +199,14 @@
         </a>
     </div>
 
-    <!-- Script para recuperar la signatura de la URL -->
+   <!-- Script para recuperar la signatura -->
     <script>
     function cargarSignatura() {
         const params = new URLSearchParams(window.location.search);
-        // Busca en la URL o en la memoria del navegador
-        let sigBuscada = params.get('sig') || sessionStorage.getItem('signaturaActual');
+        
+        // CAMBIO CLAVE: Primero buscamos el texto completo en la memoria del navegador.
+        // Solo si no existe (como respaldo), usamos la signatura recortada de la URL.
+        let sigBuscada = sessionStorage.getItem('signaturaActual') || params.get('sig');
 
         if (sigBuscada) {
             const badge = document.getElementById('display-signatura');
@@ -221,6 +223,6 @@
     } else {
         cargarSignatura();
     }
-</script>
+    </script>
 </body>
 </html>
