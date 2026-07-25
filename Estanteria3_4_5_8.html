@@ -112,25 +112,24 @@
             font-size: 1.1em;
         }
 
-        /* Contenedor de las imágenes alineadas horizontalmente */
+        /* Contenedor de las imágenes */
         .image-container {
             flex-grow: 1; 
             min-height: 0; 
             display: flex;
-            justify-content: center; /* Centra el grupo de imágenes */
+            justify-content: center; 
             align-items: center;
-            gap: 10px; /* Separación entre las imágenes */
+            gap: 10px; 
             margin-bottom: 12px;
             overflow: hidden;
         }
 
+        /* Fotografías rellenando el alto sin recortes */
         .shelf-image {
-            flex: 1; /* Permite que las imágenes compartan el espacio equitativamente */
-            max-width: 31%; /* Limita el ancho para que quepan 3 imágenes con el gap */
-            max-height: 100%; 
-            width: 100%;
-            height: auto;
-            object-fit: contain; 
+            flex: 1; 
+            max-width: 32%; 
+            height: 100%; /* Ocupa todo el alto disponible */
+            object-fit: fill; /* Estira la imagen para rellenar sin recortar bordes */
             border-radius: 8px;
             box-shadow: 0 3px 8px rgba(0,0,0,0.12);
             border: 1px solid #ecf0f1;
@@ -170,12 +169,10 @@
 
         <!-- Ruta de localización -->
         <div class="location-route">
-            <!-- Paso Planta 2 adaptado -->
             <div class="route-step step-planta">
                 <div class="planta-left">
                     <span class="icon">📍</span> PLANTA 2
                 </div>
-                <!-- Aquí se inyectará la signatura -->
                 <div id="display-signatura" class="signatura-badge" style="display: none;"></div>
             </div>
             
@@ -208,8 +205,6 @@
     function cargarSignatura() {
         const params = new URLSearchParams(window.location.search);
         
-        // Primero buscamos el texto completo en la memoria del navegador.
-        // Solo si no existe (como respaldo), usamos la signatura recortada de la URL.
         let sigBuscada = sessionStorage.getItem('signaturaActual') || params.get('sig');
 
         if (sigBuscada) {
@@ -221,7 +216,6 @@
         }
     }
 
-    // Se ejecuta al cargar la página en cualquier navegador móvil
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', cargarSignatura);
     } else {
