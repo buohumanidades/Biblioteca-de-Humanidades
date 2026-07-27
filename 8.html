@@ -103,14 +103,15 @@
             margin-bottom: 20px;
         }
 
+        /* Estilo base de los botones */
         .subject-link {
             display: flex;
             align-items: center;
             gap: 12px; 
             padding: 10px 12px; 
-            background-color: #fdfdfd;
             border: 1px solid #e0e6ed;
-            border-left: 4px solid #3498db;
+            border-left-width: 4px;
+            border-left-style: solid;
             border-radius: 6px; 
             text-decoration: none;
             color: #2c3e50;
@@ -119,9 +120,44 @@
             cursor: pointer;
         }
 
-        .subject-link:hover, .subject-link:active {
+        /* 1. Colores para Generalidades */
+        .btn-generalidades {
+            background-color: #f4f6f7;
+            border-left-color: #34495e;
+        }
+        .btn-generalidades:hover, .btn-generalidades:active {
+            background-color: #e5e8e8;
+            border-left-color: #2c3e50;
+        }
+
+        /* 2. Colores para Lingüística y filología */
+        .btn-linguistica {
+            background-color: #e8f6f3;
+            border-left-color: #16a085;
+        }
+        .btn-linguistica:hover, .btn-linguistica:active {
+            background-color: #d1f2eb;
+            border-left-color: #117a65;
+        }
+
+        /* 3. Colores para Lenguas */
+        .btn-lenguas {
             background-color: #ebf5fb;
+            border-left-color: #3498db;
+        }
+        .btn-lenguas:hover, .btn-lenguas:active {
+            background-color: #d6eaf8;
             border-left-color: #2980b9;
+        }
+
+        /* 4. Colores para Literaturas */
+        .btn-literaturas {
+            background-color: #f5eef8;
+            border-left-color: #9b59b6;
+        }
+        .btn-literaturas:hover, .btn-literaturas:active {
+            background-color: #ebdef0;
+            border-left-color: #8e44ad;
         }
 
         /* Iconos de la lista */
@@ -177,86 +213,92 @@
             </div>
         </div>
 
-        <!-- Lista de Materias que invocan la función JavaScript -->
+        <!-- Lista de Materias -->
         <div class="subject-list">
-            <a href="#" onclick="abrirMateria('generalidades'); return false;" class="subject-link">
+            <!-- GENERALIDADES -->
+            <a href="#" onclick="abrirMateria('generalidades'); return false;" class="subject-link btn-generalidades">
                 <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book</span>
                 <span class="text">Generalidades sobre el lenguaje. Origen y evolución del lenguaje</span>
             </a>
-            <a href="#" onclick="abrirMateria('linguistica'); return false;" class="subject-link">
+
+            <!-- LINGÜÍSTICA -->
+            <a href="#" onclick="abrirMateria('linguistica'); return false;" class="subject-link btn-linguistica">
                 <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">menu_book</span>
                 <span class="text">Lingüística y filología en general</span>
             </a>
-            <a href="#" onclick="abrirMateria('lengua_inglesa'); return false;" class="subject-link">
+
+            <!-- LENGUAS -->
+            <a href="#" onclick="abrirMateria('lengua_inglesa'); return false;" class="subject-link btn-lenguas">
                 <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
                 <span class="text"><span class="highlight">Lengua</span> Inglesa</span>
             </a>
-            <a href="#" onclick="abrirMateria('lenguas_germanicas'); return false;" class="subject-link">
+            <a href="#" onclick="abrirMateria('lenguas_germanicas'); return false;" class="subject-link btn-lenguas">
                 <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
                 <span class="text">Lenguas germánicas</span>
             </a>
-            <a href="#" onclick="abrirMateria('lenguas_romances'); return false;" class="subject-link">
+            <a href="#" onclick="abrirMateria('lenguas_romances'); return false;" class="subject-link btn-lenguas">
                 <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
                 <span class="text">Lenguas romances</span>
             </a>
-            <a href="#" onclick="abrirMateria('lengua_italiana'); return false;" class="subject-link">
+            <a href="#" onclick="abrirMateria('lengua_italiana'); return false;" class="subject-link btn-lenguas">
                 <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
                 <span class="text">Lengua italiana</span>
             </a>
-            <a href="#" onclick="abrirMateria('lenguas_ibericas'); return false;" class="subject-link">
+            <a href="#" onclick="abrirMateria('lenguas_ibericas'); return false;" class="subject-link btn-lenguas">
                 <span class="material-symbols-outlined" style="color: #2980b9; font-size: 32px;">auto_stories</span>
                 <span class="text">Lenguas ibéricas</span>
             </a>
-            <a href="#" onclick="abrirMateria('lenguas_clasicas'); return false;" class="subject-link">
+            <a href="#" onclick="abrirMateria('lenguas_clasicas'); return false;" class="subject-link btn-lenguas">
                 <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
                 <span class="text">Lenguas clásicas en general</span>
             </a>
-            <a href="#" onclick="abrirMateria('lenguas_eslavas'); return false;" class="subject-link">
+            <a href="#" onclick="abrirMateria('lenguas_eslavas'); return false;" class="subject-link btn-lenguas">
                 <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
                 <span class="text">Lenguas eslavas y bálticas</span>
             </a>
-            <a href="#" onclick="abrirMateria('lenguas_orientales'); return false;" class="subject-link">
+            <a href="#" onclick="abrirMateria('lenguas_orientales'); return false;" class="subject-link btn-lenguas">
                 <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
                 <span class="text">Lenguas orientales, africanas y otras lenguas</span>
             </a>
             
-            <a href="#" onclick="abrirMateria('lit_inglesa'); return false;" class="subject-link">
+            <!-- LITERATURAS -->
+            <a href="#" onclick="abrirMateria('lit_inglesa'); return false;" class="subject-link btn-literaturas">
                 <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text"><span class="highlight">Literatura</span> inglesa.</span>
             </a>
-            <a href="#" onclick="abrirMateria('lit_alemana'); return false;" class="subject-link">
+            <a href="#" onclick="abrirMateria('lit_alemana'); return false;" class="subject-link btn-literaturas">
                 <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Literatura alemana y austriaca</span>
             </a>
-            <a href="#" onclick="abrirMateria('lit_holandesa'); return false;" class="subject-link">
+            <a href="#" onclick="abrirMateria('lit_holandesa'); return false;" class="subject-link btn-literaturas">
                 <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Literatura holandesa, noruega y danesa</span>
             </a>
-            <a href="#" onclick="abrirMateria('lit_francesa'); return false;" class="subject-link">
+            <a href="#" onclick="abrirMateria('lit_francesa'); return false;" class="subject-link btn-literaturas">
                 <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Literatura francesa</span>
             </a>
-            <a href="#" onclick="abrirMateria('lit_italiana'); return false;" class="subject-link">
+            <a href="#" onclick="abrirMateria('lit_italiana'); return false;" class="subject-link btn-literaturas">
                 <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Literatura italiana</span>
             </a>
-            <a href="#" onclick="abrirMateria('lit_rumana'); return false;" class="subject-link">
+            <a href="#" onclick="abrirMateria('lit_rumana'); return false;" class="subject-link btn-literaturas">
                 <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Literatura rumana</span>
             </a>
-            <a href="#" onclick="abrirMateria('lit_espanola'); return false;" class="subject-link">
-    <i class="fa-solid fa-feather fa-bounce" style="color: #8e44ad; font-size: 28px; --fa-animation-duration: 2s;"></i>
-    <span class="text">Literatura española</span>
-</a>
-            <a href="#" onclick="abrirMateria('lit_clasicas'); return false;" class="subject-link">
+            <a href="#" onclick="abrirMateria('lit_espanola'); return false;" class="subject-link btn-literaturas">
+                <i class="fa-solid fa-feather fa-bounce" style="color: #8e44ad; font-size: 28px; --fa-animation-duration: 2s;"></i>
+                <span class="text">Literatura española</span>
+            </a>
+            <a href="#" onclick="abrirMateria('lit_clasicas'); return false;" class="subject-link btn-literaturas">
                 <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Literaturas clásicas</span>
             </a>
-            <a href="#" onclick="abrirMateria('lit_polaca'); return false;" class="subject-link">
+            <a href="#" onclick="abrirMateria('lit_polaca'); return false;" class="subject-link btn-literaturas">
                 <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Literatura polaca, búlgara, checa, serbia</span>
             </a>
-            <a href="#" onclick="abrirMateria('lit_otras'); return false;" class="subject-link">
+            <a href="#" onclick="abrirMateria('lit_otras'); return false;" class="subject-link btn-literaturas">
                 <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Otras literaturas</span>
             </a>
