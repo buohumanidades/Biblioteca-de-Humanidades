@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Búsqueda por Materia | Biblioteca</title>
+    <!-- Enlace a FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Enlace a Google icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <style>
         /* Estilos generales optimizados para móviles */
         body { 
@@ -49,16 +53,11 @@
             text-align: center;
         }
         .number-eight {
-            font-size: 4em; 
+            font-size: 1.5em; 
             font-weight: 900;
             color: #060352; 
             line-height: 1;
-            text-shadow: 
-                1px 1px 0 #f7f7f7, 
-                2px 2px 0 #f7f7f7, 
-                3px 3px 0 #f7f7f7, 
-                4px 4px 6px rgba(0,0,0,0.4),
-                -1px -1px 2px rgba(255, 255, 255, 0.6);
+            
         }
         
         /* Montaje solapado: Foto + Círculo MATERIA */
@@ -163,11 +162,11 @@
 <body>
     <div class="container">
         <!-- Cabecera -->
-        <h1>Biblioteca de Humanidades</h1>
+        <h1><i class="fa-solid fa-school" style="color: #3498db; margin-right: 10px;"></i>Biblioteca de Humanidades</h1>
         
-        <div class="subtitle">
+        <div class="subtitle">	    
             <span class="subtitle-text">Lenguaje, Lingüística, Literatura.</span>
-            <span class="number-eight">8</span>
+            <span class="number-eight">(8)</span>
         </div>
 
         <!-- Sección solapada -->
@@ -181,90 +180,90 @@
         <!-- Lista de Materias que invocan la función JavaScript -->
         <div class="subject-list">
             <a href="#" onclick="abrirMateria('generalidades'); return false;" class="subject-link">
-                <span class="icon">🧠</span>
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book</span>
                 <span class="text">Generalidades sobre el lenguaje. Origen y evolución del lenguaje</span>
             </a>
             <a href="#" onclick="abrirMateria('linguistica'); return false;" class="subject-link">
-                <span class="icon">🗣️</span>
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">menu_book</span>
                 <span class="text">Lingüística y filología en general</span>
             </a>
             <a href="#" onclick="abrirMateria('lengua_inglesa'); return false;" class="subject-link">
-                <span class="icon">💬</span>
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
                 <span class="text"><span class="highlight">Lengua</span> Inglesa</span>
             </a>
             <a href="#" onclick="abrirMateria('lenguas_germanicas'); return false;" class="subject-link">
-                <span class="icon">💬</span>
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
                 <span class="text">Lenguas germánicas</span>
             </a>
             <a href="#" onclick="abrirMateria('lenguas_romances'); return false;" class="subject-link">
-                <span class="icon">💬</span>
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
                 <span class="text">Lenguas romances</span>
             </a>
             <a href="#" onclick="abrirMateria('lengua_italiana'); return false;" class="subject-link">
-                <span class="icon">💬</span>
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
                 <span class="text">Lengua italiana</span>
             </a>
             <a href="#" onclick="abrirMateria('lenguas_ibericas'); return false;" class="subject-link">
-                <span class="icon">💬</span>
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 32px;">auto_stories</span>
                 <span class="text">Lenguas ibéricas</span>
             </a>
             <a href="#" onclick="abrirMateria('lenguas_clasicas'); return false;" class="subject-link">
-                <span class="icon">💬</span>
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
                 <span class="text">Lenguas clásicas en general</span>
             </a>
             <a href="#" onclick="abrirMateria('lenguas_eslavas'); return false;" class="subject-link">
-                <span class="icon">💬</span>
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
                 <span class="text">Lenguas eslavas y bálticas</span>
             </a>
             <a href="#" onclick="abrirMateria('lenguas_orientales'); return false;" class="subject-link">
-                <span class="icon">💬</span>
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
                 <span class="text">Lenguas orientales, africanas y otras lenguas</span>
             </a>
             
             <a href="#" onclick="abrirMateria('lit_inglesa'); return false;" class="subject-link">
-                <span class="icon">📖</span>
+                <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text"><span class="highlight">Literatura</span> inglesa.</span>
             </a>
             <a href="#" onclick="abrirMateria('lit_alemana'); return false;" class="subject-link">
-                <span class="icon">📖</span>
+                <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Literatura alemana y austriaca</span>
             </a>
             <a href="#" onclick="abrirMateria('lit_holandesa'); return false;" class="subject-link">
-                <span class="icon">📖</span>
+                <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Literatura holandesa, noruega y danesa</span>
             </a>
             <a href="#" onclick="abrirMateria('lit_francesa'); return false;" class="subject-link">
-                <span class="icon">📖</span>
+                <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Literatura francesa</span>
             </a>
             <a href="#" onclick="abrirMateria('lit_italiana'); return false;" class="subject-link">
-                <span class="icon">📖</span>
+                <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Literatura italiana</span>
             </a>
             <a href="#" onclick="abrirMateria('lit_rumana'); return false;" class="subject-link">
-                <span class="icon">📖</span>
+                <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Literatura rumana</span>
             </a>
             <a href="#" onclick="abrirMateria('lit_espanola'); return false;" class="subject-link">
-                <span class="icon">📖</span>
-                <span class="text">Literatura española</span>
-            </a>
+    <i class="fa-solid fa-feather fa-bounce" style="color: #8e44ad; font-size: 28px; --fa-animation-duration: 2s;"></i>
+    <span class="text">Literatura española</span>
+</a>
             <a href="#" onclick="abrirMateria('lit_clasicas'); return false;" class="subject-link">
-                <span class="icon">📖</span>
+                <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Literaturas clásicas</span>
             </a>
             <a href="#" onclick="abrirMateria('lit_polaca'); return false;" class="subject-link">
-                <span class="icon">📖</span>
+                <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Literatura polaca, búlgara, checa, serbia</span>
             </a>
             <a href="#" onclick="abrirMateria('lit_otras'); return false;" class="subject-link">
-                <span class="icon">📖</span>
+                <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Otras literaturas</span>
             </a>
         </div>
 
         <!-- Botón para regresar al inicio -->
-        <a href="index.html" class="back-btn">⬅ Volver al inicio</a>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-circle-arrow-left fa-beat" style="margin-right: 8px;"></i> Volver al inicio</a>
     </div>
 
     <script>
