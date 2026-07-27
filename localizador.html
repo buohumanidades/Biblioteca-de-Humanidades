@@ -24,7 +24,6 @@
             max-width: 400px;
             width: 90%;
         }
-        /* Spinner animado */
         .spinner {
             border: 5px solid #ecf0f1;
             border-top: 5px solid #2980b9; 
@@ -49,9 +48,8 @@
             font-size: 0.95em;
             line-height: 1.4;
         }
-        /* Estilos para el botón de error */
         .btn-volver {
-            background-color: #e67e22; /* Tono naranja */
+            background-color: #e67e22; 
             color: white;
             border: none;
             padding: 10px 20px;
@@ -62,7 +60,7 @@
             transition: background-color 0.3s ease;
         }
         .btn-volver:hover {
-            background-color: #d35400; /* Naranja más oscuro al pasar el ratón */
+            background-color: #d35400;
         }
         .icono-error {
             font-size: 3em;
@@ -71,7 +69,6 @@
     </style>
 </head>
 <body>
-
     <div class="loader-container" id="contenedor-principal">
         <div class="spinner"></div>
         <h2>Buscando ubicación...</h2>
@@ -79,66 +76,72 @@
     </div>
 
     <script>
-        // 1. Capturamos la signatura enviada por la URL desde Signatura.html
         const params = new URLSearchParams(window.location.search);
         const sigBuscada = params.get('sig');
+        const sigOriginal = params.get('orig'); // Se captura la original
 
-        // 2. DICCIONARIO DE SIGNATURAS
         const baseDatos = {
-            "HG860/729.09": "Estanteria1_8.html",
-            "HG860/729": "Estanteria1_8.html",
-            "HG860/728": "Estanteria1_8.html",
-            "HG860/72.09": "Estanteria1_8.html",
-            "HG860/72": "Estanteria1_8.html",
-            "HG860/7.09": "Estanteria1_8.html",
-            "HG860/7/03": "Estanteria1_8.html",
-            "HG860/7": "Estanteria1_8.html",
-	        "HG860.09": "Estanteria2_8.html",
-	        "HG860-1.09": "Estanteria2_8.html",
-	        "HG860-2.09": "Estanteria2_8.html",
-	        "HG860-3.09": "Estanteria2_8.html",
-	        "HG860/03": "Estanteria2_8.html",
-			"HG860": "Estanteria3_4_5_8.html",
-			"HG850": "Estanteria5_8.html",
-			"HG850.09": "Estanteria5_8.html",
-			"HG850/03": "Estanteria5_8.html",
-			"HG859": "Estanteria5_8.html",
-			"HG849.9.09": "Estanteria6_8.html",
-			"HG849.9": "Estanteria6_8.html",
-			"HG849.0.09": "Estanteria6_8.html",
-			"HG849.0": "Estanteria6_8.html",
-			"HG840/8.09": "Estanteria6_8.html",
-			"HG840/8": "Estanteria6_8.html",
-			"HG840/71.09": "Estanteria6_8.html",
-			"HG840/71": "Estanteria6_8.html",
-			"HG840/6.09": "Estanteria6_8.html",
-			"HG840/6": "Estanteria6_8.html",
-			"HG840/494/03": "Estanteria6_8.html",
-			"HG840/494": "Estanteria6_8.html",
-			"HG840/493.09": "Estanteria6_8.html",
-			"HG840/493": "Estanteria6_8.html",
-			"HG840/493/03": "Estanteria6_8.html",
-			"HG840/03": "Estanteria6_8.html",
-			"HG840.09": "Estanteria6_7_8.html",			
-			"HG840": "Estanteria7_8_8.html",			
-			"HG84.09": "Estanteria8_8.html",
-			"HG839": "Estanteria8_8.html",
-			"HG830/03": "Estanteria8_8.html",
-			"HG830.09": "Estanteria8_8.html",
-			"HG830": "Estanteria8_8.html",
-			"HG820/8.09": "Estanteria8_8.html",
-			"HG820/8/03": "Estanteria8_8.html",
-			"HG820/8": "Estanteria8_8.html"
-            // Puedes ir añadiendo todas las que necesites aquí debajo...
+            "HG860/729.09": { html: "Estanteria1_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1" },
+            "HG860/729": { html: "Estanteria1_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1" },
+            "HG860/728": { html: "Estanteria1_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1" },
+            "HG860/72.09": { html: "Estanteria1_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1" },
+            "HG860/72": { html: "Estanteria1_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1" },
+            "HG860/7.09": { html: "Estanteria1_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1" },
+            "HG860/7/03": { html: "Estanteria1_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1" },
+            "HG860/7": { html: "Estanteria1_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1" },
+            "HG860.09": { html: "Estanteria2_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 2" },
+            "HG860-1.09": { html: "Estanteria2_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 2" },
+            "HG860-2.09": { html: "Estanteria2_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 2" },
+            "HG860-3.09": { html: "Estanteria2_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 2" },
+            "HG860/03": { html: "Estanteria2_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 2" },
+            "HG860": { html: "Estanteria3_4_5_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 3" },
+            "HG850": { html: "Estanteria5_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5" },
+            "HG850.09": { html: "Estanteria5_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5" },
+            "HG850/03": { html: "Estanteria5_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5" },
+            "HG859": { html: "Estanteria5_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5" },
+            "HG849.9.09": { html: "Estanteria6_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
+            "HG849.9": { html: "Estanteria6_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
+            "HG849.0.09": { html: "Estanteria6_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
+            "HG849.0": { html: "Estanteria6_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
+            "HG840/8.09": { html: "Estanteria6_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
+            "HG840/8": { html: "Estanteria6_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
+            "HG840/71.09": { html: "Estanteria6_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
+            "HG840/71": { html: "Estanteria6_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
+            "HG840/6.09": { html: "Estanteria6_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
+            "HG840/6": { html: "Estanteria6_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
+            "HG840/494/03": { html: "Estanteria6_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
+            "HG840/494": { html: "Estanteria6_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
+            "HG840/493.09": { html: "Estanteria6_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
+            "HG840/493": { html: "Estanteria6_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
+            "HG840/493/03": { html: "Estanteria6_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
+            "HG840/03": { html: "Estanteria6_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
+            "HG840/09": { html: "Estanteria7_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 7" },
+            "HG840": { html: "Estanteria8_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" },
+            "HG84.09": { html: "Estanteria8_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" },
+            "HG839": { html: "Estanteria8_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" },
+            "HG830/03": { html: "Estanteria8_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" },
+            "HG830.09": { html: "Estanteria8_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" },
+            "HG830": { html: "Estanteria8_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" },
+            "HG820/8.09": { html: "Estanteria8_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" },
+            "HG820/8/03": { html: "Estanteria8_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" },
+            "HG820/8": { html: "Estanteria8_8.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" }
         };
 
-        // 3. Lógica para comprobar si la signatura existe
         setTimeout(() => {
             if (sigBuscada && baseDatos[sigBuscada]) {
-                // ESTA ES LA LÍNEA CLAVE QUE ENVÍA LA SIGNATURA A LA ESTANTERÍA
-                window.location.href = baseDatos[sigBuscada] + "?sig=" + encodeURIComponent(sigBuscada);
+                const datos = baseDatos[sigBuscada];
+                
+                const paramsUrl = new URLSearchParams({
+                    sig: sigBuscada,
+                    orig: sigOriginal || sigBuscada, // Se traspasa la original
+                    planta: datos.planta,
+                    sala: datos.sala,
+                    ubicacion: datos.ubicacion,
+                    estanteria: datos.estanteria
+                });
+
+                window.location.href = datos.html + "?" + paramsUrl.toString();
             } else {
-                // Modificamos el DOM directamente en lugar de usar alert()
                 const contenedor = document.getElementById('contenedor-principal');
                 contenedor.innerHTML = `
                     <div class="icono-error">⚠️</div>
