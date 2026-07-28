@@ -290,6 +290,10 @@
                 <i class="fa-solid fa-feather fa-bounce" style="color: #8e44ad; font-size: 28px; --fa-animation-duration: 2s;"></i>
                 <span class="text">Literatura española</span>
             </a>
+	<a href="#" onclick="abrirMateria('lit_hispanoamericana'); return false;" class="subject-link btn-literaturas">
+                <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
+                <span class="text">Literatura hispanoamericana</span>
+            </a>
             <a href="#" onclick="abrirMateria('lit_clasicas'); return false;" class="subject-link btn-literaturas">
                 <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Literaturas clásicas</span>
@@ -311,26 +315,27 @@
     <script>
         // Diccionario con el nuevo parámetro "signatura" incluido
         const baseDatosMaterias = {
-            "generalidades": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1", signatura: "HG800*" },
-            "linguistica": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 2", signatura: "HG810*" },
-            "lengua_inglesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 3", signatura: "HG820*" },
-            "lenguas_germanicas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 4", signatura: "HG830" },
-            "lenguas_romances": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5", signatura: "HG840" },
-            "lengua_italiana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5", signatura: "HG850" },
-            "lenguas_ibericas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6", signatura: "HG860" },
-            "lenguas_clasicas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6", signatura: "HG870" },
-            "lenguas_eslavas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 7", signatura: "HG880" },
-            "lenguas_orientales": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 7", signatura: "HG890" },
-            "lit_inglesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8", signatura: "HG820.9" },
-            "lit_alemana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8", signatura: "HG830.9" },
-            "lit_holandesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8", signatura: "HG839.9" },
-            "lit_francesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8", signatura: "HG840.9" },
-            "lit_italiana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8", signatura: "HG850.9" },
-            "lit_rumana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 3", signatura: "HG859.9" },
+            "generalidades": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG800*" },
+            "linguistica": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG810*" },
+            "lengua_inglesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG802*" },
+            "lenguas_germanicas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG830" },
+            "lenguas_romances": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG840" },
+            "lengua_italiana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG850" },
+            "lenguas_ibericas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG860" },
+            "lenguas_clasicas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG870" },
+            "lenguas_eslavas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG880" },
+            "lenguas_orientales": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 21", signatura: "HG809*" },
+            "lit_inglesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 9 y 10", signatura: "HG820*" },
+            "lit_alemana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8", signatura: "HG830*" },
+            "lit_holandesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8", signatura: "HG839*" },
+            "lit_francesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 7 y 8", signatura: "HG840*" },
+            "lit_italiana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5", signatura: "HG850*" },
+            "lit_rumana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5", signatura: "HG859*" },
             "lit_espanola": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 3, 4 y 5", signatura: "HG860*" },
-            "lit_clasicas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8", signatura: "HG870.9" },
-            "lit_polaca": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8", signatura: "HG880.9" },
-            "lit_otras": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8", signatura: "HG890.9" }
+ 	    "lit_hispanoamericana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1 y 12", signatura: "Literatura hispanoamericana" },
+            "lit_clasicas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG870.9" },
+            "lit_polaca": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG880.9" },
+            "lit_otras": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG890.9" }
         };
 
         function abrirMateria(clave) {
