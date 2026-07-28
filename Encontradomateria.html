@@ -96,6 +96,19 @@
             margin-left: -10px; 
             box-shadow: 0 2px 4px rgba(41, 128, 185, 0.15);
             border: 1px solid #d6eaf8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .texto-materia {
+            font-weight: normal; 
+            font-size: 0.8em; 
+            color: #2c3e50; 
+            text-align: right; 
+            line-height: 1.1; 
+            max-width: 50%;
         }
         .icon {
             font-size: 1.1em;
@@ -141,6 +154,20 @@
             box-shadow: 0 2px 5px rgba(44, 62, 80, 0.3);
             background: #1a252f;
         }
+        
+        /* --- ESTILO MODIFICADO PARA DESTACAR EL TEXTO --- */
+        .info-text {
+            font-size: 0.9em;
+            color: #d35400; /* Color naranja destacado */
+            font-weight: 700; /* Negrita */
+            text-align: center;
+            margin-bottom: 12px;
+            line-height: 1.3;
+            background-color: #fdf2e9; /* Fondo suave a juego */
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #fadbd8;
+        }
     </style>
 </head>
 <body>
@@ -163,8 +190,17 @@
                 <span class="icon">➡️</span> <span id="txt-ubicacion">Estanterías de la derecha</span>
             </div>
             <div class="route-step final-step">
-                <span class="icon">📚</span> <span id="txt-estanteria">Estantería 3</span>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="icon">📚</span> <span id="txt-estanteria">Estantería 3</span>
+                </div>
+                <!-- Contenedor del texto de la materia -->
+                <span id="txt-materia" class="texto-materia"></span>
             </div>
+        </div>
+
+        <!-- Texto destacado debajo de la estantería y antes del iframe -->
+        <div class="info-text">
+            <i class="fa-solid fa-circle-info" style="margin-right: 5px;"></i> Para decirte donde se encuentra un libro es necesario conocer su signatura (puedes buscarla en el catálogo).
         </div>
 
         <!-- Iframe con los resultados del catálogo -->
@@ -172,7 +208,7 @@
             <iframe id="iframeCatalogo" title="Resultados en el catálogo de la biblioteca"></iframe>
         </div>
 
-        <!-- Botón modificado para regresar a la página anterior en el historial -->
+        <!-- Botón para regresar -->
         <a href="javascript:history.back()" class="btn-new-search">
             <span class="icon">🔄</span> Nueva búsqueda
         </a>
@@ -181,19 +217,21 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         
-        // Obtenemos las dos versiones de la signatura y los textos
-        const sigBuscada = params.get('sig'); // La recortada
-        const sigOriginal = params.get('orig') || sigBuscada; // La completa
+        // Obtenemos los parámetros de la URL
+        const sigBuscada = params.get('sig');
+        const sigOriginal = params.get('orig') || sigBuscada;
         const valPlanta = params.get('planta');
         const valSala = params.get('sala');
         const valUbicacion = params.get('ubicacion');
         const valEstanteria = params.get('estanteria');
+        const valMateria = params.get('materia');
 
         // Textos dinámicos
         if (valPlanta) document.getElementById('txt-planta').textContent = valPlanta;
         if (valSala) document.getElementById('txt-sala').textContent = valSala;
         if (valUbicacion) document.getElementById('txt-ubicacion').textContent = valUbicacion;
         if (valEstanteria) document.getElementById('txt-estanteria').textContent = valEstanteria;
+        if (valMateria) document.getElementById('txt-materia').textContent = valMateria; 
 
         // Mostrar la etiqueta de la signatura RECORTADA a la derecha
         if (sigBuscada) {

@@ -140,6 +140,27 @@
             border-left-color: #117a65;
         }
 
+/* 2a. Colores para literatura y lengua asturiana */
+        .btn-asturias {
+            background-color: #aed6f1;
+            border-left-color: #16a085;
+        }
+        .btn-asturias:hover, .btn-linguistica:active {
+            background-color: #d6eaf8;
+            border-left-color: #117a65;
+        }
+
+/* 2b. Colores para diccionarios */
+        .btn-diccionarios {
+            background-color: #f5deb3;
+            border-left-color: #16a085;
+        }
+        .btn-diccionarios:hover, .btn-linguistica:active {
+            background-color: #e5c494;
+            border-left-color: #117a65;
+        }
+
+
         /* 3. Colores para Lenguas */
         .btn-lenguas {
             background-color: #ebf5fb;
@@ -218,7 +239,7 @@
             <!-- GENERALIDADES -->
             <a href="#" onclick="abrirMateria('generalidades'); return false;" class="subject-link btn-generalidades">
                 <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book</span>
-                <span class="text">Generalidades sobre el lenguaje. Origen y evolución del lenguaje</span>
+                <span class="text">Conocimientos de las lenguas. Dialectos, regionalismos y jergas</span>
             </a>
 
             <!-- LINGÜÍSTICA -->
@@ -226,6 +247,17 @@
                 <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">menu_book</span>
                 <span class="text">Lingüística y filología en general</span>
             </a>
+
+	 <!-- LITERATURA Y LENGUA ASTURIANA / DICCIONARIOS -->
+            <a href="#" onclick="abrirMateria('asturias'); return false;" class="subject-link btn-asturias">
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 32px;">book_3</span>
+                <span class="text">Literatura y lengua <span class="highlight">ASTURIANA</span></span>
+            </a>
+	    <a href="#" onclick="abrirMateria('diccionarios'); return false;" class="subject-link btn-diccionarios">
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 32px;">library_books</span>
+                <span class="highlight">DICCIONARIOS</span>
+            </a>
+
 
             <!-- LENGUAS -->
             <a href="#" onclick="abrirMateria('lengua_inglesa'); return false;" class="subject-link btn-lenguas">
@@ -246,7 +278,7 @@
             </a>
             <a href="#" onclick="abrirMateria('lenguas_ibericas'); return false;" class="subject-link btn-lenguas">
                 <span class="material-symbols-outlined" style="color: #2980b9; font-size: 32px;">auto_stories</span>
-                <span class="text">Lenguas ibéricas</span>
+                <span class="text">Lengua española y porturguesa</span>
             </a>
             <a href="#" onclick="abrirMateria('lenguas_clasicas'); return false;" class="subject-link btn-lenguas">
                 <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
@@ -262,9 +294,13 @@
             </a>
             
             <!-- LITERATURAS -->
+	    <a href="#" onclick="abrirMateria('lit_general'); return false;" class="subject-link btn-literaturas">
+                <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
+                <span class="text"><span class="highlight">Literatura</span> en general.</span>
+            </a>
             <a href="#" onclick="abrirMateria('lit_inglesa'); return false;" class="subject-link btn-literaturas">
                 <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
-                <span class="text"><span class="highlight">Literatura</span> inglesa.</span>
+                <span class="text">Literatura inglesa.</span>
             </a>
             <a href="#" onclick="abrirMateria('lit_alemana'); return false;" class="subject-link btn-literaturas">
                 <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
@@ -290,9 +326,13 @@
                 <i class="fa-solid fa-feather fa-bounce" style="color: #8e44ad; font-size: 28px; --fa-animation-duration: 2s;"></i>
                 <span class="text">Literatura española</span>
             </a>
-	<a href="#" onclick="abrirMateria('lit_hispanoamericana'); return false;" class="subject-link btn-literaturas">
+	    <a href="#" onclick="abrirMateria('lit_hispanoamericana'); return false;" class="subject-link btn-literaturas">
                 <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
                 <span class="text">Literatura hispanoamericana</span>
+            </a>
+            <a href="#" onclick="abrirMateria('lit_portuguesa'); return false;" class="subject-link btn-literaturas">
+                <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
+                <span class="text">Literatura portuguesa, brasileña y gallega</span>
             </a>
             <a href="#" onclick="abrirMateria('lit_clasicas'); return false;" class="subject-link btn-literaturas">
                 <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
@@ -313,29 +353,33 @@
     </div>
 
     <script>
-        // Diccionario con el nuevo parámetro "signatura" incluido
+        // Diccionario con los parámetros, signatura y el texto exacto de la materia
         const baseDatosMaterias = {
-            "generalidades": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG800*" },
-            "linguistica": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG810*" },
-            "lengua_inglesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG802*" },
-            "lenguas_germanicas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG830" },
-            "lenguas_romances": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG840" },
-            "lengua_italiana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG850" },
-            "lenguas_ibericas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG860" },
-            "lenguas_clasicas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG870" },
-            "lenguas_eslavas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG880" },
-            "lenguas_orientales": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estantería de la izquierda (al fondo)", estanteria: "Estantería 21", signatura: "HG809*" },
-            "lit_inglesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 9 y 10", signatura: "HG820*" },
-            "lit_alemana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8", signatura: "HG830*" },
-            "lit_holandesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8", signatura: "HG839*" },
-            "lit_francesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 7 y 8", signatura: "HG840*" },
-            "lit_italiana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5", signatura: "HG850*" },
-            "lit_rumana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5", signatura: "HG859*" },
-            "lit_espanola": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 3, 4 y 5", signatura: "HG860*" },
- 	    "lit_hispanoamericana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estantería de la derecha y centro", estanteria: "Estantería 1 y 12", signatura: "Literatura hispanoamericana" },
-            "lit_clasicas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG870.9" },
-            "lit_polaca": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG880.9" },
-            "lit_otras": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG890.9" }
+            "generalidades": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 16", signatura: "HG800.7* o HG800.8*", texto_materia: "Conocimientos de las lenguas" },
+            "linguistica": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 16 y 17", signatura: "HG801*", texto_materia: "Lingüística y filología en general" },
+	        "asturias": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías del centro", estanteria: "Estantería 14", signatura: "HG806AST*", texto_materia: "Literatura y lengua asturiana" },
+	        "diccionarios": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías del centro", estanteria: "Estantería 15", signatura: "HG8*/03", texto_materia: "Diccionarios" },
+            "lengua_inglesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 17", signatura: "HG802.0*", texto_materia: "Lengua inglesa" },
+            "lenguas_germanicas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 17", signatura: "HG803*", texto_materia: "Lenguas germánicas" },
+            "lenguas_romances": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 18", signatura: "HG804*", texto_materia: "Lenguas romances" },
+            "lengua_italiana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 19", signatura: "HG805.0*", texto_materia: "Lengua italiana" },
+            "lenguas_ibericas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 19 y 20", signatura: "HG860.*", texto_materia: "Lengua española y portuguesa" },
+            "lenguas_clasicas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20", signatura: "HG807*", texto_materia: "Lenguas clásicas en general" },
+            "lenguas_eslavas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20", signatura: "HG808*", texto_materia: "Lenguas eslavas y bálticas" },
+            "lenguas_orientales": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 21", signatura: "HG809*", texto_materia: "Lenguas orientales y africanas" },
+	        "lit_general": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estantería de la derecha e izquierda del fondo", estanteria: "Estantería 11 y 21", signatura: "hg82.* o hg82/*", texto_materia: "Literatura en general" },
+            "lit_inglesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 9, 10 y 11", signatura: "HG820*", texto_materia: "Literatura inglesa" },
+            "lit_alemana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8", signatura: "HG830*", texto_materia: "Literatura alemana y austriaca" },
+            "lit_holandesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8", signatura: "HG839*", texto_materia: "Literatura holandesa, noruega y danesa" },
+            "lit_francesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6, 7 y 8", signatura: "HG840* o HG849.0*", texto_materia: "Literatura francesa" },
+            "lit_italiana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5", signatura: "HG850*", texto_materia: "Literatura italiana" },
+            "lit_rumana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5", signatura: "HG859*", texto_materia: "Literatura rumana" },
+            "lit_espanola": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 2, 3, 4 y 5", signatura: "HG860/* o HG860.* o HG860-*", texto_materia: "Literatura española" },
+ 	        "lit_hispanoamericana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1 y 12", signatura: "HG860/7* o HG860/8*", texto_materia: "Literatura hispanoamericana" },
+            "lit_portuguesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías del centro", estanteria: "Estantería 12", signatura: "HG869.*", texto_materia: "Literatura portuguesa, brasileña y gallega" },
+            "lit_clasicas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías del centro", estanteria: "Estantería 13", signatura: "HG87*", texto_materia: "Literaturas clásicas" },
+            "lit_polaca": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías del centro", estanteria: "Estantería 13", signatura: "HG88*", texto_materia: "Literatura polaca, búlgara, checa, serbia" },
+            "lit_otras": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías del centro", estanteria: "Estantería 13", signatura: "HG89*", texto_materia: "Otras literaturas" }
         };
 
         function abrirMateria(clave) {
@@ -346,7 +390,8 @@
                     sala: datos.sala,
                     ubicacion: datos.ubicacion,
                     estanteria: datos.estanteria,
-                    orig: datos.signatura // Esto pasa la signatura para la búsqueda del iframe
+                    orig: datos.signatura, 
+                    materia: datos.texto_materia // <- Añadido para pasar la materia al HTML
                 });
                 window.location.href = datos.html + "?" + paramsUrl.toString();
             }
