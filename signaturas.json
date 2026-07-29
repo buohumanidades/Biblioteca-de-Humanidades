@@ -354,7 +354,7 @@
         "planta": "PLANTA 2",
         "sala": "Sala de la derecha",
         "ubicacion": "Estanterías de la izquierda",
-        "estanteria": "19 y 20"
+        "estanteria": "Estantería 19 y 20"
     },
     "HG806.05/03": {
         "html": "Encontrado.html",
@@ -704,7 +704,7 @@
         "planta": "PLANTA 2",
         "sala": "Sala de la derecha",
         "ubicacion": "Estanterías del fondo",
-        "estanteria": "11 (dcha) y 21 (izda)"
+        "estanteria": "Estantería 11 (dcha) y 21 (izda)"
     },
     "HG82.09": {
         "html": "Encontrado.html",
@@ -725,7 +725,7 @@
         "planta": "PLANTA 2",
         "sala": "Sala de la derecha",
         "ubicacion": "Estanterías de la derecha",
-        "estanteria": "9 y 10"
+        "estanteria": "Estantería 9 y 10"
     },
     "HG820.09": {
         "html": "Encontrado.html",
@@ -851,14 +851,14 @@
         "planta": "PLANTA 2",
         "sala": "Sala de la derecha",
         "ubicacion": "Estanterías de la derecha",
-        "estanteria": "7 y 8"
+        "estanteria": "Estantería 7 y 8"
     },
     "HG840.09": {
         "html": "Encontrado.html",
         "planta": "PLANTA 2",
         "sala": "Sala de la derecha",
         "ubicacion": "Estanterías de la derecha",
-        "estanteria": "6 y 7"
+        "estanteria": "Estantería 6 y 7"
     },
     "HG840/03": {
         "html": "Encontrado.html",
@@ -1005,7 +1005,7 @@
         "planta": "PLANTA 2",
         "sala": "Sala de la derecha",
         "ubicacion": "Estanterías de la derecha",
-        "estanteria": "2, 3 , 4 y 5"
+        "estanteria": "Estantería 2, 3 , 4 y 5"
     },
     "HG860.05": {
         "html": "Encontrado.html",
