@@ -1447,5 +1447,12 @@
         "sala": "Sala de la derecha",
         "ubicacion": "Estanterías del centro",
         "estanteria": "Estantería 13"
+    },
+    "HG88/03=60": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la derecha",
+        "ubicacion": "Estanterías del centro",
+        "estanteria": "Estantería 13"
     }
 }
