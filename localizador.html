@@ -77,8 +77,13 @@
 
     <script>
         const params = new URLSearchParams(window.location.search);
-        const sigBuscada = params.get('sig');
+        let sigBuscada = params.get('sig');
         const sigOriginal = params.get('orig'); // Se captura la original
+
+        // Normalización preventiva si la URL llega con texto intermedio antes de números con '='
+        if (sigBuscada) {
+            sigBuscada = sigBuscada.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+(?=\d+=)/gi, "/");
+        }
 
         // Hacemos una petición para leer el archivo externo signaturas.json
         fetch('signaturas.json')
@@ -113,7 +118,6 @@
                 mostrarError(sigBuscada, "Error al cargar el archivo signaturas.json.");
             });
 
-        // Función extraída para mantener el código más limpio
         function mostrarError(sig, mensajeExtra = "") {
             const contenedor = document.getElementById('contenedor-principal');
             contenedor.innerHTML = `

@@ -206,15 +206,20 @@
                 return;
             }
 
-            let fichero;
-            if (/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/.test(signatura)) {
-                fichero = signatura.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/, "/");
+            let fichero = signatura;
+
+            // 1. Quitar texto entre '/' y números seguidos de '=' (ej: HG820/Marl03=60 -> HG820/03=60, HG820/Mars03=60/4 -> HG820/03=60/4)
+            fichero = fichero.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+(?=\d+=)/gi, "/");
+
+            // 2. Limpieza de texto de autor al final de la signatura
+            if (/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/.test(fichero)) {
+                fichero = fichero.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/, "");
             } else {
-                fichero = signatura.replace(/\s+[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/, "");
+                fichero = fichero.replace(/\s+[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/, "");
             }
             fichero = fichero.replace(/\/$/, "");
 
-            // Se envía la versión recortada (sig) y la completa (orig)
+            // Se envía la versión limpia (sig) y la completa (orig)
             window.location.href = "localizador.html?sig=" + encodeURIComponent(fichero) + "&orig=" + encodeURIComponent(signatura);
         }
         
