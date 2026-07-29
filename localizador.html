@@ -80,86 +80,51 @@
         const sigBuscada = params.get('sig');
         const sigOriginal = params.get('orig'); // Se captura la original
 
-        const baseDatos = {
-            "HG860/729.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1" },
-            "HG860/729": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1" },
-            "HG860/728": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1" },
-            "HG860/72.09": { html: "Encontrado", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1" },
-            "HG860/72": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1" },
-            "HG860/7.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1" },
-            "HG860/7/03": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1" },
-            "HG860/7": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1" },
-            "HG860.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 2" },
-            "HG860-1.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 2" },
-            "HG860-2.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 2" },
-            "HG860-3.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 2" },
-            "HG860/03": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 2" },
-            "HG860": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estanterías 3, 4 y 5" },
-            "HG850": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5" },
-            "HG850.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5" },
-            "HG850/03": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5" },
-            "HG859": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5" },
-            "HG849.9.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
-            "HG849.9": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
-            "HG849.0.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
-            "HG849.0": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
-            "HG840/8.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
-            "HG840/8": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
-            "HG840/71.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
-            "HG840/71": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
-            "HG840/6.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
-            "HG840/6": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
-            "HG840/494/03": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
-            "HG840/494": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
-            "HG840/493.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
-            "HG840/493": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
-            "HG840/493/03": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
-            "HG840/03": { html: "Encontrado", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6" },
-            "HG840/09": { html: "Encontrado", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 7" },
-            "HG840": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" },
-            "HG84.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" },
-            "HG839": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" },
-            "HG830/03": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" },
-            "HG830.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" },
-            "HG830": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" },
-            "HG820/8.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" },
-            "HG820/8/03": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" },
-            "HG820/8": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8" },
-"HG820/73.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 9" },
-"HG820/73": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 9" },
-"HG820/71.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 9" },
-"HG820/71": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 9" },
-"HG820/6": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 9" },
-"HG820/03": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 9" },
-"HG820.09": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 9" },
-"HG820": { html: "Encontrado.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 9 Y 10" }
-        };
+        // Hacemos una petición para leer el archivo externo signaturas.json
+        fetch('signaturas.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("No se pudo cargar el archivo de datos");
+                }
+                return response.json(); // Convertimos la respuesta a un objeto Javascript
+            })
+            .then(baseDatos => {
+                setTimeout(() => {
+                    if (sigBuscada && baseDatos[sigBuscada]) {
+                        const datos = baseDatos[sigBuscada];
+                        
+                        const paramsUrl = new URLSearchParams({
+                            sig: sigBuscada,
+                            orig: sigOriginal || sigBuscada, // Se traspasa la original
+                            planta: datos.planta,
+                            sala: datos.sala,
+                            ubicacion: datos.ubicacion,
+                            estanteria: datos.estanteria
+                        });
 
-        setTimeout(() => {
-            if (sigBuscada && baseDatos[sigBuscada]) {
-                const datos = baseDatos[sigBuscada];
-                
-                const paramsUrl = new URLSearchParams({
-                    sig: sigBuscada,
-                    orig: sigOriginal || sigBuscada, // Se traspasa la original
-                    planta: datos.planta,
-                    sala: datos.sala,
-                    ubicacion: datos.ubicacion,
-                    estanteria: datos.estanteria
-                });
+                        window.location.href = datos.html + "?" + paramsUrl.toString();
+                    } else {
+                        mostrarError(sigBuscada);
+                    }
+                }, 600);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                mostrarError(sigBuscada, "Error al cargar el archivo signaturas.json.");
+            });
 
-                window.location.href = datos.html + "?" + paramsUrl.toString();
-            } else {
-                const contenedor = document.getElementById('contenedor-principal');
-                contenedor.innerHTML = `
-                    <div class="icono-error">⚠️</div>
-                    <h2>Signatura no encontrada</h2>
-                    <p>La signatura no existe o es incorrecta. Puedes realizar la comprobación en el catálogo.</p>
-                    <p><strong>Signatura buscada:</strong> ${sigBuscada || "Ninguna"}</p>
-                    <button class="btn-volver" onclick="window.history.back()">Volver al buscador</button>
-                `;
-            }
-        }, 600);
+        // Función extraída para mantener el código más limpio
+        function mostrarError(sig, mensajeExtra = "") {
+            const contenedor = document.getElementById('contenedor-principal');
+            contenedor.innerHTML = `
+                <div class="icono-error">⚠️</div>
+                <h2>Signatura no encontrada</h2>
+                <p>La signatura no existe o es incorrecta. Puedes realizar la comprobación en el catálogo.</p>
+                <p><strong>Signatura buscada:</strong> ${sig || "Ninguna"}</p>
+                ${mensajeExtra ? `<p style="color:red; font-size: 0.8em;">${mensajeExtra}</p>` : ""}
+                <button class="btn-volver" onclick="window.history.back()">Volver al buscador</button>
+            `;
+        }
     </script>
 </body>
 </html>
