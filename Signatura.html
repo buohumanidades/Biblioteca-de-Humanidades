@@ -208,6 +208,9 @@
 
             let fichero = signatura;
 
+            // NUEVO PASO: Quitar "/AST" si se encuentra al final de la signatura
+            fichero = fichero.replace(/\/AST$/i, "");
+
             // 1. Quitar texto entre '/' y números seguidos de '=' (ej: HG820/Marl03=60 -> HG820/03=60, HG820/Mars03=60/4 -> HG820/03=60/4)
             fichero = fichero.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+(?=\d+=)/gi, "/");
 
