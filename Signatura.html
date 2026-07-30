@@ -214,7 +214,7 @@
             // 2. Quitar texto entre '/' y números seguidos de '=' (ej: HG860.6/ANT03=60 -> HG860.6/03=60)
             fichero = fichero.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+(?=\d+=)/gi, "/");
 
-            // 3. Limpieza de texto de autor al final de la signatura
+            // 3. Limpieza de texto de autor al final de la signatura (Ej: HG860/DEN -> HG860, HG820.5/PEPE -> HG820.5)
             if (/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/.test(fichero)) {
                 fichero = fichero.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/, "");
             } else {
