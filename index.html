@@ -136,27 +136,45 @@
             border-radius: 2px;
         }
 
-        /* Botón de Signatura */
+        /* Botón de Signatura Destacado */
         .signature-btn {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 20px;
-            background: #ffffff;
+            padding: 20px 24px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
             border: 2px solid #8e44ad; 
-            border-radius: 12px;
+            border-radius: 14px;
             text-decoration: none;
-            color: #8e44ad;
-            font-weight: bold;
-            font-size: 1.1em;
-            transition: all 0.2s ease;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 1.2em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(142, 68, 173, 0.4);
+            animation: pulse-glow 2s infinite;
         }
 
         .signature-btn:hover {
-            background: #8e44ad;
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(142, 68, 173, 0.2);
+            background: #ffffff;
+            color: #8e44ad;
+            transform: scale(1.02) translateY(-2px);
+            box-shadow: 0 8px 25px rgba(142, 68, 173, 0.3);
+            animation: none;
+        }
+
+        /* Keyframes para el efecto de resplandor expansivo */
+        @keyframes pulse-glow {
+            0% {
+                box-shadow: 0 0 0 0 rgba(142, 68, 173, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(142, 68, 173, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(142, 68, 173, 0);
+            }
         }
 
         /* Servicios Adicionales */
