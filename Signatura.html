@@ -206,6 +206,13 @@
                 return;
             }
 
+            // --- NUEVA COMPROBACIÓN AÑADIDA ---
+            if (!signatura.startsWith("HG")) {
+                alert("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " esta correcta, te ayudaremos a buscarlo. Pregunta en el mostrador al personal de biblioteca.");
+                return; // Mantiene al usuario en signatura.html
+            }
+            // ----------------------------------
+
             let fichero = signatura;
 
             // 1. Quitar "/AST" si se encuentra al final de la signatura ANTES de los demás procesos
