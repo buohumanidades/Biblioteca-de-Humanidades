@@ -75,7 +75,7 @@
 
         /* Estilos del recuadro (Fieldset) y texto incrustado (Legend) */
         .subjects-fieldset {
-            border: 2px solid #dce6f1; /* Color del borde del recuadro */
+            border: 2px solid #dce6f1;
             border-radius: 14px;
             padding: 15px 15px 20px 15px;
             margin: 0 0 25px 0;
@@ -90,7 +90,7 @@
             margin-left: 5px;
         }
 
-        /* Contenedor de las 3 nuevas materias dentro del recuadro */
+        /* Contenedor de las materias dentro del recuadro */
         .subjects-container {
             display: flex;
             flex-direction: column;
@@ -120,6 +120,7 @@
         /* Colores individuales para cada botón de materia */
         .btn-lang { background: linear-gradient(135deg, #3498db, #2980b9); } 
         .btn-geo { background: linear-gradient(135deg, #e67e22, #d35400); }  
+        .btn-art { background: linear-gradient(135deg, #e74c3c, #c0392b); } /* Rojo para Arte */
         .btn-soc { background: linear-gradient(135deg, #2ecc71, #27ae60); }  
 
         .btn-content {
@@ -164,17 +165,10 @@
             animation: none;
         }
 
-        /* Keyframes para el efecto de resplandor expansivo */
         @keyframes pulse-glow {
-            0% {
-                box-shadow: 0 0 0 0 rgba(142, 68, 173, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 15px rgba(142, 68, 173, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(142, 68, 173, 0);
-            }
+            0% { box-shadow: 0 0 0 0 rgba(142, 68, 173, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(142, 68, 173, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(142, 68, 173, 0); }
         }
 
         /* Servicios Adicionales */
@@ -222,7 +216,7 @@
         <fieldset class="subjects-fieldset">
             <legend class="subjects-legend">Por materia</legend>
             
-            <!-- Botones de navegación divididos en 3 materias principales -->
+            <!-- Botones de navegación divididos en 4 materias -->
             <div class="subjects-container">
                 <a href="8.html" class="subject-btn btn-lang">
                     <div class="btn-content">
@@ -236,6 +230,15 @@
                     <div class="btn-content">
                         <span class="btn-icon">🌍</span>
                         <span>Geografía, Arte e Historia</span>
+                    </div>
+                    <span>➔</span>
+                </a>
+
+                <!-- Nuevo botón de Arte -->
+                <a href="arte.html" class="subject-btn btn-art">
+                    <div class="btn-content">
+                        <span class="btn-icon">🎨</span>
+                        <span>Arte</span>
                     </div>
                     <span>➔</span>
                 </a>
