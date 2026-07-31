@@ -164,6 +164,47 @@
         .back-btn:active, .back-btn:hover {
             background: #d5dbdb;
         }
+
+        /* --- ESTILOS DEL MODAL PERSONALIZADO --- */
+        .modal-overlay {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 80%;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            color: #2c3e50;
+        }
+        .modal-content p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            white-space: pre-wrap; /* Permite que funcionen los saltos de línea \n */
+        }
+        .modal-btn {
+            background: #2980b9;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.05em;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .modal-btn:hover {
+            background: #1a5276;
+        }
+        /* -------------------------------------- */
     </style>
 </head>
 <body>
@@ -196,22 +237,41 @@
         <a href="index.html" class="back-btn">⬅ Volver al inicio</a>
     </div>
 
+    <!-- --- ESTRUCTURA DEL MODAL PERSONALIZADO --- -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-content">
+            <p id="modalMessage"></p>
+            <button onclick="cerrarModal()" class="modal-btn">Aceptar</button>
+        </div>
+    </div>
+    <!-- ----------------------------------------- -->
+
     <script>
+        // --- FUNCIONES DEL MODAL ---
+        function mostrarModal(mensaje) {
+            document.getElementById("modalMessage").innerText = mensaje;
+            document.getElementById("customModal").style.display = "flex";
+        }
+
+        function cerrarModal() {
+            document.getElementById("customModal").style.display = "none";
+        }
+        // ---------------------------
+
         function localizarLibro(event) {
             event.preventDefault();
             let signatura = document.getElementById("campoSignatura").value.trim();
 
             if (signatura === "" || signatura === "HG") {
-                alert("Por favor, escribe una signatura válida.");
+                mostrarModal("Por favor, escribe una signatura válida.");
                 return;
             }
 
-            // --- NUEVA COMPROBACIÓN AÑADIDA ---
+            // Comprobación de inicio por HG utilizando el Modal personalizado
             if (!signatura.startsWith("HG")) {
-                alert("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " esta correcta, te ayudaremos a buscarlo. Pregunta en el mostrador al personal de biblioteca.");
-                return; // Mantiene al usuario en signatura.html
+                mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " esta correcta, te ayudaremos a buscarlo. Pregunta en el mostrador al personal de biblioteca.");
+                return; 
             }
-            // ----------------------------------
 
             let fichero = signatura;
 
