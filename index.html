@@ -94,7 +94,7 @@
         .subjects-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
         /* Estilo base para los botones de materias */
@@ -102,26 +102,22 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 20px;
-            border-radius: 12px;
+            padding: 12px 18px; 
+            border-radius: 10px;
             text-decoration: none;
             color: #ffffff;
+            background: linear-gradient(135deg, #4b6584, #34495e); 
             font-weight: 600;
-            font-size: 1.1em;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-size: 1.05em;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
         }
 
         .subject-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.15);
         }
-
-        /* Colores individuales para cada botón de materia */
-        .btn-lang { background: linear-gradient(135deg, #3498db, #2980b9); } 
-        .btn-geo { background: linear-gradient(135deg, #e67e22, #d35400); }  
-        .btn-art { background: linear-gradient(135deg, #e74c3c, #c0392b); } /* Rojo para Arte */
-        .btn-soc { background: linear-gradient(135deg, #2ecc71, #27ae60); }  
 
         .btn-content {
             display: flex;
@@ -142,33 +138,34 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 20px 24px;
-            background: linear-gradient(135deg, #9b59b6, #8e44ad);
-            border: 2px solid #8e44ad; 
-            border-radius: 14px;
+            padding: 18px 22px; 
+            background: linear-gradient(135deg, #b3e5fc, #81d4fa); 
+            border: 2px solid #4fc3f7; 
+            border-radius: 12px;
             text-decoration: none;
-            color: #ffffff;
+            color: #507192; /* Texto en gris oscuro */
             font-weight: 800;
-            font-size: 1.2em;
+            font-size: 1.15em;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(142, 68, 173, 0.4);
-            animation: pulse-glow 2s infinite;
+            box-shadow: 0 4px 15px rgba(129, 212, 250, 0.4);
+            animation: pulse-glow 1.5s infinite; /* Animación más rápida para llamar más la atención */
         }
 
         .signature-btn:hover {
             background: #ffffff;
-            color: #8e44ad;
+            color: #2c3e50; 
             transform: scale(1.02) translateY(-2px);
-            box-shadow: 0 8px 25px rgba(142, 68, 173, 0.3);
+            box-shadow: 0 8px 25px rgba(129, 212, 250, 0.3);
             animation: none;
         }
 
+        /* Animación de pulso ampliada y más visible */
         @keyframes pulse-glow {
-            0% { box-shadow: 0 0 0 0 rgba(142, 68, 173, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(142, 68, 173, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(142, 68, 173, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(79, 195, 247, 0.8); }
+            70% { box-shadow: 0 0 0 20px rgba(79, 195, 247, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(79, 195, 247, 0); }
         }
 
         /* Servicios Adicionales */
@@ -218,7 +215,7 @@
             
             <!-- Botones de navegación divididos en 4 materias -->
             <div class="subjects-container">
-                <a href="8.html" class="subject-btn btn-lang">
+                <a href="8.html" class="subject-btn">
                     <div class="btn-content">
                         <span class="btn-icon">📖</span>
                         <span>Lenguaje, Lingüística, Literatura</span>
@@ -226,7 +223,7 @@
                     <span>➔</span>
                 </a>
 
-                <a href="9.html" class="subject-btn btn-geo">
+                <a href="9.html" class="subject-btn">
                     <div class="btn-content">
                         <span class="btn-icon">🌍</span>
                         <span>Geografía e Historia</span>
@@ -234,8 +231,8 @@
                     <span>➔</span>
                 </a>
 
-                <!-- Nuevo botón de Arte -->
-                <a href="arte.html" class="subject-btn btn-art">
+                <!-- Botón de Arte -->
+                <a href="arte.html" class="subject-btn">
                     <div class="btn-content">
                         <span class="btn-icon">🎨</span>
                         <span>Arte</span>
@@ -243,7 +240,7 @@
                     <span>➔</span>
                 </a>
 
-                <a href="1.html" class="subject-btn btn-soc">
+                <a href="1.html" class="subject-btn">
                     <div class="btn-content">
                         <span class="btn-icon">🧠</span>
                         <span>Filosofía y Ciencias Sociales</span>
