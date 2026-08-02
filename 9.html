@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Búsqueda por Materia | Biblioteca</title>
+    <!-- Enlace a FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Enlace a Google icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <style>
         /* Estilos generales optimizados para móviles */
         body { 
@@ -34,7 +38,7 @@
             margin-top: 0;
         }
         
-        /* Nuevo estilo para el subtítulo y el número */
+        /* Estilo para el subtítulo y el número */
         .subtitle { 
             display: flex;
             align-items: center;
@@ -44,22 +48,16 @@
         }
         .subtitle-text {
             font-weight: bold; 
-            color: #0798a3; 
-            font-size: 1.4em; /* Tamaño aumentado */
+            color: #0033aa; 
+            font-size: 1.4em; 
             text-align: center;
         }
         .number-eight {
-            font-size: 4em; /* Número en grande */
+            font-size: 1.em; 
             font-weight: 900;
-            color: #060352; /* Color */
+            color: #b0b8c4; 
             line-height: 1;
-            /* Efecto de relieve y 3D */
-            text-shadow: 
-                1px 1px 0 #f7f7f7, 
-                2px 2px 0 #f7f7f7, 
-                3px 3px 0 #f7f7f7, 
-                4px 4px 6px rgba(0,0,0,0.4),
-                -1px -1px 2px rgba(255, 255, 255, 0.6);
+            
         }
         
         /* Montaje solapado: Foto + Círculo MATERIA */
@@ -97,32 +95,61 @@
             font-size: 1.1em;
         }
 
-        /* Lista de Materias (Ajuste más compacto) */
+        /* Lista de Materias */
         .subject-list {
             display: flex;
             flex-direction: column;
-            gap: 6px; /* Reducido drásticamente para agrupar más los elementos */
+            gap: 6px; 
             margin-bottom: 20px;
         }
 
+        /* Estilo base de los botones */
         .subject-link {
             display: flex;
             align-items: center;
-            gap: 12px; /* Menos espacio entre icono y texto */
-            padding: 10px 12px; /* Reducción de la altura del botón */
-            background-color: #fdfdfd;
+            gap: 12px; 
+            padding: 10px 12px; 
             border: 1px solid #e0e6ed;
-            border-left: 4px solid #3498db;
+            border-left-width: 4px;
+            border-left-style: solid;
             border-radius: 6px; 
             text-decoration: none;
             color: #2c3e50;
-            font-size: 0.95em; /* Texto ligeramente más contenido */
+            font-size: 0.95em; 
             transition: all 0.2s ease;
+            cursor: pointer;
         }
 
-        .subject-link:hover, .subject-link:active {
-            background-color: #ebf5fb;
-            border-left-color: #2980b9;
+        
+        /* 1. Colores primeras opciones*/
+        .btn-primeros {
+            background-color: #e8f6f3;
+            border-left-color: #16a085;
+        }
+        .btn-primeros:hover, .btn-primeros:active {
+            background-color: #d1f2eb;
+            border-left-color: #117a65;
+        }
+
+	/* 2. Colores para Historia*/
+        .btn-historia {
+            background-color: #aed6f1;
+            border-left-color: #16a085;
+        }
+        .btn-historia:hover, .btn-historia:active {
+            background-color: #d6eaf8;
+            border-left-color: #117a65;
+        }
+
+
+        /* 3. Colores para ASTURIAS y ESPAÑA */
+        .btn-destacados {
+            background-color: #f5eef8;
+            border-left-color: #9b59b6;
+        }
+        .btn-destacados:hover, .btn-destacados:active {
+            background-color: #ebdef0;
+            border-left-color: #8e44ad;
         }
 
         /* Iconos de la lista */
@@ -163,12 +190,11 @@
 <body>
     <div class="container">
         <!-- Cabecera -->
-        <h1>Biblioteca de Humanidades</h1>
+        <h1><i class="fa-solid fa-school" style="color: #3498db; margin-right: 10px;"></i>Biblioteca de Humanidades</h1>
         
-        <!-- Nuevo contenedor para el texto y el número -->
-        <div class="subtitle">
-            <span class="subtitle-text">Geografía, Arte, Historia</span>
-            <span class="number-eight">9</span>
+        <div class="subtitle">	    
+            <span class="subtitle-text">Geografía e Historia</span>
+            <span class="number-eight">(9)</span>
         </div>
 
         <!-- Sección solapada -->
@@ -179,93 +205,186 @@
             </div>
         </div>
 
-        <!-- Lista de Materias enlazables más compacta -->
+        <!-- Lista de Materias -->
         <div class="subject-list">
-            <a href="mat_generalidades.html" class="subject-link">
-                <span class="icon">🧠</span>
-                <span class="text">Generalidades sobre el lenguaje. Origen y evolución del lenguaje</span>
+            <!-- PREHISTORIA Y ARQUEOLOGÍA -->
+            <a href="#" onclick="abrirMateria('prehistoria'); return false;" class="subject-link btn-primeros">
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_2</span>
+                <span class="text">Prehistoria y arqueología</span>
             </a>
-            <a href="mat_linguistica.html" class="subject-link">
-                <span class="icon">🗣️</span>
-                <span class="text">Lingüística y filología en general</span>
+
+            <!-- GEOGRAFIA Y CARTOGRAFIA -->
+            <a href="#" onclick="abrirMateria('geografia'); return false;" class="subject-link btn-primeros">
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_2</span>
+                <span class="text">Geografía, Viajes, Exploración y Cartografía</span>
             </a>
-            <a href="mat_lengua_inglesa.html" class="subject-link">
-                <span class="icon">💬</span>
-                <span class="text"><span class="highlight">Lengua</span> Inglesa</span>
+
+	 <!-- BIOGRAFIAS, HERÁLDICA , GENEAOLOGÍA -->
+            <a href="#" onclick="abrirMateria('biografias'); return false;" class="subject-link btn-primeros">
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
+                <span class="text">Biografías, Heráldica, Genealogía</span>
             </a>
-            <a href="mat_lenguas_germanicas.html" class="subject-link">
-                <span class="icon">💬</span>
-                <span class="text">Lenguas germánicas</span>
+
+	<!-- FILOSOFIA DE LA HISTORIA-->
+	    <a href="#" onclick="abrirMateria('filosofia'); return false;" class="subject-link btn-primeros">
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">library_books</span>
+                <span class="text">Filosofía de la historia, Diplomática, Cronología, Archivística, Paleografía</span>
             </a>
-            <a href="mat_lenguas_romances.html" class="subject-link">
-                <span class="icon">💬</span>
-                <span class="text">Lenguas romances</span>
+
+            <!-- HISTORIA ANTIGUA -->
+            <a href="#" onclick="abrirMateria('h_antigua'); return false;" class="subject-link btn-historia">
+                <i class="fa-solid fa-book" style="color: #2980b9; font-size: 24px;"></i>
+                <span class="text">Historia antigua</span>
             </a>
-            <a href="mat_lengua_italiana.html" class="subject-link">
-                <span class="icon">💬</span>
-                <span class="text">Lengua italiana</span>
+
+	    <!-- HISTORIA DE EGIPTO -->
+            <a href="#" onclick="abrirMateria('egipto'); return false;" class="subject-link btn-historia">
+                <i class="fa-solid fa-book" style="color: #2980b9; font-size: 24px;"></i>
+                <span class="text">Historia de Egipto</span>
             </a>
-            <a href="mat_lenguas_ibericas.html" class="subject-link">
-                <span class="icon">💬</span>
-                <span class="text">Lenguas ibéricas</span>
+
+	    <!-- HISTORIA DEL PUEBLO JUDIO -->
+            <a href="#" onclick="abrirMateria('judio'); return false;" class="subject-link btn-historia">
+                <i class="fa-solid fa-book" style="color: #2980b9; font-size: 24px;"></i>
+                <span class="text">Historia del Pueblo Judío</span>
             </a>
-            <a href="mat_lenguas_clasicas.html" class="subject-link">
-                <span class="icon">💬</span>
-                <span class="text">Lenguas clásicas en general</span>
+
+	    <!-- HISTORIA DE ROMA ANTIGUA -->
+            <a href="#" onclick="abrirMateria('roma'); return false;" class="subject-link btn-historia">
+                <i class="fa-solid fa-book" style="color: #2980b9; font-size: 24px;"></i>
+                <span class="text">Historia de Roma antigua</span>
             </a>
-            <a href="mat_lenguas_eslavas.html" class="subject-link">
-                <span class="icon">💬</span>
-                <span class="text">Lenguas eslavas y bálticas</span>
+
+	    <!-- HISTORIA DE GRECIA ANTIGUA -->
+            <a href="#" onclick="abrirMateria('grecia'); return false;" class="subject-link btn-historia">
+                <i class="fa-solid fa-book" style="color: #2980b9; font-size: 24px;"></i>
+                <span class="text">Historia de Grecia antigua</span>
             </a>
-            <a href="mat_lenguas_orientales.html" class="subject-link">
-                <span class="icon">💬</span>
-                <span class="text">Lenguas orientales, africanas y otras lenguas</span>
+
+	    <!-- HISTORIA DE EUROPA -->
+            <a href="#" onclick="abrirMateria('europa'); return false;" class="subject-link btn-historia">
+                <i class="fa-solid fa-book" style="color: #2980b9; font-size: 24px;"></i>
+                <span class="text">Historia de Europa</span>
+            </a>
+
+	    <!-- HISTORIA DE INGLATERRA Y GRAN BRETAÑA -->
+            <a href="#" onclick="abrirMateria('inglaterra'); return false;" class="subject-link btn-historia">
+                <i class="fa-solid fa-book" style="color: #2980b9; font-size: 24px;"></i>
+                <span class="text">Historia de Inglaterra y Gran Bretaña</span>
+            </a>
+
+	    <!-- HISTORIA DE ALEMANIA Y AUSTRIA -->
+            <a href="#" onclick="abrirMateria('alemania'); return false;" class="subject-link btn-historia">
+                <i class="fa-solid fa-book" style="color: #2980b9; font-size: 24px;"></i>
+                <span class="text">Historia de Alemania y Austria</span>
             </a>
             
-            <a href="mat_lit_inglesa.html" class="subject-link">
-                <span class="icon">📖</span>
-                <span class="text"><span class="highlight">Literatura</span> inglesa.</span>
+            <!-- HISTORIA DE FRANCIA -->
+	    <a href="#" onclick="abrirMateria('Francia'); return false;" class="subject-link btn-historia">
+                <i class="fa-solid fa-book" style="color: #2980b9; font-size: 24px;"></i>
+                <span class="text"><span class="text">Historia de Francia</span>
             </a>
-            <a href="mat_lit_alemana.html" class="subject-link">
-                <span class="icon">📖</span>
-                <span class="text">Literatura alemana y austriaca</span>
+
+            <!-- HISTORIA DE ITALIA -->
+            <a href="#" onclick="abrirMateria('italia'); return false;" class="subject-link btn-historia">
+                <i class="fa-solid fa-book" style="color: #2980b9; font-size: 24px;"></i>
+                <span class="text">Historia de Italia</span>
             </a>
-            <a href="mat_lit_holandesa.html" class="subject-link">
-                <span class="icon">📖</span>
-                <span class="text">Literatura holandesa, noruega y danesa</span>
+
+            <!-- HISTORIA DE ESPAÑA -->
+            <a href="#" onclick="abrirMateria('espana'); return false;" class="subject-link btn-destacados">
+                 <i class="fa-solid fa-book fa-beat-fade" style="color: #8e44ad; font-size: 26px; --fa-animation-duration: 2s;"></i>
+                <span class="text">HISTORIA DE <span class="highlight">ESPAÑA</span></span>
             </a>
-            <a href="mat_lit_francesa.html" class="subject-link">
-                <span class="icon">📖</span>
-                <span class="text">Literatura francesa</span>
+
+            <!-- HISTORIA DE ASTURIAS -->
+            <a href="#" onclick="abrirMateria('asturias'); return false;" class="subject-link btn-destacados">
+                <i class="fa-solid fa-book fa-beat-fade" style="color: #8e44ad; font-size: 26px; --fa-animation-duration: 2s;"></i>
+                <span class="text">HISTORIA DE <span class="highlight">ASTURIAS</span></span>
             </a>
-            <a href="mat_lit_italiana.html" class="subject-link">
-                <span class="icon">📖</span>
-                <span class="text">Literatura italiana</span>
+
+            <!-- HISTORIA DE RUSIA Y LA UNION SOVIETICA -->
+            <a href="#" onclick="abrirMateria('rusia'); return false;" class="subject-link btn-historia">
+                <i class="fa-solid fa-book" style="color: #2980b9; font-size: 24px;"></i>
+                <span class="text">Historia de Rusia y de la Unión Soviética</span>
             </a>
-            <a href="mat_lit_rumana.html" class="subject-link">
-                <span class="icon">📖</span>
-                <span class="text">Literatura rumana</span>
+
+            <!-- HISTORIA DE BIZANCIO -->
+            <a href="#" onclick="abrirMateria('bizancio'); return false;" class="subject-link btn-historia">
+                <i class="fa-solid fa-book" style="color: #2980b9; font-size: 24px;"></i>
+                <span class="text">Historia de Bizancio</span>
             </a>
-            <a href="mat_lit_espanola.html" class="subject-link">
-                <span class="icon">📖</span>
-                <span class="text">Literatura española</span>
+
+            <!-- HISTORIA DE ASIA -->
+            <a href="#" onclick="abrirMateria('asia'); return false;" class="subject-link btn-historia">
+                <i class="fa-solid fa-book" style="color: #2980b9; font-size: 24px;"></i>
+                <span class="text">Historia de Asia</span>
             </a>
-            <a href="mat_lit_clasicas.html" class="subject-link">
-                <span class="icon">📖</span>
-                <span class="text">Literaturas clásicas</span>
+
+            <!-- HISTORIA DE AFRICA -->
+            <a href="#" onclick="abrirMateria('africa'); return false;" class="subject-link btn-historia">
+                <i class="fa-solid fa-book" style="color: #2980b9; font-size: 24px;"></i>
+                <span class="text">Historia de África</span>
             </a>
-            <a href="mat_lit_polaca.html" class="subject-link">
-                <span class="icon">📖</span>
-                <span class="text">Literatura polaca, búlgara, checa, serbia</span>
+
+            <!-- HISTORIA DE AMERICA -->
+	    <a href="#" onclick="abrirMateria('america'); return false;" class="subject-link btn-historia">
+                <i class="fa-solid fa-book" style="color: #2980b9; font-size: 24px;"></i>
+                <span class="text">Historia de Ámerica</span>
             </a>
-            <a href="mat_lit_otras.html" class="subject-link">
-                <span class="icon">📖</span>
-                <span class="text">Otras literaturas</span>
-            </a>
+
+            <!-- HISTORIA DE LATINOAMERICA -->
+            <a href="#" onclick="abrirMateria('latinoamerica'); return false;" class="subject-link btn-historia">
+                <i class="fa-solid fa-book" style="color: #2980b9; font-size: 24px;"></i>
+                <span class="text">Historia de Latinoamérica</span>
+            </a>            
         </div>
 
         <!-- Botón para regresar al inicio -->
-        <a href="index.html" class="back-btn">⬅ Volver al inicio</a>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-circle-arrow-left fa-beat" style="margin-right: 8px;"></i> Volver al inicio</a>
     </div>
+
+    <script>
+        // Diccionario con los parámetros, signatura y el texto exacto de la materia
+        const baseDatosMaterias = {
+            "prehistoria": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 11", signatura: "HG90*", texto_materia: "Prehistoria y arqueología" },
+            "geografia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG91*", texto_materia: "Geografía y cartografía" },
+	        "biografias": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG929*", texto_materia: "Biografías, heráldica, Genealogía" },
+	"filosofia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG930*", texto_materia: "Filosófia de la historia, Diplomática, Cronología, Archivística,  Paleografía" },
+	"h_antigua": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG931*", texto_materia: "Historia antigua" },	
+	     "egipto": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG932*", texto_materia: "Historia de Egipto" },
+	"judio": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG933*", texto_materia: "Historia del Pueblo Judío" },
+	"roma": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG937*", texto_materia: "Historia de Roma antigua" },
+	"grecia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG938*", texto_materia: "Historia de Grecia antigua" },
+	"europa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG940*", texto_materia: "Historia de Europa" },
+	"inglaterra": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG942*", texto_materia: "Historia de Inglaterra y Gran Bretaña" },
+	"alemania": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG943*", texto_materia: "Historia de Alemania y Austria" },
+	"francia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG944*", texto_materia: "Historia de Francia" },
+	"italia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG945*", texto_materia: "Historia de Italia" },
+	"espana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG946*", texto_materia: "Historia de ESPAÑA" },
+	"asturias": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG946.12*", texto_materia: "Historia de ASTURIAS" },
+	"rusia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG947*", texto_materia: "Historia de Rusia y de la Unión Soviética" },
+	"bizancio": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG949.5*", texto_materia: "Historia de Bizancio" },
+	"asia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG95*", texto_materia: "Historia de Asia" },
+	"africa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG96*", texto_materia: "Historia de África" },
+	"america": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG97*", texto_materia: "Historia de América" },
+	"latinoamerica": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG98*", texto_materia: "Historia de Latinoamérica" } 
+        };
+
+        function abrirMateria(clave) {
+            const datos = baseDatosMaterias[clave];
+            if (datos) {
+                const paramsUrl = new URLSearchParams({
+                    planta: datos.planta,
+                    sala: datos.sala,
+                    ubicacion: datos.ubicacion,
+                    estanteria: datos.estanteria,
+                    orig: datos.signatura, 
+                    materia: datos.texto_materia // <- Añadido para pasar la materia al HTML
+                });
+                window.location.href = datos.html + "?" + paramsUrl.toString();
+            }
+        }
+    </script>
 </body>
 </html>
