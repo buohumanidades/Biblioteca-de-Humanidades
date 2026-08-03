@@ -181,6 +181,16 @@
             background-color: #F1A983;
             border-left-color: #117a65;
         }
+	/* 6. Colores para diccionarios */
+        .btn-diccionarios {
+            background-color: #f5deb3;
+            border-left-color: #16a085;
+        }
+        .btn-diccionarios:hover, .btn-diccionarios:active {
+            background-color: #e5c494;
+            border-left-color: #117a65;
+        }
+
 
 
         /* Iconos de la lista */
@@ -321,6 +331,17 @@
                 <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
                 <span class="text">Coleccionismo. Marchantes. Galerías. Ventas. Mecenazgo. Patrimonio</span>
             </a>
+	<!-- DICCIONARIOS-->
+	    <a href="#" onclick="abrirMateria('diccionarios'); return false;" class="subject-link btn-diccionarios">
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_2</span>
+                <span class="text">DICCIONARIOS</span>
+            </a>
+
+	    <!-- ORDENACION -->
+            <a href="#" onclick="abrirMateria('ordenacion'); return false;" class="subject-link btn-estilo">
+                <i class="fa-solid fa-city" style="color: #2980b9; font-size: 24px;"></i>
+                <span class="text">Ordenación del territorio, Urbanismo</span>
+            </a>
 
 	    <!-- ARQUITECTURA -->
             <a href="#" onclick="abrirMateria('arquitectura'); return false;" class="subject-link btn-estilo">
@@ -390,30 +411,32 @@
     <script>
         // Diccionario con los parámetros, signatura y el texto exacto de la materia
         const baseDatosMaterias = {
-            "arte": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG7/*", texto_materia: "Arte en general" },
-"prehistoria": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG7.031*", texto_materia: "Arte prehistórico y primitivo" },
-"antiguo": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG7.032*", texto_materia: "Arte Antiguo" },
-"medieval": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG7.033*", texto_materia: "Arte Medieval" },
-"renacimiento": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG7.034*", texto_materia: "Arte del Renacimiento" },
-"xix": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG7.035*", texto_materia: "Arte del siglo XIX" },
-"xx": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG7.036*", texto_materia: "Arte del siglo XX" },
-"contemporaneo": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG7.038*", texto_materia: "Arte Contemporáneo" },
-"espana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG7/46/*", texto_materia: "Arte de ESPAÑA" },
-"asturias": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG7/461.2*", texto_materia: "Arte de ASTURIAS" },
-"iconografia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG7.04*", texto_materia: "Iconografía, Iconología" },
-"industrial": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG7.05*", texto_materia: "Diseño industrial y comercial" },
-"exposiciones": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG7/06/*", texto_materia: "Exposiciones de arte" },
-"coleccionismo": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG7.07*", texto_materia: "Coleccionismo, Galerías" },
-"arquitectura": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG72*", texto_materia: "Arquitectura" },
-"escultura": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG73*", texto_materia: "Escultura" },
-"dibujo": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG74*", texto_materia: "Dibujo, Artes industriales, Decoración" },
-"pintores": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG75*", texto_materia: "Pintores" },
-"grabados": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG76*", texto_materia: "Grabados, Carteles" },
-"fotografia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG77*", texto_materia: "Fotografía" },
-"musica": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG78*", texto_materia: "Música" },
-"cine": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG791*", texto_materia: "Cine" },
-"teatro": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG792*", texto_materia: "Teatro" },
-"baile": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería ", signatura: "HG793*", texto_materia: "Baile, Arte del movimiento" } 
+            "arte": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 16", signatura: "HG7/*", texto_materia: "Arte en general" },
+"prehistoria": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 18", signatura: "HG7.031*", texto_materia: "Arte prehistórico y primitivo" },
+"antiguo": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 18", signatura: "HG7.032*", texto_materia: "Arte Antiguo" },
+"medieval": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 19", signatura: "HG7.033*", texto_materia: "Arte Medieval" },
+"renacimiento": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 19", signatura: "HG7.034*", texto_materia: "Arte del Renacimiento" },
+"xix": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 19", signatura: "HG7.035*", texto_materia: "Arte del siglo XIX" },
+"xx": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 19 y 20", signatura: "HG7.036*", texto_materia: "Arte del siglo XX" },
+"contemporaneo": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20", signatura: "HG7.038*", texto_materia: "Arte Contemporáneo" },
+"espana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 17", signatura: "HG7/46/*", texto_materia: "Arte de ESPAÑA" },
+"asturias": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 18", signatura: "HG7/461.2*", texto_materia: "Arte de ASTURIAS" },
+"iconografia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20", signatura: "HG7.04*", texto_materia: "Iconografía, Iconología" },
+"industrial": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20", signatura: "HG7.05*", texto_materia: "Diseño industrial y comercial" },
+"exposiciones": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 16 y 17", signatura: "HG7/06/*", texto_materia: "Exposiciones de arte" },
+"coleccionismo": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20", signatura: "HG7.07*", texto_materia: "Coleccionismo, Galerías" },
+"diccionarios": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías del centro", estanteria: "Estantería 13", signatura: "HG7*/46/*", texto_materia: "DICCIONARIOS" },
+"ordenacion": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 21", signatura: "HG711*", texto_materia: "Ordenación del territorio, Urbanismo" },
+"arquitectura": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 21", signatura: "HG72*", texto_materia: "Arquitectura" },
+"escultura": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 21", signatura: "HG73*", texto_materia: "Escultura" },
+"dibujo": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 21", signatura: "HG74*", texto_materia: "Dibujo, Artes industriales, Decoración" },
+"pintores": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 15", signatura: "HG75*", texto_materia: "Pintores" },
+"grabados": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 15", signatura: "HG76*", texto_materia: "Grabados, Carteles" },
+"fotografia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 15", signatura: "HG77*", texto_materia: "Fotografía" },
+"musica": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 14", signatura: "HG78*", texto_materia: "Música" },
+"cine": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 12", signatura: "HG791*", texto_materia: "Cine" },
+"teatro": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 12", signatura: "HG792*", texto_materia: "Teatro" },
+"baile": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 12", signatura: "HG793*", texto_materia: "Baile, Arte del movimiento" } 
         };
 
         function abrirMateria(clave) {

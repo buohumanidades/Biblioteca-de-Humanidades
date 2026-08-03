@@ -162,6 +162,16 @@
             border-left-color: #8e44ad;
         }
 
+	/* 4. Colores para diccionarios */
+        .btn-diccionarios {
+            background-color: #f5deb3;
+            border-left-color: #16a085;
+        }
+        .btn-diccionarios:hover, .btn-diccionarios:active {
+            background-color: #e5c494;
+            border-left-color: #117a65;
+        }
+
         /* Iconos de la lista */
         .icon {
             font-size: 1.2em;
@@ -239,6 +249,11 @@
 	    <a href="#" onclick="abrirMateria('filosofia'); return false;" class="subject-link btn-primeros">
                 <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">library_books</span>
                 <span class="text">Filosofía de la historia, Diplomática, Cronología, Archivística, Paleografía</span>
+            </a>
+	<!-- DICCIONARIOS-->
+	    <a href="#" onclick="abrirMateria('diccionarios'); return false;" class="subject-link btn-diccionarios">
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_2</span>
+                <span class="text">DICCIONARIOS</span>
             </a>
 
             <!-- HISTORIA ANTIGUA -->
@@ -361,6 +376,7 @@
             "geografia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG91*", texto_materia: "Geografía y cartografía" },
 	        "biografias": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG929*", texto_materia: "Biografías, heráldica, Genealogía" },
 	"filosofia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG930*", texto_materia: "Filosófia de la historia, Diplomática, Cronología, Archivística,  Paleografía" },
+	"diccionarios": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías del centro", estanteria: "Estantería 13", signatura: "HG9*/46/*", texto_materia: "DICCIONARIOS" },
 	"h_antigua": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG931*", texto_materia: "Historia antigua" },	
 	     "egipto": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG932*", texto_materia: "Historia de Egipto" },
 	"judio": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "HG933*", texto_materia: "Historia del Pueblo Judío" },
