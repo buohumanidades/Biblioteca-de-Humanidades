@@ -1573,5 +1573,1517 @@
         "sala": "Sala de la derecha",
         "ubicacion": "Estanterías del centro",
         "estanteria": "Estantería 14"
+    },
+    "HG7": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 16"
+    },
+    "HG7/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 16"
+    },
+    "HG7/06": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 16"
+    },
+    "HG7/069": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 16"
+    },
+    "HG7/069.01": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 16"
+    },
+    "HG7/09": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 16 y 17"
+    },
+    "HG7/093": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 17"
+    },
+    "HG7/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 17"
+    },
+    "HG7/461.2": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 18"
+    },
+    "HG7.01": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 18"
+    },
+    "HG7.02": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 18"
+    },
+    "HG7.031": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 18"
+    },
+    "HG7.031.1": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 18"
+    },
+    "HG7.031.1/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 18"
+    },
+    "HG7.032": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 18"
+    },
+    "HG7.032.2": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 18"
+    },
+    "HG7.032.6": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 18"
+    },
+    "HG7.032.7": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 18"
+    },
+    "HG7.033": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19"
+    },
+    "HG7.033/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19"
+    },
+    "HG7.033/461.2": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19"
+    },
+    "HG7.033.1": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19"
+    },
+    "HG7.033.2": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19"
+    },
+    "HG7.033.3": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19"
+    },
+    "HG7.033.4": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19"
+    },
+    "HG7.033.4/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19"
+    },
+    "HG7.033.5": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19"
+    },
+    "HG7.033.5/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19"
+    },
+    "HG7.034": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19"
+    },
+    "HG7.034/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19"
+    },
+    "HG7.034.7": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19"
+    },
+    "HG7.034.7/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19"
+    },
+    "HG7.034.9": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19"
+    },
+    "HG7.035": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19"
+    },
+    "HG7.035/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19"
+    },
+    "HG7.036": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 19 y 20"
+    },
+    "HG7.036/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 20"
+    },
+    "HG7.036.2": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 20"
+    },
+    "HG7.038": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 20"
+    },
+    "HG7.04": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 20"
+    },
+    "HG7.046": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 20"
+    },
+    "HG7.05": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 20"
+    },
+    "HG7.07": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 20"
+    },
+    "HG711": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG711/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG72": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG72/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG725": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG726": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG726/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG728": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG728/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG728/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG73": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG73/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG736": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG736/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG737": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG737/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 13"
+    },
+    "HG737/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG738": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG738/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG738/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG739": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG74": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG74/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG74/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG745": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG749": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la izquierda",
+        "estanteria": "Estantería 21"
+    },
+    "HG75": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 15"
+    },
+    "HG76": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 15"
+    },
+    "HG77": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 15"
+    },
+    "HG77/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG78": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 14"
+    },
+    "HG78/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG78/09": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 14"
+    },
+    "HG78/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 14"
+    },
+    "HG78/461.1": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 14"
+    },
+    "HG78/461.2": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 14"
+    },
+    "HG78.032": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 14"
+    },
+    "HG78.034": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 14"
+    },
+    "HG78.034/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 14"
+    },
+    "HG78.035": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 14"
+    },
+    "HG78.035/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 14"
+    },
+    "HG78.036": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 14"
+    },
+    "HG78.036/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 14"
+    },
+    "HG781": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 14"
+    },
+    "HG781.7": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 12"
+    },
+    "HG782": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 12"
+    },
+    "HG784": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 12"
+    },
+    "HG785": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 12"
+    },
+    "HG79": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 12"
+    },
+    "HG791": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 12"
+    },
+    "HG791/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG791/09": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 12"
+    },
+    "HG791.4": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 12"
+    },
+    "HG792": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 12"
+    },
+    "HG792/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG793": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 12"
+    },
+    "HG793/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG902": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG902/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG902/06": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG902/063": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG902/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG902.01": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/4": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/4/632": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/4/634": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/4/636": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/4/637": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/4/638": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/46/632": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/46/634": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/46/636": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/46/637": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/46/638": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/5": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/6": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/632": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/634": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/636": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/637": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/638": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG903/8": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG904": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG908": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG908/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG908/461.2": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG910": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG910/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG910.1": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG910.2": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG910.2/7": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG911": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 11"
+    },
+    "HG911.2": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG911.2/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG911.3": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG911.3/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG911.32": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG911.33": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG911.33/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG911.34": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG911.34/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG911.36": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG911.36/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG911.37": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG911.37/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG911.38": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG911.38/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG914": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG914.6": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG914.612": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG917": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG918": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 10"
+    },
+    "HG929": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 9"
+    },
+    "HG929/1": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 8"
+    },
+    "HG929.5": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 8"
+    },
+    "HG929.6": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 8"
+    },
+    "HG929.7": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 8"
+    },
+    "HG930.1": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 8"
+    },
+    "HG930.2": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 8"
+    },
+    "HG930.22": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 8"
+    },
+    "HG930.25": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 8"
+    },
+    "HG930.27": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 8"
+    },
+    "HG930.8": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 6"
+    },
+    "HG930.8/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG930.9": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 6"
+    },
+    "HG930.9/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG930.9/08": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 6"
+    },
+    "HG931": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 6"
+    },
+    "HG931/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG932": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 5"
+    },
+    "HG933": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 5"
+    },
+    "HG933/46": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 5"
+    },
+    "HG937": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 5"
+    },
+    "HG937/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG938": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 5"
+    },
+    "HG94": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 5"
+    },
+    "HG94.1": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 5"
+    },
+    "HG940": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 5"
+    },
+    "HG940.1": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 4"
+    },
+    "HG940.2": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 4"
+    },
+    "HG940.27": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 4"
+    },
+    "HG940.5": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 4"
+    },
+    "HG940.53": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 4"
+    },
+    "HG940.55": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 4"
+    },
+    "HG942": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 4"
+    },
+    "HG943": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 4"
+    },
+    "HG944": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 4"
+    },
+    "HG945": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 4"
+    },
+    "HG946": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 3"
+    },
+    "HG946/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG946/09": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 3"
+    },
+    "HG946.12": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 1"
+    },
+    "HG946.9": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 1"
+    },
+    "HG946B": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 2 y 3"
+    },
+    "HG946C": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 2"
+    },
+    "HG946D": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 2"
+    },
+    "HG946E": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 2"
+    },
+    "HG946E/09": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 2"
+    },
+    "HG946F": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 2"
+    },
+    "HG946G": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 2"
+    },
+    "HG947": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 1"
+    },
+    "HG949.5": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 1"
+    },
+    "HG949.5/03": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías del centro",
+        "estanteria": "Estantería 13"
+    },
+    "HG95": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 1"
+    },
+    "HG96": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 1"
+    },
+    "HG97": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 1"
+    },
+    "HG971": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 1"
+    },
+    "HG972": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 1"
+    },
+    "HG973": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 1"
+    },
+    "HG98": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 1"
+    },
+    "HG98A": {
+        "html": "Encontrado.html",
+        "planta": "PLANTA 2",
+        "sala": "Sala de la izquierda",
+        "ubicacion": "Esntanterías de la derecha",
+        "estanteria": "Estantería 1"
     }
 }
