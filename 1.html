@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda por Materia | Biblioteca</title>
+    <!-- Enlace a FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Enlace a Google icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <style>
+        /* Estilos generales optimizados para móviles */
+        body { 
+            font-family: Arial, sans-serif; 
+            line-height: 1.4; 
+            margin: 0; 
+            padding: 15px; 
+            background-color: #f4f6f7; 
+            color: #2c3e50; 
+        }
+        .container { 
+            max-width: 500px; 
+            margin: auto; 
+            background: #fff; 
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06); 
+        }
+        
+        /* Cabecera */
+        h1 { 
+            font-family: 'Romana Moderna', Georgia, serif; 
+            color: #1a252f; 
+            text-align: center; 
+            border-bottom: 2px solid #ecf0f1; 
+            padding-bottom: 12px; 
+            font-size: 1.6em; 
+            margin-top: 0;
+        }
+        
+        /* Estilo para el subtítulo y el número */
+        .subtitle { 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px; 
+        }
+        .subtitle-text {
+            font-weight: bold; 
+            color: #0033aa; 
+            font-size: 1.4em; 
+            text-align: center;
+        }
+        .number-eight {
+            font-size: 1.em; 
+            font-weight: 900;
+            color: #b0b8c4; 
+            line-height: 1;
+            
+        }
+        
+        /* Montaje solapado: Foto + Círculo MATERIA */
+        .hero-overlap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0 25px 0;
+        }
+
+        .shelf-photo {
+            width: 200px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 4px;
+            z-index: 1;
+        }
+
+        .circle-badge {
+            width: 135px;
+            height: 135px;
+            background-color: #dce6f1; 
+            border: 12px solid #5b9bd5; 
+            border-radius: 50%;
+            margin-left: -35px; 
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-sizing: border-box;
+            padding: 10px;
+            font-weight: 800;
+            color: #000;
+            font-size: 1.1em;
+        }
+
+        /* Lista de Materias */
+        .subject-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px; 
+            margin-bottom: 20px;
+        }
+
+        /* Estilo base de los botones */
+        .subject-link {
+            display: flex;
+            align-items: center;
+            gap: 12px; 
+            padding: 10px 12px; 
+            border: 1px solid #e0e6ed;
+            border-left-width: 4px;
+            border-left-style: solid;
+            border-radius: 6px; 
+            text-decoration: none;
+            color: #2c3e50;
+            font-size: 0.95em; 
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        /* 1. Colores para Generalidades */
+        .btn-generalidades {
+            background-color: #f4f6f7;
+            border-left-color: #34495e;
+        }
+        .btn-generalidades:hover, .btn-generalidades:active {
+            background-color: #e5e8e8;
+            border-left-color: #2c3e50;
+        }
+     
+        /* 2. Colores para FILOSOFIA */
+        .btn-destacados {
+            background-color: #E49EDD;
+            border-left-color: #9b59b6;
+        }
+        .btn-destacados:hover, .btn-destacados:active {
+            background-color: #ebdef0;
+            border-left-color: #8e44ad;
+        }	
+
+	/* 3. Colores para COLECCIONES*/
+        .btn-colecciones {
+            background-color: #FBE2D5;
+            border-left-color: #16a085;
+        }
+        .btn-colecciones:hover, .btn-colecciones:active {
+            background-color: #F1A983;
+            border-left-color: #117a65;
+        }
+	
+	/* 4. Colores verdes */
+        .btn-verdes {
+            background-color: #e8f6f3;
+            border-left-color: #16a085;
+        }
+        .btn-verdes:hover, .btn-verdes:active {
+            background-color: #d1f2eb;
+            border-left-color: #117a65;
+        }
+
+       /* 5. Colores para FILOSOFIA */
+        .btn-filosofia {
+            background-color: #f5eef8;
+            border-left-color: #9b59b6;
+        }
+        .btn-filosofia:hover, .btn-filosofia:active {
+            background-color: #ebdef0;
+            border-left-color: #8e44ad;
+        }
+
+
+
+        /* Iconos de la lista */
+        .icon {
+            font-size: 1.2em;
+            flex-shrink: 0; 
+        }
+        
+        .text {
+            line-height: 1.2; 
+        }
+
+        /* Destacar palabras clave */
+        .highlight {
+            font-weight: bold;
+            color: #1b4f72;
+        }
+
+        /* Botón de volver */
+        .back-btn {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            background: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1em;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        .back-btn:active, .back-btn:hover {
+            background: #d5dbdb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Cabecera -->
+        <h1><i class="fa-solid fa-school" style="color: #3498db; margin-right: 10px;"></i>Biblioteca de Humanidades</h1>
+        
+        <div class="subtitle">	    
+            <span class="subtitle-text">Filosofía y Ciencias Sociales</span>
+            <span class="number-eight">(1 a 6)</span>
+        </div>
+
+        <!-- Sección solapada -->
+        <div class="hero-overlap">
+            <img src="estantes.jpg" alt="Estantería" class="shelf-photo" onerror="this.src='https://via.placeholder.com/200x130?text=Estantes'">
+            <div class="circle-badge">
+                MATERIA
+            </div>
+        </div>
+
+        <!-- Lista de Materias -->
+        <div class="subject-list">
+            <!-- FILOSOFIA DEL LENGUAJE -->
+            <a href="#" onclick="abrirMateria('lenguaje'); return false;" class="subject-link btn-verdes">
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">auto_stories</span>
+                <span class="text">Filosofía del lenguaje</span>
+            </a>
+
+            <!-- DICCIONARIOS -->
+            <a href="#" onclick="abrirMateria('diccionarios'); return false;" class="subject-link btn-colecciones">
+                <img src="imagenes/diccionario.png" alt="Icono" style="width: 24px; height: 24px; vertical-align: middle;">
+                <span class="text">DICCIONARIOS</span>
+            </a>
+
+	    <!-- COMIC -->
+            <a href="#" onclick="abrirMateria('comic'); return false;" class="subject-link btn-destacados">
+                <img src="imagenes/comic.png" alt="Icono" style="width: 32px; height: 32px; vertical-align: middle;">
+               <span class="highlight">COMICs</span>
+            </a>
+
+           <!-- CIENCIA Y CONOCIMIENTO GENERAL (Con el nuevo icono PNG) -->
+            <a href="#" onclick="abrirMateria('general'); return false;" class="subject-link btn-generalidades">
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">book_5</span>
+                <span class="text">Ciencia y conocimiento general</span>
+            </a>
+
+	 <!-- SIMBOLOS -->
+            <a href="#" onclick="abrirMateria('simbolos'); return false;" class="subject-link btn-generalidades">
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">book_5</span>
+                <span class="text">Escritura, Signos y símbolos, Semiótica</span>
+            </a>
+
+	<!-- INTELIGENCIA ARTIFICIAL. CIBERNÉTICA-->
+	    <a href="#" onclick="abrirMateria('ia'); return false;" class="subject-link btn-generalidades">
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">book_5</span>
+                <span class="text">Inteligencia Artificial, Cibernética</span>
+            </a>
+
+	<!-- CIVILIZACION-->
+	    <a href="#" onclick="abrirMateria('civilizacion'); return false;" class="subject-link btn-generalidades">
+                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">book_5</span>
+                <span class="text">Civilización, Cultura, Progreso</span>
+            </a>		
+
+	<!-- FILOSOFIA -->
+            <a href="#" onclick="abrirMateria('filosofia'); return false;" class="subject-link btn-destacados">
+                <img src="imagenes/thinking.png" alt="Icono" style="width: 32px; height: 32px; vertical-align: middle;">
+               <span class="highlight">FILOSOFÍA GENERAL</span>
+            </a>
+
+            <!-- FILOSOFIA ANTIGUA -->
+	    <a href="#" onclick="abrirMateria('f_antigua'); return false;" class="subject-link btn-filosofia">
+                <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
+                <span class="text">Filosofía: Antigua,  Medieval e Historia general</span>
+            </a>
+            <!-- FILOSOFIA MODERNA -->
+	    <a href="#" onclick="abrirMateria('f_moderna'); return false;" class="subject-link btn-filosofia">
+                <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
+                <span class="text">Filosofía: Moderna y contemporánea</span>
+            </a>
+            <!-- METAFISICA -->
+	    <a href="#" onclick="abrirMateria('metafisica'); return false;" class="subject-link btn-filosofia">
+                <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
+                <span class="text">Metafísica, Antropología filosófica, filosofía natural,  Sistemas filosóficos</span>
+            </a>
+            <!-- PSICOLOGIA -->
+	    <a href="#" onclick="abrirMateria('psicologia'); return false;" class="subject-link btn-filosofia">
+                <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
+                <span class="text">Psicología general, Filosofia de la mente, Psicoanálisis</span>
+            </a>
+            <!-- LOGICA, ETICA -->
+	    <a href="#" onclick="abrirMateria('logica'); return false;" class="subject-link btn-filosofia">
+                <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
+                <span class="text">Lógica, Ética</span>
+            </a>
+
+            <!-- FEMINISMO-->
+            <a href="#" onclick="abrirMateria('feminismo'); return false;" class="subject-link btn-verdes">
+                <img src="imagenes/igualdad.png" alt="Icono" style="width: 32px; height: 32px; vertical-align: middle;">
+                <span class="text">FEMINISMO</span>
+            </a>
+
+            <!-- RELIGION Y TEOLOGIA -->
+            <a href="#" onclick="abrirMateria('religion'); return false;" class="subject-link btn-verdes">
+                <span class="material-symbols-outlined" style="color: #000000; font-size: 28px;">auto_stories</span>
+                <span class="text">Religión, Teología</span>
+            </a>
+
+            <!-- CIENCIAS SOCIALES TEORIA Y METODOLOGIA-->
+            <a href="#" onclick="abrirMateria('c_teoria'); return false;" class="subject-link btn-verdes">
+                <span class="material-symbols-outlined" style="color: #000000; font-size: 28px;">auto_stories</span>
+                <span class="text">Ciencias Sociales: Teoría y Metodología</span>
+            </a>
+            <!-- CIENCIAS SOCIALES ESTADISTICA, DEMOGRAFIA-->
+            <a href="#" onclick="abrirMateria('estadistica'); return false;" class="subject-link btn-verdes">
+                <span class="material-symbols-outlined" style="color: #000000; font-size: 28px;">auto_stories</span>
+                <span class="text">Ciencias sociales: Estadística, Demografía y Sociología</span>
+            </a>
+            <!-- POLITICA-->
+            <a href="#" onclick="abrirMateria('politica'); return false;" class="subject-link btn-verdes">
+                <span class="material-symbols-outlined" style="color: #000000; font-size: 28px;">auto_stories</span>
+                <span class="text">Política</span>
+            </a>
+            <!-- ECONOMIA Y DERECHO-->
+            <a href="#" onclick="abrirMateria('economia'); return false;" class="subject-link btn-verdes">
+                <span class="material-symbols-outlined" style="color: #000000; font-size: 28px;">auto_stories</span>
+                <span class="text">Economía, Derecho</span>
+            </a>
+            <!-- AD. PUBLICA, TRABAJO SOCIAL, EDUCACION-->
+            <a href="#" onclick="abrirMateria('trabajo'); return false;" class="subject-link btn-verdes">
+                <span class="material-symbols-outlined" style="color: #000000; font-size: 28px;">auto_stories</span>
+                <span class="text">Adm. Pública, Trabajo Social, Educación y Enseñanza</span>
+            </a>
+            <!-- ANTROPOLOGIA-->
+            <a href="#" onclick="abrirMateria('antropologia'); return false;" class="subject-link btn-verdes">
+                <span class="material-symbols-outlined" style="color: #000000; font-size: 28px;">auto_stories</span>
+                <span class="text">Antropología cultural, Etnología</span>
+            </a>
+
+            <!-- MATEMATICAS Y CIENCIAS NATURALES -->
+            <a href="#" onclick="abrirMateria('matematicas'); return false;" class="subject-link btn-generalidades">
+                <span class="material-symbols-outlined" style="color: #000000; font-size: 28px;">auto_stories</span>
+                <span class="text">Matemáticas, Ciencias Naturales</span>
+            </a>
+
+            <!-- CIENCIAS APLICADAS -->
+            <a href="#" onclick="abrirMateria('medicina'); return false;" class="subject-link btn-generalidades">
+                <span class="material-symbols-outlined" style="color: #000000; font-size: 28px;">auto_stories</span>
+                <span class="text">Ciencias aplicadas, Medicina y Tecnología</span>
+            </a>            
+           
+        </div>
+
+        <!-- Botón para regresar al inicio -->
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-circle-arrow-left fa-beat" style="margin-right: 8px;"></i> Volver al inicio</a>
+    </div>
+
+    <script>
+        // Diccionario con los parámetros, signatura y el texto exacto de la materia
+        const baseDatosMaterias = {
+            "lenguaje": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías del centro", estanteria: "Estantería 13", signatura: "HG800.1*", texto_materia: "Filosofía del lenguaje" },
+            "diccionarios": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías del centro", estanteria: "Estantería 14", signatura: "HG0*/03/* o HG1*/03/* o HG2*/03/* o HG3*/03/*o HG5*/03/* o HG6*/03/* o HG8*/03/*", texto_materia: "DICCIONARIOS" },
+            "comic": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías del centro", estanteria: "Estantería 12", signatura: "HG0*741.5* o HG741.5*", texto_materia: "COMICs" },
+             "general": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 15", signatura: "HG001/*", texto_materia: "Ciencia y conocimiento general" },
+             "simbolos": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 15", signatura: "HG003/*", texto_materia: "Escritura, Signos y símbolos, Semiótica" },
+             "ia": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 15", signatura: "HG007/*", texto_materia: "Inteligencia Artificial, Cibernética" },
+             "civilizacion": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 16", signatura: "HG008/*", texto_materia: "Civilización, Cultura, Progreso" },
+             "filosofia": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 19", signatura: "HG1/*", texto_materia: "FILOSOFÍA GENERAL" },
+             "f_antigua": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 19", signatura: "HG1/09* o HG1/38* o HG1/4/*", texto_materia: "Filosofía: Antigua,  Medieval e Historia general" },
+             "f_moderna": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20 (fondo)", signatura: "HG1/40* o HG1/43* o HG1/44*", texto_materia: "Filosofía: Moderna y contemporánea" },
+             "metafisica": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20 (fondo)", signatura: "HG11/* o HG13/* o HG14/*", texto_materia: "Metafísica, Antropología filosófica, filosofía natural,  Sistemas filosóficos" },
+             "psicologia": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20 (fondo)", signatura: "HG159*", texto_materia: "Psicología general, Filosofia de la mente, Psicoanálisis" },
+             "logica": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 9 y 10 (fondo)", signatura: "HG16* O HG17*", texto_materia: "Lógica, Ética" },
+             "feminismo": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 2 y 3", signatura: "HG396*", texto_materia: "FEMINISMO" },
+             "religion": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 7, 8 y 9", signatura: "HG2/*", texto_materia: "Religión, Teología" },
+             "c_teoria": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 7", signatura: "HG30/*", texto_materia: "Ciencias sociales: Teoría y metodología" },
+             "estadistica": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6 y 7", signatura: "HG31*", texto_materia: "Ciencias sociales: Estadística, Demografía y Sociología" },
+             "politica": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5 y 6", signatura: "HG32*", texto_materia: "Política" },
+             "economia": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 4 y 5", signatura: "HG33/* o HG34/*", texto_materia: "Economía, Derecho" },
+             "trabajo": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 4", signatura: "HG35* o HG36* o HG37*", texto_materia: "Adm. Pública, Trabajo Social, Educación y Enseñanza" },
+             "antropologia": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 3 y 4", signatura: "HG39*", texto_materia: "Antropología cultural, Etnología" },
+             "matematicas": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 7", signatura: "HG3/*", texto_materia: "Matemáticas y Ciencias Naturales" },
+             "medicina": { html: "Encontradomateria.html", planta: "PLANTA 1", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 7", signatura: "HG3/*", texto_materia: "Ciencias aplicadas, Medicina y Tecnología" }
+        };
+
+        function abrirMateria(clave) {
+            const datos = baseDatosMaterias[clave];
+            if (datos) {
+                const paramsUrl = new URLSearchParams({
+                    planta: datos.planta,
+                    sala: datos.sala,
+                    ubicacion: datos.ubicacion,
+                    estanteria: datos.estanteria,
+                    orig: datos.signatura, 
+                    materia: datos.texto_materia // <- Añadido para pasar la materia al HTML
+                });
+                window.location.href = datos.html + "?" + paramsUrl.toString();
+            }
+        }
+    </script>
+</body>
+</html>
