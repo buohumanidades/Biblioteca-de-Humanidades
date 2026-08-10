@@ -293,16 +293,17 @@
             window.location.href = "localizador.html?sig=" + encodeURIComponent(fichero) + "&orig=" + encodeURIComponent(signatura);
         }
         
-        function buscarEnCatalogo() {
-            const signatura = document.getElementById("campoSignatura").value.trim();
-            if (signatura === "" || signatura === "HG") {
-                window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
-            } else {
-                const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
-                const urlFinal = urlBase + encodeURIComponent(signatura) + "&START=1&FORM=1";
-                window.open(urlFinal, "_blank");
-            }
-        }
+function buscarEnCatalogo() {
+    const signatura = document.getElementById("campoSignatura").value.trim();
+    if (signatura === "" || signatura === "HG") {
+        window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
+    } else {
+        const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
+        // Envolvemos la signatura entre comillas dobles antes de codificar la URL
+        const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "&START=1&FORM=1";
+        window.open(urlFinal, "_blank");
+    }
+}
     </script>
 </body>
 </html>
