@@ -259,39 +259,49 @@
         // ---------------------------
 
         function localizarLibro(event) {
-            event.preventDefault();
-            let signatura = document.getElementById("campoSignatura").value.trim();
+    event.preventDefault();
+    let signatura = document.getElementById("campoSignatura").value.trim();
 
-            if (signatura === "" || signatura === "HG") {
-                mostrarModal("Por favor, escribe una signatura válida.");
-                return;
-            }
+    if (signatura === "" || signatura === "HG") {
+        mostrarModal("Por favor, escribe una signatura válida.");
+        return;
+    }
 
-            // Comprobación de inicio por HG utilizando el Modal personalizado
-            if (!signatura.startsWith("HG")) {
-                mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudamos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
-                return; 
-            }
+    // Comprobación de inicio por HG utilizando el Modal personalizado
+    if (!signatura.startsWith("HG")) {
+        mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudamos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
+        return; 
+    }
 
-            let fichero = signatura;
+    let fichero = signatura;
 
-            // 1. Quitar "/AST" si se encuentra al final de la signatura ANTES de los demás procesos
-            fichero = fichero.replace(/\/AST$/i, "");
+    // 1. Quitar "/AST" si se encuentra al final de la signatura ANTES de los demás procesos
+    fichero = fichero.replace(/\/AST$/i, "");
 
-            // 2. Quitar texto entre '/' y números seguidos de '=' (ej: HG860.6/ANT03=60 -> HG860.6/03=60)
-            fichero = fichero.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+(?=\d+=)/gi, "/");
+    // 2. Quitar "/COMIC" si se encuentra al final de la signatura ANTES de los demás procesos
+    fichero = fichero.replace(/\/COMIC$/i, "");
 
-            // 3. Limpieza de texto de autor al final de la signatura (Ej: HG860/DEN -> HG860, HG820.5/PEPE -> HG820.5)
-            if (/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/.test(fichero)) {
-                fichero = fichero.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/, "");
-            } else {
-                fichero = fichero.replace(/\s+[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+$/, "");
-            }
-            fichero = fichero.replace(/\/$/, "");
+    // --- NUEVA LÓGICA DE PROCESAMIENTO ---
+    let sig = "";
+    let ultimoIndiceBarra = fichero.lastIndexOf("/");
 
-            // Se envía la versión limpia (sig) y la completa (orig)
-            window.location.href = "localizador.html?sig=" + encodeURIComponent(fichero) + "&orig=" + encodeURIComponent(signatura);
+    if (ultimoIndiceBarra !== -1) {
+        let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
+
+        if (parteDerecha === "4") {
+            sig = "HG/4";
+        } else {
+            // Quitamos el último '/' y todo lo que esté a su derecha
+            sig = fichero.substring(0, ultimoIndiceBarra);
         }
+    } else {
+        // En caso de no contener ninguna '/' tras los filtros previos
+        sig = fichero;
+    }
+
+    // Se envía la versión limpia (sig) y la completa (orig)
+    window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
+}
         
 function buscarEnCatalogo() {
     const signatura = document.getElementById("campoSignatura").value.trim();
