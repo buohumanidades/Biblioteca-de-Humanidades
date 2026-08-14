@@ -281,9 +281,11 @@
     // 2. Quitar "/COMIC" si se encuentra al final de la signatura ANTES de los demás procesos
     fichero = fichero.replace(/\/COMIC$/i, "");
 
-    // 3. Quitar todo lo posterior a "CR" si está en solitario (sin letras pegadas delante o detrás)
+    // 3. Quitar todo lo posterior a "CR" si está en solitario (sin letras pegadas delante o detrás) y no acaba en /4 (Asturias)
     // Usamos (?<![a-zA-Z]) para asegurar que no hay letras antes, y (?![a-zA-Z]) para asegurar que no hay letras después.
-    fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
+    if (!fichero.endsWith("/4")) {
+        fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
+    }
 
     // --- NUEVA LÓGICA DE PROCESAMIENTO ---
     let sig = "";
