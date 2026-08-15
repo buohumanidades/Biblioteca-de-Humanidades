@@ -92,7 +92,8 @@
             margin: 20px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
+            position: relative;
         }
 
         /* Ocultar scrollbars donde no son estéticos */
@@ -102,6 +103,52 @@
         .scrollbar-hide {
             -ms-overflow-style: none;
             scrollbar-width: none;
+        }
+        
+        /* Contenedor de contenido dentro del libro */
+        #bookContentWrapper {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* Footer del libro */
+        .book-footer {
+            margin-top: auto;
+            text-align: center;
+            padding-top: 0.5rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .institutional-text-main {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #eab308; /* Mismo color amarillo que "Signatura" */
+            letter-spacing: 0.05em;
+            margin-bottom: 0.2rem;
+            text-transform: uppercase;
+        }
+        
+        .institutional-text-sub {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 300;
+            color: rgba(203, 213, 225, 0.6);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        
+        .empty-state-text {
+            text-align: center;
+            color: rgba(203, 213, 225, 0.8);
+            font-style: italic;
+            margin-top: 4rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
         }
     </style>
 </head>
@@ -159,25 +206,38 @@
                     <div class="book-decoration text-center relative overflow-hidden flex flex-col h-full">
                         
                         <!-- Botón Eliminar -->
-                        <div class="absolute top-2 right-2 z-10">
+                        <div class="absolute top-2 right-2 z-20">
                             <button id="deleteBtn" class="hidden text-red-400 hover:text-red-600 bg-red-50/10 hover:bg-red-50/20 p-2 rounded-full transition-all" title="Eliminar esta signatura">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
 
-                        <!-- Decoración superior -->
-                        <div class="text-yellow-500/50 text-2xl mb-4 mt-2 shrink-0">❦</div>
-                        <div class="w-24 h-[1px] bg-gradient-to-r from-transparent via-yellow-500/50 to-transparent mx-auto mb-6 shrink-0"></div>
+                        <!-- Contenedor principal de la página del libro -->
+                        <div id="bookContentWrapper" class="flex-1 flex flex-col overflow-hidden">
+                            
+                            <!-- Decoración superior -->
+                            <div id="topDecoContainer" style="display: none;" class="shrink-0">
+                                <div class="text-yellow-500/50 text-2xl mb-2 mt-2">❦</div>
+                                <div class="w-24 h-[1px] bg-gradient-to-r from-transparent via-yellow-500/50 to-transparent mx-auto mb-4"></div>
+                            </div>
 
-                        <!-- Descripción -->
-                        <div id="bookDescription" class="flex-1 text-lg leading-relaxed text-gray-300 px-6 font-light overflow-y-auto scrollbar-hide text-left">
-                            <p class="italic text-gray-400 text-sm text-center mt-10">Explora la lista de la izquierda o busca una signatura para visualizar su contenido.</p>
+                            <!-- Área de visualización de signatura, sello y descripción -->
+                            <div id="bookDescription" class="flex-1 text-base leading-relaxed text-gray-300 px-4 font-light overflow-y-auto scrollbar-hide text-center flex flex-col items-center">
+                                <p class="empty-state-text">Explora la lista de la izquierda o busca una signatura para visualizar su contenido.</p>
+                            </div>
+
+                            <!-- Decoración inferior -->
+                            <div id="bottomDecoContainer" class="shrink-0 mt-3" style="display: none;">
+                                <div class="w-12 h-1 bg-yellow-600/30 mx-auto rounded mb-2"></div>
+                            </div>
                         </div>
 
-                        <!-- Decoración inferior -->
-                        <div class="shrink-0 mt-6 pb-2">
-                            <div class="w-12 h-1 bg-yellow-600/30 mx-auto rounded"></div>
+                        <!-- Footer Institucional Fijo -->
+                        <div class="book-footer shrink-0">
+                            <h2 class="institutional-text-main">Biblioteca de Humanidades</h2>
+                            <h3 class="institutional-text-sub">Campus de El Milán</h3>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -207,6 +267,8 @@
             
             const bookDescription = document.getElementById('bookDescription');
             const bookCover = document.getElementById('bookCover');
+            const topDecoContainer = document.getElementById('topDecoContainer');
+            const bottomDecoContainer = document.getElementById('bottomDecoContainer');
             
             const searchInput = document.getElementById('searchInput');
             const downloadJsonBtn = document.getElementById('downloadJsonBtn');
@@ -215,6 +277,15 @@
             let globalData = [];
             let currentKeys = { sig: 'signatura', desc: 'descripcion' };
             let currentDisplayedSignatura = null;
+            
+            const emptyStateHTML = `
+                <div class="flex flex-col items-center justify-center h-full my-auto">
+                    <div class="w-16 h-16 mb-4 rounded-full overflow-hidden shadow-md flex items-center justify-center border border-yellow-500/30">
+                        <img src="./Logo.png" alt="Sello Universidad" class="w-full h-full object-cover" style="clip-path: circle(49%);">
+                    </div>
+                    <p class="empty-state-text mt-0">Explora la lista de la izquierda o busca una signatura para visualizar su contenido.</p>
+                </div>
+            `;
 
             function identificarClaves(datos) {
                 if (datos.length > 0) {
@@ -263,19 +334,29 @@
             function mostrarEnLibro(dato, itemDiv) {
                 currentDisplayedSignatura = dato;
                 deleteBtn.classList.remove('hidden');
+                topDecoContainer.style.display = 'block';
+                bottomDecoContainer.style.display = 'block';
 
                 const valorSignatura = dato[currentKeys.sig] || "Sin Signatura";
                 const valorDescripcion = dato[currentKeys.desc] || "Sin Descripción";
 
-                // Reemplazando saltos de linea por etiquetas <br> para una correcta visualización
+                // Reemplazando saltos de línea por etiquetas <br>
                 const formatDesc = valorDescripcion.replace(/\n/g, '<br/>');
 
+                // Estructura solicitada: Signatura arriba -> Sello en el centro pequeño -> Descripción debajo
                 bookDescription.innerHTML = `
-                    <div class="mb-6 pb-3 border-b border-yellow-600/30 text-center">
+                    <div class="mb-3 pb-2 border-b border-yellow-600/30 text-center w-full shrink-0">
                         <span class="text-yellow-500 font-semibold text-xs uppercase tracking-widest">Signatura</span>
                         <p class="text-white text-3xl font-bold mt-1 tracking-tight">${valorSignatura}</p>
                     </div>
-                    <div class="text-base leading-relaxed space-y-4 text-center">
+                    
+                    <div class="flex justify-center items-center my-3 shrink-0">
+                        <div class="w-16 h-16 rounded-full overflow-hidden shadow-md flex items-center justify-center border border-yellow-500/30 bg-white/10">
+                            <img src="./Logo.png" alt="Sello Universidad" class="w-full h-full object-cover" style="clip-path: circle(49%);">
+                        </div>
+                    </div>
+
+                    <div class="text-sm leading-relaxed space-y-2 text-center text-gray-300 w-full mt-1">
                         ${formatDesc}
                     </div>
                 `;
@@ -287,7 +368,6 @@
                 document.querySelectorAll('.signature-item').forEach(el => el.classList.remove('active', 'bg-blue-50'));
                 if (itemDiv) {
                     itemDiv.classList.add('active', 'bg-blue-50');
-                    // Scroll automático hacia el elemento seleccionado en la lista
                     itemDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
                 }
                 
@@ -301,7 +381,7 @@
                 listContainer.innerHTML = '';
 
                 if (datosParaMostrar.length === 0) {
-                    return; // Si no hay, la lista queda vacía (ya que mostramos el panel de grabar)
+                    return;
                 }
 
                 datosParaMostrar.forEach((dato) => {
@@ -330,28 +410,29 @@
                 const term = searchInput.value.trim();
                 const termLower = term.toLowerCase();
 
-                // Reset de errores y estados visuales del formulario de nueva signatura
                 inlineError.classList.add('hidden');
 
                 if (!term) {
-                    // Si el input está vacío, restaurar lista completa
                     addNewContainer.classList.add('hidden');
                     listContainer.classList.remove('hidden');
                     renderizarLista(globalData);
+                    
+                    // Si se borra la búsqueda por completo, seleccionamos automáticamente la primera si existe
+                    if (globalData.length > 0) {
+                        const firstItemDiv = listContainer.querySelector('.signature-item');
+                        mostrarEnLibro(globalData[0], firstItemDiv);
+                    }
                     return;
                 }
 
-                // Buscar coincidencias que EMPIECEN O INCLUYAN lo que se va tecleando
                 const exactMatch = globalData.find(d => (d[currentKeys.sig] || "").toString().toLowerCase() === termLower);
                 const partialMatches = globalData.filter(d => (d[currentKeys.sig] || "").toString().toLowerCase().includes(termLower));
 
                 if (partialMatches.length > 0 || exactMatch) {
-                    // Hay coincidencias: ocultar el campo "Grabar", mostrar y renderizar la lista filtrada
                     addNewContainer.classList.add('hidden');
                     listContainer.classList.remove('hidden');
                     renderizarLista(partialMatches);
 
-                    // Seleccionar la coincidencia exacta si la hay, sino la primera parcial (posicionamiento)
                     const targetMatch = exactMatch || partialMatches[0];
                     setTimeout(() => {
                         const items = document.querySelectorAll('.signature-item');
@@ -362,24 +443,29 @@
                     }, 50);
 
                 } else {
-                    // No hay ninguna coincidencia: Ocultar lista, mostrar campos para "Grabar" nueva
                     listContainer.classList.add('hidden');
                     addNewContainer.classList.remove('hidden');
                     
-                    // Limpiar la descripción del libro ya que no existe la signatura
+                    topDecoContainer.style.display = 'block';
+                    bottomDecoContainer.style.display = 'block';
+                    
                     bookDescription.innerHTML = `
-                        <div class="mb-6 pb-3 border-b border-gray-600/30 text-center">
+                        <div class="mb-4 pb-2 border-b border-gray-600/30 text-center w-full mt-2">
                             <span class="text-gray-500 font-semibold text-xs uppercase tracking-widest">Signatura no encontrada</span>
                             <p class="text-gray-400 text-3xl font-bold mt-1 tracking-tight">${term}</p>
                         </div>
-                        <p class="text-center text-gray-500 italic">No existe información para esta signatura. Utiliza el formulario de la izquierda para grabarla.</p>
+                        <div class="flex justify-center items-center my-3 shrink-0">
+                            <div class="w-16 h-16 rounded-full overflow-hidden shadow-md flex items-center justify-center border border-gray-500/30 opacity-60">
+                                <img src="./Logo.png" alt="Sello Universidad" class="w-full h-full object-cover grayscale" style="clip-path: circle(49%);">
+                            </div>
+                        </div>
+                        <p class="text-center text-gray-400 italic text-sm mt-2">No existe información para esta signatura. Utiliza el formulario de la izquierda para grabarla.</p>
                     `;
                     currentDisplayedSignatura = null;
                     deleteBtn.classList.add('hidden');
                 }
             }
 
-            // Escuchar cada tecla pulsada para filtrado en vivo
             searchInput.addEventListener('input', procesarEntradaTeclado);
 
             inlineSaveBtn.addEventListener('click', () => {
@@ -392,7 +478,6 @@
                     return;
                 }
 
-                // Calcular nuevo ID
                 const maxId = globalData.reduce((max, item) => (item.id && item.id > max ? item.id : max), 0);
                 
                 const nuevoItem = {
@@ -401,11 +486,8 @@
                     [currentKeys.desc]: nuevaDescStr
                 };
                 
-                // Añadir al array de datos
                 globalData.push(nuevoItem);
 
-                // ORDENAR el JSON automáticamente ("en el orden que corresponda")
-                // Utilizando localeCompare con opciones numeric para ordenar bien textos con números (Ej: A-2, A-10)
                 globalData.sort((a, b) => {
                     const sigA = (a[currentKeys.sig] || "").toString();
                     const sigB = (b[currentKeys.sig] || "").toString();
@@ -414,16 +496,13 @@
 
                 marcarModificado();
                 
-                // Limpiar la UI
                 searchInput.value = '';
                 inlineDescInput.value = '';
                 addNewContainer.classList.add('hidden');
                 listContainer.classList.remove('hidden');
                 
-                // Volver a renderizar toda la lista ordenada
                 renderizarLista(globalData);
                 
-                // Buscar y seleccionar el item recién insertado
                 setTimeout(() => {
                     const items = document.querySelectorAll('.signature-item');
                     const lastItem = Array.from(items).find(el => el.textContent.trim() === nuevaSignaturaStr);
@@ -445,11 +524,12 @@
                         globalData = globalData.filter(d => d[currentKeys.sig] !== sigEliminar);
                         marcarModificado();
                         
-                        bookDescription.innerHTML = '<p class="italic text-gray-400 text-sm text-center mt-10">Signatura eliminada. Selecciona otra de la lista.</p>';
+                        topDecoContainer.style.display = 'none';
+                        bottomDecoContainer.style.display = 'none';
+                        bookDescription.innerHTML = emptyStateHTML;
                         deleteBtn.classList.add('hidden');
                         currentDisplayedSignatura = null;
                         
-                        // Refrescar el estado de la búsqueda
                         procesarEntradaTeclado();
                     }
                 });
@@ -485,7 +565,6 @@
                     
                     let datosJSON = [];
                     try {
-                        // Intentamos cargar el archivo (falla en entornos de vista previa con URLs tipo blob:)
                         const response = await fetch('signaturas.json');
                         if (response.ok) {
                             datosJSON = await response.json();
@@ -493,7 +572,6 @@
                             throw new Error('No se encontró signaturas.json');
                         }
                     } catch (fetchError) {
-                        // Fallback a datos de ejemplo si el fetch falla (común en local o sandbox)
                         console.info("No se pudo cargar 'signaturas.json'. Iniciando con datos de demostración.");
                         datosJSON = [
                             { signatura: "CIE-105", descripcion: "Tratado de astronomía ilustrado.\nContiene mapas estelares desplegables." },
@@ -504,7 +582,6 @@
 
                     globalData = datosJSON;
 
-                    // Ordenar inicialmente por si el JSON origen venía desordenado
                     globalData.sort((a, b) => {
                         const sigA = (a.signatura || a.Signatura || "").toString();
                         const sigB = (b.signatura || b.Signatura || "").toString();
@@ -513,6 +590,16 @@
 
                     identificarClaves(globalData);
                     renderizarLista(globalData);
+                    
+                    if (globalData.length > 0) {
+                        // Posicionar automáticamente en la primera signatura al arrancar
+                        const firstItemDiv = listContainer.querySelector('.signature-item');
+                        mostrarEnLibro(globalData[0], firstItemDiv);
+                    } else {
+                        topDecoContainer.style.display = 'none';
+                        bottomDecoContainer.style.display = 'none';
+                        bookDescription.innerHTML = emptyStateHTML;
+                    }
                     
                 } catch (e) {
                     console.error("Error general al procesar los datos:", e);
