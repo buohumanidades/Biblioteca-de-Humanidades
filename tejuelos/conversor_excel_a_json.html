@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Excel a JSON</title>
+    <!-- Cargamos Tailwind CSS para los estilos -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Cargamos SheetJS (xlsx) para leer archivos Excel en el navegador -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 text-gray-800">
+
+    <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full p-8">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Excel a JSON</h1>
+            <p class="text-gray-500">Convierte tu archivo <span class="font-semibold text-green-600">Signaturas.xlsx</span> al formato necesario para el visor.</p>
+        </div>
+
+        <!-- Instrucciones -->
+        <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-8 text-sm text-blue-800">
+            <h3 class="font-bold mb-1 flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                Instrucciones importantes:
+            </h3>
+            <ul class="list-disc pl-9 mt-2 space-y-1">
+                <li>La primera fila de tu Excel debe contener los nombres de las columnas en minúsculas (ej: <strong>signatura</strong> en la columna A y <strong>descripcion</strong> en la columna B).</li>
+                <li>Sube tu archivo y pulsa en "Descargar JSON".</li>
+                <li>Guarda el archivo descargado como <strong>signaturas.json</strong> en la misma carpeta que el Visor.</li>
+            </ul>
+        </div>
+
+        <div class="flex flex-col items-center gap-4">
+            <!-- Input de archivo (oculto visualmente, accionado por una etiqueta) -->
+            <label class="w-full flex flex-col items-center px-4 py-6 bg-gray-50 text-blue rounded-lg shadow-inner tracking-wide uppercase border-2 border-dashed border-blue-400 cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                <svg class="w-8 h-8 text-blue-500" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
+                </svg>
+                <span class="mt-2 text-base leading-normal font-medium text-blue-500" id="fileName">Selecciona tu archivo .xlsx</span>
+                <input type="file" id="fileInput" class="hidden" accept=".xlsx, .xls" />
+            </label>
+
+            <!-- Contenedor para mostrar mensajes de estado -->
+            <div id="statusMessage" class="hidden w-full text-center p-3 rounded-lg font-medium text-sm"></div>
+
+            <!-- Botón de descarga (oculto inicialmente) -->
+            <button id="downloadBtn" class="hidden mt-4 w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Descargar signaturas.json
+            </button>
+        </div>
+
+        <!-- Previsualización del JSON generado -->
+        <div id="previewContainer" class="hidden mt-8">
+            <h3 class="text-sm font-semibold text-gray-500 mb-2 uppercase">Previsualización de los datos:</h3>
+            <div class="bg-gray-800 rounded-lg p-4 max-h-64 overflow-y-auto">
+                <pre id="jsonPreview" class="text-green-400 text-xs font-mono"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fileInput = document.getElementById('fileInput');
+            const fileNameDisplay = document.getElementById('fileName');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const previewContainer = document.getElementById('previewContainer');
+            const jsonPreview = document.getElementById('jsonPreview');
+            const statusMessage = document.getElementById('statusMessage');
+
+            let generatedJsonString = null;
+
+            // Función para mostrar mensajes
+            function showMessage(msg, type) {
+                statusMessage.textContent = msg;
+                statusMessage.className = `w-full text-center p-3 rounded-lg font-medium text-sm block ${
+                    type === 'error' ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-green-100 text-green-700 border border-green-200'
+                }`;
+            }
+
+            // Detectar cuando se selecciona un archivo
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                fileNameDisplay.textContent = file.name;
+                statusMessage.classList.add('hidden'); // Ocultar mensajes previos
+                
+                const reader = new FileReader();
+
+                // Qué hacer cuando se lea el archivo
+                reader.onload = (event) => {
+                    try {
+                        const data = new Uint8Array(event.target.result);
+                        
+                        // Leer el libro de Excel con SheetJS
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        
+                        // Obtener la primera hoja de trabajo
+                        const firstSheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[firstSheetName];
+                        
+                        // Convertir la hoja a JSON. 
+                        // asume que la primera fila tiene las cabeceras.
+                        const jsonArray = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+                        
+                        if (jsonArray.length === 0) {
+                            throw new Error("El archivo parece estar vacío o no tiene el formato correcto.");
+                        }
+
+                        // Formatear el JSON para que sea legible
+                        generatedJsonString = JSON.stringify(jsonArray, null, 2);
+                        
+                        // Mostrar previsualización
+                        jsonPreview.textContent = generatedJsonString;
+                        previewContainer.classList.remove('hidden');
+                        
+                        // Mostrar botón de descarga
+                        downloadBtn.classList.remove('hidden');
+                        
+                        showMessage(`¡Éxito! Se detectaron ${jsonArray.length} registros.`, 'success');
+
+                    } catch (error) {
+                        console.error(error);
+                        showMessage(`Error al procesar el archivo: ${error.message}`, 'error');
+                        previewContainer.classList.add('hidden');
+                        downloadBtn.classList.add('hidden');
+                    }
+                };
+
+                // Si hay error en la lectura del archivo
+                reader.onerror = () => {
+                    showMessage("Error al intentar leer el archivo desde tu dispositivo.", 'error');
+                };
+
+                // Iniciar la lectura del archivo como ArrayBuffer
+                reader.readAsArrayBuffer(file);
+            });
+
+            // Manejar el clic en el botón de descarga
+            downloadBtn.addEventListener('click', () => {
+                if (!generatedJsonString) return;
+
+                // Crear un Blob (archivo binario) con el texto del JSON
+                const blob = new Blob([generatedJsonString], { type: 'application/json' });
+                
+                // Crear una URL temporal para el archivo
+                const url = URL.createObjectURL(blob);
+                
+                // Crear un enlace HTML invisible y forzar el clic
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'signaturas.json'; // Nombre por defecto sugerido
+                document.body.appendChild(a);
+                a.click();
+                
+                // Limpieza de memoria
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+        });
+    </script>
+</body>
+</html>

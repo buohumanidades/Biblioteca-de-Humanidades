@@ -1,0 +1,5218 @@
+[
+  {
+    "signaturas": "AC003",
+    "descripcion": "Escritura. Signos y símbolos. Semiótica"
+  },
+  {
+    "signaturas": "AC008",
+    "descripcion": "Civilización. Cultura. Progreso (←130.2)"
+  },
+  {
+    "signaturas": "AC008/3",
+    "descripcion": "Civilización, cultura y progreso: Diccionarios"
+  },
+  {
+    "signaturas": "AC008/312",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "AC008/4",
+    "descripcion": "Civilización europea"
+  },
+  {
+    "signaturas": "AC008/46",
+    "descripcion": "Cultura española"
+  },
+  {
+    "signaturas": "AC008/7",
+    "descripcion": "Civilizaciones americanas"
+  },
+  {
+    "signaturas": "AC008/9",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "AC008/924",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "AC008/927",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "AC1",
+    "descripcion": "Filosofía"
+  },
+  {
+    "signaturas": "AC1/09",
+    "descripcion": "Historia de la filosofía"
+  },
+  {
+    "signaturas": "AC1/37",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "AC1/38",
+    "descripcion": "Filosofía antigua"
+  },
+  {
+    "signaturas": "AC1/4",
+    "descripcion": "Filosofía medieval"
+  },
+  {
+    "signaturas": "AC1/41",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "AC1/43",
+    "descripcion": "Filosofía moderna y contemporánea en lengua alemana"
+  },
+  {
+    "signaturas": "AC1/44",
+    "descripcion": "Filosofía moderna y contemporánea en lengua francesa"
+  },
+  {
+    "signaturas": "AC1/45",
+    "descripcion": "Filosofía moderna y contemporánea en lengua italiana"
+  },
+  {
+    "signaturas": "AC1/46",
+    "descripcion": "Filosofía moderna y contemporánea en lengua española"
+  },
+  {
+    "signaturas": "AC1/9",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "AC1/924",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "AC1/927",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "AC111",
+    "descripcion": "Metafísica. Ontología"
+  },
+  {
+    "signaturas": "AC133",
+    "descripcion": "Ciencias ocultas. Ocultismo. Parapsicología"
+  },
+  {
+    "signaturas": "AC159.9",
+    "descripcion": "Psicología general. Filosofía de la psicología"
+  },
+  {
+    "signaturas": "AC159.964",
+    "descripcion": "Psicoanálisis"
+  },
+  {
+    "signaturas": "AC16",
+    "descripcion": "Lógica. Filosofía de la lógica"
+  },
+  {
+    "signaturas": "AC165",
+    "descripcion": "Teoría del conocimiento. Gnoseología"
+  },
+  {
+    "signaturas": "AC167",
+    "descripcion": "Filosofía y metodología de la ciencia"
+  },
+  {
+    "signaturas": "AC17",
+    "descripcion": "Ética"
+  },
+  {
+    "signaturas": "AC176",
+    "descripcion": "Ética sexual. Moralidad sexual"
+  },
+  {
+    "signaturas": "AC2",
+    "descripcion": "Religión"
+  },
+  {
+    "signaturas": "AC21",
+    "descripcion": "Teología natural"
+  },
+  {
+    "signaturas": "AC23",
+    "descripcion": "Cristianismo"
+  },
+  {
+    "signaturas": "AC27",
+    "descripcion": "Historia de la Iglesia cristiana. Patrología"
+  },
+  {
+    "signaturas": "AC28",
+    "descripcion": "Iglesias cristianas. Comunidades y sectas"
+  },
+  {
+    "signaturas": "AC292",
+    "descripcion": "Mitología clásica"
+  },
+  {
+    "signaturas": "AC294",
+    "descripcion": "Religiones de la India"
+  },
+  {
+    "signaturas": "AC296",
+    "descripcion": "Judaísmo"
+  },
+  {
+    "signaturas": "AC297",
+    "descripcion": "Islam"
+  },
+  {
+    "signaturas": "AC30",
+    "descripcion": "Teoría y metodología de las ciencias sociales"
+  },
+  {
+    "signaturas": "AC308",
+    "descripcion": "Historia social. Situación social"
+  },
+  {
+    "signaturas": "AC308/46",
+    "descripcion": "Situación social de España. Historia social de España"
+  },
+  {
+    "signaturas": "AC314",
+    "descripcion": "Demografía"
+  },
+  {
+    "signaturas": "AC316",
+    "descripcion": "Sociología"
+  },
+  {
+    "signaturas": "AC32",
+    "descripcion": "Política"
+  },
+  {
+    "signaturas": "AC321.01",
+    "descripcion": "Filosofía política. Teoría del Estado"
+  },
+  {
+    "signaturas": "AC323.13",
+    "descripcion": "Nacionalismo, irredentismo"
+  },
+  {
+    "signaturas": "AC323.3",
+    "descripcion": "Clases sociales"
+  },
+  {
+    "signaturas": "AC325.3",
+    "descripcion": "Colonización"
+  },
+  {
+    "signaturas": "AC327.39",
+    "descripcion": "Movimientos políticos basados en lengua, raza, religión, geografía"
+  },
+  {
+    "signaturas": "AC329",
+    "descripcion": "Partidos y movimientos políticos"
+  },
+  {
+    "signaturas": "AC33",
+    "descripcion": "Economía"
+  },
+  {
+    "signaturas": "AC330.85",
+    "descripcion": "Marxismo"
+  },
+  {
+    "signaturas": "AC34",
+    "descripcion": "Derecho"
+  },
+  {
+    "signaturas": "AC355",
+    "descripcion": "Arte y ciencia militar. Defensa nacional. Ejército"
+  },
+  {
+    "signaturas": "AC37",
+    "descripcion": "Educación. Enseñanza"
+  },
+  {
+    "signaturas": "AC39",
+    "descripcion": "Antropología cultural. Etnología"
+  },
+  {
+    "signaturas": "AC392",
+    "descripcion": "Usos y costumbres en la vida privada"
+  },
+  {
+    "signaturas": "AC396",
+    "descripcion": "Feminismo"
+  },
+  {
+    "signaturas": "AC397",
+    "descripcion": "Razas y tribus"
+  },
+  {
+    "signaturas": "AC398",
+    "descripcion": "Folklore. Etnomusicología"
+  },
+  {
+    "signaturas": "AC5",
+    "descripcion": "Ciencias en general"
+  },
+  {
+    "signaturas": "AC5/09",
+    "descripcion": "Historia de las ciencias"
+  },
+  {
+    "signaturas": "AC504",
+    "descripcion": "Ciencias del medio ambiente"
+  },
+  {
+    "signaturas": "AC51",
+    "descripcion": "Matemáticas"
+  },
+  {
+    "signaturas": "AC52",
+    "descripcion": "Astronomía. Astrofísica. Investigación espacial. Geodesia"
+  },
+  {
+    "signaturas": "AC53",
+    "descripcion": "Física"
+  },
+  {
+    "signaturas": "AC55",
+    "descripcion": "Química. Cristalografía. Mineralogía"
+  },
+  {
+    "signaturas": "AC572.1",
+    "descripcion": "Antropología"
+  },
+  {
+    "signaturas": "AC575",
+    "descripcion": "Genética"
+  },
+  {
+    "signaturas": "AC575.8",
+    "descripcion": "Evolución. Origen de las especies"
+  },
+  {
+    "signaturas": "AC59",
+    "descripcion": "Zoología"
+  },
+  {
+    "signaturas": "AC591.5",
+    "descripcion": "Fisiología animal"
+  },
+  {
+    "signaturas": "AC6",
+    "descripcion": "Ciencias aplicadas"
+  },
+  {
+    "signaturas": "AC61",
+    "descripcion": "Medicina"
+  },
+  {
+    "signaturas": "AC611",
+    "descripcion": "Anatomía"
+  },
+  {
+    "signaturas": "AC612.6",
+    "descripcion": "Reproducción. Crecimiento. Desarrollo"
+  },
+  {
+    "signaturas": "AC612.67",
+    "descripcion": "Decadencia. Senescencia. Muerte"
+  },
+  {
+    "signaturas": "AC616.89",
+    "descripcion": "Psiquiatría. Psicología patológica"
+  },
+  {
+    "signaturas": "AC616.98",
+    "descripcion": "Infecciones específicas"
+  },
+  {
+    "signaturas": "AC65",
+    "descripcion": "Industrias de la comunicación y del transporte. Contabilidad. Organización empresarial. Relaciones públicas"
+  },
+  {
+    "signaturas": "AC681.5",
+    "descripcion": "Tecnología inteligente"
+  },
+  {
+    "signaturas": "AC7",
+    "descripcion": "Arte"
+  },
+  {
+    "signaturas": "AC7/09",
+    "descripcion": "Historia del Arte"
+  },
+  {
+    "signaturas": "AC7.01",
+    "descripcion": "Estética. Filosofía del arte"
+  },
+  {
+    "signaturas": "AC72",
+    "descripcion": "Arquitectura"
+  },
+  {
+    "signaturas": "AC73",
+    "descripcion": "Escultura"
+  },
+  {
+    "signaturas": "AC778.5",
+    "descripcion": "Cinematografía"
+  },
+  {
+    "signaturas": "AC78",
+    "descripcion": "Música"
+  },
+  {
+    "signaturas": "AC79",
+    "descripcion": "Diversiones. Espectáculos. Juegos. Deportes"
+  },
+  {
+    "signaturas": "AC80",
+    "descripcion": "Lingüística"
+  },
+  {
+    "signaturas": "AC82",
+    "descripcion": "Literatura en general"
+  },
+  {
+    "signaturas": "AC82.08",
+    "descripcion": "Actividad y técnicas literarias"
+  },
+  {
+    "signaturas": "AC820",
+    "descripcion": "Literatura en lengua inglesa"
+  },
+  {
+    "signaturas": "AC830",
+    "descripcion": "Literatura alemana"
+  },
+  {
+    "signaturas": "AC839",
+    "descripcion": "Literatura austriaca"
+  },
+  {
+    "signaturas": "AC840",
+    "descripcion": "Literatura en lengua francesa"
+  },
+  {
+    "signaturas": "AC850",
+    "descripcion": "Literatura italiana"
+  },
+  {
+    "signaturas": "AC860",
+    "descripcion": "Literatura española"
+  },
+  {
+    "signaturas": "AC860-4",
+    "descripcion": "Literatura española. Ensayos"
+  },
+  {
+    "signaturas": "AC869",
+    "descripcion": "Literatura portuguesa"
+  },
+  {
+    "signaturas": "AC871",
+    "descripcion": "Literatura latina"
+  },
+  {
+    "signaturas": "AC882",
+    "descripcion": "Literatura rusa"
+  },
+  {
+    "signaturas": "AC884",
+    "descripcion": "Literatura polaca"
+  },
+  {
+    "signaturas": "AC886.1",
+    "descripcion": "Literatura serbia"
+  },
+  {
+    "signaturas": "AC891.1",
+    "descripcion": "Literatura india"
+  },
+  {
+    "signaturas": "AC892.4",
+    "descripcion": "Literatura hebrea"
+  },
+  {
+    "signaturas": "AC892.7",
+    "descripcion": "Literatura árabe"
+  },
+  {
+    "signaturas": "AC895.1",
+    "descripcion": "Literatura china"
+  },
+  {
+    "signaturas": "AC895.6",
+    "descripcion": "Literatura japonesa"
+  },
+  {
+    "signaturas": "AC9/924",
+    "descripcion": "Historia del pueblo judío"
+  },
+  {
+    "signaturas": "AC9/927",
+    "descripcion": "Historia de los pueblos árabes"
+  },
+  {
+    "signaturas": "AC902",
+    "descripcion": "Prehistoria y arqueología"
+  },
+  {
+    "signaturas": "AC91",
+    "descripcion": "Geografía"
+  },
+  {
+    "signaturas": "AC910.4",
+    "descripcion": "Viajes y exploraciones"
+  },
+  {
+    "signaturas": "AC911.375",
+    "descripcion": "Geografía urbana"
+  },
+  {
+    "signaturas": "AC929",
+    "descripcion": "Biografías"
+  },
+  {
+    "signaturas": "AC930.1",
+    "descripcion": "Filosofía de la Historia. Historiografía"
+  },
+  {
+    "signaturas": "AC931",
+    "descripcion": "Historia antigua"
+  },
+  {
+    "signaturas": "AC94",
+    "descripcion": "Historia de las edades Media y Moderna"
+  },
+  {
+    "signaturas": "AC946",
+    "descripcion": "Historia de España"
+  },
+  {
+    "signaturas": "AC950",
+    "descripcion": "Historia de Asia"
+  },
+  {
+    "signaturas": "AC960",
+    "descripcion": "Historia de África"
+  },
+  {
+    "signaturas": "AC970",
+    "descripcion": "Historia de América"
+  },
+  {
+    "signaturas": "F001",
+    "descripcion": "Ciencia y conocimiento general"
+  },
+  {
+    "signaturas": "F001A",
+    "descripcion": "Historia de las ciencias"
+  },
+  {
+    "signaturas": "F003",
+    "descripcion": "Escritura. Signos y símbolos. Semiótica"
+  },
+  {
+    "signaturas": "F007",
+    "descripcion": "Inteligencia artificial. Cibernética"
+  },
+  {
+    "signaturas": "F008",
+    "descripcion": "Civilización. Cultura. Progreso (←130.2)"
+  },
+  {
+    "signaturas": "F02",
+    "descripcion": "Biblioteconomía"
+  },
+  {
+    "signaturas": "F03A",
+    "descripcion": "Enciclopedias y diccionarios de carácter general"
+  },
+  {
+    "signaturas": "F1",
+    "descripcion": "Filosofía"
+  },
+  {
+    "signaturas": "F101",
+    "descripcion": "Naturaleza y papel de la filosofía. La filosofía como ciencia, como arte."
+  },
+  {
+    "signaturas": "F111",
+    "descripcion": "Metafísica. Ontología"
+  },
+  {
+    "signaturas": "F113A",
+    "descripcion": "Cosmología. Filosofía natural"
+  },
+  {
+    "signaturas": "F133",
+    "descripcion": "Ciencias ocultas. Ocultismo. Parapsicología"
+  },
+  {
+    "signaturas": "F141A",
+    "descripcion": "Sistemas filosóficos"
+  },
+  {
+    "signaturas": "F15",
+    "descripcion": "Psicología"
+  },
+  {
+    "signaturas": "F15A-W",
+    "descripcion": "Psicólogos individuales"
+  },
+  {
+    "signaturas": "F16",
+    "descripcion": "Lógica. Filosofía de la lógica"
+  },
+  {
+    "signaturas": "F165",
+    "descripcion": "Teoría del conocimiento. Gnoseología."
+  },
+  {
+    "signaturas": "F167",
+    "descripcion": "Filosofía y metodología de la ciencia"
+  },
+  {
+    "signaturas": "F16A",
+    "descripcion": "Historia de la lógica"
+  },
+  {
+    "signaturas": "F16B",
+    "descripcion": "Filosofía analítica"
+  },
+  {
+    "signaturas": "F17",
+    "descripcion": "Ética"
+  },
+  {
+    "signaturas": "F1A",
+    "descripcion": "Historia de la filosofía"
+  },
+  {
+    "signaturas": "F1B",
+    "descripcion": "Historia de la filosofía antigua"
+  },
+  {
+    "signaturas": "F1C",
+    "descripcion": "Historia de la filosofía medieval"
+  },
+  {
+    "signaturas": "F1D",
+    "descripcion": "Historia de la filosofía moderna"
+  },
+  {
+    "signaturas": "F1E",
+    "descripcion": "Historia de la filosofía contemporánea"
+  },
+  {
+    "signaturas": "F1F",
+    "descripcion": "Historia de la filosofía española"
+  },
+  {
+    "signaturas": "F2A-K",
+    "descripcion": "Religión"
+  },
+  {
+    "signaturas": "F303",
+    "descripcion": "Métodos de las ciencias sociales"
+  },
+  {
+    "signaturas": "F314",
+    "descripcion": "Demografía. Estudios de población"
+  },
+  {
+    "signaturas": "F316",
+    "descripcion": "Sociología"
+  },
+  {
+    "signaturas": "F316A-M",
+    "descripcion": "Sociólogos individuales"
+  },
+  {
+    "signaturas": "F32",
+    "descripcion": "Política"
+  },
+  {
+    "signaturas": "F321A",
+    "descripcion": "Formas de organización política"
+  },
+  {
+    "signaturas": "F323A",
+    "descripcion": "Organización social. Clases sociales"
+  },
+  {
+    "signaturas": "F33",
+    "descripcion": "Economía"
+  },
+  {
+    "signaturas": "F330A",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F330B",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F33A",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F34A",
+    "descripcion": "Derecho"
+  },
+  {
+    "signaturas": "F34B",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F36A",
+    "descripcion": "Trabajo social"
+  },
+  {
+    "signaturas": "F37B",
+    "descripcion": "Educación. Enseñanza"
+  },
+  {
+    "signaturas": "F39",
+    "descripcion": "Antropología cultural. Etnología"
+  },
+  {
+    "signaturas": "F396",
+    "descripcion": "Feminismo"
+  },
+  {
+    "signaturas": "F39A",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F51",
+    "descripcion": "Matemáticas"
+  },
+  {
+    "signaturas": "F510",
+    "descripcion": "Lógica"
+  },
+  {
+    "signaturas": "F510A",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F515",
+    "descripcion": "Topología. Álgebra"
+  },
+  {
+    "signaturas": "F519B",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F519C",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F519D",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F519E",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F51A",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F51B",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F52",
+    "descripcion": "Astronomía. Cosmología"
+  },
+  {
+    "signaturas": "F52A",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F53",
+    "descripcion": "Física"
+  },
+  {
+    "signaturas": "F530A",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F530B",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F53A",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F53B",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F55",
+    "descripcion": "Geología"
+  },
+  {
+    "signaturas": "F57",
+    "descripcion": "Biología"
+  },
+  {
+    "signaturas": "F576",
+    "descripcion": "Biología celular"
+  },
+  {
+    "signaturas": "F577",
+    "descripcion": "Bioquímica. Biología molecular"
+  },
+  {
+    "signaturas": "F57A",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F57B",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F59",
+    "descripcion": "Zoología"
+  },
+  {
+    "signaturas": "F59A",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F59B",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F61",
+    "descripcion": "Medicina"
+  },
+  {
+    "signaturas": "F61A",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F62A ",
+    "descripcion": "Ingeniería técnica. Industria. Tecnología"
+  },
+  {
+    "signaturas": "F62B",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F65",
+    "descripcion": "Industria y comunicaciones"
+  },
+  {
+    "signaturas": "F681",
+    "descripcion": "Informática"
+  },
+  {
+    "signaturas": "F7 (A-D)",
+    "descripcion": "Arte"
+  },
+  {
+    "signaturas": "F71",
+    "descripcion": "Urbanismo"
+  },
+  {
+    "signaturas": "F72",
+    "descripcion": "Arquitectura"
+  },
+  {
+    "signaturas": "F73",
+    "descripcion": "Escultura"
+  },
+  {
+    "signaturas": "F74",
+    "descripcion": "Dibujo. Diseño. Artes aplicadas"
+  },
+  {
+    "signaturas": "F75",
+    "descripcion": "Pintura"
+  },
+  {
+    "signaturas": "F76",
+    "descripcion": "Artes gráficas. Grabado"
+  },
+  {
+    "signaturas": "F77",
+    "descripcion": "Fotografía"
+  },
+  {
+    "signaturas": "F78",
+    "descripcion": "Música"
+  },
+  {
+    "signaturas": "F79",
+    "descripcion": "Deportes. Juegos. Espectáculos"
+  },
+  {
+    "signaturas": "F800A",
+    "descripcion": "Lingüística. Filología"
+  },
+  {
+    "signaturas": "F801",
+    "descripcion": "Lingüística"
+  },
+  {
+    "signaturas": "F801A",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F82",
+    "descripcion": "Literatura"
+  },
+  {
+    "signaturas": "F87",
+    "descripcion": "Literatura clásica"
+  },
+  {
+    "signaturas": "F90A",
+    "descripcion": "Arqueología y prehistoria. Historia"
+  },
+  {
+    "signaturas": "F910",
+    "descripcion": "Geografía"
+  },
+  {
+    "signaturas": "F910A",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F911A",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "F914 (A-C)",
+    "descripcion": "Geografía de Europa"
+  },
+  {
+    "signaturas": "F929",
+    "descripcion": "Biografía"
+  },
+  {
+    "signaturas": "F930 (A-D)",
+    "descripcion": "Filosofía de la Historia"
+  },
+  {
+    "signaturas": "F94 (A-B)",
+    "descripcion": "Historia"
+  },
+  {
+    "signaturas": "FHG ",
+    "descripcion": "Depósito F (Gran Formato)"
+  },
+  {
+    "signaturas": "H001",
+    "descripcion": "Ciencia y conocimiento general. Trabajo intelectual"
+  },
+  {
+    "signaturas": "H008",
+    "descripcion": "Civilización. Cultura. Progreso"
+  },
+  {
+    "signaturas": "H06",
+    "descripcion": "Organizaciones y colectividades. Congresos. Exposiciones"
+  },
+  {
+    "signaturas": "H061.23",
+    "descripcion": "Sociedades secretas. Masonería"
+  },
+  {
+    "signaturas": "H1",
+    "descripcion": "Filosofía. Ciencias ocultas"
+  },
+  {
+    "signaturas": "H159",
+    "descripcion": "Psicología"
+  },
+  {
+    "signaturas": "H2",
+    "descripcion": "Religión, teología, Iglesia cristiana"
+  },
+  {
+    "signaturas": "H27",
+    "descripcion": "Historia de la Iglesia. Órdenes. Congregaciones"
+  },
+  {
+    "signaturas": "H272",
+    "descripcion": "Persecuciones religiosas. Martirios. Inquisición"
+  },
+  {
+    "signaturas": "H28",
+    "descripcion": "Iglesias cristianas. Comunidades y sectas. Herejías"
+  },
+  {
+    "signaturas": "H29",
+    "descripcion": "Religiones no cristianas. Mitología. Cultos. Religión comparada"
+  },
+  {
+    "signaturas": "H30",
+    "descripcion": "Teorías y metodología de las ciencias sociales"
+  },
+  {
+    "signaturas": "H308",
+    "descripcion": "Sociografía. Situación social. Clases sociales"
+  },
+  {
+    "signaturas": "H311",
+    "descripcion": "Estadística teórica"
+  },
+  {
+    "signaturas": "H312",
+    "descripcion": "Estadística de la población ----no hay nada"
+  },
+  {
+    "signaturas": "H314",
+    "descripcion": "Demografía. Estudios de población"
+  },
+  {
+    "signaturas": "H316",
+    "descripcion": "Sociología. Historia social"
+  },
+  {
+    "signaturas": "H32",
+    "descripcion": "Sistemas políticos. Relaciones internacionales. Diplomacia"
+  },
+  {
+    "signaturas": "H325",
+    "descripcion": "Migración. Colonización"
+  },
+  {
+    "signaturas": "H33",
+    "descripcion": "Economía. Economía política. Sistemas económicos"
+  },
+  {
+    "signaturas": "H331",
+    "descripcion": "Trabajo. Sindicatos"
+  },
+  {
+    "signaturas": "H332",
+    "descripcion": "Economía regional"
+  },
+  {
+    "signaturas": "H336",
+    "descripcion": "Finanzas. Hacienda pública. Banca. Moneda"
+  },
+  {
+    "signaturas": "H338",
+    "descripcion": "Historia económica. Organización y planificación de la economía"
+  },
+  {
+    "signaturas": "H339",
+    "descripcion": "Comercio. Relaciones económicas internacionales"
+  },
+  {
+    "signaturas": "H34",
+    "descripcion": "Derecho. Leyes. Historia del derecho"
+  },
+  {
+    "signaturas": "H35",
+    "descripcion": "Administración pública. Arte y ciencia militar. Ejército"
+  },
+  {
+    "signaturas": "H36",
+    "descripcion": "Trabajo social. Seguros"
+  },
+  {
+    "signaturas": "H37",
+    "descripcion": "Educación. Enseñanza. Formación. Tiempo libre"
+  },
+  {
+    "signaturas": "H378",
+    "descripcion": "Enseñanza superior. Universidades"
+  },
+  {
+    "signaturas": "H39",
+    "descripcion": "Etnología. Folklore. Usos y costumbres. Brujería"
+  },
+  {
+    "signaturas": "H396",
+    "descripcion": "Situación de la mujer. Feminismo. Libros sobre mujeres"
+  },
+  {
+    "signaturas": "H39Q",
+    "descripcion": "Temática Queer ----4 libros"
+  },
+  {
+    "signaturas": "H502",
+    "descripcion": "Naturaleza. Conservación de la naturaleza y vida salvaje"
+  },
+  {
+    "signaturas": "H504",
+    "descripcion": "Ciencias del medio ambiente"
+  },
+  {
+    "signaturas": "H51",
+    "descripcion": "Matemáticas"
+  },
+  {
+    "signaturas": "H52",
+    "descripcion": "Astronomía. Aeronáutica y navegación. Cronología y calendarios"
+  },
+  {
+    "signaturas": "H528",
+    "descripcion": "Geodesia. Topografía. Fotogrametría. Teledetección. Cartografía"
+  },
+  {
+    "signaturas": "H551",
+    "descripcion": "Geología general."
+  },
+  {
+    "signaturas": "H551.5",
+    "descripcion": "Meteorología. Climatología"
+  },
+  {
+    "signaturas": "H556 ",
+    "descripcion": "Hidrosfera. Agua en general. Hidrología"
+  },
+  {
+    "signaturas": "H56",
+    "descripcion": "Paleontología"
+  },
+  {
+    "signaturas": "H572",
+    "descripcion": "Antropología y paleoantropología"
+  },
+  {
+    "signaturas": "H574",
+    "descripcion": "Ecología"
+  },
+  {
+    "signaturas": "H58",
+    "descripcion": "Botánica"
+  },
+  {
+    "signaturas": "H59",
+    "descripcion": "Zoología"
+  },
+  {
+    "signaturas": "H6",
+    "descripcion": "Ciencias aplicadas. Tecnología"
+  },
+  {
+    "signaturas": "H61",
+    "descripcion": "Medicina"
+  },
+  {
+    "signaturas": "H62",
+    "descripcion": "Ingeniería técnica. Fuentes de energía"
+  },
+  {
+    "signaturas": "H63",
+    "descripcion": "Agricultura. Silvicultura. Zootecnia. Caza. Pesca. Ganadería. Edafología"
+  },
+  {
+    "signaturas": "H65",
+    "descripcion": "Industria y comunicaciones (gestión y organización)"
+  },
+  {
+    "signaturas": "H655",
+    "descripcion": "Industrias gráficas. Industria del libro. Imprenta. Publicidad"
+  },
+  {
+    "signaturas": "H66",
+    "descripcion": "Tecnología química. Metalurgia"
+  },
+  {
+    "signaturas": "H67",
+    "descripcion": "Industrias y oficios diversos"
+  },
+  {
+    "signaturas": "H681",
+    "descripcion": "Informática"
+  },
+  {
+    "signaturas": "H7",
+    "descripcion": "Arte en general. Historia del arte"
+  },
+  {
+    "signaturas": "H7.01",
+    "descripcion": "Teoría del arte. Estética. Filosofía del arte"
+  },
+  {
+    "signaturas": "H7.04",
+    "descripcion": "Temas de las representaciones artísticas. Símbolos. Iconografía"
+  },
+  {
+    "signaturas": "H71",
+    "descripcion": "Ordenación del territorio. Urbanismo"
+  },
+  {
+    "signaturas": "H72",
+    "descripcion": "Arquitectura y diseño de jardines"
+  },
+  {
+    "signaturas": "H725",
+    "descripcion": "Arquitectura industrial. Edificios públicos"
+  },
+  {
+    "signaturas": "H726",
+    "descripcion": "Arquitectura religiosa"
+  },
+  {
+    "signaturas": "H728",
+    "descripcion": "Viviendas. Arquitectura militar y defensiva"
+  },
+  {
+    "signaturas": "H73",
+    "descripcion": "Escultura"
+  },
+  {
+    "signaturas": "H736",
+    "descripcion": "Glíptica y sigilografía"
+  },
+  {
+    "signaturas": "H737",
+    "descripcion": "Numismática"
+  },
+  {
+    "signaturas": "H738",
+    "descripcion": "Cerámica artística, alfarería y mosaico"
+  },
+  {
+    "signaturas": "H739",
+    "descripcion": "Trabajos artísticos en metal"
+  },
+  {
+    "signaturas": "H74",
+    "descripcion": "Artes industriales. Arte textil"
+  },
+  {
+    "signaturas": "H75",
+    "descripcion": "Pintura. Dibujo"
+  },
+  {
+    "signaturas": "H75GF",
+    "descripcion": "Libros de pintura de gran formato"
+  },
+  {
+    "signaturas": "H76",
+    "descripcion": "Artes gráficas. Grabados. Cómics"
+  },
+  {
+    "signaturas": "H77",
+    "descripcion": "Fotografía"
+  },
+  {
+    "signaturas": "H77GF",
+    "descripcion": "Libros de fotografía de gran formato"
+  },
+  {
+    "signaturas": "H78",
+    "descripcion": "Teoría general de la música. Estética musical. Obras generales de música"
+  },
+  {
+    "signaturas": "H78 A/Z",
+    "descripcion": "Música. Monografías de músicos (ordenados alfabéticamente)"
+  },
+  {
+    "signaturas": "H782",
+    "descripcion": "Música de teatro. Óperas. Operetas. Zarzuelas"
+  },
+  {
+    "signaturas": "H78A",
+    "descripcion": "Música de la Edad Antigua"
+  },
+  {
+    "signaturas": "H78B",
+    "descripcion": "Música medieval"
+  },
+  {
+    "signaturas": "H78C",
+    "descripcion": "Música del Renacimiento y manierismo, s. XV y XVI"
+  },
+  {
+    "signaturas": "H78D",
+    "descripcion": "Música del Barroco"
+  },
+  {
+    "signaturas": "H78E",
+    "descripcion": "Música del siglo XVIII"
+  },
+  {
+    "signaturas": "H78F",
+    "descripcion": "Música de los siglos XIX y XX"
+  },
+  {
+    "signaturas": "H78GF",
+    "descripcion": "Libros de música de gran formato"
+  },
+  {
+    "signaturas": "H78PAR",
+    "descripcion": "Partituras"
+  },
+  {
+    "signaturas": "H791",
+    "descripcion": "Diversiones y espectáculos públicos. Arte cinematográfico. Películas"
+  },
+  {
+    "signaturas": "H792",
+    "descripcion": "Teatro. Danza. Ballet"
+  },
+  {
+    "signaturas": "H792GF",
+    "descripcion": "Libros de cine y teatro de gran formato"
+  },
+  {
+    "signaturas": "H7A",
+    "descripcion": "Arte prehistórico"
+  },
+  {
+    "signaturas": "H7AS",
+    "descripcion": "Arte de Asturias"
+  },
+  {
+    "signaturas": "H7B",
+    "descripcion": "Arte antiguo"
+  },
+  {
+    "signaturas": "H7C",
+    "descripcion": "Arte medieval"
+  },
+  {
+    "signaturas": "H7D",
+    "descripcion": "Arte del Renacimiento"
+  },
+  {
+    "signaturas": "H7E",
+    "descripcion": "Arte post-renacentista. Barroco. Neoclásico"
+  },
+  {
+    "signaturas": "H7F",
+    "descripcion": "Arte de los siglos XIX y XX"
+  },
+  {
+    "signaturas": "H7G",
+    "descripcion": "Arte de otras civilizaciones (Asia, África, América y Oceanía)"
+  },
+  {
+    "signaturas": "H7GF",
+    "descripcion": "Libros de arte de gran formato"
+  },
+  {
+    "signaturas": "H902 ",
+    "descripcion": "Arqueología general. Arqueología prehistórica y protohistórica"
+  },
+  {
+    "signaturas": "H903",
+    "descripcion": "Prehistoria. Utensilios prehistóricos y protohistóricos"
+  },
+  {
+    "signaturas": "H904",
+    "descripcion": "Restos culturales y arqueología de tiempos históricos"
+  },
+  {
+    "signaturas": "H904GF",
+    "descripcion": "Libros de Arqueología de gran formato"
+  },
+  {
+    "signaturas": "H908",
+    "descripcion": "Monografías regionales histórico-geográficas de países y localidades"
+  },
+  {
+    "signaturas": "H908A",
+    "descripcion": "Monografías locales de Asturias"
+  },
+  {
+    "signaturas": "H91",
+    "descripcion": "Geografía, generalidades. Geografía aplicada"
+  },
+  {
+    "signaturas": "H910",
+    "descripcion": "Viajes y exploraciones"
+  },
+  {
+    "signaturas": "H911",
+    "descripcion": "Geografía de los elementos terrestres"
+  },
+  {
+    "signaturas": "H912",
+    "descripcion": "Imágenes de territorio o de un país. Mapas y planos"
+  },
+  {
+    "signaturas": "H913",
+    "descripcion": "Geografía universal. Descripciones de países"
+  },
+  {
+    "signaturas": "H914",
+    "descripcion": "Geografía de Europa"
+  },
+  {
+    "signaturas": "H914A",
+    "descripcion": "Geografía de Asturias"
+  },
+  {
+    "signaturas": "H914E",
+    "descripcion": "Geografía de España"
+  },
+  {
+    "signaturas": "H914GF",
+    "descripcion": "Libros de Geografía de gran formato"
+  },
+  {
+    "signaturas": "H915",
+    "descripcion": "Geografía de Asia"
+  },
+  {
+    "signaturas": "H916",
+    "descripcion": "Geografía de África"
+  },
+  {
+    "signaturas": "H917",
+    "descripcion": "Geografía de América del Norte"
+  },
+  {
+    "signaturas": "H918",
+    "descripcion": "Geografía de América del Sur y Central"
+  },
+  {
+    "signaturas": "H919",
+    "descripcion": "Geografía de Oceanía y de las regiones polares"
+  },
+  {
+    "signaturas": "H91B",
+    "descripcion": "Geografía biológica (biogeografía, vegetación, zoogeografía, edafología)"
+  },
+  {
+    "signaturas": "H91E",
+    "descripcion": "Geografía económica"
+  },
+  {
+    "signaturas": "H91F",
+    "descripcion": "Geografía física, geomorfología, climatología, hidrografía"
+  },
+  {
+    "signaturas": "H91H",
+    "descripcion": "Geografía humana. Geografía social, cultural, demográfica, histórica"
+  },
+  {
+    "signaturas": "H91P",
+    "descripcion": "Geografía política. Geopolítica"
+  },
+  {
+    "signaturas": "H91R",
+    "descripcion": "Geografía rural y agraria"
+  },
+  {
+    "signaturas": "H91U",
+    "descripcion": "Geografía urbana, industrial, asentamientos, transportes. Ordenación del territorio"
+  },
+  {
+    "signaturas": "H929",
+    "descripcion": "Biografías y heráldica"
+  },
+  {
+    "signaturas": "H93",
+    "descripcion": "Historiografía, métodos, fuentes, filosofía de la historia."
+  },
+  {
+    "signaturas": "H930",
+    "descripcion": "Historia universal (países y épocas diferentes)"
+  },
+  {
+    "signaturas": "H931",
+    "descripcion": "Historia antigua universal"
+  },
+  {
+    "signaturas": "H931GF",
+    "descripcion": "Libros de Historia Antigua de gran formato"
+  },
+  {
+    "signaturas": "H93A",
+    "descripcion": "Archivística. Catálogos. Inventarios y repertorios de archivos. Documentos"
+  },
+  {
+    "signaturas": "H93E",
+    "descripcion": "Epigrafía"
+  },
+  {
+    "signaturas": "H93GF",
+    "descripcion": "Libros de gran formato de Archivística, Epigrafía y Paleografía"
+  },
+  {
+    "signaturas": "H93P",
+    "descripcion": "Paleografía y diplomática"
+  },
+  {
+    "signaturas": "H94",
+    "descripcion": "Historia de la Edad Media, Moderna y Contemporánea (no europea)"
+  },
+  {
+    "signaturas": "H940",
+    "descripcion": "Historia de Europa"
+  },
+  {
+    "signaturas": "H940A",
+    "descripcion": "Historia de Europa (Edad antigua)"
+  },
+  {
+    "signaturas": "H940B",
+    "descripcion": "Historia de Europa (Edad Media, s. V al XV)"
+  },
+  {
+    "signaturas": "H940C",
+    "descripcion": "Historia de Europa (Edad Moderna, s. XVI al XVIII)"
+  },
+  {
+    "signaturas": "H940D",
+    "descripcion": "Historia de Europa (Edad Contemporánea, s. XIX y XX)"
+  },
+  {
+    "signaturas": "H946",
+    "descripcion": "Historia de España, generalidades"
+  },
+  {
+    "signaturas": "H946A",
+    "descripcion": "Historia de Asturias"
+  },
+  {
+    "signaturas": "H946B",
+    "descripcion": "Historia de España (Edad antigua, hasta el s. IV incluido)"
+  },
+  {
+    "signaturas": "H946C",
+    "descripcion": "Historia de España (Edad Media, s. V al XV)"
+  },
+  {
+    "signaturas": "H946D",
+    "descripcion": "Historia de España (Edad Moderna, s. XVI al XVIII)"
+  },
+  {
+    "signaturas": "H946E",
+    "descripcion": "Historia de España (Edad Contemporánea, s. XIX y XX)"
+  },
+  {
+    "signaturas": "H946G",
+    "descripcion": "Historia de España (Guerra Civil)"
+  },
+  {
+    "signaturas": "H95",
+    "descripcion": "Historia de Asia"
+  },
+  {
+    "signaturas": "H96",
+    "descripcion": "Historia de África"
+  },
+  {
+    "signaturas": "H97",
+    "descripcion": "Historia de América del Norte"
+  },
+  {
+    "signaturas": "H98",
+    "descripcion": "Historia de América del Sur y Central"
+  },
+  {
+    "signaturas": "H99",
+    "descripcion": "Historia de Oceanía, de las regiones polares y de las Islas Filipinas"
+  },
+  {
+    "signaturas": "HE0 ",
+    "descripcion": "Fondos antiguos referidos a temas de la CDU 0"
+  },
+  {
+    "signaturas": "HE1",
+    "descripcion": "Fondos antiguos de filosofía"
+  },
+  {
+    "signaturas": "HE2",
+    "descripcion": "Fondos antiguos de historia de la Iglesia y religión"
+  },
+  {
+    "signaturas": "HE3",
+    "descripcion": "Fondos antiguos referidos a temas de la CDU 3"
+  },
+  {
+    "signaturas": "HE5",
+    "descripcion": "Fondos antiguos de ciencias exactas y naturales"
+  },
+  {
+    "signaturas": "HE6",
+    "descripcion": "Fondos antiguos de medicina y tecnologías"
+  },
+  {
+    "signaturas": "HE7",
+    "descripcion": "Fondos antiguos de arte"
+  },
+  {
+    "signaturas": "HE8",
+    "descripcion": "Fondos antiguos de literatura"
+  },
+  {
+    "signaturas": "HE9",
+    "descripcion": "Fondos antiguos de historia y arqueología"
+  },
+  {
+    "signaturas": "HE908",
+    "descripcion": "Fondos antiguos de monografías regionales y de países"
+  },
+  {
+    "signaturas": "HE91",
+    "descripcion": "Fondos antiguos de geografía"
+  },
+  {
+    "signaturas": "HE92",
+    "descripcion": "Fondos antiguos de biografías, heráldica y genealogía"
+  },
+  {
+    "signaturas": "HE93",
+    "descripcion": "Fondos antiguos de archivística, diplomática, epigrafía y paleografía"
+  },
+  {
+    "signaturas": "HEG",
+    "descripcion": "Fondo antiguo. Gran Formato"
+  },
+  {
+    "signaturas": "HG001",
+    "descripcion": "Ciencia y conocimiento general"
+  },
+  {
+    "signaturas": "HG001/03",
+    "descripcion": "Diccionarios de Ciencia"
+  },
+  {
+    "signaturas": "HG001/09",
+    "descripcion": "Historia de la Ciencia"
+  },
+  {
+    "signaturas": "HG001.81",
+    "descripcion": "Técnicas del trabajo intelectual"
+  },
+  {
+    "signaturas": "HG003",
+    "descripcion": "Escritura. Signos y símbolos. Semiótica"
+  },
+  {
+    "signaturas": "HG003/03",
+    "descripcion": "Escritura. Signos y símbolos. Semiótica. Diccionarios"
+  },
+  {
+    "signaturas": "HG007",
+    "descripcion": "Inteligencia artificial. Cibernética"
+  },
+  {
+    "signaturas": "HG007/03",
+    "descripcion": "Inteligencia artificial. Cibernética. Diccionarios"
+  },
+  {
+    "signaturas": "HG008",
+    "descripcion": "Civilización. Cultura. Progreso"
+  },
+  {
+    "signaturas": "HG008/03",
+    "descripcion": "Civilización. Cultura. Progreso. Diccionarios"
+  },
+  {
+    "signaturas": "HG1",
+    "descripcion": "Filosofía general"
+  },
+  {
+    "signaturas": "HG1 A/Z",
+    "descripcion": "Monografías sobre filósofos"
+  },
+  {
+    "signaturas": "HG1/03",
+    "descripcion": "Diccionarios y enciclopedias de filosofía"
+  },
+  {
+    "signaturas": "HG1/09",
+    "descripcion": "Historia general de la filosofía"
+  },
+  {
+    "signaturas": "HG1/38 ",
+    "descripcion": "Filosofía antigua"
+  },
+  {
+    "signaturas": "HG1/4",
+    "descripcion": "Filosofía medieval"
+  },
+  {
+    "signaturas": "HG1/40",
+    "descripcion": "Filosofía moderna y contemporánea"
+  },
+  {
+    "signaturas": "HG1/42",
+    "descripcion": "Filosofía moderna y contemporánea en lengua inglesa ----no hay nada"
+  },
+  {
+    "signaturas": "HG1/43",
+    "descripcion": "Filosofía moderna y contemporánea en lengua alemana ----1 libro"
+  },
+  {
+    "signaturas": "HG1/44",
+    "descripcion": "Filosofía moderna y contemporánea en lengua francesa ----1 libro"
+  },
+  {
+    "signaturas": "HG1/45",
+    "descripcion": "Filosofía moderna y contemporánea en lengua italiana ----no hay nada"
+  },
+  {
+    "signaturas": "HG1/46",
+    "descripcion": "Filosofía moderna y contemporánea en lengua española ----no hay nada"
+  },
+  {
+    "signaturas": "HG1:741.5",
+    "descripcion": "Comics sobre Filosofía"
+  },
+  {
+    "signaturas": "HG111",
+    "descripcion": "Metafísica. Ontología"
+  },
+  {
+    "signaturas": "HG113",
+    "descripcion": "Cosmología. Filosofía natural"
+  },
+  {
+    "signaturas": "HG130.1",
+    "descripcion": "Antropología filosófica"
+  },
+  {
+    "signaturas": "HG133",
+    "descripcion": "Ciencias ocultas. Ocultismo. Parapsicología"
+  },
+  {
+    "signaturas": "HG141",
+    "descripcion": "Sistemas filosóficos"
+  },
+  {
+    "signaturas": "HG141.81",
+    "descripcion": "Pensamiento utópico"
+  },
+  {
+    "signaturas": "HG159.9",
+    "descripcion": "Psicología general. Filosofía de la psicología"
+  },
+  {
+    "signaturas": "HG159.9/03",
+    "descripcion": "Diccionarios y enciclopedias de psicología"
+  },
+  {
+    "signaturas": "HG159.95",
+    "descripcion": "Filosofía de la mente. Mente y cuerpo. Ciencia cognitiva"
+  },
+  {
+    "signaturas": "HG159.964",
+    "descripcion": "Psicoanálisis"
+  },
+  {
+    "signaturas": "HG16",
+    "descripcion": "Lógica. Filosofía de la lógica"
+  },
+  {
+    "signaturas": "HG16/09",
+    "descripcion": "Historia de la lógica"
+  },
+  {
+    "signaturas": "HG16:741.5",
+    "descripcion": "Comics sobre Lógica"
+  },
+  {
+    "signaturas": "HG164",
+    "descripcion": "Lógica simbólica"
+  },
+  {
+    "signaturas": "HG165",
+    "descripcion": "Teoría del conocimiento. Gnoseología"
+  },
+  {
+    "signaturas": "HG165.7",
+    "descripcion": "Positivismo. Filosofía analítica"
+  },
+  {
+    "signaturas": "HG167",
+    "descripcion": "Filosofía y metodología de la ciencia"
+  },
+  {
+    "signaturas": "HG17",
+    "descripcion": "Ética"
+  },
+  {
+    "signaturas": "HG17/09",
+    "descripcion": "Historia de la ética ----no hay nada"
+  },
+  {
+    "signaturas": "HG2",
+    "descripcion": "Religión"
+  },
+  {
+    "signaturas": "HG2/03",
+    "descripcion": "Diccionarios de religión"
+  },
+  {
+    "signaturas": "HG2/08",
+    "descripcion": "Atlas de religión"
+  },
+  {
+    "signaturas": "HG21",
+    "descripcion": "Teología natural"
+  },
+  {
+    "signaturas": "HG23",
+    "descripcion": "Cristianismo"
+  },
+  {
+    "signaturas": "HG23:741.5",
+    "descripcion": "Comics sobre cristianismo"
+  },
+  {
+    "signaturas": "HG248",
+    "descripcion": "Peregrinaciones"
+  },
+  {
+    "signaturas": "HG262.5",
+    "descripcion": "Concilios"
+  },
+  {
+    "signaturas": "HG27",
+    "descripcion": "Historia general de la Iglesia cristiana. Patrología  (←27, 28)"
+  },
+  {
+    "signaturas": "HG271",
+    "descripcion": "Órdenes religiosas. Monacato. Monasterios, Abadías"
+  },
+  {
+    "signaturas": "HG272",
+    "descripcion": "Inquisición. Persecuciones religiosas"
+  },
+  {
+    "signaturas": "HG273",
+    "descripcion": "Herejías y cismas"
+  },
+  {
+    "signaturas": "HG29",
+    "descripcion": "Religiones no cristianas"
+  },
+  {
+    "signaturas": "HG29:741.5",
+    "descripcion": "Comics sobre religiones no cristianas"
+  },
+  {
+    "signaturas": "HG291",
+    "descripcion": "Filosofía, historia comparada y sociología de la religión"
+  },
+  {
+    "signaturas": "HG292",
+    "descripcion": "Mitología clásica"
+  },
+  {
+    "signaturas": "HG292/03",
+    "descripcion": "Mitología clásica. Diccionarios ----2 libros"
+  },
+  {
+    "signaturas": "HG297:741.5",
+    "descripcion": "Comics sobre el islam"
+  },
+  {
+    "signaturas": "HG3",
+    "descripcion": "Ciencias sociales"
+  },
+  {
+    "signaturas": "HG3/03",
+    "descripcion": "Diccionarios de todas las ciencias sociales"
+  },
+  {
+    "signaturas": "HG30 ",
+    "descripcion": "Teoría y metodología de las ciencias sociales"
+  },
+  {
+    "signaturas": "HG308",
+    "descripcion": "Historia social. Situación social"
+  },
+  {
+    "signaturas": "HG308/46",
+    "descripcion": "Situación social de España. Historia social de España"
+  },
+  {
+    "signaturas": "HG308/461.2",
+    "descripcion": "Situación social de Asturias. Historia social de Asturias ----no hay nada"
+  },
+  {
+    "signaturas": "HG31 ",
+    "descripcion": "Estadística General ----no hay nada"
+  },
+  {
+    "signaturas": "HG312",
+    "descripcion": "Estadística de la población. Censos. Tablas de población"
+  },
+  {
+    "signaturas": "HG314",
+    "descripcion": "Técnicas y ejercicios de Demografía ----2 libros"
+  },
+  {
+    "signaturas": "HG316",
+    "descripcion": "Sociología"
+  },
+  {
+    "signaturas": "HG316/09",
+    "descripcion": "Historia de la sociología ----no hay nada"
+  },
+  {
+    "signaturas": "HG316C",
+    "descripcion": "Sociología de la ciencia y del conocimiento"
+  },
+  {
+    "signaturas": "HG316S",
+    "descripcion": "Comunicación. Sociología de la comunicación. Sociolingüística"
+  },
+  {
+    "signaturas": "HG32 ",
+    "descripcion": "Política"
+  },
+  {
+    "signaturas": "HG32/03",
+    "descripcion": "Política. Diccionarios ----1 libro"
+  },
+  {
+    "signaturas": "HG32/46",
+    "descripcion": "Política y gobierno de España"
+  },
+  {
+    "signaturas": "HG32/461.2",
+    "descripcion": "Política y gobierno de Asturias"
+  },
+  {
+    "signaturas": "HG321.01",
+    "descripcion": "Filosofía política. Teoría del Estado"
+  },
+  {
+    "signaturas": "HG321.1",
+    "descripcion": "Feudalismo"
+  },
+  {
+    "signaturas": "HG323",
+    "descripcion": "Política interior. Nacionalismos. Racismo. Clases sociales. Lucha de clases"
+  },
+  {
+    "signaturas": "HG323/46",
+    "descripcion": "Política interior. Nacionalismos. Racismo...en España"
+  },
+  {
+    "signaturas": "HG325",
+    "descripcion": "Migración. Colonización"
+  },
+  {
+    "signaturas": "HG326",
+    "descripcion": "Esclavitud"
+  },
+  {
+    "signaturas": "HG327",
+    "descripcion": "Política internacional. Política exterior. Relaciones internacionales"
+  },
+  {
+    "signaturas": "HG327/46",
+    "descripcion": "Política exterior española"
+  },
+  {
+    "signaturas": "HG329",
+    "descripcion": "Partidos y movimientos políticos"
+  },
+  {
+    "signaturas": "HG329/46",
+    "descripcion": "Partidos y movimientos políticos en España"
+  },
+  {
+    "signaturas": "HG329:741.5",
+    "descripcion": "Comics sobre partidos políticos"
+  },
+  {
+    "signaturas": "HG33",
+    "descripcion": "Economía"
+  },
+  {
+    "signaturas": "HG330.85",
+    "descripcion": "Marxismo"
+  },
+  {
+    "signaturas": "HG330.86",
+    "descripcion": "Teorías económicas socialdemócratas y socialistas no marxistas. Anarquismo ----3 libros"
+  },
+  {
+    "signaturas": "HG331",
+    "descripcion": "Trabajo. Movimiento obrero. Sindicalismo"
+  },
+  {
+    "signaturas": "HG331/46",
+    "descripcion": "Trabajo, movimiento obrero y sindicalismo en España"
+  },
+  {
+    "signaturas": "HG332",
+    "descripcion": "Economía regional. Desamortización. Expropiación"
+  },
+  {
+    "signaturas": "HG332/46",
+    "descripcion": "Economía regional, desamortización y expropiación en España ----1 libro"
+  },
+  {
+    "signaturas": "HG336",
+    "descripcion": "Finanzas"
+  },
+  {
+    "signaturas": "HG338 ",
+    "descripcion": "Situación económica. Historia económica."
+  },
+  {
+    "signaturas": "HG338/46",
+    "descripcion": "Situación económica de España. Historia económica de España"
+  },
+  {
+    "signaturas": "HG338/461.2",
+    "descripcion": "Situación económica de Asturias. Historia económica de Asturias"
+  },
+  {
+    "signaturas": "HG339",
+    "descripcion": "Comercio"
+  },
+  {
+    "signaturas": "HG34",
+    "descripcion": "Derecho"
+  },
+  {
+    "signaturas": "HG34/09",
+    "descripcion": "Historia del derecho y las instituciones. Fueros"
+  },
+  {
+    "signaturas": "HG34/46:741.5",
+    "descripcion": "Comics sobre Jurisprudencia española"
+  },
+  {
+    "signaturas": "HG34:741.5",
+    "descripcion": "Comics sobre Derecho y Jurisprudencia"
+  },
+  {
+    "signaturas": "HG340.1",
+    "descripcion": "Filosofía del derecho"
+  },
+  {
+    "signaturas": "HG342",
+    "descripcion": "Derecho constitucional. Historia de las constituciones"
+  },
+  {
+    "signaturas": "HG35 ",
+    "descripcion": "Administración pública"
+  },
+  {
+    "signaturas": "HG355",
+    "descripcion": "Arte y ciencia militar. Defensa nacional. Ejército"
+  },
+  {
+    "signaturas": "HG36",
+    "descripcion": "Trabajo social"
+  },
+  {
+    "signaturas": "HG37",
+    "descripcion": "Educación. Enseñanza"
+  },
+  {
+    "signaturas": "HG378",
+    "descripcion": "Enseñanza superior. Universidades"
+  },
+  {
+    "signaturas": "HG39",
+    "descripcion": "Antropología cultural. Etnología"
+  },
+  {
+    "signaturas": "HG391",
+    "descripcion": "Usos y costumbres de la vida pública y privada"
+  },
+  {
+    "signaturas": "HG396",
+    "descripcion": "Feminismo"
+  },
+  {
+    "signaturas": "HG398",
+    "descripcion": "Folklore. Etnomusicología"
+  },
+  {
+    "signaturas": "HG5",
+    "descripcion": "Ciencias"
+  },
+  {
+    "signaturas": "HG5/03",
+    "descripcion": "Diccionarios de ciencias"
+  },
+  {
+    "signaturas": "HG502",
+    "descripcion": "Conservación de la naturaleza. Ciencias naturales. Parques naturales"
+  },
+  {
+    "signaturas": "HG502/46",
+    "descripcion": "Conservación de la naturaleza, ciencias y parques naturales en España"
+  },
+  {
+    "signaturas": "HG504",
+    "descripcion": "Ciencias del medio ambiente"
+  },
+  {
+    "signaturas": "HG51",
+    "descripcion": "Matemáticas. Teoría de conjuntos"
+  },
+  {
+    "signaturas": "HG51/09",
+    "descripcion": "Historia de las matemáticas ----no hay nada"
+  },
+  {
+    "signaturas": "HG510",
+    "descripcion": "Filosofía de las matemáticas"
+  },
+  {
+    "signaturas": "HG519.2",
+    "descripcion": "Cálculo de probabilidades. Conjuntos borrosos. Estadística matemática"
+  },
+  {
+    "signaturas": "HG52",
+    "descripcion": "Astronomía. Cosmología"
+  },
+  {
+    "signaturas": "HG528",
+    "descripcion": "Geodesia. Cartografía. Técnicas en geografía"
+  },
+  {
+    "signaturas": "HG53",
+    "descripcion": "Física"
+  },
+  {
+    "signaturas": "HG53:741.05",
+    "descripcion": "Comics sobre Física"
+  },
+  {
+    "signaturas": "HG54",
+    "descripcion": "Química ----no hay nada"
+  },
+  {
+    "signaturas": "HG551",
+    "descripcion": "Geología general"
+  },
+  {
+    "signaturas": "HG551.4",
+    "descripcion": "Geomorfología"
+  },
+  {
+    "signaturas": "HG551.5",
+    "descripcion": "Meteorología. Climatología"
+  },
+  {
+    "signaturas": "HG551.7",
+    "descripcion": "Estratigrafía ----no hay nada"
+  },
+  {
+    "signaturas": "HG551.8",
+    "descripcion": "Paleogeografía ----no hay nada"
+  },
+  {
+    "signaturas": "HG552",
+    "descripcion": "Petrología ----no hay nada"
+  },
+  {
+    "signaturas": "HG556 ",
+    "descripcion": "Hidrosfera. Agua en general. Hidrología"
+  },
+  {
+    "signaturas": "HG57",
+    "descripcion": "Ciencias biológicas. Evolucionismo"
+  },
+  {
+    "signaturas": "HG572",
+    "descripcion": "Antropología física"
+  },
+  {
+    "signaturas": "HG574",
+    "descripcion": "Biogeografía ----no hay nada"
+  },
+  {
+    "signaturas": "HG591",
+    "descripcion": "Zoogeografía ----no hay nada"
+  },
+  {
+    "signaturas": "HG6/03",
+    "descripcion": "Diccionarios de ciencias aplicada"
+  },
+  {
+    "signaturas": "HG61",
+    "descripcion": "Medicina"
+  },
+  {
+    "signaturas": "HG61/09",
+    "descripcion": "Historia de la medicina"
+  },
+  {
+    "signaturas": "HG614",
+    "descripcion": "Geografía médica. Topografía médica ----no hay nada"
+  },
+  {
+    "signaturas": "HG62",
+    "descripcion": "Ingeniería técnica. Industria. Tecnología. Filosofía de la tecnología"
+  },
+  {
+    "signaturas": "HG62/09",
+    "descripcion": "Historia de la tecnología"
+  },
+  {
+    "signaturas": "HG63",
+    "descripcion": "Agricultura. Zootecnia. Caza. Pesca"
+  },
+  {
+    "signaturas": "HG630",
+    "descripcion": "Silvicultura. Biología forestal. Inventarios forestales"
+  },
+  {
+    "signaturas": "HG631.4",
+    "descripcion": "Edafología. Suelos ----no hay nada"
+  },
+  {
+    "signaturas": "HG65",
+    "descripcion": "Industrias de la comunicación y del transporte. Contabilidad. Organización empresarial. Relaciones públicas"
+  },
+  {
+    "signaturas": "HG654",
+    "descripcion": "Telecomunicaciones. Radio. Televisión"
+  },
+  {
+    "signaturas": "HG655",
+    "descripcion": "Industrias gráficas. Industria del libro. Imprenta"
+  },
+  {
+    "signaturas": "HG656",
+    "descripcion": "Transportes. Correos"
+  },
+  {
+    "signaturas": "HG659",
+    "descripcion": "Publicidad y propaganda. Relaciones públicas"
+  },
+  {
+    "signaturas": "HG681.3",
+    "descripcion": "Informática"
+  },
+  {
+    "signaturas": "HG7",
+    "descripcion": "Arte en general. Monografías sobre artistas (+apellido)"
+  },
+  {
+    "signaturas": "HG7/03",
+    "descripcion": "Diccionarios de arte (excepto música y cine)"
+  },
+  {
+    "signaturas": "HG7/06",
+    "descripcion": "Exposiciones de arte. Catálogos de exposiciones (colectivas)"
+  },
+  {
+    "signaturas": "HG7/069",
+    "descripcion": "Museos de Bellas Artes (alfabetización por ciudad o país)"
+  },
+  {
+    "signaturas": "HG7/069.01",
+    "descripcion": "Museología"
+  },
+  {
+    "signaturas": "HG7/09",
+    "descripcion": "Historia del arte"
+  },
+  {
+    "signaturas": "HG7/09:741.5",
+    "descripcion": "Comics sobre Historia del arte"
+  },
+  {
+    "signaturas": "HG7/093",
+    "descripcion": "Historiografía del arte"
+  },
+  {
+    "signaturas": "HG7/46",
+    "descripcion": "Arte español"
+  },
+  {
+    "signaturas": "HG7/461.2",
+    "descripcion": "Arte asturiano"
+  },
+  {
+    "signaturas": "HG7.01",
+    "descripcion": "Estética. Filosofía del arte. Sociología del arte"
+  },
+  {
+    "signaturas": "HG7.01:741.5",
+    "descripcion": "Comics sobre Teoría del arte"
+  },
+  {
+    "signaturas": "HG7.02",
+    "descripcion": "Técnicas artísticas. Restauración"
+  },
+  {
+    "signaturas": "HG7.031",
+    "descripcion": "Arte primitivo"
+  },
+  {
+    "signaturas": "HG7.031.1",
+    "descripcion": "Arte prehistórico"
+  },
+  {
+    "signaturas": "HG7.031.1/4",
+    "descripcion": "Arte prehistórico de Europa ----no hay nada"
+  },
+  {
+    "signaturas": "HG7.031.1/4/63",
+    "descripcion": "Arte paleolítico de Europa"
+  },
+  {
+    "signaturas": "HG7.031.1/46",
+    "descripcion": "Arte prehistórico de España"
+  },
+  {
+    "signaturas": "HG7.031.1/46/63",
+    "descripcion": "Arte paleolítico de España ----no hay nada"
+  },
+  {
+    "signaturas": "HG7.032 ",
+    "descripcion": "Arte antiguo oriental, fenicio, mesopotámico, iraní..."
+  },
+  {
+    "signaturas": "HG7.032.2",
+    "descripcion": "Arte egipcio"
+  },
+  {
+    "signaturas": "HG7.032.6",
+    "descripcion": "Arte griego"
+  },
+  {
+    "signaturas": "HG7.032.7",
+    "descripcion": "Arte romano y etrusco"
+  },
+  {
+    "signaturas": "HG7.033",
+    "descripcion": "Arte medieval"
+  },
+  {
+    "signaturas": "HG7.033/46",
+    "descripcion": "Arte medieval español"
+  },
+  {
+    "signaturas": "HG7.033/461.2",
+    "descripcion": "Arte prerrománico y románico asturiano"
+  },
+  {
+    "signaturas": "HG7.033.1",
+    "descripcion": "Arte paleocristiano"
+  },
+  {
+    "signaturas": "HG7.033.2",
+    "descripcion": "Arte bizantino"
+  },
+  {
+    "signaturas": "HG7.033.3",
+    "descripcion": "Arte islámico mudéjar"
+  },
+  {
+    "signaturas": "HG7.033.4",
+    "descripcion": "Arte prerrománico y románico"
+  },
+  {
+    "signaturas": "HG7.033.4/46",
+    "descripcion": "Arte prerrománico y románico español"
+  },
+  {
+    "signaturas": "HG7.033.5",
+    "descripcion": "Arte gótico"
+  },
+  {
+    "signaturas": "HG7.033.5/46",
+    "descripcion": "Arte gótico español"
+  },
+  {
+    "signaturas": "HG7.034",
+    "descripcion": "Renacimiento (Italia: fin s. XIV-mediados s. XV. Resto de países: s. XVI)"
+  },
+  {
+    "signaturas": "HG7.034/46",
+    "descripcion": "Arte renacentista español"
+  },
+  {
+    "signaturas": "HG7.034.7",
+    "descripcion": "Barroco"
+  },
+  {
+    "signaturas": "HG7.034.7/46",
+    "descripcion": "Arte barroco español"
+  },
+  {
+    "signaturas": "HG7.034.9",
+    "descripcion": "Arte colonial"
+  },
+  {
+    "signaturas": "HG7.035",
+    "descripcion": "Arte moderno. Clasicismo del XVIII y arte del XIX"
+  },
+  {
+    "signaturas": "HG7.035/46",
+    "descripcion": "Clasicismo del XVIII y arte del XIX español"
+  },
+  {
+    "signaturas": "HG7.036",
+    "descripcion": "Arte del XX. Arte contemporáneo de fines del XIX hasta 1945"
+  },
+  {
+    "signaturas": "HG7.036/46",
+    "descripcion": "Arte español del XX"
+  },
+  {
+    "signaturas": "HG7.036.2",
+    "descripcion": "Impresionismo. Postimpresionismo. Neoimpresionismo"
+  },
+  {
+    "signaturas": "HG7.038",
+    "descripcion": "Arte contemporáneo desde 1945. Arte abstracto. Expresionismo. Pop-Art…"
+  },
+  {
+    "signaturas": "HG7.04",
+    "descripcion": "Iconografía. Iconología"
+  },
+  {
+    "signaturas": "HG7.046",
+    "descripcion": "Bestiarios"
+  },
+  {
+    "signaturas": "HG7.05",
+    "descripcion": "Ilustración de libros. Miniaturas"
+  },
+  {
+    "signaturas": "HG7.07",
+    "descripcion": "Coleccionismo. Marchantes. Galerías. Ventas. Mecenazgo. Patrimonio"
+  },
+  {
+    "signaturas": "HG711",
+    "descripcion": "Ordenación del territorio. Urbanismo"
+  },
+  {
+    "signaturas": "HG711/46",
+    "descripcion": "Urbanismo en España"
+  },
+  {
+    "signaturas": "HG72",
+    "descripcion": "Arquitectura"
+  },
+  {
+    "signaturas": "HG72/03",
+    "descripcion": "Arquitectura. Diccionarios"
+  },
+  {
+    "signaturas": "HG72:741.5",
+    "descripcion": "Comics sobre Arquitectura"
+  },
+  {
+    "signaturas": "HG725",
+    "descripcion": "Arquitectura industrial"
+  },
+  {
+    "signaturas": "HG726",
+    "descripcion": "Arquitectura religiosa"
+  },
+  {
+    "signaturas": "HG726/46",
+    "descripcion": "Arquitectura religiosa en España"
+  },
+  {
+    "signaturas": "HG728",
+    "descripcion": "Edificios públicos, culturales, científicos. Viviendas. Castillos. Palacios"
+  },
+  {
+    "signaturas": "HG728/46",
+    "descripcion": "Edificios públicos, culturales, científicos... en España"
+  },
+  {
+    "signaturas": "HG73",
+    "descripcion": "Escultura"
+  },
+  {
+    "signaturas": "HG73/03",
+    "descripcion": "Escultura. Diccionarios"
+  },
+  {
+    "signaturas": "HG736 ",
+    "descripcion": "Glíptica y sigilografía"
+  },
+  {
+    "signaturas": "HG737",
+    "descripcion": "Monedas y medallas"
+  },
+  {
+    "signaturas": "HG737/46",
+    "descripcion": "Monedas y medallas en España"
+  },
+  {
+    "signaturas": "HG738",
+    "descripcion": "Cerámica, esmalte y mosaico"
+  },
+  {
+    "signaturas": "HG739",
+    "descripcion": "Artes del metal"
+  },
+  {
+    "signaturas": "HG74",
+    "descripcion": "Dibujo. Artes industriales, decoración. Comics. Diseño"
+  },
+  {
+    "signaturas": "HG741.5",
+    "descripcion": "Comics. Autores"
+  },
+  {
+    "signaturas": "HG741.5.01",
+    "descripcion": "Teoría y filosofía del comic"
+  },
+  {
+    "signaturas": "HG745",
+    "descripcion": "Diseño industrial"
+  },
+  {
+    "signaturas": "HG749",
+    "descripcion": "Mobiliario"
+  },
+  {
+    "signaturas": "HG75/",
+    "descripcion": "Pintores"
+  },
+  {
+    "signaturas": "HG75:741.5",
+    "descripcion": "Comics sobre Pintura"
+  },
+  {
+    "signaturas": "HG76",
+    "descripcion": "Grabados, carteles"
+  },
+  {
+    "signaturas": "HG77",
+    "descripcion": "Fotografía"
+  },
+  {
+    "signaturas": "HG78",
+    "descripcion": "Música. Monografías sobre músicos (+apellido)"
+  },
+  {
+    "signaturas": "HG78/03",
+    "descripcion": "Diccionarios y enciclopedias de música"
+  },
+  {
+    "signaturas": "HG78/09",
+    "descripcion": "Obras generales de música. Historia de la música"
+  },
+  {
+    "signaturas": "HG78/46",
+    "descripcion": "Música española"
+  },
+  {
+    "signaturas": "HG78/461.2",
+    "descripcion": "Música asturiana"
+  },
+  {
+    "signaturas": "HG78.032",
+    "descripcion": "Música de la Edad Antigua y de la Edad Media"
+  },
+  {
+    "signaturas": "HG78.032/46",
+    "descripcion": "Música española de la Edad Antigua y de la Edad Media ----no hay nada"
+  },
+  {
+    "signaturas": "HG78.034",
+    "descripcion": "Música del Renacimiento y manierismo, s. XV y XVI"
+  },
+  {
+    "signaturas": "HG78.034/46",
+    "descripcion": "Música española del Renacimiento y manierismo, s. XV y XVI"
+  },
+  {
+    "signaturas": "HG78.034.7",
+    "descripcion": "Música del Barroco, s. XVII ----no hay nada"
+  },
+  {
+    "signaturas": "HG78.034.7/46",
+    "descripcion": "Música española del Barroco, s. XVII ----no hay nada"
+  },
+  {
+    "signaturas": "HG78.034.8",
+    "descripcion": "Música del Clasicismo, s. XVIII ----3 libros"
+  },
+  {
+    "signaturas": "HG78.034.8/46",
+    "descripcion": "Música española del Clasicismo, s. XVIII ----no hay nada"
+  },
+  {
+    "signaturas": "HG78.035",
+    "descripcion": "Música del s. XIX"
+  },
+  {
+    "signaturas": "HG78.035/46",
+    "descripcion": "Música española del s. XIX"
+  },
+  {
+    "signaturas": "HG78.036",
+    "descripcion": "Música del s. XX"
+  },
+  {
+    "signaturas": "HG78.036/46",
+    "descripcion": "Música española del s. XX"
+  },
+  {
+    "signaturas": "HG781",
+    "descripcion": "Teoría, estética y filosofía de la música. Análisis musical"
+  },
+  {
+    "signaturas": "HG781.7",
+    "descripcion": "Etnomusicología"
+  },
+  {
+    "signaturas": "HG782",
+    "descripcion": "Música de teatro. Óperas. Operetas"
+  },
+  {
+    "signaturas": "HG783",
+    "descripcion": "Música religiosa y sacra ----1 libro"
+  },
+  {
+    "signaturas": "HG784",
+    "descripcion": "Música vocal y cantada"
+  },
+  {
+    "signaturas": "HG785",
+    "descripcion": "Música instrumental"
+  },
+  {
+    "signaturas": "HG78BP a 78HP",
+    "descripcion": "Partituras (Planta Baja - Referencia)"
+  },
+  {
+    "signaturas": "HG79",
+    "descripcion": "Diversiones. Juegos. Deportes"
+  },
+  {
+    "signaturas": "HG791",
+    "descripcion": "Cine"
+  },
+  {
+    "signaturas": "HG791/03",
+    "descripcion": "Diccionarios de cine"
+  },
+  {
+    "signaturas": "HG791/09",
+    "descripcion": "Historia del cine"
+  },
+  {
+    "signaturas": "HG791.4",
+    "descripcion": "Monografías sobre cineastas"
+  },
+  {
+    "signaturas": "HG791:741.5",
+    "descripcion": "Comics sobre Cine"
+  },
+  {
+    "signaturas": "HG791:741.5.01",
+    "descripcion": "Comics sobre Cine. Teoría"
+  },
+  {
+    "signaturas": "HG792",
+    "descripcion": "Teatro"
+  },
+  {
+    "signaturas": "HG792/03",
+    "descripcion": "Diccionarios de teatro"
+  },
+  {
+    "signaturas": "HG793",
+    "descripcion": "Baile. Arte del movimiento"
+  },
+  {
+    "signaturas": "HG800 ",
+    "descripcion": "Generalidades sobre el lenguaje. Origen y evolución del lenguaje"
+  },
+  {
+    "signaturas": "HG800.1",
+    "descripcion": "Filosofía del lenguaje. Psicolingüística. Comunicación no verbal"
+  },
+  {
+    "signaturas": "HG800.1/03",
+    "descripcion": "Filosofía del lenguaje. Psicolingüística. Comunicación no verbal. Dicci."
+  },
+  {
+    "signaturas": "HG800.7",
+    "descripcion": "Conocimiento práctico de las lenguas. Bilingüismo. Multilingüismo"
+  },
+  {
+    "signaturas": "HG800.8",
+    "descripcion": "Dialectos, regionalismos y jergas"
+  },
+  {
+    "signaturas": "HG801",
+    "descripcion": "Lingüística y filología en general"
+  },
+  {
+    "signaturas": "HG801/03",
+    "descripcion": "Lingüística y filología en general. Diccionarios"
+  },
+  {
+    "signaturas": "HG801/08",
+    "descripcion": "Atlas lingüísticos"
+  },
+  {
+    "signaturas": "HG801.1",
+    "descripcion": "Ortografía --- no hay nada"
+  },
+  {
+    "signaturas": "HG801.3",
+    "descripcion": "Lexicología. Lexicografía. Etimología"
+  },
+  {
+    "signaturas": "HG801.4",
+    "descripcion": "Fonética"
+  },
+  {
+    "signaturas": "HG801.5",
+    "descripcion": "Gramática"
+  },
+  {
+    "signaturas": "HG801.6",
+    "descripcion": "Métrica  ---- no hay nada"
+  },
+  {
+    "signaturas": "HG801.7",
+    "descripcion": "Semiología. Ciencias auxiliares de la filología. Semántica"
+  },
+  {
+    "signaturas": "HG802.0",
+    "descripcion": "Lengua Inglesa"
+  },
+  {
+    "signaturas": "HG802.0/03",
+    "descripcion": "Lengua Inglesa. Diccionarios"
+  },
+  {
+    "signaturas": "HG802.0-3",
+    "descripcion": "Lengua Inglesa. Lexicografía"
+  },
+  {
+    "signaturas": "HG802.0-4",
+    "descripcion": "Lengua Inglesa. Fonética"
+  },
+  {
+    "signaturas": "HG802.0-5",
+    "descripcion": "Lengua Inglesa. Gramática"
+  },
+  {
+    "signaturas": "HG802.0-82",
+    "descripcion": "Lengua Inglesa. Métodos"
+  },
+  {
+    "signaturas": "HG803",
+    "descripcion": "Lenguas germánicas"
+  },
+  {
+    "signaturas": "HG803.0",
+    "descripcion": "Lengua alemana"
+  },
+  {
+    "signaturas": "HG803.0/03",
+    "descripcion": "Lengua alemana. Diccionarios"
+  },
+  {
+    "signaturas": "HG803.0-1",
+    "descripcion": "Lengua alemana. Ortografía ---- 1 libro"
+  },
+  {
+    "signaturas": "HG803.0-3",
+    "descripcion": "Lengua alemana. Lexicografía ---- 3 libros"
+  },
+  {
+    "signaturas": "HG803.0-4",
+    "descripcion": "Lengua alemana. Fonética ---- no hay nada"
+  },
+  {
+    "signaturas": "HG803.0-5",
+    "descripcion": "Lengua alemana. Gramática"
+  },
+  {
+    "signaturas": "HG803.0-82",
+    "descripcion": "Lengua alemana. Métodos"
+  },
+  {
+    "signaturas": "HG804",
+    "descripcion": "Lenguas romances"
+  },
+  {
+    "signaturas": "HG804.0",
+    "descripcion": "Lengua francesa"
+  },
+  {
+    "signaturas": "HG804.0/03",
+    "descripcion": "Lengua francesa. Diccionarios"
+  },
+  {
+    "signaturas": "HG804.0-1",
+    "descripcion": "Lengua francesa. Ortografía"
+  },
+  {
+    "signaturas": "HG804.0-3",
+    "descripcion": "Lengua francesa. Lexicografía"
+  },
+  {
+    "signaturas": "HG804.0-4",
+    "descripcion": "Lengua francesa. Fonética"
+  },
+  {
+    "signaturas": "HG804.0-5",
+    "descripcion": "Lengua francesa. Gramática"
+  },
+  {
+    "signaturas": "HG804.0-82",
+    "descripcion": "Lengua francesa. Métodos"
+  },
+  {
+    "signaturas": "HG804.90",
+    "descripcion": "Provenzal ---- no hay nada"
+  },
+  {
+    "signaturas": "HG804.90/03",
+    "descripcion": "Provenzal. Diccionarios ---- no hay nada"
+  },
+  {
+    "signaturas": "HG804.99",
+    "descripcion": "Lengua catalana"
+  },
+  {
+    "signaturas": "HG804.99/03 ",
+    "descripcion": "Lengua catalana. Diccionarios "
+  },
+  {
+    "signaturas": "HG804.99-3",
+    "descripcion": "Lengua catalana. Lexicografía ---- no hay nada"
+  },
+  {
+    "signaturas": "HG804.99-5",
+    "descripcion": "Lengua catalana. Gramática ---- no hay nada"
+  },
+  {
+    "signaturas": "HG805.0 ",
+    "descripcion": "Lengua italiana"
+  },
+  {
+    "signaturas": "HG805.0/03",
+    "descripcion": "Lengua italiana. Diccionarios"
+  },
+  {
+    "signaturas": "HG805.0-3",
+    "descripcion": "Lengua italiana. Lexicografía"
+  },
+  {
+    "signaturas": "HG805.0-4",
+    "descripcion": "Lengua italiana. Fonética"
+  },
+  {
+    "signaturas": "HG805.0-5",
+    "descripcion": "Lengua italiana. Gramática"
+  },
+  {
+    "signaturas": "HG805.0-82",
+    "descripcion": "Lengua italiana. Métodos"
+  },
+  {
+    "signaturas": "HG805.9",
+    "descripcion": "Lengua rumana ---- no hay nada"
+  },
+  {
+    "signaturas": "HG805.9/03",
+    "descripcion": "Lengua rumana. Diccionarios"
+  },
+  {
+    "signaturas": "HG805.99",
+    "descripcion": "lengua ladina, retorromance ---- no hay nada"
+  },
+  {
+    "signaturas": "HG806 ",
+    "descripcion": "Lenguas ibéricas ---- no hay nada"
+  },
+  {
+    "signaturas": "HG806.0",
+    "descripcion": "Lengua española"
+  },
+  {
+    "signaturas": "HG806.0/03",
+    "descripcion": "Lengua española. Diccionarios"
+  },
+  {
+    "signaturas": "HG806.0/7",
+    "descripcion": "Lengua española en Hispanoamérica"
+  },
+  {
+    "signaturas": "HG806.0/7/03",
+    "descripcion": "Lengua española en Hispanoamérica. Diccionarios"
+  },
+  {
+    "signaturas": "HG806.0-087",
+    "descripcion": "Dialectos del español "
+  },
+  {
+    "signaturas": "HG806.0-1",
+    "descripcion": "Lengua española. Ortografía"
+  },
+  {
+    "signaturas": "HG806.0-3",
+    "descripcion": "Lengua española. Lexicografía"
+  },
+  {
+    "signaturas": "HG806.0-4",
+    "descripcion": "Lengua española. Fonética"
+  },
+  {
+    "signaturas": "HG806.05",
+    "descripcion": "Lengua ladina. Judeo-español ---- no hay nada"
+  },
+  {
+    "signaturas": "HG806.0-5",
+    "descripcion": "Lengua española. Gramática"
+  },
+  {
+    "signaturas": "HG806.05/03",
+    "descripcion": "Lengua ladina. Judeo-español. Diccionarios"
+  },
+  {
+    "signaturas": "HG806.0-6",
+    "descripcion": "Lengua española. Métrica"
+  },
+  {
+    "signaturas": "HG806.0-82",
+    "descripcion": "Lengua española. Métodos"
+  },
+  {
+    "signaturas": "HG806.90",
+    "descripcion": "Lengua portuguesa"
+  },
+  {
+    "signaturas": "HG806.90/03",
+    "descripcion": "Lengua portuguesa. Diccionarios"
+  },
+  {
+    "signaturas": "HG806.90-4",
+    "descripcion": "Lengua portuguesa. Fonética ---- no hay nada"
+  },
+  {
+    "signaturas": "HG806.90-5",
+    "descripcion": "Lengua portuguesa. Gramática"
+  },
+  {
+    "signaturas": "HG806.90-82",
+    "descripcion": "Lengua portuguesa. Métodos"
+  },
+  {
+    "signaturas": "HG806.99",
+    "descripcion": "Lengua gallega"
+  },
+  {
+    "signaturas": "HG806.99/03",
+    "descripcion": "Lengua gallega. Diccionarios"
+  },
+  {
+    "signaturas": "HG806Ast/03",
+    "descripcion": "Lengua asturiana. Diccionarios"
+  },
+  {
+    "signaturas": "HG806Ast-1",
+    "descripcion": "Lengua asturiana. Ortografía"
+  },
+  {
+    "signaturas": "HG806Ast-3",
+    "descripcion": "Lengua asturiana. Lexicografía"
+  },
+  {
+    "signaturas": "HG806Ast-31",
+    "descripcion": "Lengua asturiana. Toponimia y Onomástica"
+  },
+  {
+    "signaturas": "HG806Ast-4",
+    "descripcion": "Lengua asturiana. Fonética y Fonología"
+  },
+  {
+    "signaturas": "HG806Ast-5",
+    "descripcion": "Lengua asturiana. Gramática"
+  },
+  {
+    "signaturas": "HG806Ast-54",
+    "descripcion": "Lengua asturiana. Etimología"
+  },
+  {
+    "signaturas": "HG806Ast-8",
+    "descripcion": "Lengua asturiana. Fuentes"
+  },
+  {
+    "signaturas": "HG806Ast-82",
+    "descripcion": "Lengua asturiana. Métodos"
+  },
+  {
+    "signaturas": "HG806Ast-87",
+    "descripcion": "Lengua asturiana. Hablas y dialectos"
+  },
+  {
+    "signaturas": "HG806Ast-9",
+    "descripcion": "Lengua asturiana. Sociolingüística"
+  },
+  {
+    "signaturas": "HG806Ast-CR",
+    "descripcion": "Lengua asturiana. Caja Roja"
+  },
+  {
+    "signaturas": "HG806EO",
+    "descripcion": "Eonaviego"
+  },
+  {
+    "signaturas": "HG807",
+    "descripcion": "Lenguas clásicas en general"
+  },
+  {
+    "signaturas": "HG807/03",
+    "descripcion": "Lenguas clásicas en general. Diccionarios ---- no hay nada"
+  },
+  {
+    "signaturas": "HG807.1",
+    "descripcion": "Lengua latina"
+  },
+  {
+    "signaturas": "HG807.1/03",
+    "descripcion": "Lengua latina. Diccionarios"
+  },
+  {
+    "signaturas": "HG807.1-1",
+    "descripcion": "Lengua latina. Ortografía ---- no hay nada"
+  },
+  {
+    "signaturas": "HG807.1-3",
+    "descripcion": "Lengua latina. Lexicografía ---- no hay nada"
+  },
+  {
+    "signaturas": "HG807.1-4",
+    "descripcion": "Lengua latina. Fonética"
+  },
+  {
+    "signaturas": "HG807.1-5",
+    "descripcion": "Lengua latina. Gramática"
+  },
+  {
+    "signaturas": "HG807.1-6",
+    "descripcion": "Lengua latina. Métrica"
+  },
+  {
+    "signaturas": "HG807.1-82",
+    "descripcion": "Lengua latina. Métodos"
+  },
+  {
+    "signaturas": "HG807.3",
+    "descripcion": "Lengua latina medieval y vulgar"
+  },
+  {
+    "signaturas": "HG807.3-3",
+    "descripcion": "Lengua latina medieval y vulgar. Lexicografía ---- no hay nada"
+  },
+  {
+    "signaturas": "HG807.5",
+    "descripcion": "Lengua griega clásica"
+  },
+  {
+    "signaturas": "HG807.5/03",
+    "descripcion": "Lengua griega clásica. Diccionarios"
+  },
+  {
+    "signaturas": "HG807.5-3",
+    "descripcion": "Lengua griega clásica. Lexicografía"
+  },
+  {
+    "signaturas": "HG807.5-4",
+    "descripcion": "Lengua griega clásica. Fonética"
+  },
+  {
+    "signaturas": "HG807.5-5",
+    "descripcion": "Lengua griega clásica. Gramática"
+  },
+  {
+    "signaturas": "HG807.5-6",
+    "descripcion": "Lengua griega clásica.  Métrica ---- no hay nada"
+  },
+  {
+    "signaturas": "HG807.5-82",
+    "descripcion": "Lengua griega clásica. Métodos ---- no hay nada"
+  },
+  {
+    "signaturas": "HG807.7",
+    "descripcion": "Lengua griega moderna "
+  },
+  {
+    "signaturas": "HG807.7/03",
+    "descripcion": "Lengua griega moderna. Diccionarios"
+  },
+  {
+    "signaturas": "HG807.7-5",
+    "descripcion": "Lengua griega moderna. Gramática ---- no hay nada"
+  },
+  {
+    "signaturas": "HG807.7-82",
+    "descripcion": "Lengua griega moderna. Métodos ---- no hay nada"
+  },
+  {
+    "signaturas": "HG808",
+    "descripcion": "Lenguas eslavas y bálticas "
+  },
+  {
+    "signaturas": "HG808/03",
+    "descripcion": "Lenguas eslavas y bálticas. Diccionarios"
+  },
+  {
+    "signaturas": "HG809",
+    "descripcion": "Lenguas orientales, africanas y otras lenguas"
+  },
+  {
+    "signaturas": "HG809/03",
+    "descripcion": "Lenguas orientales, africanas y otras lenguas. Diccionarios ---- no hay nada"
+  },
+  {
+    "signaturas": "HG809.1",
+    "descripcion": "Lenguas indoeuropeas e indogermanas "
+  },
+  {
+    "signaturas": "HG809.1/03",
+    "descripcion": "Lenguas indoeuropeas e indogermanas. Diccionarios"
+  },
+  {
+    "signaturas": "HG809.16",
+    "descripcion": "Lengua vasca"
+  },
+  {
+    "signaturas": "HG809.16/03",
+    "descripcion": "Lengua vasca. Diccionarios"
+  },
+  {
+    "signaturas": "HG809.2",
+    "descripcion": "Lenguas semíticas. Árabe. Hebreo. Arameo…"
+  },
+  {
+    "signaturas": "HG809.2/03",
+    "descripcion": "Lenguas semíticas. Árabe. Hebreo. Arameo. Diccionarios"
+  },
+  {
+    "signaturas": "HG809.5",
+    "descripcion": "Lenguas asiáticas"
+  },
+  {
+    "signaturas": "HG809.5/03",
+    "descripcion": "Lenguas asiáticas. Diccionarios"
+  },
+  {
+    "signaturas": "HG82 ",
+    "descripcion": "Literatura en general"
+  },
+  {
+    "signaturas": "HG82/03",
+    "descripcion": "Literatura en general. Diccionarios"
+  },
+  {
+    "signaturas": "HG82.03",
+    "descripcion": "Interpretación y traducción"
+  },
+  {
+    "signaturas": "HG82.08",
+    "descripcion": "Actividad técnica literaria. Preceptiva. Retórica. Oratoria. Estética literaria"
+  },
+  {
+    "signaturas": "HG82.09",
+    "descripcion": "Crítica literaria. Estudios literarios. Historia de la literatura "
+  },
+  {
+    "signaturas": "HG82:741.5",
+    "descripcion": "Comics sobre Literatura general"
+  },
+  {
+    "signaturas": "HG820",
+    "descripcion": "Literatura inglesa. Autores del Reino Unido e Irlanda"
+  },
+  {
+    "signaturas": "HG820/03",
+    "descripcion": "Diccionarios de literatura inglesa"
+  },
+  {
+    "signaturas": "HG820/6",
+    "descripcion": "Literatura africana en lengua inglesa"
+  },
+  {
+    "signaturas": "HG820/6.09",
+    "descripcion": ""
+  },
+  {
+    "signaturas": "HG820/71",
+    "descripcion": "Literatura canadiense en lengua inglesa"
+  },
+  {
+    "signaturas": "HG820/71.09",
+    "descripcion": "Literatura canadiense en lengua inglesa. Historia y crítica ---- no hay nadie"
+  },
+  {
+    "signaturas": "HG820/73",
+    "descripcion": "Literatura norteamericana en lengua inglesa"
+  },
+  {
+    "signaturas": "HG820/73.09",
+    "descripcion": "Literatura norteamericana en lengua inglesa. Historia y crítica"
+  },
+  {
+    "signaturas": "HG820/8",
+    "descripcion": "Obras literarias en lengua inglesa"
+  },
+  {
+    "signaturas": "HG820/8.09",
+    "descripcion": "Obras literarias en lengua inglesa. Historia y crítica"
+  },
+  {
+    "signaturas": "HG820.09",
+    "descripcion": "Historia y crítica de la literatura en lengua inglesa "
+  },
+  {
+    "signaturas": "HG820Med",
+    "descripcion": "Literatura inglesa medieval"
+  },
+  {
+    "signaturas": "HG820Med.09",
+    "descripcion": "Literatura inglesa medieval. Historia y crítica"
+  },
+  {
+    "signaturas": "HG830",
+    "descripcion": "Literatura alemana y austriaca"
+  },
+  {
+    "signaturas": "HG830/03",
+    "descripcion": "Diccionarios de literatura alemana"
+  },
+  {
+    "signaturas": "HG830.09",
+    "descripcion": "Historia y crítica de la literatura alemana"
+  },
+  {
+    "signaturas": "HG839",
+    "descripcion": "Literatura holandesa, noruega y danesa"
+  },
+  {
+    "signaturas": "HG84",
+    "descripcion": "Literaturas románicas ---- no hay nada"
+  },
+  {
+    "signaturas": "HG84/03",
+    "descripcion": "Literaturas románicas. Diccionarios"
+  },
+  {
+    "signaturas": "HG84.09",
+    "descripcion": "Historia y crítica de la literatura románica"
+  },
+  {
+    "signaturas": "HG840",
+    "descripcion": "Literatura francesa"
+  },
+  {
+    "signaturas": "HG840/03",
+    "descripcion": "Literatura francesa. Diccionarios"
+  },
+  {
+    "signaturas": "HG840/493",
+    "descripcion": "Literatura belga en lengua francesa"
+  },
+  {
+    "signaturas": "HG840/493/03",
+    "descripcion": "Literatura belga en lengua francesa. Diccionarios ---- no hay nada"
+  },
+  {
+    "signaturas": "HG840/493.09",
+    "descripcion": "Literatura belga en lengua francesa. Historia y crítica"
+  },
+  {
+    "signaturas": "HG840/494",
+    "descripcion": "Literatura suiza en lengua francesa"
+  },
+  {
+    "signaturas": "HG840/494/03",
+    "descripcion": "Literatura suiza en lengua francesa. Diccionarios ---- no hay nada"
+  },
+  {
+    "signaturas": "HG840/6",
+    "descripcion": "Literatura francesa en África ----1 libro"
+  },
+  {
+    "signaturas": "HG840/6.09",
+    "descripcion": "Historia y crítica de la literatura francesa en África ----2 libros"
+  },
+  {
+    "signaturas": "HG840/71",
+    "descripcion": "Literatura canadiense en lengua francesa"
+  },
+  {
+    "signaturas": "HG840/8",
+    "descripcion": "Obras literarias francófonas"
+  },
+  {
+    "signaturas": "HG840/8.09",
+    "descripcion": "Obras literarias francófonas. Historia y crítica "
+  },
+  {
+    "signaturas": "HG840.09",
+    "descripcion": "Historia y crítica de la literatura francesa"
+  },
+  {
+    "signaturas": "HG849.0",
+    "descripcion": "Literatura provenzal"
+  },
+  {
+    "signaturas": "HG849.0.09",
+    "descripcion": "Literatura provenzal. Historia y crítica"
+  },
+  {
+    "signaturas": "HG849.9",
+    "descripcion": "Literatura catalana"
+  },
+  {
+    "signaturas": "HG849.9.09",
+    "descripcion": "Historia y crítica de la literatura catalana"
+  },
+  {
+    "signaturas": "HG850",
+    "descripcion": "Literatura italiana"
+  },
+  {
+    "signaturas": "HG850/03",
+    "descripcion": "Diccionarios de literatura italiana"
+  },
+  {
+    "signaturas": "HG850.09",
+    "descripcion": "Historia y crítica de la literatura italiana"
+  },
+  {
+    "signaturas": "HG859",
+    "descripcion": "Literatura rumana"
+  },
+  {
+    "signaturas": "HG86:741.5",
+    "descripcion": "Comics sobre Literatura española"
+  },
+  {
+    "signaturas": "HG860",
+    "descripcion": "Literatura española"
+  },
+  {
+    "signaturas": "HG860/03",
+    "descripcion": "Diccionarios de literatura española"
+  },
+  {
+    "signaturas": "HG860/4",
+    "descripcion": "Literatura en lengua asturiana"
+  },
+  {
+    "signaturas": "HG860/4/Cart-caj",
+    "descripcion": "Literatura en lengua asturiana. Cartafueyos (en cajas rojas)"
+  },
+  {
+    "signaturas": "HG860/4/CR",
+    "descripcion": "Literatura en lengua asturiana. Caja Roja"
+  },
+  {
+    "signaturas": "HG860/4EO",
+    "descripcion": "Literatura eonaviega"
+  },
+  {
+    "signaturas": "HG860/7",
+    "descripcion": "Literatura hispanoamericana"
+  },
+  {
+    "signaturas": "HG860/7/03",
+    "descripcion": "Diccionarios de literatura hispanoamericana"
+  },
+  {
+    "signaturas": "HG860/7.09",
+    "descripcion": "Historia y crítica de la literatura hispanoamericana"
+  },
+  {
+    "signaturas": "HG860/72",
+    "descripcion": "Literatura mejicana"
+  },
+  {
+    "signaturas": "HG860/72.09",
+    "descripcion": "Historia y crítica de la literatura mejicana"
+  },
+  {
+    "signaturas": "HG860/728",
+    "descripcion": "Literatura hondureña, salvadoreña, nicaragüense, costarricense y panameña"
+  },
+  {
+    "signaturas": "HG860/729",
+    "descripcion": "Literatura cubana, dominicana y portorriqueña"
+  },
+  {
+    "signaturas": "HG860/729.09",
+    "descripcion": "Literatura cubana, dominicana y portorriqueña. Historia y crítica ----1 libro"
+  },
+  {
+    "signaturas": "HG860/73",
+    "descripcion": "Literatura norteamericana en lengua española ----no hay nada"
+  },
+  {
+    "signaturas": "HG860/82",
+    "descripcion": "Literatura argentina"
+  },
+  {
+    "signaturas": "HG860/82.09",
+    "descripcion": "Historia y crítica de la literatura argentina"
+  },
+  {
+    "signaturas": "HG860/83",
+    "descripcion": "Literatura chilena"
+  },
+  {
+    "signaturas": "HG860/83.09",
+    "descripcion": "Historia y crítica de la literatura chilena"
+  },
+  {
+    "signaturas": "HG860/84",
+    "descripcion": "Literatura boliviana ----no hay nada"
+  },
+  {
+    "signaturas": "HG860/85",
+    "descripcion": "Literatura peruana"
+  },
+  {
+    "signaturas": "HG860/85.09",
+    "descripcion": "Historia y crítica de la literatura peruana ----no hay nada"
+  },
+  {
+    "signaturas": "HG860/861",
+    "descripcion": "Literatura colombiana"
+  },
+  {
+    "signaturas": "HG860/861.09",
+    "descripcion": "Historia y crítica de la literatura colombiana"
+  },
+  {
+    "signaturas": "HG860/866",
+    "descripcion": "Literatura ecuatoriana"
+  },
+  {
+    "signaturas": "HG860/87",
+    "descripcion": "Literatura venezolana"
+  },
+  {
+    "signaturas": "HG860/87.09",
+    "descripcion": "Historia y crítica de la literatura venezolana"
+  },
+  {
+    "signaturas": "HG860/892",
+    "descripcion": "Literatura paraguaya"
+  },
+  {
+    "signaturas": "HG860/899",
+    "descripcion": "Literatura uruguaya"
+  },
+  {
+    "signaturas": "HG860.09",
+    "descripcion": "Historia y crítica de la literatura española"
+  },
+  {
+    "signaturas": "HG860.5",
+    "descripcion": "Literatura ladina o sefardita"
+  },
+  {
+    "signaturas": "HG860.5.09",
+    "descripcion": "Literatura ladina o sefardita. Historia y crítica"
+  },
+  {
+    "signaturas": "HG860-1.09",
+    "descripcion": "Crítica de la poesía española"
+  },
+  {
+    "signaturas": "HG860-2.09",
+    "descripcion": "Crítica del teatro español"
+  },
+  {
+    "signaturas": "HG860-3.09",
+    "descripcion": "Crítica de la narrativa española"
+  },
+  {
+    "signaturas": "HG869.0",
+    "descripcion": "Literatura portuguesa"
+  },
+  {
+    "signaturas": "HG869.0/03",
+    "descripcion": "Literatura portuguesa. Diccionarios"
+  },
+  {
+    "signaturas": "HG869.0/8",
+    "descripcion": "Literatura brasileña"
+  },
+  {
+    "signaturas": "HG869.0/8.09",
+    "descripcion": "Historia y crítica de la literatura brasileña"
+  },
+  {
+    "signaturas": "HG869.0.09",
+    "descripcion": "Historia y crítica de la literatura portuguesa"
+  },
+  {
+    "signaturas": "HG869.9",
+    "descripcion": "Literatura gallega"
+  },
+  {
+    "signaturas": "HG869.9",
+    "descripcion": "Literatura gallega. Historia y crítica"
+  },
+  {
+    "signaturas": "HG87",
+    "descripcion": "Literaturas clásicas"
+  },
+  {
+    "signaturas": "HG87/03",
+    "descripcion": "Literaturas clásicas. Diccionarios"
+  },
+  {
+    "signaturas": "HG87.09",
+    "descripcion": "Historia y crítica de la literatura clásica"
+  },
+  {
+    "signaturas": "HG871",
+    "descripcion": "Literatura latina"
+  },
+  {
+    "signaturas": "HG871/03",
+    "descripcion": "Literatura latina. Diccionarios ----no hay ninguno"
+  },
+  {
+    "signaturas": "HG871.09",
+    "descripcion": "Historia y crítica de la literatura latina"
+  },
+  {
+    "signaturas": "HG873",
+    "descripcion": "Literatura latina medieval ----no hay ninguno"
+  },
+  {
+    "signaturas": "HG873.09",
+    "descripcion": "Historia y crítica de la literatura latina medieval ----no hay ninguno"
+  },
+  {
+    "signaturas": "HG875",
+    "descripcion": "Literatura griega"
+  },
+  {
+    "signaturas": "HG875.09",
+    "descripcion": "Historia y crítica de la literatura griega"
+  },
+  {
+    "signaturas": "HG877",
+    "descripcion": "Literatura griega moderna "
+  },
+  {
+    "signaturas": "HG88",
+    "descripcion": "Literatura polaca, búlgara, checa, serbia"
+  },
+  {
+    "signaturas": "HG88.09",
+    "descripcion": "Historia y crítica de la literatura polaca... ----no hay ninguno"
+  },
+  {
+    "signaturas": "HG882",
+    "descripcion": "Literatura rusa"
+  },
+  {
+    "signaturas": "HG89",
+    "descripcion": "Otras literaturas"
+  },
+  {
+    "signaturas": "HG89.09",
+    "descripcion": "Historia y crítica de otras literaturas"
+  },
+  {
+    "signaturas": "HG891",
+    "descripcion": "Literatura indoirania"
+  },
+  {
+    "signaturas": "HG891.6",
+    "descripcion": "Literatura vasca"
+  },
+  {
+    "signaturas": "HG891.6.09",
+    "descripcion": "Historia y crítica de la literatura vasca ----no hay ninguno"
+  },
+  {
+    "signaturas": "HG892",
+    "descripcion": "Literatura hebrea y árabe"
+  },
+  {
+    "signaturas": "HG892.09",
+    "descripcion": "Historia y crítica de la literatura hebrea y árabe"
+  },
+  {
+    "signaturas": "HG895.1",
+    "descripcion": "Literatura china"
+  },
+  {
+    "signaturas": "HG895.6",
+    "descripcion": "Literatura japonesa"
+  },
+  {
+    "signaturas": "HG8XX03=60/4",
+    "descripcion": "Traducciones al asturiano"
+  },
+  {
+    "signaturas": "HG902",
+    "descripcion": "Prehistoria y arqueología. Obras generales. Manuales"
+  },
+  {
+    "signaturas": "HG902/03",
+    "descripcion": "Diccionarios de prehistoria y arqueología"
+  },
+  {
+    "signaturas": "HG902/06",
+    "descripcion": "Catálogos de museos de prehistoria y arqueología"
+  },
+  {
+    "signaturas": "HG902/063",
+    "descripcion": "Congresos. Simposios. Conferencias. Exposiciones. Guías arqueológicas"
+  },
+  {
+    "signaturas": "HG902/08",
+    "descripcion": "Atlas de la prehistoria y arqueológicos"
+  },
+  {
+    "signaturas": "HG902/1",
+    "descripcion": "Excavaciones y patrimonio arqueológico ----no hay nada"
+  },
+  {
+    "signaturas": "HG902/46",
+    "descripcion": "Excavaciones y cartas arqueológicas en España"
+  },
+  {
+    "signaturas": "HG902.01",
+    "descripcion": "Metodología, teoría y ciencias auxiliares de prehistoria y arqueología"
+  },
+  {
+    "signaturas": "HG903",
+    "descripcion": "Prehistoria. Obras Generales"
+  },
+  {
+    "signaturas": "HG903/4",
+    "descripcion": "Prehistoria de Europa en general"
+  },
+  {
+    "signaturas": "HG903/4/632",
+    "descripcion": "Paleolítico, epipaleolítico y mesolítico en Europa"
+  },
+  {
+    "signaturas": "HG903/4/634",
+    "descripcion": "Neolítico en Europa"
+  },
+  {
+    "signaturas": "HG903/4/637",
+    "descripcion": "Edad del Bronce en Europa"
+  },
+  {
+    "signaturas": "HG903/4/638",
+    "descripcion": "Edad del Hierro en Europa"
+  },
+  {
+    "signaturas": "HG903/46",
+    "descripcion": "Prehistoria de España"
+  },
+  {
+    "signaturas": "HG903/46/632",
+    "descripcion": "Paleolítico, epipaleolítico y mesolítico en España"
+  },
+  {
+    "signaturas": "HG903/46/634",
+    "descripcion": "Neolítico en España"
+  },
+  {
+    "signaturas": "HG903/46/636",
+    "descripcion": "Calcolítico en España"
+  },
+  {
+    "signaturas": "HG903/46/637",
+    "descripcion": "Edad del Bronce en España"
+  },
+  {
+    "signaturas": "HG903/46/638",
+    "descripcion": "Edad del Hierro en España"
+  },
+  {
+    "signaturas": "HG903/5",
+    "descripcion": "Prehistoria y arqueología de Oriente ----1 libro"
+  },
+  {
+    "signaturas": "HG903/6",
+    "descripcion": "Prehistoria y arqueología de África ----3 libros"
+  },
+  {
+    "signaturas": "HG903/632",
+    "descripcion": "Paleolítico, epipaleolítico y mesolítico general"
+  },
+  {
+    "signaturas": "HG903/632…638",
+    "descripcion": "Paleolítico, Neolítico, Edad de los Metales. Obras Generales"
+  },
+  {
+    "signaturas": "HG903/634",
+    "descripcion": "Neolítico general"
+  },
+  {
+    "signaturas": "HG903/636",
+    "descripcion": "Calcolítico general ----3 libros"
+  },
+  {
+    "signaturas": "HG903/637",
+    "descripcion": "Edad del Bronce general"
+  },
+  {
+    "signaturas": "HG903/638",
+    "descripcion": "Edad del Hierro general"
+  },
+  {
+    "signaturas": "HG903/8",
+    "descripcion": "Prehistoria y arqueología de América"
+  },
+  {
+    "signaturas": "HG903:741.5",
+    "descripcion": "Comics sobre Prehistoria"
+  },
+  {
+    "signaturas": "HG904",
+    "descripcion": "Arqueología"
+  },
+  {
+    "signaturas": "HG908",
+    "descripcion": "Monografías regionales"
+  },
+  {
+    "signaturas": "HG908/46",
+    "descripcion": "Monografías regionales de España y Portugal"
+  },
+  {
+    "signaturas": "HG908/461.2",
+    "descripcion": "Monografías regionales de Asturias"
+  },
+  {
+    "signaturas": "HG910",
+    "descripcion": "Geografía. Generalidades. Geografía histórica ----4 libros"
+  },
+  {
+    "signaturas": "HG910/03",
+    "descripcion": "Diccionarios de geografía"
+  },
+  {
+    "signaturas": "HG910.1",
+    "descripcion": "Metodología, investigación, didáctica y análisis geográfico"
+  },
+  {
+    "signaturas": "HG910.2",
+    "descripcion": "Viajes y exploraciones"
+  },
+  {
+    "signaturas": "HG910.2/7",
+    "descripcion": "Viajes y exploraciones del continente americano"
+  },
+  {
+    "signaturas": "HG911",
+    "descripcion": "Geografía general y universal. Manuales de geografía"
+  },
+  {
+    "signaturas": "HG911/03",
+    "descripcion": "Diccionarios de geografía"
+  },
+  {
+    "signaturas": "HG911.2",
+    "descripcion": "Geografía física"
+  },
+  {
+    "signaturas": "HG911.2/46",
+    "descripcion": "Geografía física de España"
+  },
+  {
+    "signaturas": "HG911.3",
+    "descripcion": "Geografía humana. Geografía social. Geografía regional"
+  },
+  {
+    "signaturas": "HG911.3/46",
+    "descripcion": "Geografía humana y social de España"
+  },
+  {
+    "signaturas": "HG911.32",
+    "descripcion": "Geografía política. Geopolítica"
+  },
+  {
+    "signaturas": "HG911.33",
+    "descripcion": "Geografía económica, comercial, industrial, transporte y energía"
+  },
+  {
+    "signaturas": "HG911.33/46",
+    "descripcion": "Geografía económica, comercial, industrial y del transporte de España"
+  },
+  {
+    "signaturas": "HG911.34",
+    "descripcion": "Geografía de la población. Demografía"
+  },
+  {
+    "signaturas": "HG911.34/46",
+    "descripcion": "Geografía de la población de España"
+  },
+  {
+    "signaturas": "HG911.36",
+    "descripcion": "Geografía rural. Geografía agraria"
+  },
+  {
+    "signaturas": "HG911.36/46",
+    "descripcion": "Geografía rural y geografía agraria en España"
+  },
+  {
+    "signaturas": "HG911.37",
+    "descripcion": "Geografía urbana. Asentamientos urbanos"
+  },
+  {
+    "signaturas": "HG911.37/46",
+    "descripcion": "Geografía urbana de España"
+  },
+  {
+    "signaturas": "HG911.38",
+    "descripcion": "Geografía del turismo"
+  },
+  {
+    "signaturas": "HG911.38/46",
+    "descripcion": "Geografía del turismo en España"
+  },
+  {
+    "signaturas": "HG912 ",
+    "descripcion": "Atlas y mapas"
+  },
+  {
+    "signaturas": "HG912/46",
+    "descripcion": "Atlas y mapas de España"
+  },
+  {
+    "signaturas": "HG914",
+    "descripcion": "Geografía de Europa"
+  },
+  {
+    "signaturas": "HG914.6",
+    "descripcion": "Geografía de la Península Ibérica"
+  },
+  {
+    "signaturas": "HG914.612",
+    "descripcion": "Geografía de Asturias"
+  },
+  {
+    "signaturas": "HG917",
+    "descripcion": "Geografía de América del Norte y Central"
+  },
+  {
+    "signaturas": "HG918",
+    "descripcion": "Geografía de América del Sur"
+  },
+  {
+    "signaturas": "HG929/1",
+    "descripcion": "Biografías colectivas"
+  },
+  {
+    "signaturas": "HG929.5",
+    "descripcion": "Genealogía"
+  },
+  {
+    "signaturas": "HG929.6",
+    "descripcion": "Heráldica"
+  },
+  {
+    "signaturas": "HG929.7",
+    "descripcion": "Órdenes de caballería"
+  },
+  {
+    "signaturas": "HG929+Apellido",
+    "descripcion": "Biografías"
+  },
+  {
+    "signaturas": "HG930.1",
+    "descripcion": "Teoría y filosofía de la historia. Historiografía"
+  },
+  {
+    "signaturas": "HG930.2",
+    "descripcion": "Metodología histórica. Fuentes históricas"
+  },
+  {
+    "signaturas": "HG930.22",
+    "descripcion": "Diplomática"
+  },
+  {
+    "signaturas": "HG930.25",
+    "descripcion": "Catálogos, guías e inventarios de archivos"
+  },
+  {
+    "signaturas": "HG930.25/03",
+    "descripcion": "Archivística, generalidades, manuales, diccionarios… ----2 libros"
+  },
+  {
+    "signaturas": "HG930.27",
+    "descripcion": "Epigrafía. Paleografía"
+  },
+  {
+    "signaturas": "HG930.8",
+    "descripcion": "Historia de la civilización y de la cultura"
+  },
+  {
+    "signaturas": "HG930.8/03",
+    "descripcion": "Historia de la civilización y de la cultura. Diccionarios ----2 libros"
+  },
+  {
+    "signaturas": "HG930.9",
+    "descripcion": "Historia universal"
+  },
+  {
+    "signaturas": "HG930.9/03",
+    "descripcion": "Historia universal. Diccionarios"
+  },
+  {
+    "signaturas": "HG930.9/8",
+    "descripcion": "Atlas históricos"
+  },
+  {
+    "signaturas": "HG931",
+    "descripcion": "Historia antigua"
+  },
+  {
+    "signaturas": "HG931",
+    "descripcion": "Historia antigua. Diccionarios"
+  },
+  {
+    "signaturas": "HG932",
+    "descripcion": "Historia de Egipto"
+  },
+  {
+    "signaturas": "HG933",
+    "descripcion": "Historia del pueblo judío (hasta épocas modernas)"
+  },
+  {
+    "signaturas": "HG933/46",
+    "descripcion": "Historia del Pueblo judío en España"
+  },
+  {
+    "signaturas": "HG937",
+    "descripcion": "Historia de Roma antigua"
+  },
+  {
+    "signaturas": "HG938",
+    "descripcion": "Historia de Grecia antigua"
+  },
+  {
+    "signaturas": "HG94",
+    "descripcion": "Historia de la Edad Media y de la Edad Moderna"
+  },
+  {
+    "signaturas": "HG94.1",
+    "descripcion": "Historia de la Edad Contemporánea"
+  },
+  {
+    "signaturas": "HG940",
+    "descripcion": "Historia de Europa. Historia de Occidente"
+  },
+  {
+    "signaturas": "HG940.1",
+    "descripcion": "Historia de Europa en la Edad Media, s. IV-XV, y de los árabes"
+  },
+  {
+    "signaturas": "HG940.2",
+    "descripcion": "Historia de Europa entre los siglos XVI y XVIII"
+  },
+  {
+    "signaturas": "HG940.27",
+    "descripcion": "Historia de Europa entre el siglo XIX y 1914"
+  },
+  {
+    "signaturas": "HG940.5",
+    "descripcion": "Historia de Europa desde 1919 y del siglo XX en general"
+  },
+  {
+    "signaturas": "HG940.53",
+    "descripcion": "Historia de la Segunda Guerra Mundial, 1939-1945"
+  },
+  {
+    "signaturas": "HG940.55",
+    "descripcion": "Historia de Europa desde 1945"
+  },
+  {
+    "signaturas": "HG940:741.5",
+    "descripcion": "Comics sobre Historia de Europa"
+  },
+  {
+    "signaturas": "HG942",
+    "descripcion": "Historia de Inglaterra y Gran Bretaña"
+  },
+  {
+    "signaturas": "HG943",
+    "descripcion": "Historia de Alemania y Austria"
+  },
+  {
+    "signaturas": "HG944",
+    "descripcion": "Historia de Francia"
+  },
+  {
+    "signaturas": "HG944:741.5",
+    "descripcion": "Comics sobre Historia de Francia"
+  },
+  {
+    "signaturas": "HG945",
+    "descripcion": "Historia de Italia"
+  },
+  {
+    "signaturas": "HG946",
+    "descripcion": "Historia de España"
+  },
+  {
+    "signaturas": "HG946/03",
+    "descripcion": "Diccionarios de historia de España"
+  },
+  {
+    "signaturas": "HG946/08",
+    "descripcion": "Atlas de historia de España"
+  },
+  {
+    "signaturas": "HG946/09",
+    "descripcion": "Fuentes para la historia de España"
+  },
+  {
+    "signaturas": "HG946.12",
+    "descripcion": "Historia de Asturias"
+  },
+  {
+    "signaturas": "HG946.9",
+    "descripcion": "Historia de Portugal"
+  },
+  {
+    "signaturas": "HG946:741.5",
+    "descripcion": "Comics sobre Historia de España"
+  },
+  {
+    "signaturas": "HG946A:741.5",
+    "descripcion": "Comics sobre Historia de Asturias"
+  },
+  {
+    "signaturas": "HG946B",
+    "descripcion": "Historia de España hasta el siglo IV"
+  },
+  {
+    "signaturas": "HG946C",
+    "descripcion": "Historia de España entre los siglos V y XV"
+  },
+  {
+    "signaturas": "HG946D",
+    "descripcion": "Historia de España entre los siglos XVI y XVIII"
+  },
+  {
+    "signaturas": "HG946E",
+    "descripcion": "Historia de España en el siglo XIX"
+  },
+  {
+    "signaturas": "HG946F",
+    "descripcion": "Historia de España en el siglo XX"
+  },
+  {
+    "signaturas": "HG946G",
+    "descripcion": "Historia de la II República y de la Guerra Civil española"
+  },
+  {
+    "signaturas": "HG947",
+    "descripcion": "Historia de Rusia y de la Unión Soviética"
+  },
+  {
+    "signaturas": "HG949.5",
+    "descripcion": "Historia de Bizancio"
+  },
+  {
+    "signaturas": "HG949.5/03",
+    "descripcion": "Historia de Bizancio. Diccionarios"
+  },
+  {
+    "signaturas": "HG95",
+    "descripcion": "Historia de Asia"
+  },
+  {
+    "signaturas": "HG96",
+    "descripcion": "Historia de África"
+  },
+  {
+    "signaturas": "HG97",
+    "descripcion": "Historia de América"
+  },
+  {
+    "signaturas": "HG971",
+    "descripcion": "Historia de Canadá"
+  },
+  {
+    "signaturas": "HG972",
+    "descripcion": "Historia de México y Centroamérica"
+  },
+  {
+    "signaturas": "HG973",
+    "descripcion": "Historia de los Estados Unidos de América"
+  },
+  {
+    "signaturas": "HG98",
+    "descripcion": "Historia de América del Sur. Historia de Latinoamérica"
+  },
+  {
+    "signaturas": "HGF",
+    "descripcion": "Sala de reuniones (Gran formato)"
+  },
+  {
+    "signaturas": "HGTM ",
+    "descripcion": "Tesis (Microformas)"
+  },
+  {
+    "signaturas": "HI001",
+    "descripcion": "Historia de los estudios árabes e islámicos"
+  },
+  {
+    "signaturas": "HI01",
+    "descripcion": "Catálogos de manuscritos"
+  },
+  {
+    "signaturas": "HI016",
+    "descripcion": "Repertorios bibliográficos"
+  },
+  {
+    "signaturas": "HI03",
+    "descripcion": "Enciclopedias. Diccionarios"
+  },
+  {
+    "signaturas": "HI06",
+    "descripcion": "Congresos"
+  },
+  {
+    "signaturas": "HI06A",
+    "descripcion": "Relaciones e influencias entre islam y Occidente. Congresos"
+  },
+  {
+    "signaturas": "HI06B",
+    "descripcion": "Relaciones e influencias entre islam y Occidente. Monografías"
+  },
+  {
+    "signaturas": "HI08",
+    "descripcion": "Homenajes"
+  },
+  {
+    "signaturas": "HI081",
+    "descripcion": "Poligrafías"
+  },
+  {
+    "signaturas": "HI09",
+    "descripcion": "Codicología. Paleografía."
+  },
+  {
+    "signaturas": "HI1/09",
+    "descripcion": "Filosofía. Obras generales y estudios"
+  },
+  {
+    "signaturas": "HI1A-Z",
+    "descripcion": "Filosofía. Autores y textos"
+  },
+  {
+    "signaturas": "HI297",
+    "descripcion": "Islam. Obras generales"
+  },
+  {
+    "signaturas": "HI297.1",
+    "descripcion": "Mahoma"
+  },
+  {
+    "signaturas": "HI297.18",
+    "descripcion": "Corán"
+  },
+  {
+    "signaturas": "HI297.181",
+    "descripcion": "Estudios sobre el Corán"
+  },
+  {
+    "signaturas": "HI297.2",
+    "descripcion": "Hadith y sunna. Teología. Dogmática"
+  },
+  {
+    "signaturas": "HI297.4",
+    "descripcion": "Sufismo. Mística"
+  },
+  {
+    "signaturas": "HI297.5",
+    "descripcion": "Islam contemporáneo"
+  },
+  {
+    "signaturas": "HI297A",
+    "descripcion": "Textos cristianos en lengua árabe"
+  },
+  {
+    "signaturas": "HI297B",
+    "descripcion": "Influencias judea-cristianas en el islam"
+  },
+  {
+    "signaturas": "HI297C",
+    "descripcion": "Diálogo islamo-cristiano"
+  },
+  {
+    "signaturas": "HI297D",
+    "descripcion": "Polémica religiosa. Renegados"
+  },
+  {
+    "signaturas": "HI297E",
+    "descripcion": "Musulmanes en Europa"
+  },
+  {
+    "signaturas": "HI3",
+    "descripcion": "Ciencias sociales"
+  },
+  {
+    "signaturas": "HI33",
+    "descripcion": "Economía"
+  },
+  {
+    "signaturas": "HI34",
+    "descripcion": "Derecho"
+  },
+  {
+    "signaturas": "HI39",
+    "descripcion": "Antropología. Usos y costumbres"
+  },
+  {
+    "signaturas": "HI396",
+    "descripcion": "Mujer. Feminismo"
+  },
+  {
+    "signaturas": "HI5",
+    "descripcion": "Ciencias. Autores y textos"
+  },
+  {
+    "signaturas": "HI5/09",
+    "descripcion": "Historia de las ciencias. Obras generales"
+  },
+  {
+    "signaturas": "HI5A",
+    "descripcion": "Ciencias. Influencias en occidente"
+  },
+  {
+    "signaturas": "HI61",
+    "descripcion": "Autores y textos"
+  },
+  {
+    "signaturas": "HI61/09",
+    "descripcion": "Historia de la medicina. Obras generales"
+  },
+  {
+    "signaturas": "HI61A",
+    "descripcion": "Influencias en Occidente"
+  },
+  {
+    "signaturas": "HI63",
+    "descripcion": "Agronomía"
+  },
+  {
+    "signaturas": "HI7",
+    "descripcion": "Arte islámico. Obras generales"
+  },
+  {
+    "signaturas": "HI7/46",
+    "descripcion": "Arte islámico en la Península Ibérica"
+  },
+  {
+    "signaturas": "HI7.01",
+    "descripcion": "Estética"
+  },
+  {
+    "signaturas": "HI738",
+    "descripcion": "Cerámica"
+  },
+  {
+    "signaturas": "HI74",
+    "descripcion": "Otras artes"
+  },
+  {
+    "signaturas": "HI78",
+    "descripcion": "Música"
+  },
+  {
+    "signaturas": "HI7A",
+    "descripcion": "Arte Mozárabe. Arte Mudéjar. Influencias y relaciones"
+  },
+  {
+    "signaturas": "HI80",
+    "descripcion": "Filología y lingüística. Obras generales"
+  },
+  {
+    "signaturas": "HI809",
+    "descripcion": "Lenguas orientales y semíticas"
+  },
+  {
+    "signaturas": "HI809.27",
+    "descripcion": "Lengua árabe. Estudios lingüísticos"
+  },
+  {
+    "signaturas": "HI809.27/03",
+    "descripcion": "Diccionarios"
+  },
+  {
+    "signaturas": "HI809.27.03",
+    "descripcion": "Lengua árabe. Traducciones"
+  },
+  {
+    "signaturas": "HI809.27-08",
+    "descripcion": "Dialectos árabes"
+  },
+  {
+    "signaturas": "HI809.27-08A",
+    "descripcion": "Dialecto andalusí"
+  },
+  {
+    "signaturas": "HI809.27-08B",
+    "descripcion": "Lengua romance de al-Ándalus"
+  },
+  {
+    "signaturas": "HI809.27-08C",
+    "descripcion": "Maltés"
+  },
+  {
+    "signaturas": "HI809.27-3",
+    "descripcion": "Onomástica"
+  },
+  {
+    "signaturas": "HI809.27-5",
+    "descripcion": "Gramática"
+  },
+  {
+    "signaturas": "HI809.27-8",
+    "descripcion": "Métodos de aprendizaje y enseñanza"
+  },
+  {
+    "signaturas": "HI809.27A",
+    "descripcion": "Arabismos"
+  },
+  {
+    "signaturas": "HI89",
+    "descripcion": "Literatura de otros pueblos islámicos"
+  },
+  {
+    "signaturas": "HI892.7",
+    "descripcion": "Literatura árabe: obras generales"
+  },
+  {
+    "signaturas": "HI892.70A",
+    "descripcion": "Literatura clásica y medieval. Estudios"
+  },
+  {
+    "signaturas": "HI892.70B ",
+    "descripcion": "Literatura clásica y medieval. Autores y textos"
+  },
+  {
+    "signaturas": "HI892.70C ",
+    "descripcion": "Literatura popular"
+  },
+  {
+    "signaturas": "HI892.71A ",
+    "descripcion": "Literatura de al-Ándalus. Estudios"
+  },
+  {
+    "signaturas": "HI892.71B ",
+    "descripcion": "Literatura de al-Ándalus. Autores y textos"
+  },
+  {
+    "signaturas": "HI892.71C",
+    "descripcion": "Literatura de al-Ándalus. Poesía estrófica"
+  },
+  {
+    "signaturas": "HI892.72A",
+    "descripcion": "Literatura aljamiado-morisca. Estudios"
+  },
+  {
+    "signaturas": "HI892.72B ",
+    "descripcion": "Literatura aljamiado-morisca. Textos"
+  },
+  {
+    "signaturas": "HI892.73A",
+    "descripcion": "Literatura moderna y contemporánea. Estudios"
+  },
+  {
+    "signaturas": "HI892.73B ",
+    "descripcion": "Literatura moderna y contemporánea. Autores y textos"
+  },
+  {
+    "signaturas": "HI892.7A",
+    "descripcion": "Influencias literarias en Occidente"
+  },
+  {
+    "signaturas": "HI9",
+    "descripcion": "Arabia pre-islámica"
+  },
+  {
+    "signaturas": "HI904",
+    "descripcion": "Arqueología"
+  },
+  {
+    "signaturas": "HI91",
+    "descripcion": "Geografía. Obras generales. Países"
+  },
+  {
+    "signaturas": "HI910",
+    "descripcion": "Viajeros"
+  },
+  {
+    "signaturas": "HI910.4",
+    "descripcion": "Geografía. Fuentes antiguas"
+  },
+  {
+    "signaturas": "HI912",
+    "descripcion": "Cartografía"
+  },
+  {
+    "signaturas": "HI93",
+    "descripcion": "Historia de los países árabes. Historia del islam"
+  },
+  {
+    "signaturas": "HI930",
+    "descripcion": "Fuentes"
+  },
+  {
+    "signaturas": "HI931",
+    "descripcion": "Obras monográficas"
+  },
+  {
+    "signaturas": "HI93A",
+    "descripcion": "Relaciones entre países árabo-islámicos y Occidente"
+  },
+  {
+    "signaturas": "HI94",
+    "descripcion": "Cruzadas"
+  },
+  {
+    "signaturas": "HI945",
+    "descripcion": "Italia islámica. Sicilia"
+  },
+  {
+    "signaturas": "HI946",
+    "descripcion": "Historia de al-Ándalus: obras generales"
+  },
+  {
+    "signaturas": "HI946.0",
+    "descripcion": "Fuentes"
+  },
+  {
+    "signaturas": "HI946.1",
+    "descripcion": "Monografías"
+  },
+  {
+    "signaturas": "HI946.2",
+    "descripcion": "Mozárabes"
+  },
+  {
+    "signaturas": "HI946.3",
+    "descripcion": "Mudéjares"
+  },
+  {
+    "signaturas": "HI946.4",
+    "descripcion": "Moriscos"
+  },
+  {
+    "signaturas": "HI946A",
+    "descripcion": "Reconquista. AI-Ándalus y los reinos cristianos"
+  },
+  {
+    "signaturas": "HI949",
+    "descripcion": "Balcanes y Europa oriental"
+  },
+  {
+    "signaturas": "HI95",
+    "descripcion": "Historia de los países de Oriente Medio y Asia"
+  },
+  {
+    "signaturas": "HI955",
+    "descripcion": "Irán"
+  },
+  {
+    "signaturas": "HI956",
+    "descripcion": "Imperio otomano"
+  },
+  {
+    "signaturas": "HI956.0",
+    "descripcion": "Turquía"
+  },
+  {
+    "signaturas": "HI956.7",
+    "descripcion": "Irak"
+  },
+  {
+    "signaturas": "HI956.9",
+    "descripcion": "Palestina e Israel"
+  },
+  {
+    "signaturas": "HI958.1",
+    "descripcion": "Afganistán"
+  },
+  {
+    "signaturas": "HI96",
+    "descripcion": "Historia del Magreb"
+  },
+  {
+    "signaturas": "HI960",
+    "descripcion": "Bereberes"
+  },
+  {
+    "signaturas": "HI961",
+    "descripcion": "Túnez"
+  },
+  {
+    "signaturas": "HI962",
+    "descripcion": "Egipto"
+  },
+  {
+    "signaturas": "HI964",
+    "descripcion": "Marruecos"
+  },
+  {
+    "signaturas": "HI964.2",
+    "descripcion": "Marruecos y España"
+  },
+  {
+    "signaturas": "HI964.7",
+    "descripcion": "Ceuta, Melilla y Estrecho de Gibraltar"
+  },
+  {
+    "signaturas": "HI964.8",
+    "descripcion": "Sáhara y Mauritania"
+  },
+  {
+    "signaturas": "HI965",
+    "descripcion": "Argelia"
+  },
+  {
+    "signaturas": "HI966",
+    "descripcion": "África subsahariana"
+  },
+  {
+    "signaturas": "HI96A",
+    "descripcion": "Relaciones entre Norte de África y España. Cervantes y el Islam"
+  },
+  {
+    "signaturas": "HI97",
+    "descripcion": "Árabes en América"
+  },
+  {
+    "signaturas": "HIPP",
+    "descripcion": "Publicaciones periódicas"
+  },
+  {
+    "signaturas": "HMONT",
+    "descripcion": "Fondo Monterroso (Planta 1ª Sala Monterroso)"
+  },
+  {
+    "signaturas": "HMSR",
+    "descripcion": "Fondo Martín Sevilla Rodríguez (Planta 1ª Sala Monterroso)"
+  },
+  {
+    "signaturas": "HR002",
+    "descripcion": "Documentación. Historia del libro"
+  },
+  {
+    "signaturas": "HR002/03",
+    "descripcion": "Documentación. Historia del libro. Diccionarios"
+  },
+  {
+    "signaturas": "HR003",
+    "descripcion": "Escritura. Signos y símbolos. Semiótica"
+  },
+  {
+    "signaturas": "HR003/03",
+    "descripcion": "Escritura. Signos y símbolos. Semiótica. Diccionarios"
+  },
+  {
+    "signaturas": "HR006",
+    "descripcion": "Normas y normalización ----no hay nada"
+  },
+  {
+    "signaturas": "HR01",
+    "descripcion": "Bibliografías. Catálogos"
+  },
+  {
+    "signaturas": "HR012",
+    "descripcion": "Bibliografías individuales"
+  },
+  {
+    "signaturas": "HR02",
+    "descripcion": "Biblioteconomía"
+  },
+  {
+    "signaturas": "HR03",
+    "descripcion": "Enciclopedias y diccionarios de carácter general"
+  },
+  {
+    "signaturas": "HR069",
+    "descripcion": "Museología"
+  },
+  {
+    "signaturas": "HR07",
+    "descripcion": "Prensa y periodismo. Estudios sobre revistas."
+  },
+  {
+    "signaturas": "HR08",
+    "descripcion": "Poligrafías. Colecciones. Homenajes"
+  },
+  {
+    "signaturas": "HR09",
+    "descripcion": "Manuscritos. Libros raros"
+  },
+  {
+    "signaturas": "HR27",
+    "descripcion": "Cristianismo"
+  },
+  {
+    "signaturas": "HR271/03",
+    "descripcion": "Órdenes religiosas. Monacato. Monasterios, Abadías. Diccionarios ----no hay nada"
+  },
+  {
+    "signaturas": "HR3",
+    "descripcion": "Ciencias Sociales"
+  },
+  {
+    "signaturas": "HR3/03",
+    "descripcion": "Ciencias Sociales. Diccionarios"
+  },
+  {
+    "signaturas": "HR502",
+    "descripcion": "Ciencias del medio ambiente"
+  },
+  {
+    "signaturas": "HR61/09",
+    "descripcion": "Historia de la medicina"
+  },
+  {
+    "signaturas": "HR7/03",
+    "descripcion": "Arte. Diccionarios y enciclopedias"
+  },
+  {
+    "signaturas": "HR7/09",
+    "descripcion": "Historia de Arte. Diccionarios y enciclopedias"
+  },
+  {
+    "signaturas": "HR7.033.4/03 ",
+    "descripcion": "Enciclopedia del Románico"
+  },
+  {
+    "signaturas": "HR72",
+    "descripcion": "Arquitectura"
+  },
+  {
+    "signaturas": "HR72/75",
+    "descripcion": "Artistas asturianos /artistas gallegos"
+  },
+  {
+    "signaturas": "HR73",
+    "descripcion": "Escultura ----1 libro"
+  },
+  {
+    "signaturas": "HR73/03",
+    "descripcion": "Escultura. Diccionarios ----2 libros"
+  },
+  {
+    "signaturas": "HR74/09",
+    "descripcion": "Dibujo. Diseño. Artes aplicadas y manualidades. Historia"
+  },
+  {
+    "signaturas": "HR75",
+    "descripcion": "Pintura"
+  },
+  {
+    "signaturas": "HR75/09",
+    "descripcion": "Pintura. Historia"
+  },
+  {
+    "signaturas": "HR78/03",
+    "descripcion": "Música. Diccionarios y enciclopedias"
+  },
+  {
+    "signaturas": "HR78/09",
+    "descripcion": "Música. Historia"
+  },
+  {
+    "signaturas": "HR791/03",
+    "descripcion": "Cine. Diccionarios y enciclopedias"
+  },
+  {
+    "signaturas": "HR801/03",
+    "descripcion": "Lingüística. Diccionarios"
+  },
+  {
+    "signaturas": "HR802.0/03",
+    "descripcion": "Diccionarios de inglés"
+  },
+  {
+    "signaturas": "HR803/03",
+    "descripcion": "Diccionarios de lenguas germánicas ----3 libros"
+  },
+  {
+    "signaturas": "HR803.0/03",
+    "descripcion": "Diccionarios de alemán"
+  },
+  {
+    "signaturas": "HR804/03",
+    "descripcion": "Diccionarios de lenguas romances"
+  },
+  {
+    "signaturas": "HR804.0/03",
+    "descripcion": "Diccionarios de francés"
+  },
+  {
+    "signaturas": "HR804.90/03",
+    "descripcion": "Diccionarios de provenzal"
+  },
+  {
+    "signaturas": "HR804.99/03",
+    "descripcion": "Diccionarios de catalán"
+  },
+  {
+    "signaturas": "HR805.0/03",
+    "descripcion": "Diccionarios de italiano"
+  },
+  {
+    "signaturas": "HR805.9/03",
+    "descripcion": "Diccionarios de rumano"
+  },
+  {
+    "signaturas": "HR806.0/03",
+    "descripcion": "Diccionarios de castellano"
+  },
+  {
+    "signaturas": "HR806.0/7",
+    "descripcion": "Español en América Latina"
+  },
+  {
+    "signaturas": "HR806.0/7/03",
+    "descripcion": "Español en América Latina. Diccionarios"
+  },
+  {
+    "signaturas": "HR806.0-08/03",
+    "descripcion": "Diccionarios de asturiano"
+  },
+  {
+    "signaturas": "HR806.0-5",
+    "descripcion": "Gramática española"
+  },
+  {
+    "signaturas": "HR806.90/03",
+    "descripcion": "Diccionarios de portugués"
+  },
+  {
+    "signaturas": "HR806.99/03",
+    "descripcion": "Diccionarios de gallego"
+  },
+  {
+    "signaturas": "HR807.1/03",
+    "descripcion": "Diccionarios de latín"
+  },
+  {
+    "signaturas": "HR807.3/03",
+    "descripcion": "Glosarios y diccionarios de latín"
+  },
+  {
+    "signaturas": "HR807.5/03",
+    "descripcion": "Diccionarios de griego clásico"
+  },
+  {
+    "signaturas": "HR807.7/03",
+    "descripcion": "Diccionarios de griego moderno ----1 libro"
+  },
+  {
+    "signaturas": "HR808/03",
+    "descripcion": "Diccionarios de ruso ----2 libros"
+  },
+  {
+    "signaturas": "HR809.1/03",
+    "descripcion": "Diccionarios de otras lenguas"
+  },
+  {
+    "signaturas": "HR82/03",
+    "descripcion": "Literatura. Diccionarios"
+  },
+  {
+    "signaturas": "HR82.09",
+    "descripcion": "Historia de la literatura."
+  },
+  {
+    "signaturas": "HR820/LOA",
+    "descripcion": "The Library of America"
+  },
+  {
+    "signaturas": "HR830/03",
+    "descripcion": "Literatura en alemán. Diccionarios y enciclopedias"
+  },
+  {
+    "signaturas": "HR840/03",
+    "descripcion": "Literatura en francés. Diccionarios y enciclopedias"
+  },
+  {
+    "signaturas": "HR860/03",
+    "descripcion": "Literatura española. Diccionarios y enciclopedias"
+  },
+  {
+    "signaturas": "HR860/7/03",
+    "descripcion": "Literatura hispanoamericana. Diccionarios y enciclopedias"
+  },
+  {
+    "signaturas": "HR860.09 ",
+    "descripcion": "Literatura gallega. Historia y crítica"
+  },
+  {
+    "signaturas": "HR869.0/03",
+    "descripcion": "Literatura portuguesa. Diccionarios y enciclopedias"
+  },
+  {
+    "signaturas": "HR891",
+    "descripcion": "Otras literaturas"
+  },
+  {
+    "signaturas": "HR903",
+    "descripcion": "Arqueología ----1 libro"
+  },
+  {
+    "signaturas": "HR908",
+    "descripcion": "Estudios regionales"
+  },
+  {
+    "signaturas": "HR91",
+    "descripcion": "Geografía"
+  },
+  {
+    "signaturas": "HR910/03",
+    "descripcion": "Geografía. Diccionarios"
+  },
+  {
+    "signaturas": "HR914.6",
+    "descripcion": "Geografía de España"
+  },
+  {
+    "signaturas": "HR914.612",
+    "descripcion": "Geografía de Asturias"
+  },
+  {
+    "signaturas": "HR929",
+    "descripcion": "Biografías"
+  },
+  {
+    "signaturas": "HR930.27",
+    "descripcion": "Epigrafía"
+  },
+  {
+    "signaturas": "HR930.8",
+    "descripcion": "Historia de las civilizaciones"
+  },
+  {
+    "signaturas": "HR930.9",
+    "descripcion": "Historia Universal"
+  },
+  {
+    "signaturas": "HR930.9/03",
+    "descripcion": "Historia Universal. Diccionarios y enciclopedias"
+  },
+  {
+    "signaturas": "HR931/03",
+    "descripcion": "Historia Antigua. Diccionarios y enciclopedias"
+  },
+  {
+    "signaturas": "HR937",
+    "descripcion": "Historia de Roma"
+  },
+  {
+    "signaturas": "HR937/03",
+    "descripcion": "Historia de Roma. Diccionarios y enciclopedias"
+  },
+  {
+    "signaturas": "HR940.1",
+    "descripcion": "Historia de Europa en la Edad Media"
+  },
+  {
+    "signaturas": "HR946",
+    "descripcion": "Historia de España"
+  },
+  {
+    "signaturas": "HR946/03",
+    "descripcion": "Historia de España. Diccionarios y enciclopedias"
+  },
+  {
+    "signaturas": "HR946.12",
+    "descripcion": "Historia de Asturias"
+  },
+  {
+    "signaturas": "HR946.12/03",
+    "descripcion": "Historia de Asturias. Diccionarios y enciclopedias"
+  },
+  {
+    "signaturas": "HR97",
+    "descripcion": "Historia de América"
+  },
+  {
+    "signaturas": "HROSAL",
+    "descripcion": "Fondo de historia contemporánea de Amaro del Rosal"
+  },
+  {
+    "signaturas": "HT0",
+    "descripcion": "Tesis referidas a la CDU 0"
+  },
+  {
+    "signaturas": "HT1",
+    "descripcion": "Tesis de filosofía, psicología, lógica, teoría del conocimiento, ética"
+  },
+  {
+    "signaturas": "HT2",
+    "descripcion": "Tesis de religión, teología, historia de la Iglesia"
+  },
+  {
+    "signaturas": "HT3",
+    "descripcion": "Tesis de ciencias sociales"
+  },
+  {
+    "signaturas": "HT32",
+    "descripcion": "Tesis de política"
+  },
+  {
+    "signaturas": "HT33",
+    "descripcion": "Tesis de economía"
+  },
+  {
+    "signaturas": "HT34",
+    "descripcion": "Tesis de derecho"
+  },
+  {
+    "signaturas": "HT37",
+    "descripcion": "Tesis de educación"
+  },
+  {
+    "signaturas": "HT39",
+    "descripcion": "Etnología, folklore, usos y costumbres"
+  },
+  {
+    "signaturas": "HT5",
+    "descripcion": "Tesis de ciencias exactas (matemáticas, astronomía, física, etc.)"
+  },
+  {
+    "signaturas": "HT50",
+    "descripcion": "Tesis de ciencias medioambientales, geología, meteorología, etc.)"
+  },
+  {
+    "signaturas": "HT57",
+    "descripcion": "Tesis de antropología"
+  },
+  {
+    "signaturas": "HT58",
+    "descripcion": "Tesis de ciencias biológicas"
+  },
+  {
+    "signaturas": "HT6",
+    "descripcion": "Tesis de medicina, tecnologías, ingeniería, agricultura, etc."
+  },
+  {
+    "signaturas": "HT65",
+    "descripcion": "Tesis de contabilidad, organización de empresas, publicidad, etc."
+  },
+  {
+    "signaturas": "HT7",
+    "descripcion": "Tesis de arte, artesanía y ordenación del territorio"
+  },
+  {
+    "signaturas": "HT8",
+    "descripcion": "Tesis de lingüística, filología y literatura"
+  },
+  {
+    "signaturas": "HT9",
+    "descripcion": "Tesis de geografía"
+  },
+  {
+    "signaturas": "HT90",
+    "descripcion": "Tesis de historia, civilizaciones, filosofía de la historia y fuentes"
+  },
+  {
+    "signaturas": "HT91",
+    "descripcion": "Tesis de prehistoria y arqueología"
+  },
+  {
+    "signaturas": "HT92",
+    "descripcion": "Tesis de estudios biográficos y heráldica"
+  },
+  {
+    "signaturas": "HT93",
+    "descripcion": "Tesis de archivística, documentos históricos, epigrafía y paleografía"
+  },
+  {
+    "signaturas": "HT94",
+    "descripcion": "Tesis de historia antigua"
+  },
+  {
+    "signaturas": "HT95",
+    "descripcion": "Tesis de historia medieval"
+  },
+  {
+    "signaturas": "HT96",
+    "descripcion": "Tesis de historia moderna"
+  },
+  {
+    "signaturas": "HT97",
+    "descripcion": "Tesis de historia contemporánea"
+  },
+  {
+    "signaturas": "L1",
+    "descripcion": "Filosofía. Psicología"
+  },
+  {
+    "signaturas": "L2",
+    "descripcion": "Religión. Teología"
+  },
+  {
+    "signaturas": "L2BAC",
+    "descripcion": "Biblioteca de Autores Cristianos"
+  },
+  {
+    "signaturas": "L3",
+    "descripcion": "Ciencias sociales. Sociología. Economía. Derecho"
+  },
+  {
+    "signaturas": "L6",
+    "descripcion": "Ciencias aplicadas. Medicina. Técnica"
+  },
+  {
+    "signaturas": "L7",
+    "descripcion": "Arte. Música"
+  },
+  {
+    "signaturas": "L80",
+    "descripcion": "Lingüística. Filología"
+  },
+  {
+    "signaturas": "L802",
+    "descripcion": "Lengua inglesa"
+  },
+  {
+    "signaturas": "L803",
+    "descripcion": "Lengua alemana"
+  },
+  {
+    "signaturas": "L804",
+    "descripcion": "Lenguas romances"
+  },
+  {
+    "signaturas": "L804A",
+    "descripcion": "Lengua catalana"
+  },
+  {
+    "signaturas": "L804B",
+    "descripcion": "Lengua francesa"
+  },
+  {
+    "signaturas": "L805",
+    "descripcion": "Lengua italiana"
+  },
+  {
+    "signaturas": "L805A",
+    "descripcion": "Lengua rumana"
+  },
+  {
+    "signaturas": "L806",
+    "descripcion": "Lengua española"
+  },
+  {
+    "signaturas": "L806A",
+    "descripcion": "Lengua gallega"
+  },
+  {
+    "signaturas": "L806B",
+    "descripcion": "Lengua portuguesa"
+  },
+  {
+    "signaturas": "L806C",
+    "descripcion": "Lengua española en América"
+  },
+  {
+    "signaturas": "L807",
+    "descripcion": "Lengua latina"
+  },
+  {
+    "signaturas": "L807A",
+    "descripcion": "Lengua griega"
+  },
+  {
+    "signaturas": "L808",
+    "descripcion": "Lenguas eslavas y bálticas"
+  },
+  {
+    "signaturas": "L809",
+    "descripcion": "Otras lenguas"
+  },
+  {
+    "signaturas": "L809A",
+    "descripcion": "Lenguas indoeuropeas"
+  },
+  {
+    "signaturas": "L82",
+    "descripcion": "Literatura"
+  },
+  {
+    "signaturas": "L820",
+    "descripcion": "Literatura en lengua inglesa"
+  },
+  {
+    "signaturas": "L820Med",
+    "descripcion": "Literatura en lengua inglesa medieval"
+  },
+  {
+    "signaturas": "L830",
+    "descripcion": "Literatura en lengua alemana y otras lenguas europeas"
+  },
+  {
+    "signaturas": "L84",
+    "descripcion": "Literatura en lenguas romances"
+  },
+  {
+    "signaturas": "L840",
+    "descripcion": "Literatura en lengua francesa"
+  },
+  {
+    "signaturas": "L849",
+    "descripcion": "Literatura catalana"
+  },
+  {
+    "signaturas": "L850",
+    "descripcion": "Literatura italiana"
+  },
+  {
+    "signaturas": "L859",
+    "descripcion": "Literatura rumana"
+  },
+  {
+    "signaturas": "L86",
+    "descripcion": "Literatura española"
+  },
+  {
+    "signaturas": "L86A",
+    "descripcion": "Literatura gallega"
+  },
+  {
+    "signaturas": "L86B",
+    "descripcion": "Literatura portuguesa"
+  },
+  {
+    "signaturas": "L86C",
+    "descripcion": "Literatura hispanoamericana"
+  },
+  {
+    "signaturas": "L871",
+    "descripcion": "Literatura latina"
+  },
+  {
+    "signaturas": "L873",
+    "descripcion": "Literatura latina medieval y literatura medieval"
+  },
+  {
+    "signaturas": "L875",
+    "descripcion": "Literatura griega"
+  },
+  {
+    "signaturas": "L88",
+    "descripcion": "Literatura rusa"
+  },
+  {
+    "signaturas": "L89",
+    "descripcion": "Otras literaturas"
+  },
+  {
+    "signaturas": "L8LI",
+    "descripcion": "La Letteratura Italiana, Storia e Testi (Riccardo Ricciardi)"
+  },
+  {
+    "signaturas": "L9",
+    "descripcion": "Geografía e Historia"
+  },
+  {
+    "signaturas": "LADON",
+    "descripcion": "Premio Adonais"
+  },
+  {
+    "signaturas": "LAE",
+    "descripcion": "Colección Teatral de Autores Españoles"
+  },
+  {
+    "signaturas": "LAST",
+    "descripcion": "Sección Asturiana"
+  },
+  {
+    "signaturas": "LBAE",
+    "descripcion": "Biblioteca de Autores Españoles"
+  },
+  {
+    "signaturas": "LBAM",
+    "descripcion": "Biblioteca Antonio Machado de Teatro"
+  },
+  {
+    "signaturas": "LBAY",
+    "descripcion": "Biblioteca Ayacucho"
+  },
+  {
+    "signaturas": "LBCG",
+    "descripcion": "Biblioteca Clásica Gredos"
+  },
+  {
+    "signaturas": "LCAP",
+    "descripcion": "Clásicos Asturianos del Pensamiento Político"
+  },
+  {
+    "signaturas": "LCAR",
+    "descripcion": "Colección Archivos (CSIC)"
+  },
+  {
+    "signaturas": "LCC",
+    "descripcion": "Clásicos Castellanos"
+  },
+  {
+    "signaturas": "LCR",
+    "descripcion": "Folletos y Separatas – Caja Roja"
+  },
+  {
+    "signaturas": "LCTC",
+    "descripcion": "olección Teatro (Alfil)"
+  },
+  {
+    "signaturas": "LDicc",
+    "descripcion": "Diccionarios"
+  },
+  {
+    "signaturas": "LGF ",
+    "descripcion": "Depósito F (Gran formato)"
+  },
+  {
+    "signaturas": "LHP",
+    "descripcion": "Historia del Pensamiento (Orbis)"
+  },
+  {
+    "signaturas": "LJBC",
+    "descripcion": "olección Joyas Bibliográficas"
+  },
+  {
+    "signaturas": "LPAST",
+    "descripcion": "Colección Popular Asturiana"
+  },
+  {
+    "signaturas": "LTESIS",
+    "descripcion": "Tesis de Filología"
+  },
+  {
+    "signaturas": "LTM",
+    "descripcion": "Tesis en Microficha"
+  },
+  {
+    "signaturas": "LTOPO",
+    "descripcion": "Toponimia (Academia de la Llingua)"
+  },
+  {
+    "signaturas": "LTYPO",
+    "descripcion": "Tipologie des Sources du Moyen Âge Occidental (Brepols)"
+  }
+]
