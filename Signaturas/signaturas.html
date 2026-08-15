@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor de Signaturas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        /* Efecto de libro para el área de descripción */
+        .book-container {
+            perspective: 1000px;
+        }
+
+        .book-cover {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: #ecf0f1;
+            box-shadow: 
+                -5px 5px 15px rgba(0,0,0,0.3),
+                inset 5px 0 20px rgba(0,0,0,0.2),
+                inset -5px 0 10px rgba(255,255,255,0.1);
+            border-radius: 5px 15px 15px 5px;
+            font-family: 'Playfair Display', serif;
+            transition: all 0.4s ease;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        /* Lomo del libro simulado */
+        .book-cover::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 20px;
+            background: linear-gradient(to right, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+            border-radius: 5px 0 0 5px;
+            border-right: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        /* Hojas del libro simuladas */
+        .book-cover::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 5px;
+            bottom: 5px;
+            width: 10px;
+            background: #fdfbf7;
+            border-radius: 0 5px 5px 0;
+            box-shadow: inset 2px 0 5px rgba(0,0,0,0.1);
+            z-index: -1;
+            border: 1px solid #dcdde1;
+            border-left: none;
+        }
+
+        /* Estilo para los items de la lista al hacer hover */
+        .signature-item {
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .signature-item:hover, .signature-item.active {
+            background-color: #e2e8f0;
+            border-left: 4px solid #3b82f6;
+            cursor: pointer;
+            transform: translateX(5px);
+        }
+
+        /* Animación suave para la aparición del texto */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Decoración estilo libro antiguo */
+        .book-decoration {
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 20px;
+            height: calc(100% - 40px);
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: relative;
+        }
+
+        /* Ocultar scrollbars donde no son estéticos */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Contenedor de contenido dentro del libro */
+        #bookContentWrapper {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* Footer del libro */
+        .book-footer {
+            margin-top: auto;
+            text-align: center;
+            padding-top: 0.5rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .institutional-text-main {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #eab308; /* Mismo color amarillo que "Signatura" */
+            letter-spacing: 0.05em;
+            margin-bottom: 0.2rem;
+            text-transform: uppercase;
+        }
+        
+        .institutional-text-sub {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 300;
+            color: rgba(203, 213, 225, 0.6);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        
+        .empty-state-text {
+            text-align: center;
+            color: rgba(203, 213, 225, 0.8);
+            font-style: italic;
+            margin-top: 4rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body class="h-screen overflow-hidden text-gray-800">
+
+    <div class="container mx-auto h-full flex flex-col p-6">
+        
+        <!-- Encabezado -->
+        <header class="mb-6 text-center">
+            <h1 class="text-3xl font-bold text-gray-700">Catálogo de Signaturas</h1>
+            <p class="text-gray-500 text-sm mt-2">Teclea una signatura para buscarla o añadirla al catálogo</p>
+        </header>
+
+        <!-- Contenedor del contenido principal (lista + libro) -->
+        <div class="flex-1 flex flex-col md:flex-row gap-8 overflow-hidden bg-white rounded-xl shadow-lg p-6">
+            
+            <!-- Panel izquierdo: Columna A -->
+            <div class="w-full md:w-1/3 flex flex-col h-full border-r border-gray-200 pr-4">
+                <h2 class="text-xl font-semibold mb-4 text-gray-600 border-b pb-2">Signaturas</h2>
+                
+                <!-- Buscador sin botón, captura a medida que se teclea -->
+                <div class="mb-4 flex flex-col gap-3">
+                    <input type="text" id="searchInput" placeholder="Escribe la signatura..." class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition-shadow">
+                    
+                    <button id="downloadJsonBtn" class="hidden w-full bg-green-600 text-white font-bold py-2 px-4 rounded shadow hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Guardar Cambios (Descargar JSON)
+                    </button>
+                </div>
+
+                <!-- Formulario de nueva signatura (Oculto por defecto) -->
+                <div id="addNewContainer" class="hidden flex-col gap-3 bg-blue-50/50 border border-blue-100 p-4 rounded-lg mb-4 animate-[fadeIn_0.3s_ease-in-out]">
+                    <p class="text-sm text-blue-800 font-semibold flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Signatura nueva detectada
+                    </p>
+                    <p class="text-xs text-gray-600 mb-1">Introduce la descripción para registrarla en el sistema.</p>
+                    <textarea id="inlineDescInput" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm text-sm" placeholder="Escribe aquí la descripción..."></textarea>
+                    <p id="inlineError" class="hidden text-xs text-red-500 font-medium"></p>
+                    <button id="inlineSaveBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow transition-colors flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                        Grabar Signatura
+                    </button>
+                </div>
+
+                <!-- Contenedor scrollable para la lista -->
+                <div class="overflow-y-auto flex-1 pr-2" id="signatureList">
+                    <p class="text-gray-400 italic text-sm text-center mt-10">Cargando datos...</p>
+                </div>
+            </div>
+
+            <!-- Panel derecho: Portada del Libro (Descripción - Columna B) -->
+            <div class="w-full md:w-2/3 h-full flex items-center justify-center book-container p-4">
+                <div class="book-cover w-full max-w-lg aspect-[3/4] flex flex-col relative" id="bookCover">
+                    <div class="book-decoration text-center relative overflow-hidden flex flex-col h-full">
+                        
+                        <!-- Botón Eliminar -->
+                        <div class="absolute top-2 right-2 z-20">
+                            <button id="deleteBtn" class="hidden text-red-400 hover:text-red-600 bg-red-50/10 hover:bg-red-50/20 p-2 rounded-full transition-all" title="Eliminar esta signatura">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+
+                        <!-- Contenedor principal de la página del libro -->
+                        <div id="bookContentWrapper" class="flex-1 flex flex-col overflow-hidden">
+                            
+                            <!-- Decoración superior -->
+                            <div id="topDecoContainer" style="display: none;" class="shrink-0">
+                                <div class="text-yellow-500/50 text-2xl mb-2 mt-2">❦</div>
+                                <div class="w-24 h-[1px] bg-gradient-to-r from-transparent via-yellow-500/50 to-transparent mx-auto mb-4"></div>
+                            </div>
+
+                            <!-- Área de visualización de signatura, sello y descripción -->
+                            <div id="bookDescription" class="flex-1 text-base leading-relaxed text-gray-300 px-4 font-light overflow-y-auto scrollbar-hide text-center flex flex-col items-center">
+                                <p class="empty-state-text">Explora la lista de la izquierda o busca una signatura para visualizar su contenido.</p>
+                            </div>
+
+                            <!-- Decoración inferior -->
+                            <div id="bottomDecoContainer" class="shrink-0 mt-3" style="display: none;">
+                                <div class="w-12 h-1 bg-yellow-600/30 mx-auto rounded mb-2"></div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Institucional Fijo -->
+                        <div class="book-footer shrink-0">
+                            <h2 class="institutional-text-main">Biblioteca de Humanidades</h2>
+                            <h3 class="institutional-text-sub">Campus de El Milán</h3>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Genérico (Usado para confirmar borrado y avisos) -->
+    <div id="customModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white p-6 rounded-xl shadow-2xl max-w-md w-full relative">
+            <h3 class="text-xl font-bold mb-4 text-gray-800" id="modalTitle">Título</h3>
+            <p id="modalMessage" class="mb-4 text-gray-600">Mensaje</p>
+            
+            <div class="mt-6 flex justify-end gap-3">
+                <button id="modalCancel" class="px-4 py-2 bg-gray-100 text-gray-800 rounded font-medium hover:bg-gray-200 transition-colors">Cancelar</button>
+                <button id="modalConfirm" class="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 transition-colors">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const listContainer = document.getElementById('signatureList');
+            const addNewContainer = document.getElementById('addNewContainer');
+            const inlineDescInput = document.getElementById('inlineDescInput');
+            const inlineSaveBtn = document.getElementById('inlineSaveBtn');
+            const inlineError = document.getElementById('inlineError');
+            
+            const bookDescription = document.getElementById('bookDescription');
+            const bookCover = document.getElementById('bookCover');
+            const topDecoContainer = document.getElementById('topDecoContainer');
+            const bottomDecoContainer = document.getElementById('bottomDecoContainer');
+            
+            const searchInput = document.getElementById('searchInput');
+            const downloadJsonBtn = document.getElementById('downloadJsonBtn');
+            const deleteBtn = document.getElementById('deleteBtn');
+
+            let globalData = [];
+            let currentKeys = { sig: 'signatura', desc: 'descripcion' };
+            let currentDisplayedSignatura = null;
+            
+            const emptyStateHTML = `
+                <div class="flex flex-col items-center justify-center h-full my-auto">
+                    <div class="w-16 h-16 mb-4 rounded-full overflow-hidden shadow-md flex items-center justify-center border border-yellow-500/30">
+                        <img src="./Logo.png" alt="Sello Universidad" class="w-full h-full object-cover" style="clip-path: circle(49%);">
+                    </div>
+                    <p class="empty-state-text mt-0">Explora la lista de la izquierda o busca una signatura para visualizar su contenido.</p>
+                </div>
+            `;
+
+            function identificarClaves(datos) {
+                if (datos.length > 0) {
+                    const keys = Object.keys(datos[0]);
+                    currentKeys.sig = keys.find(k => k.toLowerCase().includes('signatura')) || keys[0] || 'signatura';
+                    currentKeys.desc = keys.find(k => k.toLowerCase().includes('descrip')) || keys[1] || 'descripcion';
+                }
+            }
+
+            function marcarModificado() {
+                downloadJsonBtn.classList.remove('hidden');
+            }
+
+            function mostrarModal(opciones) {
+                document.getElementById('modalTitle').textContent = opciones.titulo;
+                document.getElementById('modalMessage').textContent = opciones.mensaje;
+                
+                const btnConfirmOld = document.getElementById('modalConfirm');
+                const btnCancelOld = document.getElementById('modalCancel');
+                btnConfirmOld.replaceWith(btnConfirmOld.cloneNode(true));
+                btnCancelOld.replaceWith(btnCancelOld.cloneNode(true));
+                
+                const btnConfirm = document.getElementById('modalConfirm');
+                const btnCancel = document.getElementById('modalCancel');
+
+                btnConfirm.textContent = opciones.textoConfirmar || 'Aceptar';
+                btnConfirm.className = `px-4 py-2 text-white rounded font-medium transition-colors ${opciones.colorConfirmar || 'bg-blue-600 hover:bg-blue-700'}`;
+
+                document.getElementById('customModal').classList.remove('hidden');
+
+                if (opciones.ocultarCancelar) {
+                    btnCancel.classList.add('hidden');
+                } else {
+                    btnCancel.classList.remove('hidden');
+                    btnCancel.addEventListener('click', () => {
+                        document.getElementById('customModal').classList.add('hidden');
+                    });
+                }
+
+                btnConfirm.addEventListener('click', () => {
+                    if(opciones.alConfirmar) opciones.alConfirmar();
+                    document.getElementById('customModal').classList.add('hidden');
+                });
+            }
+
+            function mostrarEnLibro(dato, itemDiv) {
+                currentDisplayedSignatura = dato;
+                deleteBtn.classList.remove('hidden');
+                topDecoContainer.style.display = 'block';
+                bottomDecoContainer.style.display = 'block';
+
+                const valorSignatura = dato[currentKeys.sig] || "Sin Signatura";
+                const valorDescripcion = dato[currentKeys.desc] || "Sin Descripción";
+
+                // Reemplazando saltos de línea por etiquetas <br>
+                const formatDesc = valorDescripcion.replace(/\n/g, '<br/>');
+
+                // Estructura solicitada: Signatura arriba -> Sello en el centro pequeño -> Descripción debajo
+                bookDescription.innerHTML = `
+                    <div class="mb-3 pb-2 border-b border-yellow-600/30 text-center w-full shrink-0">
+                        <span class="text-yellow-500 font-semibold text-xs uppercase tracking-widest">Signatura</span>
+                        <p class="text-white text-3xl font-bold mt-1 tracking-tight">${valorSignatura}</p>
+                    </div>
+                    
+                    <div class="flex justify-center items-center my-3 shrink-0">
+                        <div class="w-16 h-16 rounded-full overflow-hidden shadow-md flex items-center justify-center border border-yellow-500/30 bg-white/10">
+                            <img src="./Logo.png" alt="Sello Universidad" class="w-full h-full object-cover" style="clip-path: circle(49%);">
+                        </div>
+                    </div>
+
+                    <div class="text-sm leading-relaxed space-y-2 text-center text-gray-300 w-full mt-1">
+                        ${formatDesc}
+                    </div>
+                `;
+
+                bookDescription.classList.remove('fade-in');
+                void bookDescription.offsetWidth;
+                bookDescription.classList.add('fade-in');
+
+                document.querySelectorAll('.signature-item').forEach(el => el.classList.remove('active', 'bg-blue-50'));
+                if (itemDiv) {
+                    itemDiv.classList.add('active', 'bg-blue-50');
+                    itemDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                }
+                
+                bookCover.style.transform = `rotateY(-5deg) scale(1.02)`;
+                setTimeout(() => {
+                    bookCover.style.transform = `rotateY(0deg) scale(1)`;
+                }, 300);
+            }
+
+            function renderizarLista(datosParaMostrar) {
+                listContainer.innerHTML = '';
+
+                if (datosParaMostrar.length === 0) {
+                    return;
+                }
+
+                datosParaMostrar.forEach((dato) => {
+                    const valorSignatura = dato[currentKeys.sig] || "Sin Signatura";
+
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'signature-item p-4 mb-2 rounded bg-gray-50 text-gray-900 font-bold shadow-sm text-lg border border-gray-100 flex justify-between items-center';
+                    itemDiv.innerHTML = `<span>${valorSignatura}</span> <svg class="w-4 h-4 text-gray-400 opacity-0 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
+                    
+                    itemDiv.addEventListener('mouseenter', () => {
+                        const icon = itemDiv.querySelector('svg');
+                        if(icon) icon.classList.remove('opacity-0');
+                    });
+                    itemDiv.addEventListener('mouseleave', () => {
+                        const icon = itemDiv.querySelector('svg');
+                        if(icon && !itemDiv.classList.contains('active')) icon.classList.add('opacity-0');
+                    });
+
+                    itemDiv.addEventListener('click', () => mostrarEnLibro(dato, itemDiv));
+
+                    listContainer.appendChild(itemDiv);
+                });
+            }
+
+            function procesarEntradaTeclado() {
+                const term = searchInput.value.trim();
+                const termLower = term.toLowerCase();
+
+                inlineError.classList.add('hidden');
+
+                if (!term) {
+                    addNewContainer.classList.add('hidden');
+                    listContainer.classList.remove('hidden');
+                    renderizarLista(globalData);
+                    
+                    // Si se borra la búsqueda por completo, seleccionamos automáticamente la primera si existe
+                    if (globalData.length > 0) {
+                        const firstItemDiv = listContainer.querySelector('.signature-item');
+                        mostrarEnLibro(globalData[0], firstItemDiv);
+                    }
+                    return;
+                }
+
+                const exactMatch = globalData.find(d => (d[currentKeys.sig] || "").toString().toLowerCase() === termLower);
+                const partialMatches = globalData.filter(d => (d[currentKeys.sig] || "").toString().toLowerCase().includes(termLower));
+
+                if (partialMatches.length > 0 || exactMatch) {
+                    addNewContainer.classList.add('hidden');
+                    listContainer.classList.remove('hidden');
+                    renderizarLista(partialMatches);
+
+                    const targetMatch = exactMatch || partialMatches[0];
+                    setTimeout(() => {
+                        const items = document.querySelectorAll('.signature-item');
+                        const targetItem = Array.from(items).find(el => el.textContent.trim() === (targetMatch[currentKeys.sig] || "").toString().trim());
+                        if (targetItem) {
+                            mostrarEnLibro(targetMatch, targetItem);
+                        }
+                    }, 50);
+
+                } else {
+                    listContainer.classList.add('hidden');
+                    addNewContainer.classList.remove('hidden');
+                    
+                    topDecoContainer.style.display = 'block';
+                    bottomDecoContainer.style.display = 'block';
+                    
+                    bookDescription.innerHTML = `
+                        <div class="mb-4 pb-2 border-b border-gray-600/30 text-center w-full mt-2">
+                            <span class="text-gray-500 font-semibold text-xs uppercase tracking-widest">Signatura no encontrada</span>
+                            <p class="text-gray-400 text-3xl font-bold mt-1 tracking-tight">${term}</p>
+                        </div>
+                        <div class="flex justify-center items-center my-3 shrink-0">
+                            <div class="w-16 h-16 rounded-full overflow-hidden shadow-md flex items-center justify-center border border-gray-500/30 opacity-60">
+                                <img src="./Logo.png" alt="Sello Universidad" class="w-full h-full object-cover grayscale" style="clip-path: circle(49%);">
+                            </div>
+                        </div>
+                        <p class="text-center text-gray-400 italic text-sm mt-2">No existe información para esta signatura. Utiliza el formulario de la izquierda para grabarla.</p>
+                    `;
+                    currentDisplayedSignatura = null;
+                    deleteBtn.classList.add('hidden');
+                }
+            }
+
+            searchInput.addEventListener('input', procesarEntradaTeclado);
+
+            inlineSaveBtn.addEventListener('click', () => {
+                const nuevaSignaturaStr = searchInput.value.trim();
+                const nuevaDescStr = inlineDescInput.value.trim();
+
+                if (!nuevaDescStr) {
+                    inlineError.textContent = "La descripción no puede estar vacía.";
+                    inlineError.classList.remove('hidden');
+                    return;
+                }
+
+                const maxId = globalData.reduce((max, item) => (item.id && item.id > max ? item.id : max), 0);
+                
+                const nuevoItem = {
+                    id: maxId + 1,
+                    [currentKeys.sig]: nuevaSignaturaStr,
+                    [currentKeys.desc]: nuevaDescStr
+                };
+                
+                globalData.push(nuevoItem);
+
+                globalData.sort((a, b) => {
+                    const sigA = (a[currentKeys.sig] || "").toString();
+                    const sigB = (b[currentKeys.sig] || "").toString();
+                    return sigA.localeCompare(sigB, undefined, { numeric: true, sensitivity: 'base' });
+                });
+
+                marcarModificado();
+                
+                searchInput.value = '';
+                inlineDescInput.value = '';
+                addNewContainer.classList.add('hidden');
+                listContainer.classList.remove('hidden');
+                
+                renderizarLista(globalData);
+                
+                setTimeout(() => {
+                    const items = document.querySelectorAll('.signature-item');
+                    const lastItem = Array.from(items).find(el => el.textContent.trim() === nuevaSignaturaStr);
+                    if(lastItem) mostrarEnLibro(nuevoItem, lastItem);
+                }, 100);
+            });
+
+            deleteBtn.addEventListener('click', () => {
+                if (!currentDisplayedSignatura) return;
+
+                const sigEliminar = currentDisplayedSignatura[currentKeys.sig];
+
+                mostrarModal({
+                    titulo: "Confirmar Eliminación",
+                    mensaje: `¿Estás seguro de que deseas eliminar la signatura "${sigEliminar}"?`,
+                    textoConfirmar: "Sí, Eliminar",
+                    colorConfirmar: "bg-red-600 hover:bg-red-700",
+                    alConfirmar: () => {
+                        globalData = globalData.filter(d => d[currentKeys.sig] !== sigEliminar);
+                        marcarModificado();
+                        
+                        topDecoContainer.style.display = 'none';
+                        bottomDecoContainer.style.display = 'none';
+                        bookDescription.innerHTML = emptyStateHTML;
+                        deleteBtn.classList.add('hidden');
+                        currentDisplayedSignatura = null;
+                        
+                        procesarEntradaTeclado();
+                    }
+                });
+            });
+
+            downloadJsonBtn.addEventListener('click', () => {
+                const jsonString = JSON.stringify(globalData, null, 2);
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'signaturas.json';
+                document.body.appendChild(a);
+                a.click();
+                
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                downloadJsonBtn.classList.add('hidden');
+                
+                mostrarModal({
+                    titulo: "¡Cambios guardados!",
+                    mensaje: "Se ha descargado el archivo 'signaturas.json' ordenado correctamente. Reemplaza el archivo en tu carpeta con este nuevo.",
+                    textoConfirmar: "Entendido",
+                    ocultarCancelar: true
+                });
+            });
+
+            async function cargarArchivoJSON() {
+                try {
+                    listContainer.innerHTML = '<p class="text-blue-500 italic text-sm text-center mt-10">Cargando signaturas...</p>';
+                    
+                    let datosJSON = [];
+                    try {
+                        const response = await fetch('signaturas.json');
+                        if (response.ok) {
+                            datosJSON = await response.json();
+                        } else {
+                            throw new Error('No se encontró signaturas.json');
+                        }
+                    } catch (fetchError) {
+                        console.info("No se pudo cargar 'signaturas.json'. Iniciando con datos de demostración.");
+                        datosJSON = [
+                            { signatura: "CIE-105", descripcion: "Tratado de astronomía ilustrado.\nContiene mapas estelares desplegables." },
+                            { signatura: "HIS-001", descripcion: "Crónica de la ciudad, tomo I.\nEncuadernación original en piel del siglo XVIII." },
+                            { signatura: "LIT-042", descripcion: "Antología poética.\nIncluye notas manuscritas del autor en los márgenes." }
+                        ];
+                    }
+
+                    globalData = datosJSON;
+
+                    globalData.sort((a, b) => {
+                        const sigA = (a.signatura || a.Signatura || "").toString();
+                        const sigB = (b.signatura || b.Signatura || "").toString();
+                        return sigA.localeCompare(sigB, undefined, { numeric: true, sensitivity: 'base' });
+                    });
+
+                    identificarClaves(globalData);
+                    renderizarLista(globalData);
+                    
+                    if (globalData.length > 0) {
+                        // Posicionar automáticamente en la primera signatura al arrancar
+                        const firstItemDiv = listContainer.querySelector('.signature-item');
+                        mostrarEnLibro(globalData[0], firstItemDiv);
+                    } else {
+                        topDecoContainer.style.display = 'none';
+                        bottomDecoContainer.style.display = 'none';
+                        bookDescription.innerHTML = emptyStateHTML;
+                    }
+                    
+                } catch (e) {
+                    console.error("Error general al procesar los datos:", e);
+                    listContainer.innerHTML = `
+                        <div class="text-red-500 text-sm text-center mt-10 p-4 bg-red-50 rounded-lg border border-red-200 shadow-inner">
+                            <strong>El catálogo no pudo inicializarse.</strong><br><br>
+                            <span class="text-xs text-gray-500 block mt-2">Puedes empezar a teclear en el buscador para añadir tu primera signatura.</span>
+                        </div>`;
+                }
+            }
+
+            cargarArchivoJSON();
+        });
+    </script>
+</body>
+</html>
