@@ -103,7 +103,7 @@
         <!-- Encabezado -->
         <header class="mb-6 text-center">
             <h1 class="text-3xl font-bold text-gray-700">Catálogo de Signaturas</h1>
-            <p class="text-gray-500 text-sm mt-2">Pasa el ratón sobre una signatura para ver su descripción</p>
+            <p class="text-gray-500 text-sm mt-2">Pasa el ratón o haz clic sobre una signatura para ver su descripción</p>
         </header>
 
         <!-- Contenedor del contenido principal (lista + libro) -->
@@ -152,7 +152,7 @@
 
                         <!-- Descripción (El contenido) -->
                         <div id="bookDescription" class="text-lg leading-relaxed text-gray-300 px-6 font-light overflow-y-auto max-h-[50%] scrollbar-hide">
-                            <p class="italic text-gray-400 text-sm">Pasa el cursor sobre la lista de la izquierda para explorar el contenido de este archivo.</p>
+                            <p class="italic text-gray-400 text-sm">Pasa el cursor o haz clic sobre la lista de la izquierda para explorar el contenido de este archivo.</p>
                         </div>
 
                         <!-- Elemento decorativo inferior -->
@@ -193,17 +193,14 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const listContainer = document.getElementById('signatureList');
-            const bookTitle = document.getElementById('bookTitle');
             const bookDescription = document.getElementById('bookDescription');
             const bookCover = document.getElementById('bookCover');
             
-            // Nuevos elementos
             const searchInput = document.getElementById('searchInput');
             const searchBtn = document.getElementById('searchBtn');
             const downloadJsonBtn = document.getElementById('downloadJsonBtn');
             const deleteBtn = document.getElementById('deleteBtn');
 
-            // Variables de estado global
             let globalData = [];
             let currentKeys = { sig: 'signatura', desc: 'descripcion' };
             let currentDisplayedSignatura = null;
@@ -222,6 +219,37 @@
                 downloadJsonBtn.classList.remove('hidden');
             }
 
+            // Función centralizada para mostrar la signatura en el libro
+            function mostrarEnLibro(dato, itemDiv) {
+                currentDisplayedSignatura = dato;
+                deleteBtn.classList.remove('hidden');
+
+                const valorSignatura = dato[currentKeys.sig] || "Sin Signatura";
+                const valorDescripcion = dato[currentKeys.desc] || "Sin Descripción";
+
+                bookDescription.innerHTML = `
+                    <div class="mb-4 pb-2 border-b border-yellow-600/30">
+                        <span class="text-yellow-500 font-semibold text-sm uppercase tracking-wider">Referencia:</span>
+                        <p class="text-white text-xl font-bold">${valorSignatura}</p>
+                    </div>
+                    <p>${valorDescripcion}</p>
+                `;
+
+                bookDescription.classList.remove('fade-in');
+                void bookDescription.offsetWidth;
+                bookDescription.classList.add('fade-in');
+
+                document.querySelectorAll('.signature-item').forEach(el => el.classList.remove('active', 'bg-blue-50'));
+                if (itemDiv) {
+                    itemDiv.classList.add('active', 'bg-blue-50');
+                }
+                
+                bookCover.style.transform = `rotateY(-5deg) scale(1.02)`;
+                setTimeout(() => {
+                    bookCover.style.transform = `rotateY(0deg) scale(1)`;
+                }, 300);
+            }
+
             function renderizarLista(datosParaMostrar) {
                 listContainer.innerHTML = '';
 
@@ -232,41 +260,14 @@
 
                 datosParaMostrar.forEach((dato) => {
                     const valorSignatura = dato[currentKeys.sig] || "Sin Signatura";
-                    const valorDescripcion = dato[currentKeys.desc] || "Sin Descripción";
 
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'signature-item p-4 mb-2 rounded bg-gray-50 text-gray-900 font-bold shadow-sm text-lg border border-gray-100';
                     itemDiv.textContent = valorSignatura;
                     
-                    itemDiv.addEventListener('mouseenter', () => {
-                        // Guardar referencia a la signatura actualmente mostrada
-                        currentDisplayedSignatura = dato;
-                        deleteBtn.classList.remove('hidden');
-
-                        bookTitle.textContent = valorSignatura;
-                        bookDescription.innerHTML = `
-                            <div class="mb-4 pb-2 border-b border-yellow-600/30">
-                                <span class="text-yellow-500 font-semibold text-sm uppercase tracking-wider">Referencia:</span>
-                                <p class="text-white text-xl font-bold">${valorSignatura}</p>
-                            </div>
-                            <p>${valorDescripcion}</p>
-                        `;
-
-                        bookTitle.classList.remove('fade-in');
-                        bookDescription.classList.remove('fade-in');
-                        void bookTitle.offsetWidth;
-                        bookTitle.classList.add('fade-in');
-                        bookDescription.classList.add('fade-in');
-
-                        document.querySelectorAll('.signature-item').forEach(el => el.classList.remove('active', 'bg-blue-50'));
-                        itemDiv.classList.add('active', 'bg-blue-50');
-                        
-                        bookCover.style.transform = `rotateY(-5deg) scale(1.02)`;
-                    });
-
-                    itemDiv.addEventListener('mouseleave', () => {
-                        bookCover.style.transform = `rotateY(0deg) scale(1)`;
-                    });
+                    // Evento hover y click para máxima comodidad
+                    itemDiv.addEventListener('mouseenter', () => mostrarEnLibro(dato, itemDiv));
+                    itemDiv.addEventListener('click', () => mostrarEnLibro(dato, itemDiv));
 
                     listContainer.appendChild(itemDiv);
                 });
@@ -286,7 +287,6 @@
                     modalForm.classList.add('hidden');
                 }
 
-                // Clonar botones para eliminar eventos anteriores limpiamente
                 const btnConfirmOld = document.getElementById('modalConfirm');
                 const btnCancelOld = document.getElementById('modalCancel');
                 btnConfirmOld.replaceWith(btnConfirmOld.cloneNode(true));
@@ -306,7 +306,7 @@
 
                 btnConfirm.addEventListener('click', () => {
                     if (opciones.mostrarFormulario) {
-                        const desc = document.getElementById('newSignaturaDesc').value.trim();
+                        const desc = document.getElementById('newSignaturaDesc'].value.trim();
                         if (!desc) {
                             const err = document.getElementById('modalError');
                             err.textContent = "¡La descripción no puede estar en blanco!";
@@ -336,19 +336,34 @@
 
                 if (exactMatch) {
                     renderizarLista([exactMatch]);
+                    // Seleccionar automáticamente el elemento encontrado en la lista y en el libro
+                    setTimeout(() => {
+                        const firstItem = document.querySelector('.signature-item');
+                        if (firstItem) {
+                            mostrarEnLibro(exactMatch, firstItem);
+                        }
+                    }, 50);
                 } else {
-                    // Si no es exacta, buscamos parciales para mostrar algo si lo hay
                     const partialMatches = globalData.filter(d => (d[currentKeys.sig] || "").toString().toLowerCase().includes(termLower));
                     renderizarLista(partialMatches);
 
-                    // Preguntar si desea añadirla
-                    mostrarModal({
-                        titulo: "Signatura no encontrada",
-                        mensaje: `La signatura exacta "${term}" no existe en el catálogo. ¿Deseas añadirla ahora?`,
-                        mostrarFormulario: false,
-                        textoConfirmar: "Sí, añadir",
-                        alConfirmar: () => abrirFormularioAñadir(term)
-                    });
+                    if (partialMatches.length > 0) {
+                        // Seleccionar el primero de las coincidencias parciales
+                        setTimeout(() => {
+                            const firstItem = document.querySelector('.signature-item');
+                            if (firstItem) {
+                                mostrarEnLibro(partialMatches[0], firstItem);
+                            }
+                        }, 50);
+                    } else {
+                        mostrarModal({
+                            titulo: "Signatura no encontrada",
+                            mensaje: `La signatura exacta "${term}" no existe en el catálogo. ¿Deseas añadirla ahora?`,
+                            mostrarFormulario: false,
+                            textoConfirmar: "Sí, añadir",
+                            alConfirmar: () => abrirFormularioAñadir(term)
+                        });
+                    }
                 }
             }
 
@@ -361,7 +376,6 @@
                     textoConfirmar: "Guardar Signatura",
                     colorConfirmar: "bg-green-600 hover:bg-green-700",
                     alConfirmar: (descripcion) => {
-                        // Calcular un nuevo ID (simulado)
                         const maxId = globalData.reduce((max, item) => (item.id && item.id > max ? item.id : max), 0);
                         const nuevoItem = {
                             id: maxId + 1,
@@ -371,28 +385,24 @@
                         
                         globalData.push(nuevoItem);
                         marcarModificado();
-                        searchInput.value = ''; // Limpiar búsqueda
-                        renderizarLista(globalData); // Mostrar lista completa actualizada
+                        searchInput.value = '';
+                        renderizarLista(globalData);
                         
-                        // Seleccionar visualmente el nuevo (opcional, pero mejora la experiencia)
                         setTimeout(() => {
                             const items = document.querySelectorAll('.signature-item');
                             const lastItem = Array.from(items).find(el => el.textContent === nuevaSignaturaStr);
-                            if(lastItem) lastItem.dispatchEvent(new MouseEvent('mouseenter'));
+                            if(lastItem) mostrarEnLibro(nuevoItem, lastItem);
                         }, 100);
                     }
                 });
             }
 
-            // Eventos de Búsqueda
             searchBtn.addEventListener('click', realizarBusqueda);
             searchInput.addEventListener('keyup', (e) => {
                 if (e.key === 'Enter') realizarBusqueda();
-                // Si el usuario borra todo, restauramos la lista normal
                 if (searchInput.value.trim() === '') renderizarLista(globalData);
             });
 
-            // Evento Eliminar
             deleteBtn.addEventListener('click', () => {
                 if (!currentDisplayedSignatura) return;
 
@@ -408,13 +418,10 @@
                         globalData = globalData.filter(d => d[currentKeys.sig] !== sigEliminar);
                         marcarModificado();
                         
-                        // Limpiar la vista del libro
-                        bookTitle.textContent = "Selecciona una Signatura";
-                        bookDescription.innerHTML = '<p class="italic text-gray-400 text-sm">Signatura eliminada.</p>';
+                        bookDescription.innerHTML = '<p class="italic text-gray-400 text-sm">Signatura eliminada. Selecciona otra de la lista.</p>';
                         deleteBtn.classList.add('hidden');
                         currentDisplayedSignatura = null;
                         
-                        // Recargar lista filtrando si hay búsqueda activa
                         if (searchInput.value.trim() !== '') {
                             realizarBusqueda();
                         } else {
@@ -424,7 +431,6 @@
                 });
             });
 
-            // Evento Descargar (Guardar cambios)
             downloadJsonBtn.addEventListener('click', () => {
                 const jsonString = JSON.stringify(globalData, null, 2);
                 const blob = new Blob([jsonString], { type: 'application/json' });
@@ -444,7 +450,7 @@
                 
                 mostrarModal({
                     titulo: "¡Cambios guardados!",
-                    mensaje: "Se ha descargado el archivo 'signaturas.json'. Recuerda reemplazar tu archivo original en la carpeta de tu proyecto con este nuevo archivo descargado.",
+                    mensaje: "Se ha descargado el archivo 'signaturas.json'. Recuerda reemplazar el archivo en tu repositorio de GitHub o en tu carpeta local con este nuevo archivo.",
                     mostrarFormulario: false,
                     textoConfirmar: "Entendido"
                 });
@@ -455,7 +461,6 @@
                     listContainer.innerHTML = '<p class="text-blue-500 italic text-sm text-center mt-10">Cargando signaturas desde JSON...</p>';
                     
                     const response = await fetch('signaturas.json');
-                    
                     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                     
                     const datosJSON = await response.json();
@@ -469,7 +474,7 @@
                         <div class="text-red-500 text-sm text-center mt-10 p-4 bg-red-50 rounded-lg border border-red-200 shadow-inner">
                             <strong>Error de carga</strong><br>
                             No se pudo leer <code>signaturas.json</code>.<br><br>
-                            <span class="text-xs text-gray-500 block mt-2">Asegúrate de ejecutar esto mediante un servidor local.</span>
+                            <span class="text-xs text-gray-500 block mt-2">Asegúrate de que el archivo está en la misma carpeta.</span>
                         </div>`;
                 }
             }
