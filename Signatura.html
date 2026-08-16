@@ -258,7 +258,7 @@
         }
         // ---------------------------
 
-        function localizarLibro(event) {
+        async function localizarLibro(event) {
     event.preventDefault();
     let signatura = document.getElementById("campoSignatura").value.trim();
 
@@ -267,6 +267,30 @@
         return;
     }
 
+    // --- INICIO DE LA NUEVA BÚSQUEDA EN JSON ---
+    try {
+        const respuesta = await fetch('libros.json');
+        if (respuesta.ok) {
+            const libros = await respuesta.json();
+            let coincidencias = 0;
+
+            if (signatura.startsWith("HG")) {
+                coincidencias = libros.filter(libro => libro.signatura === signatura).length;
+                alert(`Información: Se han encontrado ${coincidencias} coincidencias exactas con la signatura "${signatura}".`);
+            } else {
+                coincidencias = libros.filter(libro => libro.titulo && libro.titulo.includes(signatura)).length;
+                alert(`Información: Se han encontrado ${coincidencias} libros cuyo título contiene "${signatura}".`);
+            }
+        } else {
+            console.warn("No se encontró el archivo libros.json");
+        }
+    } catch (error) {
+        console.error("Error al cargar o procesar el fichero libros.json", error);
+    }
+    // --- FIN DE LA NUEVA BÚSQUEDA EN JSON ---
+
+    // --- TU CÓDIGO ORIGINAL INTACTO A PARTIR DE AQUÍ ---
+    
     // Comprobación de inicio por HG utilizando el Modal personalizado
     if (!signatura.startsWith("HG")) {
         mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudamos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
@@ -282,12 +306,10 @@
     fichero = fichero.replace(/\/COMIC$/i, "");
 
     // 3. Quitar todo lo posterior a "CR" si está en solitario (sin letras pegadas delante o detrás) y no acaba en /4 (Asturias)
-    // Usamos (?<![a-zA-Z]) para asegurar que no hay letras antes, y (?![a-zA-Z]) para asegurar que no hay letras después.
     if (!fichero.endsWith("/4")) {
         fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
     }
 
-    // --- NUEVA LÓGICA DE PROCESAMIENTO ---
     let sig = "";
     let ultimoIndiceBarra = fichero.lastIndexOf("/");
 
@@ -308,6 +330,7 @@
     // Se envía la versión limpia (sig) y la completa (orig)
     window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
 }
+
         
 function buscarEnCatalogo() {
     const signatura = document.getElementById("campoSignatura").value.trim();
