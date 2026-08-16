@@ -167,7 +167,7 @@
 
         /* --- ESTILOS DEL MODAL PERSONALIZADO --- */
         .modal-overlay {
-            display: none; 
+            display: none; /* Oculto por defecto */
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6);
@@ -188,7 +188,7 @@
         .modal-content p {
             font-size: 1.1em;
             margin-bottom: 20px;
-            white-space: pre-wrap; 
+            white-space: pre-wrap; /* Permite que funcionen los saltos de línea \n */
         }
         .modal-btn {
             background: #2980b9;
@@ -258,103 +258,68 @@
         }
         // ---------------------------
 
-        // Convertimos la función en asíncrona para poder leer el archivo de texto
-        async function localizarLibro(event) {
-            event.preventDefault();
-            let signatura = document.getElementById("campoSignatura").value.trim();
+        function localizarLibro(event) {
+    event.preventDefault();
+    let signatura = document.getElementById("campoSignatura").value.trim();
 
-            if (signatura === "" || signatura === "HG") {
-                mostrarModal("Por favor, escribe una signatura válida.");
-                return;
-            }
+    if (signatura === "" || signatura === "HG") {
+        mostrarModal("Por favor, escribe una signatura válida.");
+        return;
+    }
 
-            try {
-                // Abrimos el fichero libros.txt
-                const respuesta = await fetch('libros.txt');
-                
-                if (respuesta.ok) {
-                    const contenido = await respuesta.text();
-                    // Separamos el contenido línea por línea
-                    const lineas = contenido.split('\n');
+    // Comprobación de inicio por HG utilizando el Modal personalizado
+    if (!signatura.startsWith("HG")) {
+        mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudamos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
+        return; 
+    }
 
-                    if (signatura.startsWith("HG")) {
-                        let coincidencias = 0;
-                        
-                        // Buscamos en cada texto de cada línea
-                        lineas.forEach(linea => {
-                            // Separamos por espacios para evaluar palabras exactas (sin añadidos)
-                            const textos = linea.trim().split(/\s+/);
-                            // Filtramos las coincidencias que sean idénticas a la signatura
-                            coincidencias += textos.filter(texto => texto === signatura).length;
-                        });
-                        
-                        // Se utiliza alert() como mensaje informativo para pausar la ejecución 
-                        // y permitir que el usuario lea antes de que cambie la página web
-                        alert(`Información: Se han encontrado ${coincidencias} coincidencias exactas para "${signatura}".`);
-                        
-                    } else {
-                        // Si la signatura NO empieza por HG
-                        for (let linea of lineas) {
-                            const textos = linea.trim().split(/\s+/);
-                            // Si alguno de los textos exactos de la línea coincide con la signatura
-                            if (textos.includes(signatura)) {
-                                // Se guarda en la variable signatura el primer texto de la línea
-                                signatura = textos[0];
-                                break; // Detenemos la búsqueda al encontrar la primera coincidencia
-                            }
-                        }
-                    }
-                } else {
-                    console.warn("No se pudo acceder a libros.txt. Código:", respuesta.status);
-                }
-            } catch (error) {
-                console.error("Error al intentar leer libros.txt:", error);
-            }
+    let fichero = signatura;
 
-            // --- CONTINUACIÓN DE LOS PROCESOS ORIGINALES ---
-            let fichero = signatura;
+    // 1. Quitar "/AST" si se encuentra al final de la signatura ANTES de los demás procesos
+    fichero = fichero.replace(/\/AST$/i, "");
 
-            // 1. Quitar "/AST" si se encuentra al final de la signatura ANTES de los demás procesos
-            fichero = fichero.replace(/\/AST$/i, "");
+    // 2. Quitar "/COMIC" si se encuentra al final de la signatura ANTES de los demás procesos
+    fichero = fichero.replace(/\/COMIC$/i, "");
 
-            // 2. Quitar "/COMIC" si se encuentra al final de la signatura ANTES de los demás procesos
-            fichero = fichero.replace(/\/COMIC$/i, "");
+    // 3. Quitar todo lo posterior a "CR" si está en solitario (sin letras pegadas delante o detrás) y no acaba en /4 (Asturias)
+    // Usamos (?<![a-zA-Z]) para asegurar que no hay letras antes, y (?![a-zA-Z]) para asegurar que no hay letras después.
+    if (!fichero.endsWith("/4")) {
+        fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
+    }
 
-            // 3. Quitar todo lo posterior a "CR" si está en solitario y no acaba en /4
-            if (!fichero.endsWith("/4")) {
-                fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
-            }
+    // --- NUEVA LÓGICA DE PROCESAMIENTO ---
+    let sig = "";
+    let ultimoIndiceBarra = fichero.lastIndexOf("/");
 
-            // --- LÓGICA DE PROCESAMIENTO ---
-            let sig = "";
-            let ultimoIndiceBarra = fichero.lastIndexOf("/");
+    if (ultimoIndiceBarra !== -1) {
+        let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
 
-            if (ultimoIndiceBarra !== -1) {
-                let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
-
-                if (parteDerecha === "4") {
-                    sig = "HG/4";
-                } else {
-                    sig = fichero.substring(0, ultimoIndiceBarra);
-                }
-            } else {
-                sig = fichero;
-            }
-
-            // Redirección final con la signatura procesada (sig) y la completa (orig)
-            window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
+        if (parteDerecha === "4") {
+            sig = "HG/4";
+        } else {
+            // Quitamos el último '/' y todo lo que esté a su derecha
+            sig = fichero.substring(0, ultimoIndiceBarra);
         }
-                
-        function buscarEnCatalogo() {
-            const signatura = document.getElementById("campoSignatura").value.trim();
-            if (signatura === "" || signatura === "HG") {
-                window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
-            } else {
-                const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
-                const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "&START=1&FORM=1";
-                window.open(urlFinal, "_blank");
-            }
-        }
+    } else {
+        // En caso de no contener ninguna '/' tras los filtros previos
+        sig = fichero;
+    }
+
+    // Se envía la versión limpia (sig) y la completa (orig)
+    window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
+}
+        
+function buscarEnCatalogo() {
+    const signatura = document.getElementById("campoSignatura").value.trim();
+    if (signatura === "" || signatura === "HG") {
+        window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
+    } else {
+        const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
+        // Envolvemos la signatura entre comillas dobles antes de codificar la URL
+        const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "&START=1&FORM=1";
+        window.open(urlFinal, "_blank");
+    }
+}
     </script>
 </body>
 </html>
