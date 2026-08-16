@@ -290,12 +290,20 @@
 
                     if (signatura.startsWith("HG")) {
                         coincidencias = libros.filter(libro => libro.signatura === signatura).length;
-                        // Usamos await en lugar de alert()
-                        await mostrarModal(`Información: Se han encontrado ${coincidencias} ejemplares con la signatura "${signatura}".`);
                     } else {
                         coincidencias = libros.filter(libro => libro.titulo && libro.titulo.includes(signatura)).length;
-                        // Usamos await en lugar de alert()
-                        await mostrarModal(`Información: Se han encontrado ${coincidencias} libros cuyo título contiene "${signatura}".`);
+                    }
+
+                    // --- NUEVA CONDICIÓN DE CERO COINCIDENCIAS ---
+                    if (coincidencias === 0) {
+                        await mostrarModal("No se ha encontrado ninguna coincidencia. Compruebe el texto de búsqueda.");
+                        return; // Se detiene la ejecución para que el usuario pueda corregir la entrada
+                    } else {
+                        if (signatura.startsWith("HG")) {
+                            await mostrarModal(`Información: Se han encontrado ${coincidencias} coincidencias exactas con la signatura "${signatura}".`);
+                        } else {
+                            await mostrarModal(`Información: Se han encontrado ${coincidencias} libros cuyo título contiene "${signatura}".`);
+                        }
                     }
                 } else {
                     console.warn("No se encontró el archivo libros.json");
