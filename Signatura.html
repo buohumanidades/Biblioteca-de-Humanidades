@@ -248,101 +248,116 @@
 
     <script>
         // --- FUNCIONES DEL MODAL ---
+        let modalResolve = null;
+
         function mostrarModal(mensaje) {
             document.getElementById("modalMessage").innerText = mensaje;
             document.getElementById("customModal").style.display = "flex";
+            
+            // Retornamos una Promesa para poder usar await y pausar la ejecución
+            return new Promise(resolve => {
+                // Si había otra promesa pendiente, la resolvemos para que no quede colgada
+                if(modalResolve) modalResolve();
+                modalResolve = resolve;
+            });
         }
 
         function cerrarModal() {
             document.getElementById("customModal").style.display = "none";
+            // Al cerrar el modal, resolvemos la Promesa, permitiendo que el código continúe
+            if (modalResolve) {
+                modalResolve();
+                modalResolve = null;
+            }
         }
         // ---------------------------
 
         async function localizarLibro(event) {
-    event.preventDefault();
-    let signatura = document.getElementById("campoSignatura").value.trim();
+            event.preventDefault();
+            let signatura = document.getElementById("campoSignatura").value.trim();
 
-    if (signatura === "" || signatura === "HG") {
-        mostrarModal("Por favor, escribe una signatura válida.");
-        return;
-    }
-
-    // --- INICIO DE LA NUEVA BÚSQUEDA EN JSON ---
-    try {
-        const respuesta = await fetch('libros.json');
-        if (respuesta.ok) {
-            const libros = await respuesta.json();
-            let coincidencias = 0;
-
-            if (signatura.startsWith("HG")) {
-                coincidencias = libros.filter(libro => libro.signatura === signatura).length;
-                alert(`Información: Se han encontrado ${coincidencias} coincidencias exactas con la signatura "${signatura}".`);
-            } else {
-                coincidencias = libros.filter(libro => libro.titulo && libro.titulo.includes(signatura)).length;
-                alert(`Información: Se han encontrado ${coincidencias} libros cuyo título contiene "${signatura}".`);
+            if (signatura === "" || signatura === "HG") {
+                mostrarModal("Por favor, escribe una signatura válida.");
+                return;
             }
-        } else {
-            console.warn("No se encontró el archivo libros.json");
+
+            // --- INICIO DE LA NUEVA BÚSQUEDA EN JSON ---
+            try {
+                const respuesta = await fetch('libros.json');
+                if (respuesta.ok) {
+                    const libros = await respuesta.json();
+                    let coincidencias = 0;
+
+                    if (signatura.startsWith("HG")) {
+                        coincidencias = libros.filter(libro => libro.signatura === signatura).length;
+                        // Usamos await en lugar de alert()
+                        await mostrarModal(`Información: Se han encontrado ${coincidencias} coincidencias exactas con la signatura "${signatura}".`);
+                    } else {
+                        coincidencias = libros.filter(libro => libro.titulo && libro.titulo.includes(signatura)).length;
+                        // Usamos await en lugar de alert()
+                        await mostrarModal(`Información: Se han encontrado ${coincidencias} libros cuyo título contiene "${signatura}".`);
+                    }
+                } else {
+                    console.warn("No se encontró el archivo libros.json");
+                }
+            } catch (error) {
+                console.error("Error al cargar o procesar el fichero libros.json", error);
+            }
+            // --- FIN DE LA NUEVA BÚSQUEDA EN JSON ---
+
+            // --- TU CÓDIGO ORIGINAL INTACTO A PARTIR DE AQUÍ ---
+            
+            // Comprobación de inicio por HG utilizando el Modal personalizado
+            if (!signatura.startsWith("HG")) {
+                mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudamos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
+                return; 
+            }
+
+            let fichero = signatura;
+
+            // 1. Quitar "/AST" si se encuentra al final de la signatura ANTES de los demás procesos
+            fichero = fichero.replace(/\/AST$/i, "");
+
+            // 2. Quitar "/COMIC" si se encuentra al final de la signatura ANTES de los demás procesos
+            fichero = fichero.replace(/\/COMIC$/i, "");
+
+            // 3. Quitar todo lo posterior a "CR" si está en solitario (sin letras pegadas delante o detrás) y no acaba en /4 (Asturias)
+            if (!fichero.endsWith("/4")) {
+                fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
+            }
+
+            let sig = "";
+            let ultimoIndiceBarra = fichero.lastIndexOf("/");
+
+            if (ultimoIndiceBarra !== -1) {
+                let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
+
+                if (parteDerecha === "4") {
+                    sig = "HG/4";
+                } else {
+                    // Quitamos el último '/' y todo lo que esté a su derecha
+                    sig = fichero.substring(0, ultimoIndiceBarra);
+                }
+            } else {
+                // En caso de no contener ninguna '/' tras los filtros previos
+                sig = fichero;
+            }
+
+            // Se envía la versión limpia (sig) y la completa (orig)
+            window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
         }
-    } catch (error) {
-        console.error("Error al cargar o procesar el fichero libros.json", error);
-    }
-    // --- FIN DE LA NUEVA BÚSQUEDA EN JSON ---
 
-    // --- TU CÓDIGO ORIGINAL INTACTO A PARTIR DE AQUÍ ---
-    
-    // Comprobación de inicio por HG utilizando el Modal personalizado
-    if (!signatura.startsWith("HG")) {
-        mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudamos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
-        return; 
-    }
-
-    let fichero = signatura;
-
-    // 1. Quitar "/AST" si se encuentra al final de la signatura ANTES de los demás procesos
-    fichero = fichero.replace(/\/AST$/i, "");
-
-    // 2. Quitar "/COMIC" si se encuentra al final de la signatura ANTES de los demás procesos
-    fichero = fichero.replace(/\/COMIC$/i, "");
-
-    // 3. Quitar todo lo posterior a "CR" si está en solitario (sin letras pegadas delante o detrás) y no acaba en /4 (Asturias)
-    if (!fichero.endsWith("/4")) {
-        fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
-    }
-
-    let sig = "";
-    let ultimoIndiceBarra = fichero.lastIndexOf("/");
-
-    if (ultimoIndiceBarra !== -1) {
-        let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
-
-        if (parteDerecha === "4") {
-            sig = "HG/4";
-        } else {
-            // Quitamos el último '/' y todo lo que esté a su derecha
-            sig = fichero.substring(0, ultimoIndiceBarra);
+        function buscarEnCatalogo() {
+            const signatura = document.getElementById("campoSignatura").value.trim();
+            if (signatura === "" || signatura === "HG") {
+                window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
+            } else {
+                const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
+                // Envolvemos la signatura entre comillas dobles antes de codificar la URL
+                const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "&START=1&FORM=1";
+                window.open(urlFinal, "_blank");
+            }
         }
-    } else {
-        // En caso de no contener ninguna '/' tras los filtros previos
-        sig = fichero;
-    }
-
-    // Se envía la versión limpia (sig) y la completa (orig)
-    window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
-}
-
-        
-function buscarEnCatalogo() {
-    const signatura = document.getElementById("campoSignatura").value.trim();
-    if (signatura === "" || signatura === "HG") {
-        window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
-    } else {
-        const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
-        // Envolvemos la signatura entre comillas dobles antes de codificar la URL
-        const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "&START=1&FORM=1";
-        window.open(urlFinal, "_blank");
-    }
-}
     </script>
 </body>
 </html>
