@@ -291,7 +291,7 @@
                     if (signatura.startsWith("HG")) {
                         coincidencias = libros.filter(libro => libro.signatura === signatura).length;
                         // Usamos await en lugar de alert()
-                        await mostrarModal(`Información: Se han encontrado ${coincidencias} coincidencias exactas con la signatura "${signatura}".`);
+                        await mostrarModal(`Información: Se han encontrado ${coincidencias} ejemplares con la signatura "${signatura}".`);
                     } else {
                         coincidencias = libros.filter(libro => libro.titulo && libro.titulo.includes(signatura)).length;
                         // Usamos await en lugar de alert()
