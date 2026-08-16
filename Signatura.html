@@ -276,7 +276,9 @@
 
             if (signatura.startsWith("HG")) {
                 coincidencias = libros.filter(libro => libro.signatura === signatura).length;
-                alert(`Información: Se han encontrado ${coincidencias} coincidencias exactas con la signatura "${signatura}".`);
+                mostrarModal("Se han encontrado " + coincidencias + " coincidencias con la signatura: " + signatura");
+                return;
+                // --alert(`Información: Se han encontrado ${coincidencias} coincidencias exactas con la signatura "${signatura}".`);
             } else {
                 coincidencias = libros.filter(libro => libro.titulo && libro.titulo.includes(signatura)).length;
                 alert(`Información: Se han encontrado ${coincidencias} libros cuyo título contiene "${signatura}".`);
