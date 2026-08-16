@@ -207,7 +207,7 @@
         // Buscar en el catálogo usando la signatura COMPLETA original
         if (sigOriginal) {
             const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
-            const urlFinal = urlBase + encodeURIComponent(sigOriginal) + "&START=1&FORM=1";
+            const urlFinal = urlBase + encodeURIComponent('"' + sigOriginal + '"') + "&START=1&FORM=1";
     iframe.src = urlFinal;
         } else {
             iframe.srcdoc = `
