@@ -167,7 +167,7 @@
 
         /* --- ESTILOS DEL MODAL PERSONALIZADO --- */
         .modal-overlay {
-            display: none; 
+            display: none; /* Oculto por defecto */
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6);
@@ -188,7 +188,7 @@
         .modal-content p {
             font-size: 1.1em;
             margin-bottom: 20px;
-            white-space: pre-wrap; 
+            white-space: pre-wrap; /* Permite que funcionen los saltos de línea \n */
         }
         .modal-btn {
             background: #2980b9;
@@ -204,6 +204,7 @@
         .modal-btn:hover {
             background: #1a5276;
         }
+        /* -------------------------------------- */
     </style>
 </head>
 <body>
@@ -243,120 +244,82 @@
             <button onclick="cerrarModal()" class="modal-btn">Aceptar</button>
         </div>
     </div>
+    <!-- ----------------------------------------- -->
 
     <script>
         // --- FUNCIONES DEL MODAL ---
-        let accionAlCerrarModal = null; // Variable para almacenar el proceso a continuar
-
-        function mostrarModal(mensaje, callback = null) {
+        function mostrarModal(mensaje) {
             document.getElementById("modalMessage").innerText = mensaje;
             document.getElementById("customModal").style.display = "flex";
-            accionAlCerrarModal = callback; // Guardamos los procesos que continúan
         }
 
         function cerrarModal() {
             document.getElementById("customModal").style.display = "none";
-            // Si hay un proceso pendiente, lo ejecutamos al cerrar
-            if (typeof accionAlCerrarModal === 'function') {
-                accionAlCerrarModal();
-                accionAlCerrarModal = null; // Limpiamos la variable
-            }
         }
         // ---------------------------
 
-        // Función auxiliar para escapar caracteres conflictivos (como las barras /) en la búsqueda
-        function escaparRegExp(string) {
-            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        function localizarLibro(event) {
+    event.preventDefault();
+    let signatura = document.getElementById("campoSignatura").value.trim();
+
+    if (signatura === "" || signatura === "HG") {
+        mostrarModal("Por favor, escribe una signatura válida.");
+        return;
+    }
+
+    // Comprobación de inicio por HG utilizando el Modal personalizado
+    if (!signatura.startsWith("HG")) {
+        mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudamos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
+        return; 
+    }
+
+    let fichero = signatura;
+
+    // 1. Quitar "/AST" si se encuentra al final de la signatura ANTES de los demás procesos
+    fichero = fichero.replace(/\/AST$/i, "");
+
+    // 2. Quitar "/COMIC" si se encuentra al final de la signatura ANTES de los demás procesos
+    fichero = fichero.replace(/\/COMIC$/i, "");
+
+    // 3. Quitar todo lo posterior a "CR" si está en solitario (sin letras pegadas delante o detrás) y no acaba en /4 (Asturias)
+    // Usamos (?<![a-zA-Z]) para asegurar que no hay letras antes, y (?![a-zA-Z]) para asegurar que no hay letras después.
+    if (!fichero.endsWith("/4")) {
+        fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
+    }
+
+    // --- NUEVA LÓGICA DE PROCESAMIENTO ---
+    let sig = "";
+    let ultimoIndiceBarra = fichero.lastIndexOf("/");
+
+    if (ultimoIndiceBarra !== -1) {
+        let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
+
+        if (parteDerecha === "4") {
+            sig = "HG/4";
+        } else {
+            // Quitamos el último '/' y todo lo que esté a su derecha
+            sig = fichero.substring(0, ultimoIndiceBarra);
         }
+    } else {
+        // En caso de no contener ninguna '/' tras los filtros previos
+        sig = fichero;
+    }
 
-        // Convertimos la función en asíncrona (async) para poder leer el fichero .txt
-        async function localizarLibro(event) {
-            event.preventDefault();
-            let signatura = document.getElementById("campoSignatura").value.trim();
-
-            if (signatura === "" || signatura === "HG") {
-                mostrarModal("Por favor, escribe una signatura válida.");
-                return;
-            }
-
-            try {
-                // 1. Abrimos y leemos el fichero libros.txt
-                const respuesta = await fetch('libros.txt');
-                if (!respuesta.ok) throw new Error("No se pudo leer el archivo libros.txt");
-                const texto = await respuesta.text();
-                
-                let coincidencias = 0;
-
-                // 2. Lógica de búsqueda según empiece o no por HG
-                if (signatura.startsWith("HG")) {
-                    // BÚSQUEDA EXACTA: Dividimos todo el texto por espacios/saltos de línea para aislar las palabras
-                    const palabras = texto.split(/\s+/);
-                    // Filtramos solo las que sean idénticas a la signatura (sin añadidos)
-                    coincidencias = palabras.filter(palabra => palabra === signatura).length;
-                } else {
-                    // BÚSQUEDA PARCIAL: Buscamos la secuencia literal de texto, permitiendo texto añadido alrededor
-                    const regex = new RegExp(escaparRegExp(signatura), "gi");
-                    const matches = texto.match(regex);
-                    coincidencias = matches ? matches.length : 0;
-                }
-
-                // 3. Mostramos el mensaje de coincidencias y, al pulsar aceptar, continuamos con tus procesos
-                mostrarModal(
-                    `Se han encontrado ${coincidencias} coincidencias para "${signatura}".`, 
-                    () => continuarProcesos(signatura)
-                );
-
-            } catch (error) {
-                console.error("Error procesando libros.txt:", error);
-                // Si el fichero no existe o falla, mostramos error y evitamos bloquear la app
-                mostrarModal("No se pudo consultar el archivo de libros.", () => continuarProcesos(signatura));
-            }
-        }
-
-        // --- PROCESOS EXISTENTES ---
-        function continuarProcesos(signatura) {
-            let fichero = signatura;
-
-            // 1. Quitar "/AST" si se encuentra al final
-            fichero = fichero.replace(/\/AST$/i, "");
-
-            // 2. Quitar "/COMIC" si se encuentra al final
-            fichero = fichero.replace(/\/COMIC$/i, "");
-
-            // 3. Quitar todo lo posterior a "CR" si está en solitario y no acaba en /4
-            if (!fichero.endsWith("/4")) {
-                fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
-            }
-
-            let sig = "";
-            let ultimoIndiceBarra = fichero.lastIndexOf("/");
-
-            if (ultimoIndiceBarra !== -1) {
-                let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
-
-                if (parteDerecha === "4") {
-                    sig = "HG/4";
-                } else {
-                    sig = fichero.substring(0, ultimoIndiceBarra);
-                }
-            } else {
-                sig = fichero;
-            }
-
-            // Ejecución final y redirección
-            window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
-        }
-                
-        function buscarEnCatalogo() {
-            const signatura = document.getElementById("campoSignatura").value.trim();
-            if (signatura === "" || signatura === "HG") {
-                window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
-            } else {
-                const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
-                const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "&START=1&FORM=1";
-                window.open(urlFinal, "_blank");
-            }
-        }
+    // Se envía la versión limpia (sig) y la completa (orig)
+    window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
+}
+        
+function buscarEnCatalogo() {
+    const signatura = document.getElementById("campoSignatura").value.trim();
+    if (signatura === "" || signatura === "HG") {
+        window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
+    } else {
+        const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
+        // Envolvemos la signatura entre comillas dobles antes de codificar la URL
+        const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "&START=1&FORM=1";
+        window.open(urlFinal, "_blank");
+    }
+}
     </script>
 </body>
 </html>
