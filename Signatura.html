@@ -267,7 +267,22 @@
         return;
     }
 
-    // --- INICIO DE LA NUEVA BÚSQUEDA EN JSON ---
+    // --- NUEVO: CREACIÓN DINÁMICA DEL MENSAJE INFORMATIVO ---
+    // Esto crea un mensaje en pantalla sin necesidad de tocar tu archivo HTML
+    let divMensaje = document.getElementById("mensajeJSON");
+    if (!divMensaje) {
+        divMensaje = document.createElement("div");
+        divMensaje.id = "mensajeJSON";
+        divMensaje.style.marginTop = "15px";
+        divMensaje.style.padding = "10px";
+        divMensaje.style.backgroundColor = "#d9edf7"; // Fondo azul clarito
+        divMensaje.style.color = "#31708f"; // Texto azul oscuro
+        divMensaje.style.border = "1px solid #bce8f1";
+        divMensaje.style.borderRadius = "4px";
+        event.target.appendChild(divMensaje); // Lo añade dentro de tu formulario
+    }
+    divMensaje.style.display = "none";
+
     try {
         const respuesta = await fetch('libros.json');
         if (respuesta.ok) {
@@ -276,61 +291,61 @@
 
             if (signatura.startsWith("HG")) {
                 coincidencias = libros.filter(libro => libro.signatura === signatura).length;
-                mostrarModal("Se han encontrado " + coincidencias + " coincidencias con la signatura: " + signatura");
-                return;
-                // --alert(`Información: Se han encontrado ${coincidencias} coincidencias exactas con la signatura "${signatura}".`);
+                divMensaje.innerHTML = `<strong>Información:</strong> Se han encontrado ${coincidencias} coincidencias exactas con la signatura "${signatura}".`;
             } else {
                 coincidencias = libros.filter(libro => libro.titulo && libro.titulo.includes(signatura)).length;
-                alert(`Información: Se han encontrado ${coincidencias} libros cuyo título contiene "${signatura}".`);
+                divMensaje.innerHTML = `<strong>Información:</strong> Se han encontrado ${coincidencias} libros cuyo título contiene "${signatura}".`;
             }
+            divMensaje.style.display = "block"; // Mostramos el mensaje
         } else {
             console.warn("No se encontró el archivo libros.json");
         }
     } catch (error) {
         console.error("Error al cargar o procesar el fichero libros.json", error);
     }
-    // --- FIN DE LA NUEVA BÚSQUEDA EN JSON ---
+    // --- FIN DE LA NUEVA BÚSQUEDA ---
 
-    // --- TU CÓDIGO ORIGINAL INTACTO A PARTIR DE AQUÍ ---
+    // --- TU CÓDIGO ORIGINAL ---
     
-    // Comprobación de inicio por HG utilizando el Modal personalizado
     if (!signatura.startsWith("HG")) {
         mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudamos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
         return; 
     }
 
-    let fichero = signatura;
+    // Retrasamos la redirección 2.5 segundos para que el usuario pueda leer el mensaje en pantalla
+    setTimeout(() => {
+        let fichero = signatura;
 
-    // 1. Quitar "/AST" si se encuentra al final de la signatura ANTES de los demás procesos
-    fichero = fichero.replace(/\/AST$/i, "");
+        // 1. Quitar "/AST"
+        fichero = fichero.replace(/\/AST$/i, "");
 
-    // 2. Quitar "/COMIC" si se encuentra al final de la signatura ANTES de los demás procesos
-    fichero = fichero.replace(/\/COMIC$/i, "");
+        // 2. Quitar "/COMIC"
+        fichero = fichero.replace(/\/COMIC$/i, "");
 
-    // 3. Quitar todo lo posterior a "CR" si está en solitario (sin letras pegadas delante o detrás) y no acaba en /4 (Asturias)
-    if (!fichero.endsWith("/4")) {
-        fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
-    }
-
-    let sig = "";
-    let ultimoIndiceBarra = fichero.lastIndexOf("/");
-
-    if (ultimoIndiceBarra !== -1) {
-        let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
-
-        if (parteDerecha === "4") {
-            sig = "HG/4";
-        } else {
-            // Quitamos el último '/' y todo lo que esté a su derecha
-            sig = fichero.substring(0, ultimoIndiceBarra);
+        // 3. Quitar todo lo posterior a "CR" 
+        if (!fichero.endsWith("/4")) {
+            fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
         }
-    } else {
-        // En caso de no contener ninguna '/' tras los filtros previos
-        sig = fichero;
-    }
 
-    // Se envía la versión limpia (sig) y la completa (orig)
-    window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
+        let sig = "";
+        let ultimoIndiceBarra = fichero.lastIndexOf("/");
+
+        if (ultimoIndiceBarra !== -1) {
+            let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
+
+            if (parteDerecha === "4") {
+                sig = "HG/4";
+            } else {
+                sig = fichero.substring(0, ultimoIndiceBarra);
+            }
+        } else {
+            sig = fichero;
+        }
+
+        // Se envía la versión limpia (sig) y la completa (orig)
+        window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
+        
+    }, 2500); // 2500 ms = 2.5 segundos. Puedes aumentar o disminuir este número.
 }
 
         
