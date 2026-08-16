@@ -262,90 +262,74 @@
     event.preventDefault();
     let signatura = document.getElementById("campoSignatura").value.trim();
 
+    // 1. Validación básica
     if (signatura === "" || signatura === "HG") {
         mostrarModal("Por favor, escribe una signatura válida.");
         return;
     }
 
-    // --- NUEVO: CREACIÓN DINÁMICA DEL MENSAJE INFORMATIVO ---
-    // Esto crea un mensaje en pantalla sin necesidad de tocar tu archivo HTML
-    let divMensaje = document.getElementById("mensajeJSON");
-    if (!divMensaje) {
-        divMensaje = document.createElement("div");
-        divMensaje.id = "mensajeJSON";
-        divMensaje.style.marginTop = "15px";
-        divMensaje.style.padding = "10px";
-        divMensaje.style.backgroundColor = "#d9edf7"; // Fondo azul clarito
-        divMensaje.style.color = "#31708f"; // Texto azul oscuro
-        divMensaje.style.border = "1px solid #bce8f1";
-        divMensaje.style.borderRadius = "4px";
-        event.target.appendChild(divMensaje); // Lo añade dentro de tu formulario
-    }
-    divMensaje.style.display = "none";
-
+    // 2. Búsqueda en el JSON
+    let mensajeResultado = "";
     try {
         const respuesta = await fetch('libros.json');
-        if (respuesta.ok) {
-            const libros = await respuesta.json();
-            let coincidencias = 0;
+        const libros = await respuesta.json();
+        let coincidencias = 0;
 
-            if (signatura.startsWith("HG")) {
-                coincidencias = libros.filter(libro => libro.signatura === signatura).length;
-                divMensaje.innerHTML = `<strong>Información:</strong> Se han encontrado ${coincidencias} coincidencias exactas con la signatura "${signatura}".`;
-            } else {
-                coincidencias = libros.filter(libro => libro.titulo && libro.titulo.includes(signatura)).length;
-                divMensaje.innerHTML = `<strong>Información:</strong> Se han encontrado ${coincidencias} libros cuyo título contiene "${signatura}".`;
-            }
-            divMensaje.style.display = "block"; // Mostramos el mensaje
+        if (signatura.startsWith("HG")) {
+            coincidencias = libros.filter(libro => libro.signatura === signatura).length;
+            mensajeResultado = `Se han encontrado ${coincidencias} coincidencias exactas con la signatura "${signatura}".`;
         } else {
-            console.warn("No se encontró el archivo libros.json");
+            coincidencias = libros.filter(libro => libro.titulo && libro.titulo.includes(signatura)).length;
+            mensajeResultado = `Se han encontrado ${coincidencias} libros cuyo título contiene "${signatura}".`;
         }
     } catch (error) {
-        console.error("Error al cargar o procesar el fichero libros.json", error);
+        console.error("Error al leer libros.json:", error);
+        mensajeResultado = "No se pudo consultar el catálogo de libros.";
     }
-    // --- FIN DE LA NUEVA BÚSQUEDA ---
 
-    // --- TU CÓDIGO ORIGINAL ---
-    
+    // 3. Mostramos el mensaje en tu Modal
+    mostrarModal(mensajeResultado);
+
+    // 4. SOBREESCRIBIMOS el botón de cerrar del modal para que, al pulsarlo, continúe el proceso original
+    const botonCerrar = document.querySelector('.close');
+    if (botonCerrar) {
+        botonCerrar.onclick = function() {
+            cerrarModal(); // Cierra el modal
+            ejecutarProcesoOriginal(signatura); // Ejecuta lo que hacías antes
+        };
+    }
+}
+
+// Función auxiliar que contiene tu lógica original de procesamiento
+function ejecutarProcesoOriginal(signatura) {
+    // Comprobación de inicio por HG
     if (!signatura.startsWith("HG")) {
         mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudamos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
         return; 
     }
 
-    // Retrasamos la redirección 2.5 segundos para que el usuario pueda leer el mensaje en pantalla
-    setTimeout(() => {
-        let fichero = signatura;
+    let fichero = signatura;
 
-        // 1. Quitar "/AST"
-        fichero = fichero.replace(/\/AST$/i, "");
+    // Procesos de limpieza originales
+    fichero = fichero.replace(/\/AST$/i, "");
+    fichero = fichero.replace(/\/COMIC$/i, "");
 
-        // 2. Quitar "/COMIC"
-        fichero = fichero.replace(/\/COMIC$/i, "");
+    if (!fichero.endsWith("/4")) {
+        fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
+    }
 
-        // 3. Quitar todo lo posterior a "CR" 
-        if (!fichero.endsWith("/4")) {
-            fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
-        }
+    let sig = "";
+    let ultimoIndiceBarra = fichero.lastIndexOf("/");
 
-        let sig = "";
-        let ultimoIndiceBarra = fichero.lastIndexOf("/");
+    if (ultimoIndiceBarra !== -1) {
+        let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
+        sig = (parteDerecha === "4") ? "HG/4" : fichero.substring(0, ultimoIndiceBarra);
+    } else {
+        sig = fichero;
+    }
 
-        if (ultimoIndiceBarra !== -1) {
-            let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
-
-            if (parteDerecha === "4") {
-                sig = "HG/4";
-            } else {
-                sig = fichero.substring(0, ultimoIndiceBarra);
-            }
-        } else {
-            sig = fichero;
-        }
-
-        // Se envía la versión limpia (sig) y la completa (orig)
-        window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
-        
-    }, 2500); // 2500 ms = 2.5 segundos. Puedes aumentar o disminuir este número.
+    // Redirección final
+    window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
 }
 
         
