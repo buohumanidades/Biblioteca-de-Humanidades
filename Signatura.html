@@ -219,9 +219,10 @@
             <p style="text-align: center; color: #34495e; font-size: 0.95em; margin: 0 10px -10px 10px; font-weight: bold;">
                 Recuerda que los libros que se encuentran en las salas son de acceso libre y sus signaturas comienzan por HG.
             </p>
+            <!-- AQUÍ ESTÁ LA MODIFICACIÓN EN EL ATRIBUTO ONINPUT -->
             <input type="text" id="campoSignatura" class="input-signatura" placeholder="&lt;Escribe la signatura&gt;" 
                    onfocus="if(this.value.trim() === '') { this.value = 'HG'; setTimeout(() => this.setSelectionRange(2, 2), 0); }" 
-                   oninput="this.value = this.value.toUpperCase();">
+                   oninput="this.value = this.value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();">
 
             <a href="#" class="action-btn btn-local" onclick="localizarLibro(event)">
                 <span class="icon">🔎</span> Click para localizarlo
