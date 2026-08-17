@@ -167,7 +167,7 @@
 
         /* --- ESTILOS DEL MODAL PERSONALIZADO --- */
         .modal-overlay {
-            display: none;
+            display: none; /* Oculto por defecto */
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6);
@@ -188,7 +188,7 @@
         .modal-content p {
             font-size: 1.1em;
             margin-bottom: 20px;
-            white-space: pre-wrap; 
+            white-space: pre-wrap; /* Permite que funcionen los saltos de línea \n */
         }
         .modal-btn {
             background: #2980b9;
@@ -219,10 +219,9 @@
             <p style="text-align: center; color: #34495e; font-size: 0.95em; margin: 0 10px -10px 10px; font-weight: bold;">
                 Recuerda que los libros que se encuentran en las salas son de acceso libre y sus signaturas comienzan por HG.
             </p>
-            <!-- Input modificado para quitar tildes y pasar a mayúsculas en tiempo real -->
             <input type="text" id="campoSignatura" class="input-signatura" placeholder="&lt;Escribe la signatura&gt;" 
                    onfocus="if(this.value.trim() === '') { this.value = 'HG'; setTimeout(() => this.setSelectionRange(2, 2), 0); }" 
-                   oninput="this.value = this.value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();">
+                   oninput="this.value = this.value.toUpperCase();">
 
             <a href="#" class="action-btn btn-local" onclick="localizarLibro(event)">
                 <span class="icon">🔎</span> Click para localizarlo
@@ -230,7 +229,6 @@
 
             <div class="catalog-section">
                 <p class="availability-text">¿Quieres ver si está disponible?</p>
-                <!-- Al buscar en catálogo, usamos el texto que está escrito en el input -->
                 <button onclick="buscarEnCatalogo()" class="action-btn btn-catalog">
                     <span class="icon">📚</span> Búscalo en el catálogo
                 </button>
@@ -250,120 +248,80 @@
 
     <script>
         // --- FUNCIONES DEL MODAL ---
-        let modalResolve = null;
-
         function mostrarModal(mensaje) {
             document.getElementById("modalMessage").innerText = mensaje;
             document.getElementById("customModal").style.display = "flex";
-            
-            return new Promise(resolve => {
-                if(modalResolve) modalResolve();
-                modalResolve = resolve;
-            });
         }
 
         function cerrarModal() {
             document.getElementById("customModal").style.display = "none";
-            if (modalResolve) {
-                modalResolve();
-                modalResolve = null;
-            }
         }
-        // ---------------------------
+        
 
-        async function localizarLibro(event) {
-            event.preventDefault();
-            let textoBusqueda = document.getElementById("campoSignatura").value.trim();
-            let signaturaFinal = textoBusqueda; // Valor por defecto
+// ----------LOCALIZAR POR SIGNATURA
 
-            if (textoBusqueda === "" || textoBusqueda === "HG") {
-                mostrarModal("Por favor, escribe una signatura o título válido.");
-                return;
-            }
+        function localizarLibro(event) {
+    event.preventDefault();
+    let signatura = document.getElementById("campoSignatura").value.trim();
 
-            // --- BÚSQUEDA EN JSON ---
-            try {
-                const respuesta = await fetch('libros.json');
-                if (respuesta.ok) {
-                    const libros = await respuesta.json();
-                    let coincidencias = 0;
+    if (signatura === "" || signatura === "HG") {
+        mostrarModal("Por favor, escribe una signatura válida.");
+        return;
+    }
 
-                    if (textoBusqueda.startsWith("HG")) {
-                        // Búsqueda por Signatura HG
-                        coincidencias = libros.filter(libro => libro.signatura === textoBusqueda).length;
-                        
-                        if (coincidencias === 0) {
-                            await mostrarModal("No se ha encontrado ninguna coincidencia. Compruebe el texto de búsqueda.");
-                            return; 
-                        } else {
-                            await mostrarModal(`Información: Se han encontrado ${coincidencias} coincidencias exactas con la signatura "${textoBusqueda}".`);
-                        }
+    // Comprobación de inicio por HG utilizando el Modal personalizado
+    if (!signatura.startsWith("HG")) {
+        mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudamos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
+        return; 
+    }
 
-                    } else {
-                        // Búsqueda por Título (No empieza por HG)
-                        const librosEncontrados = libros.filter(libro => libro.titulo && libro.titulo.includes(textoBusqueda));
-                        coincidencias = librosEncontrados.length;
+    let fichero = signatura;
 
-                        if (coincidencias === 0) {
-                            await mostrarModal("No se ha encontrado ninguna coincidencia. Compruebe el texto de búsqueda.");
-                            return; 
-                        } else if (coincidencias > 20) {
-                            await mostrarModal(`Información: Se han encontrado ${coincidencias} libros cuyo título contiene "${textoBusqueda}".\n\nAdvertencia: Son demasiadas coincidencias. Intenta ser más concreto o introduce la signatura.`);
-                            return; // Se detiene la ejecución
-                        } else {
-                            await mostrarModal(`Información: Se han encontrado ${coincidencias} libros cuyo título contiene "${textoBusqueda}".`);
-                            // Obtenemos la signatura real de la primera coincidencia
-                            signaturaFinal = librosEncontrados[0].signatura;
-                        }
-                    }
-                } else {
-                    console.warn("No se encontró el archivo libros.json");
-                }
-            } catch (error) {
-                console.error("Error al cargar o procesar el fichero libros.json", error);
-            }
-           
+    // 1. Quitar "/AST" si se encuentra al final de la signatura ANTES de los demás procesos
+    fichero = fichero.replace(/\/AST$/i, "");
 
-            // --- LÓGICA DE PROCESAMIENTO DE LA SIGNATURA PARA LOCALIZADOR ---
-            let fichero = signaturaFinal; // Usamos la extraída del JSON (o la original si empezó por HG)
+    // 2. Quitar "/COMIC" si se encuentra al final de la signatura ANTES de los demás procesos
+    fichero = fichero.replace(/\/COMIC$/i, "");
 
-            fichero = fichero.replace(/\/AST$/i, "");
-            fichero = fichero.replace(/\/COMIC$/i, "");
+    // 3. Quitar todo lo posterior a "CR" si está en solitario (sin letras pegadas delante o detrás) y no acaba en /4 (Asturias)
+    // Usamos (?<![a-zA-Z]) para asegurar que no hay letras antes, y (?![a-zA-Z]) para asegurar que no hay letras después.
+    if (!fichero.endsWith("/4")) {
+        fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
+    }
 
-            if (!fichero.endsWith("/4")) {
-                fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
-            }
+    // --- NUEVA LÓGICA DE PROCESAMIENTO ---
+    let sig = "";
+    let ultimoIndiceBarra = fichero.lastIndexOf("/");
 
-            let sig = "";
-            let ultimoIndiceBarra = fichero.lastIndexOf("/");
+    if (ultimoIndiceBarra !== -1) {
+        let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
 
-            if (ultimoIndiceBarra !== -1) {
-                let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
-
-                if (parteDerecha === "4") {
-                    sig = "HG/4";
-                } else {
-                    sig = fichero.substring(0, ultimoIndiceBarra);
-                }
-            } else {
-                sig = fichero;
-            }
-
-            // Enviamos la signatura limpia para ubicar en el mapa (sig) y el texto introducido originalmente (orig)
-            window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(textoBusqueda);
+        if (parteDerecha === "4") {
+            sig = "HG/4";
+        } else {
+            // Quitamos el último '/' y todo lo que esté a su derecha
+            sig = fichero.substring(0, ultimoIndiceBarra);
         }
+    } else {
+        // En caso de no contener ninguna '/' tras los filtros previos
+        sig = fichero;
+    }
 
-        function buscarEnCatalogo() {
-            // El catálogo siempre buscará con el texto que escribió el usuario originalmente en el input
-            const textoBusqueda = document.getElementById("campoSignatura").value.trim();
-            if (textoBusqueda === "" || textoBusqueda === "HG") {
-                window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
-            } else {
-                const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
-                const urlFinal = urlBase + encodeURIComponent('"' + textoBusqueda + '"') + "&START=1&FORM=1";
-                window.open(urlFinal, "_blank");
-            }
-        }
+    // Se envía la versión limpia (sig) y la completa (orig)
+    window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
+}
+        
+function buscarEnCatalogo() {
+    const signatura = document.getElementById("campoSignatura").value.trim();
+    if (signatura === "" || signatura === "HG") {
+        window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
+    } else {
+        const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
+        // Envolvemos la signatura entre comillas dobles antes de codificar la URL
+        const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "&START=1&FORM=1";
+        window.open(urlFinal, "_blank");
+    }
+}
     </script>
 </body>
 </html>
