@@ -9,22 +9,36 @@
     <!-- Enlace a Google icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <style>
-        /* Estilos generales optimizados para móviles */
+        /* Estilos generales optimizados para móviles y base de escritorio */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; 
+            background-color: #f4f6f7;
+            font-family: Arial, sans-serif;
+            color: #2c3e50;
+        }
         body { 
-            font-family: Arial, sans-serif; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px; 
+            box-sizing: border-box;
             line-height: 1.4; 
-            margin: 0; 
-            padding: 15px; 
-            background-color: #f4f6f7; 
-            color: #2c3e50; 
         }
         .container { 
-            max-width: 500px; 
-            margin: auto; 
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 500px;
+            height: 100%; 
             background: #fff; 
-            padding: 20px; 
+            padding: 15px; 
             border-radius: 12px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.06); 
+            box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
+            transition: all 0.3s ease;
         }
         
         /* Cabecera */
@@ -33,9 +47,10 @@
             color: #1a252f; 
             text-align: center; 
             border-bottom: 2px solid #ecf0f1; 
-            padding-bottom: 12px; 
-            font-size: 1.6em; 
-            margin-top: 0;
+            padding-bottom: 8px; 
+            font-size: 1.4em; 
+            margin: 0 0 8px 0;
+            flex-shrink: 0; 
         }
         
         /* Estilo para el subtítulo y el número */
@@ -44,20 +59,20 @@
             align-items: center;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 25px; 
+            margin-bottom: 12px; 
+            flex-shrink: 0;
         }
         .subtitle-text {
             font-weight: bold; 
             color: #0033aa; 
-            font-size: 1.4em; 
+            font-size: 1.2em; 
             text-align: center;
         }
         .number-eight {
-            font-size: 1.em; 
+            font-size: 1em; 
             font-weight: 900;
             color: #b0b8c4; 
             line-height: 1;
-            
         }
         
         /* Montaje solapado: Foto + Círculo MATERIA */
@@ -65,42 +80,47 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 15px 0 25px 0;
+            margin: 5px 0 12px 0;
+            flex-shrink: 0;
         }
 
         .shelf-photo {
-            width: 200px;
-            height: 130px;
+            width: 170px;
+            height: 110px;
             object-fit: cover;
             border-radius: 4px;
             z-index: 1;
         }
 
         .circle-badge {
-            width: 135px;
-            height: 135px;
+            width: 115px;
+            height: 115px;
             background-color: #dce6f1; 
-            border: 12px solid #5b9bd5; 
+            border: 10px solid #5b9bd5; 
             border-radius: 50%;
-            margin-left: -35px; 
+            margin-left: -30px; 
             z-index: 2;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             box-sizing: border-box;
-            padding: 10px;
+            padding: 8px;
             font-weight: 800;
             color: #000;
-            font-size: 1.1em;
+            font-size: 1em;
         }
 
-        /* Lista de Materias */
+        /* Lista de Materias (Con scroll interno para que quepa en pantalla) */
         .subject-list {
             display: flex;
             flex-direction: column;
             gap: 6px; 
-            margin-bottom: 20px;
+            flex-grow: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding-right: 4px;
+            margin-bottom: 10px;
         }
 
         /* Estilo base de los botones */
@@ -108,16 +128,17 @@
             display: flex;
             align-items: center;
             gap: 12px; 
-            padding: 10px 12px; 
+            padding: 8px 12px; 
             border: 1px solid #e0e6ed;
             border-left-width: 4px;
             border-left-style: solid;
             border-radius: 6px; 
             text-decoration: none;
             color: #2c3e50;
-            font-size: 0.95em; 
+            font-size: 0.9em; 
             transition: all 0.2s ease;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
  	/* 1. Colores para OTROS */
@@ -129,7 +150,6 @@
             background-color: #e5e8e8;
             border-left-color: #2c3e50;
         }
-
         
         /* 1a. Colores para ARTE*/
         .btn-arte {
@@ -150,7 +170,6 @@
             background-color: #d6eaf8;
             border-left-color: #117a65;
         }
-
 
         /* 3. Colores para ESPAÑA */
         .btn-destacados {
@@ -191,8 +210,6 @@
             border-left-color: #117a65;
         }
 
-
-
         /* Iconos de la lista */
         .icon {
             font-size: 1.2em;
@@ -213,18 +230,70 @@
         .back-btn {
             display: block;
             text-align: center;
-            padding: 12px;
+            padding: 10px;
             background: #ecf0f1;
             color: #2c3e50;
             text-decoration: none;
             border-radius: 6px;
             font-weight: bold;
-            font-size: 1em;
-            margin-top: 10px;
+            font-size: 0.95em;
+            flex-shrink: 0;
             transition: background 0.3s;
         }
         .back-btn:active, .back-btn:hover {
             background: #d5dbdb;
+        }
+
+        /* =========================================================
+           ADAPTACIÓN PARA PANTALLAS GRANDES Y MÓVILES
+           ========================================================= */
+
+        /* 💻 PANTALLAS GRANDES / ORDENADORES */
+        @media (min-width: 769px) {
+            body {
+                padding: 0;
+            }
+            .container { 
+                width: 900px;
+                max-width: 95vw;
+                max-height: 95vh;
+                padding: 25px 35px; 
+            }
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 12px;
+                padding-bottom: 10px;
+            }
+            .subtitle {
+                margin-bottom: 15px;
+            }
+            .subtitle-text {
+                font-size: 1.3em;
+            }
+            .hero-overlap {
+                margin: 5px 0 15px 0;
+            }
+            .shelf-photo {
+                width: 200px;
+                height: 125px;
+            }
+            .circle-badge {
+                width: 130px;
+                height: 130px;
+                font-size: 1.1em;
+            }
+            .back-btn {
+                width: 30%;
+                margin: 10px auto 0 auto;
+                padding: 12px;
+            }
+        }
+
+        /* 📱 PANTALLAS PEQUEÑAS / MÓVILES */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
         }
     </style>
 </head>
@@ -448,7 +517,7 @@
                     ubicacion: datos.ubicacion,
                     estanteria: datos.estanteria,
                     orig: datos.signatura, 
-                    materia: datos.texto_materia // <- Añadido para pasar la materia al HTML
+                    materia: datos.texto_materia 
                 });
                 window.location.href = datos.html + "?" + paramsUrl.toString();
             }
