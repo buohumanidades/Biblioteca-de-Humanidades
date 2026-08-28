@@ -35,6 +35,7 @@
             border-radius: 12px; 
             box-sizing: border-box;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
+            transition: all 0.3s ease;
         }
         h1 { 
             font-family: 'Romana Moderna', Georgia, serif; 
@@ -56,6 +57,7 @@
             flex-direction: column;
             gap: 6px; 
             flex-shrink: 0;
+            transition: all 0.3s ease;
         }
         .route-step {
             display: flex;
@@ -101,6 +103,7 @@
             align-items: center;
             width: 100%;
             box-sizing: border-box;
+            transition: all 0.3s ease;
         }
         .texto-materia {
             font-weight: normal; 
@@ -166,6 +169,83 @@
             padding: 10px;
             border-radius: 6px;
             border: 1px solid #fadbd8;
+            flex-shrink: 0;
+        }
+
+        /* =========================================================
+           ADAPTACIÓN PARA PANTALLAS GRANDES Y MÓVILES
+           ========================================================= */
+
+        /* 💻 PANTALLAS GRANDES / ORDENADORES */
+        @media (min-width: 769px) {
+            body {
+                padding: 0;
+            }
+            .container { 
+                width: 900px;
+                max-width: 95vw;
+                max-height: 95vh;
+                padding: 25px 35px; 
+            }
+            h1 {
+                font-size: 2em;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+            
+            .location-route {
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+                padding: 15px;
+                border-left: none;
+                border-top: 4px solid #3498db;
+                border-radius: 10px;
+            }
+            
+            .step-planta {
+                width: auto;
+                padding-right: 0;
+                gap: 15px;
+            }
+            
+            .route-step.final-step {
+                margin-left: 0;
+                padding: 8px 16px;
+                width: auto;
+                gap: 15px;
+            }
+            
+            .texto-materia {
+                max-width: 250px;
+            }
+
+            .info-text {
+                margin-bottom: 15px;
+            }
+
+            .iframe-container {
+                margin-bottom: 15px;
+            }
+
+            .btn-new-search {
+                width: 30%;
+                margin: 0 auto; 
+                padding: 12px;
+                font-size: 1.1em;
+            }
+            .btn-new-search:hover {
+                background: #1a252f;
+            }
+        }
+
+        /* 📱 PANTALLAS PEQUEÑAS / MÓVILES */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
         }
     </style>
 </head>
@@ -255,3 +335,4 @@
     </script>
 </body>
 </html>
+```[cite: 4]
