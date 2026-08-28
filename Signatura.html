@@ -12,6 +12,7 @@
             padding: 15px; 
             background-color: #f4f6f7; 
             color: #2c3e50; 
+            box-sizing: border-box;
         }
         .container { 
             max-width: 500px; 
@@ -21,6 +22,7 @@
             border-radius: 12px; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.06); 
             transition: all 0.3s ease;
+            box-sizing: border-box;
         }
         h1 { 
             font-family: 'Romana Moderna', Georgia, serif; 
@@ -85,6 +87,7 @@
             outline: none;
             transition: all 0.3s ease;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            box-sizing: border-box;
         }
         .input-signatura::placeholder {
             color: #85c1e9;
@@ -109,12 +112,12 @@
             cursor: pointer;
             border: none;
             transition: all 0.2s ease;
+            box-sizing: border-box;
         }
         .btn-local {
             background: linear-gradient(135deg, #2980b9, #3498db);
             color: #ffffff;
             font-size: 1.15em;
-            padding: 18px;
             box-shadow: 0 6px 12px rgba(41, 128, 185, 0.3);
         }
         .btn-local:active {
@@ -163,6 +166,7 @@
             font-size: 1.05em;
             margin-top: 20px;
             transition: background 0.3s;
+            box-sizing: border-box;
         }
         .back-btn:active, .back-btn:hover {
             background: #d5dbdb;
@@ -170,7 +174,7 @@
 
         /* --- ESTILOS DEL MODAL PERSONALIZADO --- */
         .modal-overlay {
-            display: none; /* Oculto por defecto */
+            display: none; 
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6);
@@ -191,7 +195,7 @@
         .modal-content p {
             font-size: 1.1em;
             margin-bottom: 20px;
-            white-space: pre-wrap; /* Permite que funcionen los saltos de línea \n */
+            white-space: pre-wrap;
         }
         .modal-btn {
             background: #2980b9;
@@ -207,70 +211,89 @@
         .modal-btn:hover {
             background: #1a5276;
         }
-        /* -------------------------------------- */
 
         /* =========================================================
-           NUEVO: ADAPTACIÓN PARA NAVEGADOR A TODO EL ANCHO (PC/MÓVIL)
+           NUEVO: ADAPTACIÓN PARA NAVEGADOR DE ESCRITORIO (TODO EL ANCHO Y ALTO)
            ========================================================= */
 
-        /* 💻 PANTALLAS GRANDES / ORDENADORES (Navegador a todo lo ancho) */
+        /* 💻 PANTALLAS GRANDES / ORDENADORES */
         @media (min-width: 769px) {
             body {
-                padding: 40px 20px;
+                /* Asegura que el cuerpo ocupe el 100% de la ventana visible sin scroll */
+                height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0;
+                padding: 0;
+                overflow: hidden; /* Previene scrollbars en el body */
             }
             .container { 
-                max-width: 900px; /* Se expande en escritorios */
-                padding: 40px; 
-            }
-            h1 {
-                font-size: 2.2em;
+                width: 900px;
+                max-width: 95vw;
+                max-height: 95vh; /* Evita que el contenedor sea más alto que la pantalla */
+                padding: 30px 40px; 
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                /* En caso de pantallas extremadamente achatadas, permite scroll sólo dentro del cuadro blanco */
+                overflow-y: auto; 
             }
             
-            /* Ajusta la composición visual del encabezado */
+            /* Ajustamos márgenes verticales para comprimir la vista */
+            h1 {
+                font-size: 2em;
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+            }
+            
             .hero-overlap {
-                margin: 30px 0 50px 0;
+                margin: 15px 0 25px 0; /* Menor margen vertical */
             }
             .shelf-photo {
-                width: 320px;
-                height: 200px;
+                width: 280px;
+                height: 160px; /* Reducida la altura para salvar espacio */
             }
             .circle-badge {
-                width: 170px;
-                height: 170px;
-                font-size: 1.25em;
-                margin-left: -50px;
-                border-width: 16px;
+                width: 150px;
+                height: 150px;
+                font-size: 1.15em;
+                margin-left: -40px;
+                border-width: 12px;
             }
 
-            /* Proporción limpia para input y botones en escritorio */
+            .search-area {
+                gap: 15px; /* Reducido de 20 a 15 */
+                margin-bottom: 15px;
+            }
+            
             .input-signatura {
                 width: 50%;
-                font-size: 1.4em;
-                padding: 18px;
+                font-size: 1.3em;
+                padding: 14px;
             }
             .action-btn {
                 width: 50%;
-                font-size: 1.2em;
+                font-size: 1.15em;
+                padding: 14px;
             }
             
-            /* Acomoda el texto del aviso */
             .search-area p {
-                font-size: 1.1em !important;
-                width: 70%;
+                font-size: 1.05em !important;
+                width: 80%;
                 margin-bottom: 5px !important;
             }
 
-            /* Sección de catálogo y botón de inicio */
             .catalog-section {
                 width: 70%;
-                padding-top: 35px;
+                padding-top: 20px;
+                margin-top: 5px;
             }
-            .availability-text {
-                font-size: 1.1em;
-            }
+            
             .back-btn {
                 width: 30%;
-                margin: 30px auto 0 auto; /* Centrado en pantalla grande */
+                margin: 15px auto 0 auto; /* Menor separación hacia arriba */
+                padding: 12px;
             }
         }
 
@@ -347,7 +370,6 @@
                 return;
             }
 
-            // Comprobación de inicio por HG utilizando el Modal personalizado
             if (!signatura.startsWith("HG")) {
                 mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudamos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
                 return; 
@@ -355,19 +377,13 @@
 
             let fichero = signatura;
 
-            // 1. Quitar "/AST" si se encuentra al final de la signatura ANTES de los demás procesos
             fichero = fichero.replace(/\/AST$/i, "");
-
-            // 2. Quitar "/COMIC" si se encuentra al final de la signatura ANTES de los demás procesos
             fichero = fichero.replace(/\/COMIC$/i, "");
 
-            // 3. Quitar todo lo posterior a "CR" si está en solitario (sin letras pegadas delante o detrás) y no acaba en /4 (Asturias)
-            // Usamos (?<![a-zA-Z]) para asegurar que no hay letras antes, y (?![a-zA-Z]) para asegurar que no hay letras después.
             if (!fichero.endsWith("/4")) {
                 fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
             }
 
-            // --- NUEVA LÓGICA DE PROCESAMIENTO ---
             let sig = "";
             let ultimoIndiceBarra = fichero.lastIndexOf("/");
 
@@ -377,15 +393,12 @@
                 if (parteDerecha === "4") {
                     sig = "HG/4";
                 } else {
-                    // Quitamos el último '/' y todo lo que esté a su derecha
                     sig = fichero.substring(0, ultimoIndiceBarra);
                 }
             } else {
-                // En caso de no contener ninguna '/' tras los filtros previos
                 sig = fichero;
             }
 
-            // Se envía la versión limpia (sig) y la completa (orig)
             window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
         }
         
@@ -395,7 +408,6 @@
                 window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
             } else {
                 const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
-                // Envolvemos la signatura entre comillas dobles antes de codificar la URL
                 const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "&START=1&FORM=1";
                 window.open(urlFinal, "_blank");
             }
