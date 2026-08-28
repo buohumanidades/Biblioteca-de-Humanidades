@@ -21,6 +21,7 @@
             padding: 25px 20px; 
             border-radius: 16px; 
             box-shadow: 0 8px 24px rgba(0,0,0,0.08); 
+            transition: all 0.3s ease;
         }
         
         /* Cabecera */
@@ -50,6 +51,7 @@
             border-radius: 8px;
             z-index: 1;
             box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            transition: all 0.3s ease;
         }
 
         .circle-badge {
@@ -71,6 +73,7 @@
             font-size: 1.05em;
             line-height: 1.2;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
         }
 
         /* Estilos del recuadro (Fieldset) y texto incrustado (Legend) */
@@ -150,7 +153,7 @@
             letter-spacing: 0.5px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(129, 212, 250, 0.4);
-            animation: pulse-glow 1.5s infinite; /* Animación más rápida para llamar más la atención */
+            animation: pulse-glow 1.5s infinite;
         }
 
         .signature-btn:hover {
@@ -193,6 +196,58 @@
         
         .links a:hover { 
             background: #e2e6ea; 
+        }
+
+        /* =========================================================
+           NUEVO: ADAPTACIÓN SEGÚN TAMAÑO DE PANTALLA Y DISPOSITIVO
+           ========================================================= */
+
+        /* 💻 PANTALLAS GRANDES / ORDENADORES (Windows, Mac, Escritorio) */
+        @media (min-width: 769px) {
+            .container { 
+                max-width: 800px; /* Amoliamos el ancho para escritorios */
+                padding: 35px 30px; 
+            }
+
+            /* Distribución en 2 columnas para aprovechar el espacio de un monitor */
+            .subjects-container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+
+            .links {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+
+            .links a {
+                margin-bottom: 0;
+            }
+
+            /* Imagen y círculo con mejor tamaño en PC */
+            .shelf-photo {
+                width: 280px;
+                height: 180px;
+            }
+
+            .circle-badge {
+                width: 160px;
+                height: 160px;
+                font-size: 1.15em;
+            }
+        }
+
+        /* 📱 PANTALLAS PEQUEÑAS / MÓVILES */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
         }
     </style>
 </head>
@@ -269,5 +324,25 @@
             <a href="https://buo.uniovi.es/" target="_blank">Portal de la Biblioteca (BUO)</a>
         </div>
     </div>
+
+    <!-- Script para detectar el SO si se requiere lógica JS específica -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            const body = document.body;
+
+            // Detección de Windows
+            if (/windows/i.test(userAgent)) {
+                body.classList.add('os-windows');
+                console.log("Acceso desde un dispositivo con Windows.");
+            }
+
+            // Detección de Móviles (Android, iOS)
+            if (/android|iphone|ipad|ipod/i.test(userAgent)) {
+                body.classList.add('is-mobile-device');
+                console.log("Acceso desde un dispositivo móvil.");
+            }
+        });
+    </script>
 </body>
 </html>
