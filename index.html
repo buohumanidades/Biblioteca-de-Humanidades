@@ -5,327 +5,334 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biblioteca de Humanidades | Búsqueda</title>
     <style>
-        /* Estilos generales optimizados para una experiencia más moderna */
+        /* Estilos generales optimizados para una experiencia profesional */
         body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
             line-height: 1.6; 
             margin: 0; 
-            padding: 15px; 
-            background-color: #f4f6f7; 
-            color: #2c3e50; 
+            padding: 0; /* Eliminado el relleno para una cabecera limpia */
+            background-color: #f7f9fc; 
+            color: #333; 
         }
         .container { 
-            max-width: 500px; 
-            margin: auto; 
+            max-width: 900px; /* Un poco más ancho para la nueva imagen */
+            margin: 0 auto; 
             background: #fff; 
-            padding: 25px 20px; 
+            padding: 0; /* Relleno cero para la hero image, luego se ajustará */
             border-radius: 16px; 
-            box-shadow: 0 8px 24px rgba(0,0,0,0.08); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06); 
+            overflow: hidden; /* Para que la hero image respete las esquinas redondeadas */
             transition: all 0.3s ease;
         }
         
-        /* Cabecera */
-        h1 { 
-            font-family: 'Romana Moderna', Georgia, serif; 
-            color: #1a252f; 
-            text-align: center; 
-            border-bottom: 2px solid #ecf0f1; 
-            padding-bottom: 15px; 
-            font-size: 1.8em; 
-            margin-top: 0;
-            margin-bottom: 20px;
-        }
-        
-        /* Montaje solapado: Foto + Círculo */
-        .hero-overlap {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 10px 0 35px 0;
+        /* Sección de la Cabecera Heroica Profresional */
+        .hero-section {
+            width: 100%;
+            height: 350px; /* Altura de la nueva imagen panorámica */
+            position: relative;
+            background-color: #f4f6f7;
+            overflow: hidden;
         }
 
-        .shelf-photo {
-            width: 210px;
-            height: 140px;
-            object-fit: cover;
-            border-radius: 8px;
+        /* La nueva imagen panorámica de la biblioteca */
+        .shelf-photo-panoramic {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Asegura que la imagen llene el espacio sin distorsionarse */
             z-index: 1;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-            transition: all 0.3s ease;
+            filter: brightness(0.95); /* Un toque sutil */
         }
 
+        /* Círculo de texto superpuesto - Posicionado profesionalmente */
         .circle-badge {
-            width: 140px;
-            height: 140px;
-            background-color: #dce6f1;
-            border: 10px solid #5b9bd5;
+            width: 180px;
+            height: 180px;
+            background-color: rgba(220, 230, 241, 0.95); /* Semi-transparente para ver el fondo */
+            border: 12px solid #5b9bd5;
             border-radius: 50%;
-            margin-left: -35px;
             z-index: 2;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             box-sizing: border-box;
-            padding: 10px;
+            padding: 20px;
             font-weight: 800;
             color: #1a252f;
-            font-size: 1.05em;
-            line-height: 1.2;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-size: 1.15em;
+            line-height: 1.25;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
             transition: all 0.3s ease;
+            position: absolute;
+            right: 15%; /* Posición desde la derecha */
+            bottom: -60px; /* Superposición sutil con la sección de abajo */
         }
 
-        /* Estilos del recuadro (Fieldset) y texto incrustado (Legend) */
+        /* Ajustes para dispositivos móviles en la cabecera */
+        @media (max-width: 768px) {
+            .hero-section {
+                height: 250px;
+            }
+            .circle-badge {
+                width: 150px;
+                height: 150px;
+                font-size: 1.05em;
+                right: 10%;
+                bottom: -40px;
+            }
+        }
+
+        /* Título Principal */
+        h1 { 
+            font-family: 'Playfair Display', serif; /* Una fuente más profesional y elegante */
+            color: #1a252f; 
+            text-align: center; 
+            border-bottom: 2px solid #ecf0f1; 
+            padding-bottom: 15px; 
+            font-size: 2em; 
+            margin-top: 60px; /* Espacio para el badge superpuesto */
+            margin-bottom: 25px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Contenedor del contenido principal */
+        .main-content {
+            padding: 30px 40px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
+        }
+
+        /* Estilos del recuadro de materias (Fieldset) */
         .subjects-fieldset {
-            border: 2px solid #dce6f1;
+            border: 1px solid #dce6f1;
             border-radius: 14px;
-            padding: 15px 15px 20px 15px;
-            margin: 0 0 25px 0;
+            padding: 20px;
+            margin: 0 0 30px 0;
             background-color: transparent;
         }
 
         .subjects-legend {
             font-weight: 700;
             color: #2c3e50;
-            font-size: 1.15em;
-            padding: 0 12px;
-            margin-left: 5px;
+            font-size: 1.2em;
+            padding: 0 15px;
+            margin-left: 10px;
+            background-color: #fff; /* Asegura que el texto se lea bien */
+            border-radius: 8px;
         }
 
-        /* Contenedor de las materias dentro del recuadro */
+        /* Contenedor de las materias - Grid professional */
         .subjects-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .subjects-container {
+                grid-template-columns: 1fr;
+            }
         }
 
-        /* Estilo base para los botones de materias */
+        /* Botones de materias refinados */
         .subject-btn {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 18px; 
+            padding: 15px 20px; 
             border-radius: 10px;
             text-decoration: none;
             color: #ffffff;
-            background: linear-gradient(135deg, #4b6584, #34495e); 
+            background: linear-gradient(135deg, #4b6584, #2c3e50); 
             font-weight: 600;
             font-size: 1.05em;
             transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
         }
 
         .subject-btn:hover {
             transform: translateY(-2px);
-            background: linear-gradient(135deg, #34495e, #2c3e50);
-            box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+            background: linear-gradient(135deg, #34495e, #1a252f);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
         }
 
         .btn-content {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
         }
 
-        /* Línea separadora visual */
+        .btn-icon {
+            font-size: 1.2em;
+        }
+
+        /* Línea separadora */
         .divider {
-            height: 2px;
+            height: 3px;
             background-color: #ecf0f1;
-            margin: 25px 0;
-            border-radius: 2px;
+            margin: 30px 0;
+            border-radius: 3px;
         }
 
-        /* Botón de Signatura Destacado */
+        /* Botón de Signatura Destacado - Ajuste de contraste */
         .signature-btn {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 18px 22px; 
+            padding: 20px 25px; 
             background: linear-gradient(135deg, #b3e5fc, #81d4fa); 
             border: 2px solid #4fc3f7; 
             border-radius: 12px;
             text-decoration: none;
-            color: #507192; /* Texto en gris oscuro */
+            color: #1c3d5e; /* Texto más oscuro para mejor contraste */
             font-weight: 800;
-            font-size: 1.15em;
+            font-size: 1.25em;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.75px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(129, 212, 250, 0.4);
-            animation: pulse-glow 1.5s infinite;
+            box-shadow: 0 6px 18px rgba(129, 212, 250, 0.4);
+            animation: pulse-glow-soft 1.8s infinite;
         }
 
         .signature-btn:hover {
             background: #ffffff;
             color: #2c3e50; 
-            transform: scale(1.02) translateY(-2px);
-            box-shadow: 0 8px 25px rgba(129, 212, 250, 0.3);
+            transform: scale(1.01) translateY(-2px);
+            box-shadow: 0 10px 25px rgba(129, 212, 250, 0.3);
             animation: none;
         }
 
-        /* Animación de pulso ampliada y más visible */
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 0 0 rgba(79, 195, 247, 0.8); }
-            70% { box-shadow: 0 0 0 20px rgba(79, 195, 247, 0); }
+        /* Animación de pulso más sutil */
+        @keyframes pulse-glow-soft {
+            0% { box-shadow: 0 0 0 0 rgba(79, 195, 247, 0.6); }
+            70% { box-shadow: 0 0 0 15px rgba(79, 195, 247, 0); }
             100% { box-shadow: 0 0 0 0 rgba(79, 195, 247, 0); }
         }
 
         /* Servicios Adicionales */
         h2.section-title { 
             color: #2c3e50; 
-            font-size: 1.15em; 
-            margin-top: 35px; 
-            border-left: 4px solid #34495e; 
-            padding-left: 12px;
+            font-size: 1.25em; 
+            margin-top: 45px; 
+            border-left: 5px solid #34495e; 
+            padding-left: 15px;
         }
 
-        .links a { 
-            display: block; 
-            padding: 14px; 
-            background: #f8f9fa; 
-            text-decoration: none; 
-            color: #2c3e50; 
-            margin-bottom: 10px; 
-            border-radius: 8px; 
-            text-align: center; 
-            font-weight: 600; 
-            border: 1px solid #e9ecef;
-            transition: background 0.3s;
+        .links-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
         
-        .links a:hover { 
-            background: #e2e6ea; 
-        }
-
-        /* =========================================================
-           NUEVO: ADAPTACIÓN SEGÚN TAMAÑO DE PANTALLA Y DISPOSITIVO
-           ========================================================= */
-
-        /* 💻 PANTALLAS GRANDES / ORDENADORES (Windows, Mac, Escritorio) */
-        @media (min-width: 769px) {
-            .container { 
-                max-width: 800px; /* Amoliamos el ancho para escritorios */
-                padding: 35px 30px; 
-            }
-
-            /* Distribución en 2 columnas para aprovechar el espacio de un monitor */
-            .subjects-container {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 15px;
-            }
-
-            .links {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 15px;
-            }
-
-            .links a {
-                margin-bottom: 0;
-            }
-
-            /* Imagen y círculo con mejor tamaño en PC */
-            .shelf-photo {
-                width: 280px;
-                height: 180px;
-            }
-
-            .circle-badge {
-                width: 160px;
-                height: 160px;
-                font-size: 1.15em;
-            }
-        }
-
-        /* 📱 PANTALLAS PEQUEÑAS / MÓVILES */
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            h1 {
-                font-size: 1.5em;
+            .links-container {
+                grid-template-columns: 1fr;
             }
         }
+
+        .links-container a { 
+            display: block; 
+            padding: 16px; 
+            background: #fdfefe; 
+            text-decoration: none; 
+            color: #2c3e50; 
+            border-radius: 10px; 
+            text-align: center; 
+            font-weight: 600; 
+            border: 1px solid #eaeef2;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+        
+        .links-container a:hover { 
+            background: #f1f3f5; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+        }
+
+        /* Fuentes personalizadas */
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Cabecera -->
-        <h1>Biblioteca de Humanidades</h1>
-
-        <!-- Sección solapada de foto y círculo -->
-        <div class="hero-overlap">
-            <img src="estantes.jpg" alt="Estantería" class="shelf-photo" onerror="this.src='https://via.placeholder.com/210x140?text=Estantes+de+Biblioteca'">
+        <!-- Sección Hero con la nueva imagen panorámica -->
+        <div class="hero-section">
+            <img src="biblioteca_completa.jpg" alt="Interior detallado de biblioteca moderna" class="shelf-photo-panoramic" onerror="this.src='https://via.placeholder.com/900x350?text=Biblioteca+Panorámica+Professional'">
+            <!-- El círculo de texto superpuesto -->
             <div class="circle-badge">
                 Necesito<br>encontrar<br>un libro
             </div>
         </div>
 
-        <!-- Recuadro con título integrado en la línea superior -->
-        <fieldset class="subjects-fieldset">
-            <legend class="subjects-legend">Por materia</legend>
-            
-            <!-- Botones de navegación divididos en 4 materias -->
-            <div class="subjects-container">
-                <a href="8.html" class="subject-btn">
-                    <div class="btn-content">
-                        <span class="btn-icon">📖</span>
-                        <span>Lenguaje, Lingüística, Literatura</span>
-                    </div>
-                    <span>➔</span>
-                </a>
+        <div class="main-content">
+            <!-- Título Principal -->
+            <h1>Biblioteca de Humanidades</h1>
 
-                <a href="9.html" class="subject-btn">
-                    <div class="btn-content">
-                        <span class="btn-icon">🌍</span>
-                        <span>Geografía e Historia</span>
-                    </div>
-                    <span>➔</span>
-                </a>
+            <!-- Recuadro con título integrado -->
+            <fieldset class="subjects-fieldset">
+                <legend class="subjects-legend">Por materia</legend>
+                
+                <!-- Botones en grid professional -->
+                <div class="subjects-container">
+                    <a href="8.html" class="subject-btn">
+                        <div class="btn-content">
+                            <span class="btn-icon">📖</span>
+                            <span>Lenguaje, Lingüística, Literatura</span>
+                        </div>
+                        <span>➔</span>
+                    </a>
 
-                <!-- Botón de Arte -->
-                <a href="7.html" class="subject-btn">
-                    <div class="btn-content">
-                        <span class="btn-icon">🎨</span>
-                        <span>Arte y Arquitectura</span>
-                    </div>
-                    <span>➔</span>
-                </a>
+                    <a href="9.html" class="subject-btn">
+                        <div class="btn-content">
+                            <span class="btn-icon">🌍</span>
+                            <span>Geografía e Historia</span>
+                        </div>
+                        <span>➔</span>
+                    </a>
 
-                <a href="1.html" class="subject-btn">
-                    <div class="btn-content">
-                        <span class="btn-icon">🧠</span>
-                        <span>Filosofía y Ciencias Sociales</span>
-                    </div>
-                    <span>➔</span>
-                </a>
+                    <a href="7.html" class="subject-btn">
+                        <div class="btn-content">
+                            <span class="btn-icon">🎨</span>
+                            <span>Arte y Arquitectura</span>
+                        </div>
+                        <span>➔</span>
+                    </a>
+
+                    <a href="1.html" class="subject-btn">
+                        <div class="btn-content">
+                            <span class="btn-icon">🧠</span>
+                            <span>Filosofía y Ciencias Sociales</span>
+                        </div>
+                        <span>➔</span>
+                    </a>
+                </div>
+            </fieldset>
+
+            <!-- Separador visual -->
+            <div class="divider"></div>
+
+            <!-- Acceso por signatura separado -->
+            <a href="Signatura.html" class="signature-btn">
+                <div class="btn-content">
+                    <span class="btn-icon">📌</span>
+                    <span>Sé la signatura</span>
+                </div>
+                <span>➔</span>
+            </a>
+
+            <!-- Servicios Adicionales -->
+            <h2 class="section-title">💻 Servicios Adicionales</h2>
+            <div class="links-container">
+                <a href="https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=101" target="_blank">Búsqueda general en el catálogo</a>
+                <a href="https://buo.uniovi.es/" target="_blank">Portal de la Biblioteca (BUO)</a>
             </div>
-        </fieldset>
-
-        <!-- Separador visual -->
-        <div class="divider"></div>
-
-        <!-- Acceso por signatura separado -->
-        <a href="Signatura.html" class="signature-btn">
-            <div class="btn-content">
-                <span class="btn-icon">📌</span>
-                <span>Sé la signatura</span>
-            </div>
-            <span>➔</span>
-        </a>
-
-        <!-- Servicios Adicionales -->
-        <h2 class="section-title">💻 Servicios Adicionales</h2>
-        <div class="links">
-            <a href="https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=101" target="_blank">Búsqueda general en el catálogo</a>
-            <a href="https://buo.uniovi.es/" target="_blank">Portal de la Biblioteca (BUO)</a>
         </div>
     </div>
 
-    <!-- Script para detectar el SO si se requiere lógica JS específica -->
+    <!-- Script para lógica JS específica de detección -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
