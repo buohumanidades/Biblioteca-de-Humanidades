@@ -8,58 +8,70 @@
         /* Importar fuente elegante para encabezados */
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap');
 
-        /* Estilos generales - Optimizados para ocupar exactamente la pantalla */
+        :root {
+            /* 👇 ZONA PARA RETOCAR EL TAMAÑO DE LA IMAGEN 👇 */
+            /* Puedes cambiar estos valores. "vh" significa porcentaje del alto de la pantalla y "%" del ancho. */
+            /* También puedes usar píxeles, por ejemplo: 300px */
+            
+            --alto-de-la-imagen: 25vh;  /* Actualmente ocupa el 35% de la altura de la pantalla */
+            --ancho-de-la-imagen: 100%; /* Actualmente ocupa todo el ancho disponible del recuadro */
+            
+            /* 👆 ========================================== 👆 */
+        }
+
+        /* Estilos generales - Optimizados para ocupar exactamente la pantalla sin bajar (sin scroll) */
         body { 
             font-family: 'Inter', Helvetica, Arial, sans-serif; 
             margin: 0; 
             padding: 0; 
             background-color: #eef2f5; 
             color: #2c3e50; 
-            height: 100vh; /* Ocupa el 100% del alto de la ventana */
+            height: 100vh; /* Ocupa exactamente el 100% de la ventana */
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden; /* Evita el scroll en la página completa */
+            overflow: hidden; /* Esto asegura que NO aparezcan barras de desplazamiento en pantalla */
         }
         
-        /* Contenedor principal mucho más ancho y ajustado a la pantalla */
+        /* Contenedor principal */
         .container { 
             width: 95vw; 
-            max-width: 1300px; /* Anchura máxima extendida */
-            height: 94vh; /* Ocupa el 94% del alto de la pantalla */
+            max-width: 1300px; 
+            height: 94vh; 
             background: #ffffff; 
             border-radius: 12px; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.1); 
             display: flex;
             flex-direction: column;
-            overflow: hidden; 
+            overflow: hidden; /* Corta cualquier cosa que intente salirse del recuadro */
         }
         
         /* =========================================
-           SECCIÓN DE LA IMAGEN (MÁS ANCHA)
+           SECCIÓN DE LA IMAGEN (Controlada por tus variables)
            ========================================= */
         .hero-section {
-            width: 100%;
-            flex: 0 0 35%; /* Ocupa exactamente el 35% de la altura de la tarjeta */
+            width: var(--ancho-de-la-imagen);
+            flex: 0 0 var(--alto-de-la-imagen); /* Aplica el alto que definas arriba */
             position: relative;
             background-color: #34495e;
+            overflow: hidden;
         }
 
         .shelf-photo-panoramic {
             width: 100%;
             height: 100%;
-            object-fit: cover; 
+            object-fit: cover; /* Hace que la imagen se adapte sin deformarse, cortando lo que sobra */
             object-position: center 60%;
             filter: brightness(0.9); 
         }
 
-        /* "Necesito encontrar un libro" - Diseño Profesional y Elegante */
+        /* "Necesito encontrar un libro" - Diseño Profesional */
         .professional-badge {
             position: absolute;
             bottom: 20px;
             right: 30px;
             background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(8px); /* Efecto cristal */
+            backdrop-filter: blur(8px);
             padding: 12px 25px;
             border-radius: 6px;
             border-left: 5px solid #2c3e50;
@@ -83,11 +95,11 @@
            CONTENIDO PRINCIPAL (DISTRIBUCIÓN UNIFORME)
            ========================================= */
         .main-content {
-            flex: 1; /* Ocupa el espacio restante (65%) */
+            flex: 1; 
             padding: 2vh 4vw;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Distribuye elementos sin necesidad de bajar */
+            justify-content: space-between; 
         }
 
         /* Título */
@@ -120,7 +132,7 @@
             letter-spacing: 1px;
         }
 
-        /* Cuadrícula de botones (2x2 para ser más ancho) */
+        /* Cuadrícula de botones */
         .subjects-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -155,7 +167,7 @@
             gap: 12px;
         }
 
-        /* Botón de Signatura - Estilo más sobrio y profesional */
+        /* Botón de Signatura */
         .signature-btn {
             display: flex;
             align-items: center;
@@ -225,7 +237,6 @@
            ========================================= */
         @media (max-width: 900px) {
             .container { height: 98vh; width: 98vw; }
-            .hero-section { flex: 0 0 25%; }
             .professional-badge { font-size: 1.1em; bottom: 10px; right: 10px; padding: 10px 15px; }
             .main-content { overflow-y: auto; justify-content: flex-start; gap: 20px; }
             .subjects-container { grid-template-columns: 1fr; gap: 10px; }
@@ -238,10 +249,10 @@
         
         <!-- Sección Hero Panorámica -->
         <div class="hero-section">
-            <!-- Usa la imagen de la sala que me enviaste -->
+            <!-- Usa la imagen de la sala panorámica -->
             <img src="sala.png" alt="Interior detallado de biblioteca moderna" class="shelf-photo-panoramic" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
             
-            <!-- Etiqueta Profesional: Sustituye al círculo -->
+            <!-- Etiqueta Profesional -->
             <div class="professional-badge">
                 Necesito encontrar un libro
             </div>
