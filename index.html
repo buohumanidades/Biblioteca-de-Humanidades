@@ -9,20 +9,16 @@
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap');
 
         :root {
-            /* 👇 ZONA PARA RETOCAR EL TAMAÑO DE LA IMAGEN 👇 */
-            --alto-de-la-imagen: 25vh;  
+            --alto-de-la-imagen: 22vh;  
             --ancho-de-la-imagen: 100%; 
-            /* 👆 ========================================== 👆 */
         }
 
-        /* Animación para el fondo juvenil */
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* Estilos generales */
         body { 
             font-family: 'Inter', Helvetica, Arial, sans-serif; 
             margin: 0; 
@@ -31,18 +27,17 @@
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             color: #2c3e50; 
-            height: 100vh; 
+            min-height: 100vh; 
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden; 
+            overflow-x: hidden; 
         }
         
-        /* Contenedor principal con efecto "Glassmorphism" */
         .container { 
-            width: 95vw; 
+            width: 96vw; 
             max-width: 1300px; 
-            height: 94vh; 
+            min-height: 96vh; 
             background: rgba(255, 255, 255, 0.92); 
             backdrop-filter: blur(12px); 
             border-radius: 16px; 
@@ -50,11 +45,9 @@
             display: flex;
             flex-direction: column;
             overflow: hidden; 
+            margin: 1vh auto;
         }
         
-        /* =========================================
-           SECCIÓN DE LA IMAGEN
-           ========================================= */
         .hero-section {
             width: var(--ancho-de-la-imagen);
             flex: 0 0 var(--alto-de-la-imagen); 
@@ -71,15 +64,14 @@
             filter: brightness(0.85); 
         }
 
-        /* "Necesito encontrar un libro" */
         .professional-badge {
             position: absolute;
-            bottom: 25px;
-            right: 35px;
+            bottom: 15px;
+            right: 25px;
             background: transparent;
             color: #ffffff;
             font-family: 'Playfair Display', serif;
-            font-size: 1.8em;
+            font-size: 1.5em;
             font-weight: 700;
             letter-spacing: 1px;
             text-shadow: 2px 2px 6px rgba(0,0,0,0.8), 0 0 15px rgba(0,0,0,0.6);
@@ -87,33 +79,29 @@
             border: none;
         }
 
-        /* =========================================
-           CONTENIDO PRINCIPAL
-           ========================================= */
         .main-content {
             flex: 1; 
-            padding: 2vh 4vw;
+            padding: 1.5vh 3vw;
             display: flex;
             flex-direction: column;
             justify-content: space-between; 
+            gap: 1vh;
         }
 
-        /* Título */
         h1 { 
             font-family: 'Playfair Display', serif; 
             color: #1a252f; 
             text-align: center; 
             border-bottom: 1px solid #dce6f1; 
-            padding-bottom: 1vh; 
-            font-size: 2.2em; 
+            padding-bottom: 0.5vh; 
+            font-size: 1.8em; 
             margin: 0;
         }
 
-        /* Recuadro de materias (Estilo "Página de libro") */
         .subjects-fieldset {
             border: 1px solid #d3cbb8; 
-            border-radius: 12px;
-            padding: 1.8vh 2vw;
+            border-radius: 10px;
+            padding: 1vh 1.5vw;
             margin: 0;
             background: linear-gradient(135deg, #fdfcfb 0%, #f4efe6 100%);
             box-shadow: inset 0 0 20px rgba(139, 115, 85, 0.03), 0 4px 15px rgba(0,0,0,0.02);
@@ -122,8 +110,8 @@
         .subjects-legend {
             font-weight: 600;
             color: #5c4b37; 
-            font-size: 1.1em;
-            padding: 0 12px;
+            font-size: 0.95em;
+            padding: 0 10px;
             margin-left: 10px;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -131,25 +119,23 @@
             border-radius: 4px;
         }
 
-        /* Cuadrícula de botones */
         .subjects-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1.5vh 2vw;
+            gap: 1vh 1.5vw;
         }
 
-        /* Botones de materias */
         .subject-btn {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 1.5vh 1.5vw; 
+            padding: 1vh 1.2vw; 
             border-radius: 8px;
             text-decoration: none;
             color: #ffffff;
             background: linear-gradient(135deg, #4b6584, #2c3e50); 
             font-weight: 500;
-            font-size: 1.05em;
+            font-size: 0.95em;
             transition: all 0.2s ease;
             box-shadow: 0 4px 10px rgba(0,0,0,0.08);
         }
@@ -163,61 +149,56 @@
         .btn-content {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
-        /* Botón de Signatura FLOTANTE Y ULTRA DESTACADO */
         .signature-btn {
             display: inline-flex;
             align-items: center;
-            padding: 12px 42px 12px 12px; 
-            /* Gradiente vibrante y llamativo que destaca sobre los demás botones */
+            padding: 10px 35px 10px 10px; 
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #0f2027 100%); 
             border: 2px solid rgba(255, 255, 255, 0.4);
-            border-radius: 60px; 
+            border-radius: 50px; 
             text-decoration: none;
             color: #ffffff;
             font-weight: 700;
-            font-size: 1.35em; /* Aún más protagonista */
+            font-size: 1.15em; 
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            /* Sombra profunda y marcada para dar efecto de relieve flotante */
-            box-shadow: 0 12px 30px rgba(30, 60, 114, 0.4), 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px rgba(30, 60, 114, 0.4), 0 4px 6px rgba(0, 0, 0, 0.1);
             width: max-content; 
-            margin: 1.5vh auto; 
-            gap: 18px; 
+            margin: 0.5vh auto; 
+            gap: 15px; 
             position: relative;
             z-index: 10;
         }
 
         .signature-btn:hover {
             background: linear-gradient(135deg, #2a5298 0%, #1e3c72 50%, #1f4037 100%); 
-            transform: translateY(-6px) scale(1.02); /* Efecto de flotación pronunciado */
-            box-shadow: 0 18px 40px rgba(30, 60, 114, 0.5), 0 6px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px) scale(1.02); 
+            box-shadow: 0 14px 30px rgba(30, 60, 114, 0.5);
             border-color: rgba(255, 255, 255, 0.8);
         }
 
-        /* El círculo interior para el icono */
         .signature-icon-circle {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 58px;
-            height: 58px;
+            width: 48px;
+            height: 48px;
             background-color: #ffffff; 
             border-radius: 50%; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
-        /* Servicios Adicionales */
         .services-wrapper {
             display: flex;
             flex-direction: column;
-            gap: 1vh;
+            gap: 0.5vh;
         }
 
         h2.section-title { 
             color: #7f8c8d; 
-            font-size: 0.9em; 
+            font-size: 0.8em; 
             margin: 0; 
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -226,48 +207,51 @@
         .links-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1.5vw;
+            gap: 1vw;
         }
 
         .links-container a { 
             display: block; 
-            padding: 1.4vh 1vw; 
+            padding: 1vh 1vw; 
             background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%); 
             text-decoration: none; 
             color: #1e293b; 
-            border-radius: 8px; 
+            border-radius: 6px; 
             text-align: center; 
             font-weight: 600; 
             border: 1px solid #cbd5e1; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.06); 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05); 
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            font-size: 0.95em;
+            font-size: 0.85em; /* Reducido para garantizar visibilidad en móviles */
         }
         
         .links-container a:hover { 
             background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%); 
             color: #0f172a;
-            transform: translateY(-3px); 
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1); 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1); 
             border-color: #94a3b8;
         }
 
-        /* =========================================
-           ADAPTACIÓN PARA PANTALLAS PEQUEÑAS
-           ========================================= */
+        /* Adaptación específica para móviles y pantallas compactas */
         @media (max-width: 900px) {
-            .container { height: 98vh; width: 98vw; }
-            .professional-badge { font-size: 1.4em; bottom: 15px; right: 20px; text-align: right; }
-            .main-content { overflow-y: auto; justify-content: flex-start; gap: 20px; }
-            .subjects-container { grid-template-columns: 1fr; gap: 10px; }
-            .links-container { grid-template-columns: 1fr; gap: 10px; }
+            body { height: auto; overflow-y: auto; padding: 10px 0; }
+            .container { height: auto; min-height: unset; width: 95vw; overflow-y: visible; }
+            .hero-section { --alto-de-la-imagen: 18vh; }
+            .professional-badge { font-size: 1.2em; bottom: 10px; right: 15px; }
+            .main-content { padding: 15px; gap: 12px; }
+            h1 { font-size: 1.5em; }
+            .subjects-container { grid-template-columns: 1fr; gap: 8px; }
+            .links-container { grid-template-columns: 1fr; gap: 8px; }
+            .links-container a { font-size: 0.9em; padding: 10px; }
+            .signature-btn { font-size: 1.05em; padding: 8px 25px 8px 8px; gap: 10px; }
+            .signature-icon-circle { width: 40px; height: 40px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         
-        <!-- Sección Hero Panorámica -->
         <div class="hero-section">
             <img src="sala.png" alt="Interior detallado de biblioteca moderna" class="shelf-photo-panoramic" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
             
@@ -276,13 +260,10 @@
             </div>
         </div>
 
-        <!-- Contenido Distribuido -->
         <div class="main-content">
             
-            <!-- Título Principal -->
             <h1>Biblioteca de Humanidades</h1>
 
-            <!-- Materias -->
             <fieldset class="subjects-fieldset">
                 <legend class="subjects-legend">Materias</legend>
                 <div class="subjects-container">
@@ -305,11 +286,9 @@
                 </div>
             </fieldset>
 
-            <!-- Signatura Destacado (Flotante y Destacado) -->
             <a href="Signatura.html" class="signature-btn">
                 <div class="signature-icon-circle">
-                    <!-- Icono SVG de libro clásico abierto con colores -->
-                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 20.5C12 20.5 8.5 19 4 19C3.44772 19 3 18.5523 3 18V6C3 5.44772 3.44772 5 4 5C8.5 5 12 7.5 12 7.5" fill="#E2E8F0" stroke="#334155" stroke-width="1.2" stroke-linejoin="round"/>
                         <path d="M12 20.5C12 20.5 15.5 19 20 19C20.5523 19 21 18.5523 21 18V6C21 5.44772 20.5523 5 20 5C15.5 5 12 7.5 12 7.5" fill="#E2E8F0" stroke="#334155" stroke-width="1.2" stroke-linejoin="round"/>
                         <path d="M3 18C3 18.5523 3.44772 19 4 19C8.5 19 12 20.5 12 20.5V7.5C12 7.5 8.5 5 4 5" fill="#4ECDC4"/>
@@ -325,7 +304,6 @@
                 <span>Sé la SIGNATURA</span>
             </a>
 
-            <!-- Servicios Adicionales -->
             <div class="services-wrapper">
                 <h2 class="section-title">Servicios Adicionales</h2>
                 <div class="links-container">
@@ -337,7 +315,6 @@
         </div>
     </div>
 
-    <!-- Script de detección de SO -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
