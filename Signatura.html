@@ -65,12 +65,11 @@
         }
 
         .shelf-photo-panoramic {
-            /* CORRECCIÓN: Se ajusta al 100% para que no desborde y recorte el lomo */
+            /* Ajustado para el navegador: altura al 100% y centrado para que se vea el lomo */
             width: 100%;
             height: 100%;
-            
             object-fit: cover; 
-            object-position: center;
+            object-position: center center;
             filter: brightness(0.65); 
         }
 
@@ -88,7 +87,7 @@
 
         .professional-badge {
             position: absolute;
-            top: 15px; /* CORRECCIÓN: Se mueve a la parte superior para no tapar el texto del libro */
+            bottom: 15px;
             right: 15px;
             color: #ffffff;
             font-family: 'Playfair Display', serif;
@@ -277,10 +276,15 @@
             }
             .professional-badge {
                 font-size: 2.2em;
-                top: 25px; /* Modificado para mantener consistencia */
+                bottom: 25px; 
                 right: 35px;
             }
             .content-wrapper { padding: 3dvh 4vw; }
+            
+            /* Ajuste específico para que se vea el lomo en resoluciones grandes si la imagen está muy recortada */
+            .shelf-photo-panoramic {
+                object-position: center; /* Centrado vertical y horizontal */
+            }
         }
 
         /* 📱 PANTALLAS PEQUEÑAS / MÓVILES */
@@ -293,10 +297,17 @@
                 width: 100vw; 
                 border-radius: 0; 
             }
-            /* CORRECCIÓN: Centrado de la imagen sin forzar porcentaje inferior */
+            
+            /* Correcciones aplicadas ÚNICAMENTE a móvil */
             .shelf-photo-panoramic {
+                height: 100%;
                 object-position: center; 
             }
+            .professional-badge {
+                top: 15px; 
+                bottom: auto; /* Anula el 'bottom' para que se posicione arriba */
+            }
+
             .input-signatura, .action-btn {
                 width: 85%;
             }
