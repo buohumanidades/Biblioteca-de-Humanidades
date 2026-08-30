@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda por Signatura | Biblioteca</title>
+    <style>
+        /* Importar fuentes académicas */
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Playfair+Display:wght@600;700&display=swap');
+
+        html, body {
+            height: 100%;
+            height: 100dvh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; 
+            font-family: Arial, sans-serif;
+            color: #2c3e50;
+        }
+        body { 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0; 
+            box-sizing: border-box;
+            line-height: 1.4; 
+            
+            background: linear-gradient(45deg, #a8edea, #fed6e3, #e0c3fc, #8ec5fc);
+            background-size: 400% 400%;
+            animation: gradientBG 12s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container { 
+            display: flex;
+            flex-direction: column;
+            width: 95vw;
+            max-width: 1300px;
+            height: 94dvh; 
+            background: #ffffff; 
+            padding: 0; 
+            border-radius: 16px; 
+            box-sizing: border-box;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25); 
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        /* Cabecera / Sección Hero Panorámica ajustada */
+        .hero-section {
+            width: 100%;
+            height: 180px; 
+            position: relative;
+            background-color: #34495e;
+            overflow: hidden;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .shelf-photo-panoramic {
+            /* MODIFICA AQUÍ EL ANCHO Y ALTO A TU GUSTO */
+            width: 100%;
+            height: 200%;
+            
+            object-fit: cover; 
+            object-position: center 100%;
+            filter: brightness(0.65); 
+        }
+
+        .library-title {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: #ffffff;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.5em; 
+            font-weight: 700;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.7);
+            z-index: 10;
+        }
+
+        .professional-badge {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            color: #ffffff;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3em;
+            font-weight: 700;
+            text-align: right;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.7);
+            z-index: 10;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            padding: 20px 30px;
+            min-height: 0;
+            overflow-y: auto;
+            box-sizing: border-box;
+            justify-content: space-between;
+        }
+
+        .search-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: auto 0;
+            width: 100%;
+        }
+
+        .input-signatura {
+            width: 60%;
+            padding: 14px;
+            font-size: 1.2em;
+            text-align: center;
+            color: #2980b9;
+            background-color: #ebf5fb;
+            border: 2px solid #a9cce3;
+            border-radius: 8px;
+            font-weight: bold;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+        .input-signatura::placeholder {
+            color: #85c1e9;
+            opacity: 0.8;
+        }
+        .input-signatura:focus {
+            background-color: #ffffff;
+            border-color: #2980b9;
+            box-shadow: 0 0 8px rgba(41, 128, 185, 0.4);
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 60%;
+            padding: 14px;
+            font-size: 1.15em;
+            font-weight: bold;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+        .btn-local {
+            background: linear-gradient(135deg, #2980b9, #3498db);
+            color: #ffffff;
+            box-shadow: 0 6px 12px rgba(41, 128, 185, 0.3);
+        }
+        .btn-local:active {
+            background: #2471a3;
+            transform: translateY(2px);
+            box-shadow: 0 2px 6px rgba(41, 128, 185, 0.3);
+        }
+
+        .catalog-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 70%;
+            margin: 10px auto 0 auto;
+            padding-top: 15px;
+            border-top: 2px dashed #d5dbdb;
+            gap: 10px;
+        }
+        .availability-text {
+            margin: 0;
+            color: #34495e;
+            font-weight: bold;
+            font-size: 0.95em;
+        }
+        .btn-catalog {
+            background-color: #fdfdfd;
+            color: #154360;
+            border: 2px solid #5b9bd5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            width: 85%;
+        }
+        .btn-catalog:active {
+            background-color: #dce6f1;
+            transform: scale(0.98);
+        }
+
+        .icon {
+            font-size: 1.3em;
+        }
+
+        .back-btn {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            background: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1em;
+            flex-shrink: 0;
+            transition: background 0.3s, transform 0.2s;
+            width: 30%;
+            margin: 0 auto;
+        }
+        .back-btn:active, .back-btn:hover {
+            background: #d5dbdb;
+            transform: translateY(-2px);
+        }
+
+        /* --- ESTILOS DEL MODAL PERSONALIZADO --- */
+        .modal-overlay {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 80%;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            color: #2c3e50;
+        }
+        .modal-content p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+        }
+        .modal-btn {
+            background: #2980b9;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.05em;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .modal-btn:hover {
+            background: #1a5276;
+        }
+
+        /* =========================================================
+           ADAPTACIÓN PARA PANTALLAS GRANDES Y MÓVILES
+           ========================================================= */
+
+        /* 💻 PANTALLAS GRANDES / ORDENADORES */
+        @media (min-width: 901px) {
+            .hero-section { height: 25dvh; } 
+            .library-title {
+                font-size: 2.3em;
+                top: 25px;
+                left: 35px;
+            }
+            .professional-badge {
+                font-size: 2.2em;
+                bottom: 25px;
+                right: 35px;
+            }
+            .content-wrapper { padding: 3dvh 4vw; }
+        }
+
+        /* 📱 PANTALLAS PEQUEÑAS / MÓVILES */
+        @media (max-width: 900px) {
+    body {
+        align-items: flex-start; 
+    }
+    .container { 
+        height: 100dvh; 
+        width: 100vw; 
+        border-radius: 0; 
+    }
+    /* Añade o ajusta esto para cambiar dónde se centra la imagen en móvil */
+    .shelf-photo-panoramic {
+        object-position: center 80%; /* Cambia el 30% para subir o bajar el enfoque de la foto */
+    }
+    .input-signatura, .action-btn {
+        width: 85%;
+    }
+    .catalog-section {
+        width: 90%;
+    }
+    .back-btn {
+        width: 60%;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sección Hero Panorámica -->
+        <div class="hero-section">
+            <img src="imagenes/buobh.png" alt="Interior detallado de biblioteca moderna" class="shelf-photo-panoramic" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
+            
+		 
+            <div class="library-title">
+                 
+            </div>
+
+            <div class="professional-badge">
+                Signatura
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="search-area">
+                <p style="text-align: center; color: #34495e; font-size: 0.95em; margin: 0 10px 0 10px; font-weight: bold;">
+                    Recuerda que los libros que se encuentran en las salas son de acceso libre y sus signaturas comienzan por HG.
+                </p>
+                <input type="text" id="campoSignatura" class="input-signatura" placeholder="&lt;Escribe la signatura&gt;" 
+                       onfocus="if(this.value.trim() === '') { this.value = 'HG'; setTimeout(() => this.setSelectionRange(2, 2), 0); }" 
+                       oninput="this.value = this.value.toUpperCase();">
+
+                <a href="#" class="action-btn btn-local" onclick="localizarLibro(event)">
+                    <span class="icon">🔎</span> Click para localizarlo
+                </a>
+
+                <div class="catalog-section">
+                    <p class="availability-text">¿Quieres ver si está disponible?</p>
+                    <button onclick="buscarEnCatalogo()" class="action-btn btn-catalog">
+                        <span class="icon">📚</span> Búscalo en el catálogo
+                    </button>
+                </div>
+            </div>
+            
+            <a href="index.html" class="back-btn">⬅ Volver al inicio</a>
+        </div>
+    </div>
+
+    <!-- --- ESTRUCTURA DEL MODAL PERSONALIZADO --- -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-content">
+            <p id="modalMessage"></p>
+            <button onclick="cerrarModal()" class="modal-btn">Aceptar</button>
+        </div>
+    </div>
+    <!-- ----------------------------------------- -->
+
+    <script>
+        // --- FUNCIONES DEL MODAL ---
+        function mostrarModal(mensaje) {
+            document.getElementById("modalMessage").innerText = mensaje;
+            document.getElementById("customModal").style.display = "flex";
+        }
+
+        function cerrarModal() {
+            document.getElementById("customModal").style.display = "none";
+        }
+        
+
+        // ----------LOCALIZAR POR SIGNATURA
+
+        function localizarLibro(event) {
+            event.preventDefault();
+            let signatura = document.getElementById("campoSignatura").value.trim();
+
+            if (signatura === "" || signatura === "HG") {
+                mostrarModal("Por favor, escribe una signatura válida.");
+                return;
+            }
+
+            if (!signatura.startsWith("HG")) {
+                mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudaremos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
+                return; 
+            }
+
+            let fichero = signatura;
+
+            fichero = fichero.replace(/\/AST$/i, "");
+            fichero = fichero.replace(/\/COMIC$/i, "");
+
+            if (!fichero.endsWith("/4")) {
+                fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
+            }
+
+            let sig = "";
+            let ultimoIndiceBarra = fichero.lastIndexOf("/");
+
+            if (ultimoIndiceBarra !== -1) {
+                let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
+
+                if (parteDerecha === "4") {
+                    sig = "HG/4";
+                } else {
+                    sig = fichero.substring(0, ultimoIndiceBarra);
+                }
+            } else {
+                sig = fichero;
+            }
+
+            window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
+        }
+        
+        function buscarEnCatalogo() {
+            const signatura = document.getElementById("campoSignatura").value.trim();
+            if (signatura === "" || signatura === "HG") {
+                window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
+            } else {
+                const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
+                const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "&START=1&FORM=1";
+                window.open(urlFinal, "_blank");
+            }
+        }
+    </script>
+</body>
+</html>
