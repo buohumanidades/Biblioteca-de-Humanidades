@@ -9,13 +9,16 @@
     <!-- Enlace a Google icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <style>
+        /* Importar fuentes académicas */
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Playfair+Display:wght@600;700&display=swap');
+
         /* Estilos generales optimizados para móviles y base de escritorio */
         html, body {
             height: 100%;
+            height: 100dvh;
             margin: 0;
             padding: 0;
             overflow: hidden; 
-            background-color: #f4f6f7;
             font-family: Arial, sans-serif;
             color: #2c3e50;
         }
@@ -23,103 +26,99 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 10px; 
+            padding: 0; 
             box-sizing: border-box;
             line-height: 1.4; 
+            
+            /* Animación de fondo de colores */
+            background: linear-gradient(45deg, #a8edea, #fed6e3, #e0c3fc, #8ec5fc);
+            background-size: 400% 400%;
+            animation: gradientBG 12s ease infinite;
         }
+
+        /* Keyframes para el fondo animado */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .container { 
             display: flex;
             flex-direction: column;
-            width: 100%;
-            max-width: 500px;
-            height: 100%; 
-            background: #fff; 
-            padding: 15px; 
-            border-radius: 12px; 
+            width: 95vw;
+            max-width: 1300px;
+            height: 94dvh; 
+            background: #ffffff; 
+            padding: 0; 
+            border-radius: 16px; 
             box-sizing: border-box;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25); 
             transition: all 0.3s ease;
+            overflow: hidden;
         }
         
-        /* Cabecera */
-        h1 { 
-            font-family: 'Romana Moderna', Georgia, serif; 
-            color: #1a252f; 
-            text-align: center; 
-            border-bottom: 2px solid #ecf0f1; 
-            padding-bottom: 8px; 
-            font-size: 1.4em; 
-            margin: 0 0 8px 0;
-            flex-shrink: 0; 
-        }
-        
-        /* Estilo para el subtítulo y el número */
-        .subtitle { 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 12px; 
-            flex-shrink: 0;
-        }
-        .subtitle-text {
-            font-weight: bold; 
-            color: #0033aa; 
-            font-size: 1.2em; 
-            text-align: center;
-        }
-        .number-eight {
-            font-size: 1em; 
-            font-weight: 900;
-            color: #b0b8c4; 
-            line-height: 1;
-        }
-        
-        /* Montaje solapado: Foto + Círculo MATERIA */
-        .hero-overlap {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 5px 0 12px 0;
+        /* Cabecera / Sección Hero Panorámica */
+        .hero-section {
+            width: 100%;
+            height: 180px; 
+            position: relative;
+            background-color: #34495e;
+            overflow: hidden;
             flex-shrink: 0;
         }
 
-        .shelf-photo {
-            width: 170px;
-            height: 110px;
-            object-fit: cover;
-            border-radius: 4px;
-            z-index: 1;
+        .shelf-photo-panoramic {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            object-position: center 60%;
+            filter: brightness(0.65); 
         }
 
-        .circle-badge {
-            width: 115px;
-            height: 115px;
-            background-color: #dce6f1; 
-            border: 10px solid #5b9bd5; 
-            border-radius: 50%;
-            margin-left: -30px; 
-            z-index: 2;
+        .library-title {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: #ffffff;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.5em; 
+            font-weight: 700;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.7);
+            z-index: 10;
+        }
+
+        .professional-badge {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            color: #ffffff;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3em;
+            font-weight: 700;
+            text-align: right;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.7);
+            z-index: 10;
+        }
+
+        .content-wrapper {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            box-sizing: border-box;
-            padding: 8px;
-            font-weight: 800;
-            color: #000;
-            font-size: 1em;
+            flex-direction: column;
+            flex-grow: 1;
+            padding: 15px 20px;
+            min-height: 0;
+            overflow: hidden;
         }
 
-        /* Lista de Materias (Con scroll interno para que quepa en pantalla) */
+        /* Lista de Materias */
         .subject-list {
             display: flex;
             flex-direction: column;
-            gap: 6px; 
+            gap: 8px; 
             flex-grow: 1;
             min-height: 0;
             overflow-y: auto;
-            padding-right: 4px;
+            padding-right: 6px;
             margin-bottom: 10px;
         }
 
@@ -128,14 +127,14 @@
             display: flex;
             align-items: center;
             gap: 12px; 
-            padding: 8px 12px; 
+            padding: 10px 15px; 
             border: 1px solid #e0e6ed;
-            border-left-width: 4px;
+            border-left-width: 5px;
             border-left-style: solid;
-            border-radius: 6px; 
+            border-radius: 8px; 
             text-decoration: none;
             color: #2c3e50;
-            font-size: 0.9em; 
+            font-size: 0.95em; 
             transition: all 0.2s ease;
             cursor: pointer;
             flex-shrink: 0;
@@ -149,6 +148,8 @@
         .btn-otros:hover, .btn-otros:active {
             background-color: #e5e8e8;
             border-left-color: #2c3e50;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
         
         /* 1a. Colores para ARTE*/
@@ -159,6 +160,8 @@
         .btn-arte:hover, .btn-arte:active {
             background-color: #d1f2eb;
             border-left-color: #117a65;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
 
 	/* 2. Colores para Historia*/
@@ -169,6 +172,8 @@
         .btn-historia:hover, .btn-historia:active {
             background-color: #d6eaf8;
             border-left-color: #117a65;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
 
         /* 3. Colores para ESPAÑA */
@@ -179,6 +184,8 @@
         .btn-destacados:hover, .btn-destacados:active {
             background-color: #ebdef0;
             border-left-color: #8e44ad;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
 
 	/* 4. Colores para ASTURIAS*/
@@ -189,6 +196,8 @@
         .btn-asturias:hover, .btn-asturias:active {
             background-color: #d6eaf8;
             border-left-color: #117a65;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
 
 	/* 5. Colores para EL RESTO*/
@@ -199,6 +208,8 @@
         .btn-estilo:hover, .btn-estilo:active {
             background-color: #F1A983;
             border-left-color: #117a65;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
 	/* 6. Colores para diccionarios */
         .btn-diccionarios {
@@ -208,6 +219,8 @@
         .btn-diccionarios:hover, .btn-diccionarios:active {
             background-color: #e5c494;
             border-left-color: #117a65;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
 
         /* Iconos de la lista */
@@ -230,18 +243,20 @@
         .back-btn {
             display: block;
             text-align: center;
-            padding: 10px;
+            padding: 12px;
             background: #ecf0f1;
             color: #2c3e50;
             text-decoration: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: bold;
-            font-size: 0.95em;
+            font-size: 1em;
             flex-shrink: 0;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.2s;
+            margin-top: auto;
         }
         .back-btn:active, .back-btn:hover {
             background: #d5dbdb;
+            transform: translateY(-2px);
         }
 
         /* =========================================================
@@ -249,263 +264,254 @@
            ========================================================= */
 
         /* 💻 PANTALLAS GRANDES / ORDENADORES */
-        @media (min-width: 769px) {
-            body {
-                padding: 0;
+        @media (min-width: 901px) {
+            .hero-section { height: 25dvh; } 
+            .library-title {
+                font-size: 2.3em;
+                top: 25px;
+                left: 35px;
             }
-            .container { 
-                width: 900px;
-                max-width: 95vw;
-                max-height: 95vh;
-                padding: 25px 35px; 
+            .professional-badge {
+                font-size: 2.2em;
+                bottom: 25px;
+                right: 35px;
             }
-            h1 {
-                font-size: 1.8em;
-                margin-bottom: 12px;
-                padding-bottom: 10px;
+            .content-wrapper { padding: 3dvh 4vw; }
+            
+            .subject-list {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px 20px;
+                align-content: start;
             }
-            .subtitle {
-                margin-bottom: 15px;
-            }
-            .subtitle-text {
-                font-size: 1.3em;
-            }
-            .hero-overlap {
-                margin: 5px 0 15px 0;
-            }
-            .shelf-photo {
-                width: 200px;
-                height: 125px;
-            }
-            .circle-badge {
-                width: 130px;
-                height: 130px;
-                font-size: 1.1em;
-            }
+            
             .back-btn {
                 width: 30%;
-                margin: 10px auto 0 auto;
-                padding: 12px;
+                margin: 20px auto 0 auto;
             }
         }
 
         /* 📱 PANTALLAS PEQUEÑAS / MÓVILES */
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             body {
-                padding: 10px;
+                align-items: flex-start; 
+            }
+            .container { 
+                height: 100dvh; 
+                width: 100vw; 
+                border-radius: 0; 
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Cabecera -->
-        <h1><i class="fa-solid fa-school" style="color: #3498db; margin-right: 10px;"></i>Biblioteca de Humanidades</h1>
-        
-        <div class="subtitle">	    
-            <span class="subtitle-text">Arte y Arquitectura</span>
-            <span class="number-eight">(7)</span>
-        </div>
+        <!-- Sección Hero Panorámica -->
+        <div class="hero-section">
+            <img src="sala.png" alt="Interior detallado de biblioteca moderna" class="shelf-photo-panoramic" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
+            
+            <div class="library-title">
+                Biblioteca de Humanidades
+            </div>
 
-        <!-- Sección solapada -->
-        <div class="hero-overlap">
-            <img src="estantes.jpg" alt="Estantería" class="shelf-photo" onerror="this.src='https://via.placeholder.com/200x130?text=Estantes'">
-            <div class="circle-badge">
-                MATERIA
+            <div class="professional-badge">
+                Arte y Arquitectura
             </div>
         </div>
 
-        <!-- Lista de Materias -->
-        <div class="subject-list">
-            <!-- ARTE EN GENERAL -->
-            <a href="#" onclick="abrirMateria('arte'); return false;" class="subject-link btn-arte">
-                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">format_color_text</span>
-                <span class="text">Arte en general</span>
-            </a>
+        <div class="content-wrapper">
+            <!-- Lista de Materias -->
+            <div class="subject-list">
+                <!-- ARTE EN GENERAL -->
+                <a href="#" onclick="abrirMateria('arte'); return false;" class="subject-link btn-arte">
+                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">format_color_text</span>
+                    <span class="text">Arte en general</span>
+                </a>
 
-            <!-- ARTE PREHISTORICO Y PRIMITIVO -->
-            <a href="#" onclick="abrirMateria('prehistoria'); return false;" class="subject-link btn-arte">
-                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">format_color_text</span>
-                <span class="text">Arte prehistórico y primitivo</span>
-            </a>
+                <!-- ARTE PREHISTORICO Y PRIMITIVO -->
+                <a href="#" onclick="abrirMateria('prehistoria'); return false;" class="subject-link btn-arte">
+                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">format_color_text</span>
+                    <span class="text">Arte prehistórico y primitivo</span>
+                </a>
 
-	 <!-- ARTE ANTIGUO -->
-            <a href="#" onclick="abrirMateria('antiguo'); return false;" class="subject-link btn-arte">
-                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">format_color_text</span>
-                <span class="text">Arte antiguo</span>
-            </a>
+                <!-- ARTE ANTIGUO -->
+                <a href="#" onclick="abrirMateria('antiguo'); return false;" class="subject-link btn-arte">
+                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">format_color_text</span>
+                    <span class="text">Arte antiguo</span>
+                </a>
 
-	<!-- ARTE MEDIEVAL-->
-	    <a href="#" onclick="abrirMateria('medieval'); return false;" class="subject-link btn-arte">
-                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">format_color_text</span>
-                <span class="text">Arte medieval (cristiano e islámico)</span>
-            </a>
+                <!-- ARTE MEDIEVAL-->
+                <a href="#" onclick="abrirMateria('medieval'); return false;" class="subject-link btn-arte">
+                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">format_color_text</span>
+                    <span class="text">Arte medieval (cristiano e islámico)</span>
+                </a>
 
-	<!-- ARTE DEL RENACIMIENTO-->
-	    <a href="#" onclick="abrirMateria('renacimiento'); return false;" class="subject-link btn-arte">
-                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">format_color_text</span>
-                <span class="text">Arte del Renacimiento, Barroco, Rococó y Colonial</span>
-            </a>
+                <!-- ARTE DEL RENACIMIENTO-->
+                <a href="#" onclick="abrirMateria('renacimiento'); return false;" class="subject-link btn-arte">
+                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">format_color_text</span>
+                    <span class="text">Arte del Renacimiento, Barroco, Rococó y Colonial</span>
+                </a>
 
-	<!-- ARTE SIGLO XIX-->
-	    <a href="#" onclick="abrirMateria('xix'); return false;" class="subject-link btn-arte">
-                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">format_color_text</span>
-                <span class="text">Arte del siglo XIX, específicamente al Neoclasicismo y al movimiento romántico</span>
-            </a>
+                <!-- ARTE SIGLO XIX-->
+                <a href="#" onclick="abrirMateria('xix'); return false;" class="subject-link btn-arte">
+                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">format_color_text</span>
+                    <span class="text">Arte del siglo XIX, específicamente al Neoclasicismo y al movimiento romántico</span>
+                </a>
 
-	<!-- ARTE SIGLO XX-->
-	    <a href="#" onclick="abrirMateria('xx'); return false;" class="subject-link btn-arte">
-                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">format_color_text</span>
-                <span class="text">Arte del XX. Arte contemporáneo de fines del XIX hasta 1945</span>
-            </a>
+                <!-- ARTE SIGLO XX-->
+                <a href="#" onclick="abrirMateria('xx'); return false;" class="subject-link btn-arte">
+                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">format_color_text</span>
+                    <span class="text">Arte del XX. Arte contemporáneo de fines del XIX hasta 1945</span>
+                </a>
 
-	<!-- ARTE CONTEMPORÁNEO-->
-	    <a href="#" onclick="abrirMateria('contemporaneo'); return false;" class="subject-link btn-arte">
-                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">format_color_text</span>
-                <span class="text">Arte contemporáneo desde 1945. Arte abstracto. Expresionismo. Pop-Art</span>
-            </a>
+                <!-- ARTE CONTEMPORÁNEO-->
+                <a href="#" onclick="abrirMateria('contemporaneo'); return false;" class="subject-link btn-arte">
+                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 24px;">format_color_text</span>
+                    <span class="text">Arte contemporáneo desde 1945. Arte abstracto. Expresionismo. Pop-Art</span>
+                </a>
 
-	    <!-- ARTE DE ESPAÑA -->
-            <a href="#" onclick="abrirMateria('espana'); return false;" class="subject-link btn-destacados">
-                 <i class="fa-solid fa-book fa-beat-fade" style="color: #8e44ad; font-size: 26px; --fa-animation-duration: 2s;"></i>
-                <span class="text">Arte de <span class="highlight">ESPAÑA</span></span>
-            </a>
+                <!-- ARTE DE ESPAÑA -->
+                <a href="#" onclick="abrirMateria('espana'); return false;" class="subject-link btn-destacados">
+                     <i class="fa-solid fa-book fa-beat-fade" style="color: #8e44ad; font-size: 26px; --fa-animation-duration: 2s;"></i>
+                    <span class="text">Arte de <span class="highlight">ESPAÑA</span></span>
+                </a>
 
-            <!-- ARTE DE ASTURIAS -->
-            <a href="#" onclick="abrirMateria('asturias'); return false;" class="subject-link btn-asturias">
-                <i class="fa-solid fa-book fa-beat-fade" style="color: #2980b9; font-size: 26px; --fa-animation-duration: 2s;"></i>
-                <span class="text">Arte de <span class="highlight">ASTURIAS</span></span>
-            </a>
+                <!-- ARTE DE ASTURIAS -->
+                <a href="#" onclick="abrirMateria('asturias'); return false;" class="subject-link btn-asturias">
+                    <i class="fa-solid fa-book fa-beat-fade" style="color: #2980b9; font-size: 26px; --fa-animation-duration: 2s;"></i>
+                    <span class="text">Arte de <span class="highlight">ASTURIAS</span></span>
+                </a>
 
-            <!-- ICONOGRAFIA -->
-            <a href="#" onclick="abrirMateria('iconografia'); return false;" class="subject-link btn-otros">
-                <img src="imagenes/iconografia.png" alt="Icono" style="width: 32px; height: 32px; vertical-align: middle;">
-                <span class="text">Iconografía. Iconología</span>
-            </a>
+                <!-- ICONOGRAFIA -->
+                <a href="#" onclick="abrirMateria('iconografia'); return false;" class="subject-link btn-otros">
+                    <img src="imagenes/iconografia.png" alt="Icono" style="width: 32px; height: 32px; vertical-align: middle;">
+                    <span class="text">Iconografía. Iconología</span>
+                </a>
 
-            <!-- DISEÑO INDUSTRIAL -->
-            <a href="#" onclick="abrirMateria('industrial'); return false;" class="subject-link btn-otros">
-                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">design_services</span>
-                <span class="text">Diseño industrial y comercial</span>
-            </a>
+                <!-- DISEÑO INDUSTRIAL -->
+                <a href="#" onclick="abrirMateria('industrial'); return false;" class="subject-link btn-otros">
+                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">design_services</span>
+                    <span class="text">Diseño industrial y comercial</span>
+                </a>
 
-            <!-- EXPOSICIONES DE ARTE -->
-            <a href="#" onclick="abrirMateria('exposiciones'); return false;" class="subject-link btn-otros">
-                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
-                <span class="text">Exposiciones de arte. Catálogos de exposiciones (colectivas)</span>
-            </a>
+                <!-- EXPOSICIONES DE ARTE -->
+                <a href="#" onclick="abrirMateria('exposiciones'); return false;" class="subject-link btn-otros">
+                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
+                    <span class="text">Exposiciones de arte. Catálogos de exposiciones (colectivas)</span>
+                </a>
 
-            <!-- COLECCIONISMO -->
-            <a href="#" onclick="abrirMateria('coleccionismo'); return false;" class="subject-link btn-otros">
-                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
-                <span class="text">Coleccionismo. Marchantes. Galerías. Ventas. Mecenazgo. Patrimonio</span>
-            </a>
-	<!-- DICCIONARIOS-->
-	    <a href="#" onclick="abrirMateria('diccionarios'); return false;" class="subject-link btn-diccionarios">
-                <img src="imagenes/diccionario.png" alt="Icono" style="width: 32px; height: 32px; vertical-align: middle;">
-                <span class="text">DICCIONARIOS</span>
-            </a>
+                <!-- COLECCIONISMO -->
+                <a href="#" onclick="abrirMateria('coleccionismo'); return false;" class="subject-link btn-otros">
+                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
+                    <span class="text">Coleccionismo. Marchantes. Galerías. Ventas. Mecenazgo. Patrimonio</span>
+                </a>
 
-	    <!-- ORDENACION -->
-            <a href="#" onclick="abrirMateria('ordenacion'); return false;" class="subject-link btn-estilo">
-                <img src="imagenes/ordenacion.png" alt="Icono" style="width: 32px; height: 32px; vertical-align: middle;">
-                <span class="text">Ordenación del territorio, Urbanismo</span>
-            </a>
+                <!-- DICCIONARIOS-->
+                <a href="#" onclick="abrirMateria('diccionarios'); return false;" class="subject-link btn-diccionarios">
+                    <img src="imagenes/diccionario.png" alt="Icono" style="width: 32px; height: 32px; vertical-align: middle;">
+                    <span class="text">DICCIONARIOS</span>
+                </a>
 
-	    <!-- ARQUITECTURA -->
-            <a href="#" onclick="abrirMateria('arquitectura'); return false;" class="subject-link btn-estilo">
-                <i class="fa-solid fa-archway" style="color: #2980b9; font-size: 24px;"></i>
-                <span class="text">Arquitectura</span>
-            </a>
+                <!-- ORDENACION -->
+                <a href="#" onclick="abrirMateria('ordenacion'); return false;" class="subject-link btn-estilo">
+                    <img src="imagenes/ordenacion.png" alt="Icono" style="width: 32px; height: 32px; vertical-align: middle;">
+                    <span class="text">Ordenación del territorio, Urbanismo</span>
+                </a>
 
-	    <!-- ESCULTURA-->
-            <a href="#" onclick="abrirMateria('escultura'); return false;" class="subject-link btn-estilo">
-                <img src="imagenes/escultura.png" alt="Icono" style="width: 32px; height: 32px; vertical-align: middle;">
-                <span class="text">Escultura</span>
-            </a>
+                <!-- ARQUITECTURA -->
+                <a href="#" onclick="abrirMateria('arquitectura'); return false;" class="subject-link btn-estilo">
+                    <i class="fa-solid fa-archway" style="color: #2980b9; font-size: 24px;"></i>
+                    <span class="text">Arquitectura</span>
+                </a>
 
-	    <!-- DIBUJO -->
-            <a href="#" onclick="abrirMateria('dibujo'); return false;" class="subject-link btn-estilo">
-                <i class="fa-solid fa-pencil" style="color: #2980b9; font-size: 24px;"></i>
-                <span class="text">Dibujo. Artes industriales, decoración, Diseño</span>
-            </a>
+                <!-- ESCULTURA-->
+                <a href="#" onclick="abrirMateria('escultura'); return false;" class="subject-link btn-estilo">
+                    <img src="imagenes/escultura.png" alt="Icono" style="width: 32px; height: 32px; vertical-align: middle;">
+                    <span class="text">Escultura</span>
+                </a>
 
-	    <!-- PINTORES -->
-            <a href="#" onclick="abrirMateria('pintores'); return false;" class="subject-link btn-estilo">
-                <i class="fa-solid fa-palette" style="color: #2980b9; font-size: 24px;"></i>
-                <span class="text">Pintores</span>
-            </a>
+                <!-- DIBUJO -->
+                <a href="#" onclick="abrirMateria('dibujo'); return false;" class="subject-link btn-estilo">
+                    <i class="fa-solid fa-pencil" style="color: #2980b9; font-size: 24px;"></i>
+                    <span class="text">Dibujo. Artes industriales, decoración, Diseño</span>
+                </a>
 
-	    <!-- GRABADOS, CARTELES -->
-            <a href="#" onclick="abrirMateria('grabados'); return false;" class="subject-link btn-estilo">
-                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 32px;">art_track</span>
-                <span class="text">Grabados, Carteles</span>
-            </a>
+                <!-- PINTORES -->
+                <a href="#" onclick="abrirMateria('pintores'); return false;" class="subject-link btn-estilo">
+                    <i class="fa-solid fa-palette" style="color: #2980b9; font-size: 24px;"></i>
+                    <span class="text">Pintores</span>
+                </a>
 
-	    <!-- FOTOGRAFIA -->
-            <a href="#" onclick="abrirMateria('fotografia'); return false;" class="subject-link btn-estilo">
-                <i class="fa-solid fa-camera" style="color: #2980b9; font-size: 24px;"></i>
-                <span class="text">Fotografía</span>
-            </a>
+                <!-- GRABADOS, CARTELES -->
+                <a href="#" onclick="abrirMateria('grabados'); return false;" class="subject-link btn-estilo">
+                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 32px;">art_track</span>
+                    <span class="text">Grabados, Carteles</span>
+                </a>
 
-	    <!-- MUSICA -->
-            <a href="#" onclick="abrirMateria('musica'); return false;" class="subject-link btn-estilo">
-                <i class="fa-solid fa-music" style="color: #2980b9; font-size: 24px;"></i>
-                <span class="text">Música, Monografías sobre músicos (+apellido)</span>
-            </a>
-            
-            <!-- CINE -->
-	    <a href="#" onclick="abrirMateria('cine'); return false;" class="subject-link btn-estilo">
-                <i class="fa-solid fa-clapperboard" style="color: #2980b9; font-size: 24px;"></i>
-                <span class="text">Cine</span>
-            </a>
+                <!-- FOTOGRAFIA -->
+                <a href="#" onclick="abrirMateria('fotografia'); return false;" class="subject-link btn-estilo">
+                    <i class="fa-solid fa-camera" style="color: #2980b9; font-size: 24px;"></i>
+                    <span class="text">Fotografía</span>
+                </a>
 
-            <!-- TEATRO -->
-            <a href="#" onclick="abrirMateria('teatro'); return false;" class="subject-link btn-estilo">
-                <i class="fa-solid fa-masks-theater" style="color: #2980b9; font-size: 24px;"></i>
-                <span class="text">Teatro</span>
-            </a>
-            
-            <!-- BAILE -->
-            <a href="#" onclick="abrirMateria('baile'); return false;" class="subject-link btn-estilo">
-                <span class="material-symbols-outlined" style="color: #2980b9; font-size: 32px;">artist</span>
-                <span class="text">Baile, Arte del movimiento</span>
-            </a>
+                <!-- MUSICA -->
+                <a href="#" onclick="abrirMateria('musica'); return false;" class="subject-link btn-estilo">
+                    <i class="fa-solid fa-music" style="color: #2980b9; font-size: 24px;"></i>
+                    <span class="text">Música, Monografías sobre músicos (+apellido)</span>
+                </a>
+                
+                <!-- CINE -->
+                <a href="#" onclick="abrirMateria('cine'); return false;" class="subject-link btn-estilo">
+                    <i class="fa-solid fa-clapperboard" style="color: #2980b9; font-size: 24px;"></i>
+                    <span class="text">Cine</span>
+                </a>
+
+                <!-- TEATRO -->
+                <a href="#" onclick="abrirMateria('teatro'); return false;" class="subject-link btn-estilo">
+                    <i class="fa-solid fa-masks-theater" style="color: #2980b9; font-size: 24px;"></i>
+                    <span class="text">Teatro</span>
+                </a>
+                
+                <!-- BAILE -->
+                <a href="#" onclick="abrirMateria('baile'); return false;" class="subject-link btn-estilo">
+                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 32px;">artist</span>
+                    <span class="text">Baile, Arte del movimiento</span>
+                </a>
+            </div>
+
+            <!-- Botón para regresar al inicio -->
+            <a href="index.html" class="back-btn"><i class="fa-solid fa-circle-arrow-left fa-beat" style="margin-right: 8px;"></i> Volver al inicio</a>
         </div>
-
-        <!-- Botón para regresar al inicio -->
-        <a href="index.html" class="back-btn"><i class="fa-solid fa-circle-arrow-left fa-beat" style="margin-right: 8px;"></i> Volver al inicio</a>
     </div>
 
     <script>
-        // Diccionario con los parámetros, signatura y el texto exacto de la materia
         const baseDatosMaterias = {
             "arte": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 16", signatura: "(HG7!.t852.) no (HG7!0?!.t852.) no (HG7!0??!.t852.) no (HG7!0??.*.t852.) no (HG7!4?!.t852.) no (HG7!4??!.t852.) no (HG7!4??.*.t852.)", texto_materia: "Arte en general" },
-"prehistoria": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 18", signatura: "(HG7.031*.t852.)", texto_materia: "Arte prehistórico y primitivo" },
-"antiguo": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 18", signatura: "(HG7.032*.t852.)", texto_materia: "Arte Antiguo" },
-"medieval": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 19", signatura: "(HG7.033*.t852.)", texto_materia: "Arte Medieval" },
-"renacimiento": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 19", signatura: "(HG7.034*.t852.)", texto_materia: "Arte del Renacimiento" },
-"xix": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 19", signatura: "(HG7.035*.t852.)", texto_materia: "Arte del siglo XIX" },
-"xx": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 19 y 20", signatura: "(HG7.036*.t852.)", texto_materia: "Arte del siglo XX" },
-"contemporaneo": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20", signatura: "(HG7.038*.t852.)", texto_materia: "Arte Contemporáneo" },
-"espana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 17", signatura: "(HG7!46!.t852.)", texto_materia: "Arte de ESPAÑA" },
-"asturias": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 18", signatura: "(HG7!461.2!.t852.)", texto_materia: "Arte de ASTURIAS" },
-"iconografia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20", signatura: "(HG7.04*.t852.)", texto_materia: "Iconografía, Iconología" },
-"industrial": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20", signatura: "(HG7.05*.t852.)", texto_materia: "Diseño industrial y comercial" },
-"exposiciones": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 16 y 17", signatura: "(HG7!06!.t852.) o (HG7!069!.t852.) o (HG7!069.*.t852.) o (HG7!09!.t852.) o (HG7!093!.t852.)", texto_materia: "Exposiciones de arte" },
-"coleccionismo": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20", signatura: "(HG7.07*.t852.)", texto_materia: "Coleccionismo, Galerías" },
-"diccionarios": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías del centro", estanteria: "Estantería 13", signatura: "(HG7*!03!.t852.)", texto_materia: "DICCIONARIOS" },
-"ordenacion": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 21", signatura: "(HG711!.t852.)", texto_materia: "Ordenación del territorio, Urbanismo" },
-"arquitectura": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 21", signatura: "(HG72!.t852.) o (HG72*!.t852.) no (HG72!03!.t852.) no (HG72*!03!.t852.)", texto_materia: "Arquitectura" },
-"escultura": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 21", signatura: "(HG73!.t852.) o (HG73*!.t852.) no (HG73!03!.t852.) no (HG73*!03!.t852.)", texto_materia: "Escultura" },
-"dibujo": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 21", signatura: "(HG74!.t852.) o (HG74*!.t852.) no (HG74!03!.t852.)", texto_materia: "Dibujo, Artes industriales, Decoración" },
-"pintores": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 15", signatura: "(HG75!.t852.)", texto_materia: "Pintores" },
-"grabados": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 15", signatura: "(HG76!.t852.)", texto_materia: "Grabados, Carteles" },
-"fotografia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 15", signatura: "(HG77!.t852.) no (HG77!03!.t852.)", texto_materia: "Fotografía" },
-"musica": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 14", signatura: "(HG78*.t852.) no (HG78!03!.t852.)", texto_materia: "Música" },
-"cine": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 12", signatura: "(HG791*.t852.) no (HG791!03!.t852.)", texto_materia: "Cine" },
-"teatro": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 12", signatura: "(HG792*.t852.) no (HG792!03!.t852.)", texto_materia: "Teatro" },
-"baile": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 12", signatura: "(HG793*.t852.) no (HG793!03!.t852.)", texto_materia: "Baile, Arte del movimiento" } 
+            "prehistoria": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 18", signatura: "(HG7.031*.t852.)", texto_materia: "Arte prehistórico y primitivo" },
+            "antiguo": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 18", signatura: "(HG7.032*.t852.)", texto_materia: "Arte Antiguo" },
+            "medieval": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 19", signatura: "(HG7.033*.t852.)", texto_materia: "Arte Medieval" },
+            "renacimiento": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 19", signatura: "(HG7.034*.t852.)", texto_materia: "Arte del Renacimiento" },
+            "xix": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 19", signatura: "(HG7.035*.t852.)", texto_materia: "Arte del siglo XIX" },
+            "xx": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 19 y 20", signatura: "(HG7.036*.t852.)", texto_materia: "Arte del siglo XX" },
+            "contemporaneo": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20", signatura: "(HG7.038*.t852.)", texto_materia: "Arte Contemporáneo" },
+            "espana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 17", signatura: "(HG7!46!.t852.)", texto_materia: "Arte de ESPAÑA" },
+            "asturias": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 18", signatura: "(HG7!461.2!.t852.)", texto_materia: "Arte de ASTURIAS" },
+            "iconografia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20", signatura: "(HG7.04*.t852.)", texto_materia: "Iconografía, Iconología" },
+            "industrial": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20", signatura: "(HG7.05*.t852.)", texto_materia: "Diseño industrial y comercial" },
+            "exposiciones": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 16 y 17", signatura: "(HG7!06!.t852.) o (HG7!069!.t852.) o (HG7!069.*.t852.) o (HG7!09!.t852.) o (HG7!093!.t852.)", texto_materia: "Exposiciones de arte" },
+            "coleccionismo": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20", signatura: "(HG7.07*.t852.)", texto_materia: "Coleccionismo, Galerías" },
+            "diccionarios": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías del centro", estanteria: "Estantería 13", signatura: "(HG7*!03!.t852.)", texto_materia: "DICCIONARIOS" },
+            "ordenacion": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 21", signatura: "(HG711!.t852.)", texto_materia: "Ordenación del territorio, Urbanismo" },
+            "arquitectura": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 21", signatura: "(HG72!.t852.) o (HG72*!.t852.) no (HG72!03!.t852.) no (HG72*!03!.t852.)", texto_materia: "Arquitectura" },
+            "escultura": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 21", signatura: "(HG73!.t852.) o (HG73*!.t852.) no (HG73!03!.t852.) no (HG73*!03!.t852.)", texto_materia: "Escultura" },
+            "dibujo": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 21", signatura: "(HG74!.t852.) o (HG74*!.t852.) no (HG74!03!.t852.)", texto_materia: "Dibujo, Artes industriales, Decoración" },
+            "pintores": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 15", signatura: "(HG75!.t852.)", texto_materia: "Pintores" },
+            "grabados": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 15", signatura: "(HG76!.t852.)", texto_materia: "Grabados, Carteles" },
+            "fotografia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 15", signatura: "(HG77!.t852.) no (HG77!03!.t852.)", texto_materia: "Fotografía" },
+            "musica": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 14", signatura: "(HG78*.t852.) no (HG78!03!.t852.)", texto_materia: "Música" },
+            "cine": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 12", signatura: "(HG791*.t852.) no (HG791!03!.t852.)", texto_materia: "Cine" },
+            "teatro": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 12", signatura: "(HG792*.t852.) no (HG792!03!.t852.)", texto_materia: "Teatro" },
+            "baile": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 12", signatura: "(HG793*.t852.) no (HG793!03!.t852.)", texto_materia: "Baile, Arte del movimiento" } 
         };
 
         function abrirMateria(clave) {
