@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biblioteca de Humanidades | Búsqueda</title>
+    
+    <!-- Cargamos Tesseract.js corregido -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
     <style>
         /* Importar fuente elegante para encabezados */
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap');
@@ -171,16 +175,14 @@
             display: inline-flex;
             align-items: center;
             padding: 12px 42px 12px 12px; 
-            /* Gradiente vibrante y llamativo que destaca sobre los demás botones */
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #0f2027 100%); 
             border: 2px solid rgba(255, 255, 255, 0.4);
             border-radius: 60px; 
             text-decoration: none;
             color: #ffffff;
             font-weight: 700;
-            font-size: 1.35em; /* Aún más protagonista */
+            font-size: 1.35em; 
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            /* Sombra profunda y marcada para dar efecto de relieve flotante */
             box-shadow: 0 12px 30px rgba(30, 60, 114, 0.4), 0 4px 6px rgba(0, 0, 0, 0.1);
             width: max-content; 
             margin: 1.5vh auto; 
@@ -191,12 +193,11 @@
 
         .signature-btn:hover {
             background: linear-gradient(135deg, #2a5298 0%, #1e3c72 50%, #1f4037 100%); 
-            transform: translateY(-6px) scale(1.02); /* Efecto de flotación pronunciado */
+            transform: translateY(-6px) scale(1.02); 
             box-shadow: 0 18px 40px rgba(30, 60, 114, 0.5), 0 6px 12px rgba(0, 0, 0, 0.15);
             border-color: rgba(255, 255, 255, 0.8);
         }
 
-        /* El círculo interior para el icono */
         .signature-icon-circle {
             display: flex;
             align-items: center;
@@ -252,6 +253,12 @@
             border-color: #94a3b8;
         }
 
+        /* Colores de alto contraste para el panel de direcciones */
+        .dir-izq { background-color: #0288d1 !important; border-color: #00e5ff !important; }
+        .dir-der { background-color: #388e3c !important; border-color: #00e676 !important; }
+        .dir-arr { background-color: #f57c00 !important; border-color: #ffea00 !important; }
+        .dir-aba { background-color: #d32f2f !important; border-color: #ff1744 !important; }
+
         /* =========================================
            ADAPTACIÓN PARA PANTALLAS PEQUEÑAS
            ========================================= */
@@ -306,7 +313,8 @@
             </fieldset>
 
             <!-- Signatura Destacado (Flotante y Destacado) -->
-            <a href="Signatura.html" class="signature-btn">
+            <!-- MODIFICACIÓN: Cambiado href por onclick para abrir el modal -->
+            <a href="#" onclick="abrirCamara(event)" class="signature-btn">
                 <div class="signature-icon-circle">
                     <!-- Icono SVG de libro clásico abierto con colores -->
                     <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -337,7 +345,29 @@
         </div>
     </div>
 
-    <!-- Script de detección de SO -->
+    <!-- MODAL DE LA CÁMARA OCULTO POR DEFECTO -->
+    <div id="modal-camara" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #121214; z-index: 9999; flex-direction: column; align-items: center; justify-content: center;">
+        
+        <!-- Botón para cerrar la cámara -->
+        <button onclick="cerrarCamara()" style="position: absolute; top: 20px; right: 20px; padding: 10px 20px; background: #d32f2f; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; z-index: 10000; font-size: 16px;">X Cerrar</button>
+        
+        <h2 style="color: white; margin-bottom: 20px; text-align: center;">Navegador háptico y visual</h2>
+        
+        <div id="contenedor-camara" style="position: relative; width: 90%; max-width: 400px; border: 3px solid #333; border-radius: 16px; overflow: hidden;">
+            <video id="camara" autoplay playsinline style="width: 100%; display: block;"></video>
+            <div class="guia-enfoque" style="position: absolute; top: 35%; left: 10%; width: 80%; height: 30%; border: 3px dashed #00ffcc; box-sizing: border-box; pointer-events: none; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6);"></div>
+        </div>
+
+        <div id="panel-direccion" style="margin: 20px auto; width: 90%; max-width: 400px; height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 16px; background: #22222b; border: 2px solid #333; color: white; transition: all 0.2s ease;">
+            <p class="flecha" style="font-size: 80px; line-height: 1; margin: 0;">📷</p>
+            <p class="texto-dir" style="font-size: 22px; font-weight: bold; text-transform: uppercase; margin-top: 5px;">Apunta a una palabra</p>
+        </div>
+        
+        <div id="lectura" style="font-size: 14px; color: #888; text-align: center;">Viendo: <span id="texto-visto" style="color: #00ffcc; font-weight: bold;">-</span></div>
+        <canvas id="canvas-procesamiento" style="display: none;"></canvas>
+    </div>
+
+    <!-- Script original de detección de SO -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -350,6 +380,145 @@
                 body.classList.add('is-mobile-device');
             }
         });
+    </script>
+
+    <!-- Script integrado de la cámara OCR y Vibración -->
+    <script>
+        const video = document.getElementById('camara');
+        const canvas = document.getElementById('canvas-procesamiento');
+        const panelDir = document.getElementById('panel-direccion');
+        const textoVisto = document.getElementById('texto-visto');
+        const modalCamara = document.getElementById('modal-camara');
+        
+        let trabajadorOCR = null;
+        let direccionActual = ""; 
+        let escaneoActivo = false;
+
+        // Abrir Modal e iniciar sistemas
+        async function abrirCamara(e) {
+            e.preventDefault();
+            modalCamara.style.display = 'flex';
+            escaneoActivo = true;
+            
+            if (!trabajadorOCR) {
+                textoVisto.innerText = "Iniciando sistemas OCR...";
+                trabajadorOCR = await Tesseract.createWorker('spa');
+            }
+            
+            textoVisto.innerText = "Esperando cámara...";
+            arrancarCamara();
+        }
+
+        // Cerrar Modal y detener cámara
+        function cerrarCamara() {
+            modalCamara.style.display = 'none';
+            escaneoActivo = false;
+            if (video.srcObject) {
+                video.srcObject.getTracks().forEach(track => track.stop());
+            }
+        }
+
+        // Arrancar dispositivo de video
+        function arrancarCamara() {
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } })
+            .then(stream => { video.srcObject = stream; video.onloadedmetadata = () => bucleEscaneo(); })
+            .catch(err => {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => { video.srcObject = stream; video.onloadedmetadata = () => bucleEscaneo(); })
+                .catch(e => alert("Error de cámara: " + e.message));
+            });
+        }
+
+        // Ciclo de escaneo
+        async function bucleEscaneo() {
+            if (!escaneoActivo) return; // Detener bucle si se cierra la ventana
+
+            const ctx = canvas.getContext('2d');
+            const x = video.videoWidth * 0.10;
+            const y = video.videoHeight * 0.35;
+            const ancho = video.videoWidth * 0.80;
+            const alto = video.videoHeight * 0.30;
+
+            canvas.width = ancho;
+            canvas.height = alto;
+            
+            if (ancho > 0 && alto > 0) {
+                ctx.drawImage(video, x, y, ancho, alto, 0, 0, ancho, alto);
+            }
+
+            try {
+                const { data: { text } } = await trabajadorOCR.recognize(canvas);
+                evaluarTexto(text);
+            } catch (error) { 
+                console.error(error); 
+            }
+
+            // Repetir ciclo
+            if(escaneoActivo) {
+                setTimeout(bucleEscaneo, 250);
+            }
+        }
+
+        // Evaluación de palabras
+        function evaluarTexto(textoLimpio) {
+            const texto = textoLimpio.toUpperCase().trim();
+            textoVisto.innerText = texto || "(Buscando...)";
+
+            let nuevaDireccion = "";
+            let HTMLFlecha = "";
+
+            if (texto.includes("IZQUIERDA") || texto.includes("IZQ")) {
+                nuevaDireccion = "IZQUIERDA";
+                HTMLFlecha = `<p class="flecha" style="font-size: 80px; margin: 0;">◀</p><p class="texto-dir" style="font-size: 22px; font-weight: bold; text-transform: uppercase;">Izquierda</p>`;
+            } 
+            else if (texto.includes("DERECHA") || texto.includes("DER")) {
+                nuevaDireccion = "DERECHA";
+                HTMLFlecha = `<p class="flecha" style="font-size: 80px; margin: 0;">▶</p><p class="texto-dir" style="font-size: 22px; font-weight: bold; text-transform: uppercase;">Derecha</p>`;
+            } 
+            else if (texto.includes("ARRIBA") || texto.includes("ARR")) {
+                nuevaDireccion = "ARRIBA";
+                HTMLFlecha = `<p class="flecha" style="font-size: 80px; margin: 0;">▲</p><p class="texto-dir" style="font-size: 22px; font-weight: bold; text-transform: uppercase;">Arriba</p>`;
+            } 
+            else if (texto.includes("ABAJO") || texto.includes("ABA")) {
+                nuevaDireccion = "ABAJO";
+                HTMLFlecha = `<p class="flecha" style="font-size: 80px; margin: 0;">▼</p><p class="texto-dir" style="font-size: 22px; font-weight: bold; text-transform: uppercase;">Abajo</p>`;
+            }
+
+            if (nuevaDireccion !== "") {
+                panelDir.className = ""; 
+                if (nuevaDireccion === "IZQUIERDA") panelDir.classList.add("dir-izq");
+                if (nuevaDireccion === "DERECHA") panelDir.classList.add("dir-der");
+                if (nuevaDireccion === "ARRIBA") panelDir.classList.add("dir-arr");
+                if (nuevaDireccion === "ABAJO") panelDir.classList.add("dir-aba");
+                
+                panelDir.innerHTML = HTMLFlecha;
+
+                // Acciones de feedback
+                if (nuevaDireccion !== direccionActual) {
+                    direccionActual = nuevaDireccion;
+                    emitirVoz(nuevaDireccion);
+                    ejecutarVibracion(nuevaDireccion);
+                }
+            }
+        }
+
+        function emitirVoz(mensaje) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(mensaje);
+            utterance.lang = 'es-ES';
+            utterance.rate = 1.2;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function ejecutarVibracion(direccion) {
+            if (!("vibrate" in navigator)) return; 
+            switch (direccion) {
+                case "IZQUIERDA": navigator.vibrate(400); break;
+                case "DERECHA": navigator.vibrate([150, 100, 150]); break;
+                case "ARRIBA": navigator.vibrate([80, 80, 80, 80, 80]); break;
+                case "ABAJO": navigator.vibrate([100, 150, 500]); break;
+            }
+        }
     </script>
 </body>
 </html>
