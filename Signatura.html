@@ -9,7 +9,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Playfair+Display:wght@600;700&display=swap');
 
         html, body {
-            height: 100%;
+            height: 100%; /* Respaldo para navegadores antiguos */
             height: 100dvh;
             margin: 0;
             padding: 0;
@@ -41,6 +41,7 @@
             flex-direction: column;
             width: 95vw;
             max-width: 1300px;
+            height: 94%; /* Respaldo para navegadores antiguos */
             height: 94dvh; 
             background: #ffffff; 
             padding: 0; 
@@ -55,26 +56,30 @@
         .hero-section {
             width: 100%;
             height: 180px; 
-            position: relative;
+            position: relative; /* Clave para el posicionamiento absoluto */
             background-color: #34495e;
             overflow: hidden;
             flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            /* Se ha eliminado el flexbox aquí para aislar completamente las imágenes del diseño */
         }
 
         /* =========================================
            CONFIGURACIÓN IMAGEN ORDENADOR (PC)
            ========================================= */
         .shelf-photo-desktop {
-            display: block; /* Visible en PC */
+            display: block; 
             
-            /* MODIFICA AQUÍ EL TAMAÑO PARA PC */
+            /* Posicionamiento absoluto para no empujar el contenido de abajo */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1; /* Se queda al fondo */
+            
+            /* MODIFICA AQUÍ EL TAMAÑO PARA PC SIN MIEDO A ROMPER LA WEB */
             width: 100%;
-            height: 100%;
+            height: 200%;
             
-            /* object-fit: cover (rellena), contain (encaja), fill (estira) */
             object-fit: cover; 
             object-position: center 100%;
             filter: brightness(0.65); 
@@ -94,7 +99,7 @@
             font-size: 1.5em; 
             font-weight: 700;
             text-shadow: 2px 2px 6px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.7);
-            z-index: 10;
+            z-index: 10; /* Por encima de la imagen */
         }
 
         .professional-badge {
@@ -107,7 +112,7 @@
             font-weight: 700;
             text-align: right;
             text-shadow: 2px 2px 6px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.7);
-            z-index: 10;
+            z-index: 10; /* Por encima de la imagen */
         }
 
         .content-wrapper {
@@ -300,6 +305,7 @@
                 align-items: flex-start; 
             }
             .container { 
+                height: 100%; /* Respaldo para móvil */
                 height: 100dvh; 
                 width: 100vw; 
                 border-radius: 0; 
@@ -314,15 +320,21 @@
                CONFIGURACIÓN IMAGEN MÓVIL
                ========================================= */
             .shelf-photo-mobile {
-                display: block; /* Muestra en móvil */
+                display: block; 
+                
+                /* Posicionamiento absoluto para centrar sin empujar cajas */
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 1;
                 
                 /* MODIFICA AQUÍ EL TAMAÑO PARA MÓVIL */
                 width: 100%;
                 height: 100%; 
                 
-                /* object-fit: cover (rellena), contain (encaja), fill (estira) */
                 object-fit: cover; 
-                object-position: center 80%; /* Ajusta el 80% para centrar la foto */
+                object-position: center 80%; 
                 filter: brightness(0.65);
             }
 
@@ -340,9 +352,12 @@
 </head>
 <body>
     <div class="container">
+        <!-- Sección Hero Panorámica -->
         <div class="hero-section">
+            <!-- IMAGEN PC -->
             <img src="imagenes/buobh.png" alt="Interior detallado de biblioteca moderna" class="shelf-photo-desktop" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
             
+            <!-- IMAGEN MÓVIL -->
             <img src="imagenes/buobh_movil.png" alt="Interior detallado de biblioteca moderna (Móvil)" class="shelf-photo-mobile" onerror="this.src='https://via.placeholder.com/800x600?text=Biblioteca+Móvil'">
             
             <div class="library-title">
@@ -356,4 +371,103 @@
 
         <div class="content-wrapper">
             <div class="search-area">
-                <p style="text-align: center; color: #3449
+                <p style="text-align: center; color: #34495e; font-size: 0.95em; margin: 0 10px 0 10px; font-weight: bold;">
+                    Recuerda que los libros que se encuentran en las salas son de acceso libre y sus signaturas comienzan por HG.
+                </p>
+                <input type="text" id="campoSignatura" class="input-signatura" placeholder="&lt;Escribe la signatura&gt;" 
+                       onfocus="if(this.value.trim() === '') { this.value = 'HG'; setTimeout(() => this.setSelectionRange(2, 2), 0); }" 
+                       oninput="this.value = this.value.toUpperCase();">
+
+                <a href="#" class="action-btn btn-local" onclick="localizarLibro(event)">
+                    <span class="icon">🔎</span> Click para localizarlo
+                </a>
+
+                <div class="catalog-section">
+                    <p class="availability-text">¿Quieres ver si está disponible?</p>
+                    <button onclick="buscarEnCatalogo()" class="action-btn btn-catalog">
+                        <span class="icon">📚</span> Búscalo en el catálogo
+                    </button>
+                </div>
+            </div>
+            
+            <a href="index.html" class="back-btn">⬅ Volver al inicio</a>
+        </div>
+    </div>
+
+    <!-- --- ESTRUCTURA DEL MODAL PERSONALIZADO --- -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-content">
+            <p id="modalMessage"></p>
+            <button onclick="cerrarModal()" class="modal-btn">Aceptar</button>
+        </div>
+    </div>
+    <!-- ----------------------------------------- -->
+
+    <script>
+        // --- FUNCIONES DEL MODAL ---
+        function mostrarModal(mensaje) {
+            document.getElementById("modalMessage").innerText = mensaje;
+            document.getElementById("customModal").style.display = "flex";
+        }
+
+        function cerrarModal() {
+            document.getElementById("customModal").style.display = "none";
+        }
+        
+
+        // ----------LOCALIZAR POR SIGNATURA
+
+        function localizarLibro(event) {
+            event.preventDefault();
+            let signatura = document.getElementById("campoSignatura").value.trim();
+
+            if (signatura === "" || signatura === "HG") {
+                mostrarModal("Por favor, escribe una signatura válida.");
+                return;
+            }
+
+            if (!signatura.startsWith("HG")) {
+                mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudaremos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
+                return; 
+            }
+
+            let fichero = signatura;
+
+            fichero = fichero.replace(/\/AST$/i, "");
+            fichero = fichero.replace(/\/COMIC$/i, "");
+
+            if (!fichero.endsWith("/4")) {
+                fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
+            }
+
+            let sig = "";
+            let ultimoIndiceBarra = fichero.lastIndexOf("/");
+
+            if (ultimoIndiceBarra !== -1) {
+                let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
+
+                if (parteDerecha === "4") {
+                    sig = "HG/4";
+                } else {
+                    sig = fichero.substring(0, ultimoIndiceBarra);
+                }
+            } else {
+                sig = fichero;
+            }
+
+            window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
+        }
+        
+        function buscarEnCatalogo() {
+            const signatura = document.getElementById("campoSignatura").value.trim();
+            if (signatura === "" || signatura === "HG") {
+                window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
+            } else {
+                const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
+                const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "&START=1&FORM=1";
+                window.open(urlFinal, "_blank");
+            }
+        }
+    </script>
+</body>
+</html>
