@@ -46,7 +46,6 @@
         
         .info-text { color: #8e8e93; font-size: 1em; line-height: 1.4; }
 
-        /* Animación de carga simple imitando un radar o mapa */
         .loader { 
             border: 6px solid #e5e5ea; 
             border-top: 6px solid #007AFF; 
@@ -72,39 +71,25 @@
     </div>
 
     <script>
-        // 1. Extraemos la signatura de la URL (que nos envía signatura.html)
         const params = new URLSearchParams(window.location.search);
         const signaturaBuscada = params.get('sig');
         
-        // 2. Mostramos la signatura en pantalla
         if (signaturaBuscada) {
             document.getElementById('sig-display').innerText = signaturaBuscada;
         } else {
             document.getElementById('sig-display').innerText = "Signatura no proporcionada";
         }
 
-        // =========================================================================
-        // LÓGICA DE TU MAPA / RUTA
-        // Aquí irían las funciones de tu plano interactivo.
-        // Para que el código funcione, simulamos que el usuario tarda 3 segundos 
-        // en llegar a la estantería mediante un setTimeout.
-        // =========================================================================
-
         setTimeout(() => {
             document.getElementById('mensaje-estado').innerText = "¡Has llegado al pasillo!";
             
-            // 3. LA REDIRECCIÓN CON LA MODIFICACIÓN APLICADA
-            // En lugar de enviar a "encontrado.html" a secas, enviamos la signatura en la URL.
-            
             if (signaturaBuscada) {
-                // Si tenemos la signatura, redirigimos pasando el parámetro
-                window.location.href = "encontrado.html?sig=" + encodeURIComponent(signaturaBuscada);
-            } else {
-                // Por seguridad, si falló la carga de la signatura, redirigimos normal
-                window.location.href = "encontrado.html";
+                localStorage.setItem('signaturaObjetivo', signaturaBuscada);
             }
             
-        }, 3000); // Se redirige automáticamente pasados 3 segundos (3000ms)
+            window.location.href = "encontrado.html";
+            
+        }, 3000); 
     </script>
 </body>
 </html>

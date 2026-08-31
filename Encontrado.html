@@ -66,7 +66,6 @@
             transition: transform 0.15s ease, background-color 0.2s ease; 
         }
 
-        /* Botón de cámara */
         .btn-camera { 
             background: linear-gradient(135deg, #FF9500, #FF5E3A); 
             color: #ffffff; 
@@ -78,7 +77,6 @@
             background: #cc7700; 
         }
 
-        /* Botón volver */
         .btn-back { 
             background: #e5e5ea; 
             color: #007AFF; 
@@ -97,31 +95,25 @@
         
         <p class="info-text" style="color: #1c1c1e; font-weight: 500;">¿No lo ves a simple vista? Usa la cámara para guiarte libro por libro hacia la izquierda o la derecha.</p>
 
-        <!-- Botón que activa el escáner -->
         <button class="action-btn btn-camera" onclick="abrirEscaner()">
             <span>📷</span> Búsqueda precisa en estantería
         </button>
 
-        <!-- Botón para volver a buscar otro libro -->
         <a href="signatura.html" class="action-btn btn-back">⬅ Buscar otro libro</a>
     </div>
 
     <script>
-        // 1. Obtener la signatura de la URL (asume que llegas aquí con ?sig=HG/...)
-        const params = new URLSearchParams(window.location.search);
-        const signaturaObjetivo = params.get('sig');
+        const signaturaObjetivo = localStorage.getItem('signaturaObjetivo');
         
-        // 2. Mostrar la signatura en pantalla
         if (signaturaObjetivo) {
             document.getElementById('sig-display').innerText = signaturaObjetivo;
         } else {
             document.getElementById('sig-display').innerText = "Signatura desconocida";
         }
 
-        // 3. Función para ir al escáner pasando la signatura
         function abrirEscaner() {
             if (signaturaObjetivo) {
-                window.location.href = "escaner.html?sig=" + encodeURIComponent(signaturaObjetivo);
+                window.location.href = "escaner.html";
             } else {
                 alert("No se ha podido recuperar la signatura. Vuelve a realizar la búsqueda inicial.");
             }

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escáner de Signaturas | Biblioteca</title>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #000; 
+            color: #fff; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            height: 100vh; 
+            overflow: hidden;
+        }
+        
+        #video-container { 
+            position: relative; 
+            width: 100%; 
+            height: 100%; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            background: #111; 
+        }
+        video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+        
+        #textoVisto { 
+            position: absolute; 
+            top: 30px; 
+            background: rgba(0,0,0,0.7); 
+            padding: 12px 20px; 
+            border-radius: 12px; 
+            font-family: monospace; 
+            font-size: 1.2em; 
+            border: 1px solid rgba(255,255,255,0.2);
+            z-index: 10;
+        }
+
+        .close-btn { 
+            position: absolute; 
+            top: 30px; 
+            right: 20px; 
+            background: rgba(255, 59, 48, 0.9); 
+            color: white; 
+            border: none; 
+            width: 45px;
+            height: 45px;
+            border-radius: 50%; 
+            font-size: 1.2em; 
+            cursor: pointer; 
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        #ui-overlay { 
+            position: absolute; 
+            bottom: 40px; 
+            width: 100%; 
+            text-align: center; 
+            z-index: 10;
+        }
+
+        #panelDir { 
+            padding: 20px 40px; 
+            border-radius: 20px; 
+            display: inline-block; 
+            min-width: 250px; 
+            font-weight: bold; 
+            transition: all 0.3s ease; 
+            background: rgba(25, 25, 25, 0.85); 
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border: 2px solid transparent;
+        }
+
+        .flecha { font-size: 3.5em; margin: 0; line-height: 1; }
+        .texto-dir { font-size: 1.5em; margin: 10px 0 0 0; }
+        
+        .dir-izq { color: #FF9500; border-color: #FF9500 !important; }
+        .dir-der { color: #007AFF; border-color: #007AFF !important; }
+        .dir-arr { color: #34C759; border-color: #34C759 !important; background: rgba(52, 199, 89, 0.2) !important;}
+        
+        .scan-area {
+            position: absolute;
+            width: 250px;
+            height: 100px;
+            border: 3px dashed rgba(255, 255, 255, 0.6);
+            border-radius: 15px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.4);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="video-container">
+        <video id="camara" autoplay playsinline></video>
+        
+        <div class="scan-area"></div>
+        <button class="close-btn" onclick="history.back()">✖</button>
+        <div id="textoVisto">Apunta a una etiqueta...</div>
+
+        <div id="ui-overlay">
+            <div id="panelDir">
+                <p class="flecha">🔄</p>
+                <p class="texto-dir">Escaneando...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const panelDir = document.getElementById('panelDir');
+        const textoVisto = document.getElementById('textoVisto');
+        
+        let ordenSignaturas = [];
+        let direccionActual = "";
+
+        const signaturaObjetivo = localStorage.getItem('signaturaObjetivo');
+
+        fetch('signaturas.json')
+            .then(response => response.json())
+            .then(data => {
+                ordenSignaturas = Object.keys(data);
+                console.log("Catálogo cargado. Total signaturas:", ordenSignaturas.length);
+            })
+            .catch(error => console.error("Error cargando signaturas:", error));
+
+        function evaluarTexto(textoLimpio) {
+            if (ordenSignaturas.length === 0 || !signaturaObjetivo) return;
+            
+            const textoEscaneado = textoLimpio.toUpperCase().trim().replace(/\s+/g, '');
+            textoVisto.innerText = textoEscaneado || "Leyendo...";
+
+            const indiceEscaneado = ordenSignaturas.findIndex(sig => textoEscaneado.includes(sig));
+            const indiceObjetivo = ordenSignaturas.indexOf(signaturaObjetivo);
+
+            let nuevaDireccion = "";
+            let HTMLFlecha = "";
+
+            if (indiceEscaneado !== -1 && indiceObjetivo !== -1) {
+                
+                if (indiceEscaneado === indiceObjetivo) {
+                    nuevaDireccion = "ENCONTRADO";
+                    HTMLFlecha = `<p class="flecha">✅</p><p class="texto-dir">¡Es este!</p>`;
+                    panelDir.className = "dir-arr";
+                } 
+                else if (indiceEscaneado < indiceObjetivo) {
+                    nuevaDireccion = "DERECHA";
+                    HTMLFlecha = `<p class="flecha">▶</p><p class="texto-dir">Sigue a la Derecha</p>`;
+                    panelDir.className = "dir-der";
+                } 
+                else {
+                    nuevaDireccion = "IZQUIERDA";
+                    HTMLFlecha = `<p class="flecha">◀</p><p class="texto-dir">Vuelve a la Izquierda</p>`;
+                    panelDir.className = "dir-izq";
+                }
+
+                panelDir.innerHTML = HTMLFlecha;
+
+                if (nuevaDireccion !== direccionActual) {
+                    direccionActual = nuevaDireccion;
+                    emitirVoz(nuevaDireccion);
+                    ejecutarVibracion(nuevaDireccion);
+                }
+            }
+        }
+
+        function emitirVoz(texto) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); 
+                let msj = texto === "ENCONTRADO" ? "Libro encontrado" : "Mueve hacia la " + texto.toLowerCase();
+                const msg = new SpeechSynthesisUtterance(msj);
+                msg.lang = 'es-ES';
+                msg.rate = 1.1; 
+                window.speechSynthesis.speak(msg);
+            }
+        }
+
+        function ejecutarVibracion(dir) {
+            if (navigator.vibrate) {
+                if (dir === "ENCONTRADO") {
+                    navigator.vibrate([200, 100, 200, 100, 500]); 
+                } else {
+                    navigator.vibrate(100); 
+                }
+            }
+        }
+    </script>
+</body>
+</html>
