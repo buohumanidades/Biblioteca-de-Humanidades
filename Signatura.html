@@ -5,26 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Búsqueda por Signatura | Biblioteca</title>
     <style>
-        /* Importar fuentes académicas */
+        /* Fuentes */
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Playfair+Display:wght@600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
 
         html, body {
-            height: 100%; /* Respaldo para navegadores antiguos */
-            height: 100dvh;
+            height: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden; 
-            font-family: Arial, sans-serif;
-            color: #2c3e50;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #1c1c1e;
         }
+
         body { 
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0; 
-            box-sizing: border-box;
-            line-height: 1.4; 
-            
             background: linear-gradient(45deg, #a8edea, #fed6e3, #e0c3fc, #8ec5fc);
             background-size: 400% 400%;
             animation: gradientBG 12s ease infinite;
@@ -36,19 +36,19 @@
             100% { background-position: 0% 50%; }
         }
 
+        /* Contenedor principal visibilidad asegurada */
         .container { 
+            position: relative;
+            z-index: 10;
             display: flex;
             flex-direction: column;
             width: 95vw;
             max-width: 1300px;
-            height: 94%; /* Respaldo para navegadores antiguos */
+            height: 94vh; 
             height: 94dvh; 
             background: #ffffff; 
-            padding: 0; 
-            border-radius: 16px; 
-            box-sizing: border-box;
+            border-radius: 20px; 
             box-shadow: 0 15px 40px rgba(0,0,0,0.25); 
-            transition: all 0.3s ease;
             overflow: hidden;
         }
 
@@ -56,36 +56,26 @@
         .hero-section {
             width: 100%;
             height: 180px; 
-            position: relative; /* Clave para el posicionamiento absoluto */
+            position: relative; 
             background-color: #34495e;
             overflow: hidden;
             flex-shrink: 0;
-            /* Se ha eliminado el flexbox aquí para aislar completamente las imágenes del diseño */
         }
 
-        /* =========================================
-           CONFIGURACIÓN IMAGEN ORDENADOR (PC)
-           ========================================= */
         .shelf-photo-desktop {
             display: block; 
-            
-            /* Posicionamiento absoluto para no empujar el contenido de abajo */
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 1; /* Se queda al fondo */
-            
-            /* MODIFICA AQUÍ EL TAMAÑO PARA PC SIN MIEDO A ROMPER LA WEB */
+            z-index: 1; 
             width: 100%;
             height: 200%;
-            
             object-fit: cover; 
             object-position: center 100%;
             filter: brightness(0.65); 
         }
 
-        /* Ocultar la de móvil en pantallas grandes por defecto */
         .shelf-photo-mobile {
             display: none; 
         }
@@ -98,8 +88,8 @@
             font-family: 'Cormorant Garamond', Georgia, serif;
             font-size: 1.5em; 
             font-weight: 700;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.7);
-            z-index: 10; /* Por encima de la imagen */
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
+            z-index: 10; 
         }
 
         .professional-badge {
@@ -111,8 +101,8 @@
             font-size: 1.3em;
             font-weight: 700;
             text-align: right;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.7);
-            z-index: 10; /* Por encima de la imagen */
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
+            z-index: 10; 
         }
 
         .content-wrapper {
@@ -122,7 +112,6 @@
             padding: 20px 30px;
             min-height: 0;
             overflow-y: auto;
-            box-sizing: border-box;
             justify-content: space-between;
         }
 
@@ -135,157 +124,181 @@
             width: 100%;
         }
 
+        /* --- ESTILO iOS PARA INPUT --- */
         .input-signatura {
-            width: 60%;
-            padding: 14px;
+            width: 65%;
+            padding: 16px;
             font-size: 1.2em;
             text-align: center;
-            color: #2980b9;
-            background-color: #ebf5fb;
-            border: 2px solid #a9cce3;
-            border-radius: 8px;
-            font-weight: bold;
+            color: #1c1c1e;
+            background-color: #F2F2F7;
+            border: 2px solid transparent;
+            border-radius: 14px;
+            font-weight: 600;
             outline: none;
-            transition: all 0.3s ease;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-            box-sizing: border-box;
+            transition: all 0.2s ease;
         }
         .input-signatura::placeholder {
-            color: #85c1e9;
-            opacity: 0.8;
+            color: #8e8e93;
+            font-weight: 500;
         }
         .input-signatura:focus {
             background-color: #ffffff;
-            border-color: #2980b9;
-            box-shadow: 0 0 8px rgba(41, 128, 185, 0.4);
+            border-color: #007AFF;
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
         }
 
+        /* --- ESTILO iOS PARA BOTONES --- */
         .action-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            width: 60%;
-            padding: 14px;
+            gap: 8px;
+            width: 65%;
+            padding: 16px;
             font-size: 1.15em;
-            font-weight: bold;
-            border-radius: 8px;
+            font-weight: 600;
+            border-radius: 14px;
             text-decoration: none;
             cursor: pointer;
             border: none;
-            transition: all 0.2s ease;
-            box-sizing: border-box;
+            transition: transform 0.15s ease, background-color 0.2s ease;
         }
+        
+        /* BOTÓN PRINCIPAL FLOTANTE */
         .btn-local {
-            background: linear-gradient(135deg, #2980b9, #3498db);
+            background: linear-gradient(135deg, #007AFF, #34AADC); /* Degradado sutil */
             color: #ffffff;
-            box-shadow: 0 6px 12px rgba(41, 128, 185, 0.3);
-        }
-        .btn-local:active {
-            background: #2471a3;
-            transform: translateY(2px);
-            box-shadow: 0 2px 6px rgba(41, 128, 185, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Brillo en el borde */
+            /* Sombras multicapa para efecto elevado */
+            box-shadow: 0 12px 25px rgba(0, 122, 255, 0.4), 0 4px 10px rgba(0, 122, 255, 0.2);
+            /* Animación constante */
+            animation: float 3.5s ease-in-out infinite; 
+            margin-top: 10px; /* Un poco de margen para que respire la sombra */
+            margin-bottom: 5px;
         }
 
+        @keyframes float {
+            0% { 
+                transform: translateY(0px); 
+                box-shadow: 0 12px 25px rgba(0, 122, 255, 0.4), 0 4px 10px rgba(0, 122, 255, 0.2); 
+            }
+            50% { 
+                transform: translateY(-6px); /* Sube un poco */
+                box-shadow: 0 18px 32px rgba(0, 122, 255, 0.5), 0 8px 15px rgba(0, 122, 255, 0.3); /* La sombra se expande */
+            }
+            100% { 
+                transform: translateY(0px); 
+                box-shadow: 0 12px 25px rgba(0, 122, 255, 0.4), 0 4px 10px rgba(0, 122, 255, 0.2); 
+            }
+        }
+
+        .btn-local:active {
+            animation: none; /* Quitamos la animación flotante al pulsar */
+            transform: scale(0.95) translateY(4px); /* Se hunde hacia abajo */
+            background: #005bb5;
+            box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);
+        }
+
+        /* --- TARJETA DE SEPARACIÓN iOS --- */
         .catalog-section {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 70%;
-            margin: 10px auto 0 auto;
-            padding-top: 15px;
-            border-top: 2px dashed #d5dbdb;
-            gap: 10px;
+            width: 65%;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #F2F2F7;
+            border-radius: 18px;
+            gap: 12px;
         }
         .availability-text {
             margin: 0;
-            color: #34495e;
-            font-weight: bold;
+            color: #3a3a3c;
+            font-weight: 600;
             font-size: 0.95em;
         }
+        
         .btn-catalog {
-            background-color: #fdfdfd;
-            color: #154360;
-            border: 2px solid #5b9bd5;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-            width: 85%;
+            background-color: #ffffff;
+            color: #5856D6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            width: 100%;
         }
         .btn-catalog:active {
-            background-color: #dce6f1;
-            transform: scale(0.98);
+            background-color: #e5e5ea;
+            transform: scale(0.96);
         }
 
         .icon {
-            font-size: 1.3em;
+            font-size: 1.2em;
         }
 
         .back-btn {
             display: block;
             text-align: center;
-            padding: 12px;
-            background: #ecf0f1;
-            color: #2c3e50;
+            padding: 14px;
+            background: transparent;
+            color: #007AFF;
             text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
+            border-radius: 14px;
+            font-weight: 600;
             font-size: 1em;
             flex-shrink: 0;
-            transition: background 0.3s, transform 0.2s;
+            transition: background 0.2s, transform 0.15s;
             width: 30%;
             margin: 0 auto;
         }
-        .back-btn:active, .back-btn:hover {
-            background: #d5dbdb;
-            transform: translateY(-2px);
+        .back-btn:active {
+            background: #F2F2F7;
+            transform: scale(0.96);
         }
 
-        /* --- ESTILOS DEL MODAL PERSONALIZADO --- */
+        /* --- MODAL --- */
         .modal-overlay {
             display: none; 
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
         .modal-content {
-            background: #fff;
+            background: #ffffff;
             padding: 25px;
-            border-radius: 12px;
+            border-radius: 18px;
             max-width: 80%;
-            width: 400px;
+            width: 320px;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            color: #2c3e50;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            color: #1c1c1e;
         }
         .modal-content p {
-            font-size: 1.1em;
+            font-size: 1.05em;
+            font-weight: 500;
             margin-bottom: 20px;
             white-space: pre-wrap;
         }
         .modal-btn {
-            background: #2980b9;
+            background: #007AFF;
             color: #fff;
             border: none;
             padding: 12px 25px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1.05em;
             cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
+            font-weight: 600;
+            width: 100%;
         }
-        .modal-btn:hover {
-            background: #1a5276;
+        .modal-btn:active {
+            background: #005bb5;
+            transform: scale(0.96);
         }
 
-        /* =========================================================
-           ADAPTACIÓN PARA PANTALLAS GRANDES Y MÓVILES
-           ========================================================= */
-
-        /* 💻 PANTALLAS GRANDES / ORDENADORES */
+        /* PANTALLAS GRANDES */
         @media (min-width: 901px) {
-            .hero-section { height: 25dvh; } 
+            .hero-section { height: 25vh; height: 25dvh; } 
             .library-title {
                 font-size: 2.3em;
                 top: 25px;
@@ -296,53 +309,45 @@
                 bottom: 25px;
                 right: 35px;
             }
-            .content-wrapper { padding: 3dvh 4vw; }
+            .content-wrapper { padding: 3vh 4vw; }
         }
 
-        /* 📱 PANTALLAS PEQUEÑAS / MÓVILES */
+        /* MÓVILES */
         @media (max-width: 900px) {
             body {
                 align-items: flex-start; 
             }
             .container { 
-                height: 100%; /* Respaldo para móvil */
+                height: 100vh; 
                 height: 100dvh; 
                 width: 100vw; 
                 border-radius: 0; 
             }
 
-            /* Ocultar imagen de PC en móvil */
             .shelf-photo-desktop {
                 display: none;
             }
 
-            /* =========================================
-               CONFIGURACIÓN IMAGEN MÓVIL
-               ========================================= */
             .shelf-photo-mobile {
                 display: block; 
-                
-                /* Posicionamiento absoluto para centrar sin empujar cajas */
                 position: absolute;
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
                 z-index: 1;
-                
-                /* MODIFICA AQUÍ EL TAMAÑO PARA MÓVIL */
                 width: 100%;
                 height: 100%; 
-                
                 object-fit: cover; 
                 object-position: center 80%; 
                 filter: brightness(0.65);
             }
 
             .input-signatura, .action-btn {
-                width: 85%;
+                width: 90%;
             }
             .catalog-section {
                 width: 90%;
+                padding: 18px 15px;
             }
             .back-btn {
                 width: 60%;
@@ -352,36 +357,31 @@
 </head>
 <body>
     <div class="container">
-        <!-- Sección Hero Panorámica -->
+        <!-- Hero -->
         <div class="hero-section">
-            <!-- IMAGEN PC -->
-            <img src="imagenes/buobh.png" alt="Interior detallado de biblioteca moderna" class="shelf-photo-desktop" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
+            <img src="imagenes/buobh.png" alt="Interior biblioteca" class="shelf-photo-desktop" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
+            <img src="imagenes/buobh_movil.png" alt="Interior biblioteca móvil" class="shelf-photo-mobile" onerror="this.src='https://via.placeholder.com/800x600?text=Biblioteca+Móvil'">
             
-            <!-- IMAGEN MÓVIL -->
-            <img src="imagenes/buobh_movil.png" alt="Interior detallado de biblioteca moderna (Móvil)" class="shelf-photo-mobile" onerror="this.src='https://via.placeholder.com/800x600?text=Biblioteca+Móvil'">
-            
-            <div class="library-title">
-                 
-            </div>
-
-            <div class="professional-badge">
-                Signatura
-            </div>
+            <div class="library-title"></div>
+            <div class="professional-badge">Signatura</div>
         </div>
 
         <div class="content-wrapper">
             <div class="search-area">
-                <p style="text-align: center; color: #34495e; font-size: 0.95em; margin: 0 10px 0 10px; font-weight: bold;">
+                <p style="text-align: center; color: #8e8e93; font-size: 0.90em; margin: 0 10px; font-weight: 500;">
                     Recuerda que los libros que se encuentran en las salas son de acceso libre y sus signaturas comienzan por HG.
                 </p>
-                <input type="text" id="campoSignatura" class="input-signatura" placeholder="&lt;Escribe la signatura&gt;" 
+                
+                <input type="text" id="campoSignatura" class="input-signatura" placeholder="<Escribe la signatura>" 
                        onfocus="if(this.value.trim() === '') { this.value = 'HG'; setTimeout(() => this.setSelectionRange(2, 2), 0); }" 
                        oninput="this.value = this.value.toUpperCase();">
 
+                <!-- BOTÓN FLOTANTE MODIFICADO -->
                 <a href="#" class="action-btn btn-local" onclick="localizarLibro(event)">
-                    <span class="icon">🔎</span> Click para localizarlo
+                    <span class="icon">📍</span> Localizar en la estantería
                 </a>
 
+                <!-- Sección del Catálogo Separada -->
                 <div class="catalog-section">
                     <p class="availability-text">¿Quieres ver si está disponible?</p>
                     <button onclick="buscarEnCatalogo()" class="action-btn btn-catalog">
@@ -394,17 +394,15 @@
         </div>
     </div>
 
-    <!-- --- ESTRUCTURA DEL MODAL PERSONALIZADO --- -->
+    <!-- Modal -->
     <div id="customModal" class="modal-overlay">
         <div class="modal-content">
             <p id="modalMessage"></p>
             <button onclick="cerrarModal()" class="modal-btn">Aceptar</button>
         </div>
     </div>
-    <!-- ----------------------------------------- -->
 
     <script>
-        // --- FUNCIONES DEL MODAL ---
         function mostrarModal(mensaje) {
             document.getElementById("modalMessage").innerText = mensaje;
             document.getElementById("customModal").style.display = "flex";
@@ -413,9 +411,6 @@
         function cerrarModal() {
             document.getElementById("customModal").style.display = "none";
         }
-        
-
-        // ----------LOCALIZAR POR SIGNATURA
 
         function localizarLibro(event) {
             event.preventDefault();
