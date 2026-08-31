@@ -51,7 +51,7 @@
             overflow: hidden;
         }
 
-        /* Cabecera / Sección Hero Panorámica ajustada */
+        /* Cabecera / Sección Hero */
         .hero-section {
             width: 100%;
             height: 180px; 
@@ -64,14 +64,25 @@
             justify-content: center;
         }
 
-        .shelf-photo-panoramic {
-            /* MODIFICA AQUÍ EL ANCHO Y ALTO A TU GUSTO */
+        /* =========================================
+           CONFIGURACIÓN IMAGEN ORDENADOR (PC)
+           ========================================= */
+        .shelf-photo-desktop {
+            display: block; /* Visible en PC */
+            
+            /* MODIFICA AQUÍ EL TAMAÑO PARA PC */
             width: 100%;
             height: 200%;
             
+            /* object-fit: cover (rellena), contain (encaja), fill (estira) */
             object-fit: cover; 
             object-position: center 100%;
             filter: brightness(0.65); 
+        }
+
+        /* Ocultar la de móvil en pantallas grandes por defecto */
+        .shelf-photo-mobile {
+            display: none; 
         }
 
         .library-title {
@@ -285,37 +296,55 @@
 
         /* 📱 PANTALLAS PEQUEÑAS / MÓVILES */
         @media (max-width: 900px) {
-    body {
-        align-items: flex-start; 
-    }
-    .container { 
-        height: 100dvh; 
-        width: 100vw; 
-        border-radius: 0; 
-    }
-    /* Añade o ajusta esto para cambiar dónde se centra la imagen en móvil */
-    .shelf-photo-panoramic {
-        object-position: center 80%; /* Cambia el 30% para subir o bajar el enfoque de la foto */
-    }
-    .input-signatura, .action-btn {
-        width: 85%;
-    }
-    .catalog-section {
-        width: 90%;
-    }
-    .back-btn {
-        width: 60%;
-    }
-}
+            body {
+                align-items: flex-start; 
+            }
+            .container { 
+                height: 100dvh; 
+                width: 100vw; 
+                border-radius: 0; 
+            }
+
+            /* Ocultar imagen de PC en móvil */
+            .shelf-photo-desktop {
+                display: none;
+            }
+
+            /* =========================================
+               CONFIGURACIÓN IMAGEN MÓVIL
+               ========================================= */
+            .shelf-photo-mobile {
+                display: block; /* Muestra en móvil */
+                
+                /* MODIFICA AQUÍ EL TAMAÑO PARA MÓVIL */
+                width: 100%;
+                height: 100%; 
+                
+                /* object-fit: cover (rellena), contain (encaja), fill (estira) */
+                object-fit: cover; 
+                object-position: center 80%; /* Ajusta el 80% para centrar la foto */
+                filter: brightness(0.65);
+            }
+
+            .input-signatura, .action-btn {
+                width: 85%;
+            }
+            .catalog-section {
+                width: 90%;
+            }
+            .back-btn {
+                width: 60%;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Sección Hero Panorámica -->
         <div class="hero-section">
-            <img src="imagenes/buobh.png" alt="Interior detallado de biblioteca moderna" class="shelf-photo-panoramic" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
+            <img src="imagenes/buobh.png" alt="Interior detallado de biblioteca moderna" class="shelf-photo-desktop" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
             
-		 
+            <img src="imagenes/buobh_movil.png" alt="Interior detallado de biblioteca moderna (Móvil)" class="shelf-photo-mobile" onerror="this.src='https://via.placeholder.com/800x600?text=Biblioteca+Móvil'">
+            
             <div class="library-title">
                  
             </div>
@@ -327,103 +356,4 @@
 
         <div class="content-wrapper">
             <div class="search-area">
-                <p style="text-align: center; color: #34495e; font-size: 0.95em; margin: 0 10px 0 10px; font-weight: bold;">
-                    Recuerda que los libros que se encuentran en las salas son de acceso libre y sus signaturas comienzan por HG.
-                </p>
-                <input type="text" id="campoSignatura" class="input-signatura" placeholder="&lt;Escribe la signatura&gt;" 
-                       onfocus="if(this.value.trim() === '') { this.value = 'HG'; setTimeout(() => this.setSelectionRange(2, 2), 0); }" 
-                       oninput="this.value = this.value.toUpperCase();">
-
-                <a href="#" class="action-btn btn-local" onclick="localizarLibro(event)">
-                    <span class="icon">🔎</span> Click para localizarlo
-                </a>
-
-                <div class="catalog-section">
-                    <p class="availability-text">¿Quieres ver si está disponible?</p>
-                    <button onclick="buscarEnCatalogo()" class="action-btn btn-catalog">
-                        <span class="icon">📚</span> Búscalo en el catálogo
-                    </button>
-                </div>
-            </div>
-            
-            <a href="index.html" class="back-btn">⬅ Volver al inicio</a>
-        </div>
-    </div>
-
-    <!-- --- ESTRUCTURA DEL MODAL PERSONALIZADO --- -->
-    <div id="customModal" class="modal-overlay">
-        <div class="modal-content">
-            <p id="modalMessage"></p>
-            <button onclick="cerrarModal()" class="modal-btn">Aceptar</button>
-        </div>
-    </div>
-    <!-- ----------------------------------------- -->
-
-    <script>
-        // --- FUNCIONES DEL MODAL ---
-        function mostrarModal(mensaje) {
-            document.getElementById("modalMessage").innerText = mensaje;
-            document.getElementById("customModal").style.display = "flex";
-        }
-
-        function cerrarModal() {
-            document.getElementById("customModal").style.display = "none";
-        }
-        
-
-        // ----------LOCALIZAR POR SIGNATURA
-
-        function localizarLibro(event) {
-            event.preventDefault();
-            let signatura = document.getElementById("campoSignatura").value.trim();
-
-            if (signatura === "" || signatura === "HG") {
-                mostrarModal("Por favor, escribe una signatura válida.");
-                return;
-            }
-
-            if (!signatura.startsWith("HG")) {
-                mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudaremos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
-                return; 
-            }
-
-            let fichero = signatura;
-
-            fichero = fichero.replace(/\/AST$/i, "");
-            fichero = fichero.replace(/\/COMIC$/i, "");
-
-            if (!fichero.endsWith("/4")) {
-                fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
-            }
-
-            let sig = "";
-            let ultimoIndiceBarra = fichero.lastIndexOf("/");
-
-            if (ultimoIndiceBarra !== -1) {
-                let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
-
-                if (parteDerecha === "4") {
-                    sig = "HG/4";
-                } else {
-                    sig = fichero.substring(0, ultimoIndiceBarra);
-                }
-            } else {
-                sig = fichero;
-            }
-
-            window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
-        }
-        
-        function buscarEnCatalogo() {
-            const signatura = document.getElementById("campoSignatura").value.trim();
-            if (signatura === "" || signatura === "HG") {
-                window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
-            } else {
-                const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
-                const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "&START=1&FORM=1";
-                window.open(urlFinal, "_blank");
-            }
-        }
-    </script>
-</body>
-</html>
+                <p style="text-align: center; color: #3449
