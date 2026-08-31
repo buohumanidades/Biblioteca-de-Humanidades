@@ -3,93 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Localizando en mapa | Biblioteca</title>
+    <title>Procesando Signatura...</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        
-        * { box-sizing: border-box; }
         body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f2f2f7; 
+            font-family: Arial, sans-serif; 
+            background-color: #f4f6f7; 
             display: flex; 
-            flex-direction: column; 
-            align-items: center; 
             justify-content: center; 
+            align-items: center; 
             height: 100vh; 
             margin: 0; 
-            color: #1c1c1e;
+            color: #2c3e50;
         }
-        
-        .container {
-            background: white;
-            padding: 40px 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 450px;
+        .loader-container {
             text-align: center;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            max-width: 400px;
+            width: 90%;
         }
-
-        h1 { color: #007AFF; margin-top: 0; font-size: 1.6em; }
-        
-        .signatura-badge {
-            display: inline-block;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #ffffff;
-            background-color: #34495e;
-            padding: 8px 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            letter-spacing: 1px;
+        .spinner {
+            border: 5px solid #ecf0f1;
+            border-top: 5px solid #2980b9; 
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
         }
-        
-        .info-text { color: #8e8e93; font-size: 1em; line-height: 1.4; }
-
-        .loader { 
-            border: 6px solid #e5e5ea; 
-            border-top: 6px solid #007AFF; 
-            border-radius: 50%; 
-            width: 60px; 
-            height: 60px; 
-            animation: spin 1s linear infinite; 
-            margin: 30px auto; 
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        h2 {
+            font-family: 'Romana Moderna', Georgia, serif;
+            color: #1a252f;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+        p {
+            color: #7f8c8d;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        .btn-volver {
+            background-color: #e67e22; 
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-volver:hover {
+            background-color: #d35400;
+        }
+        .icono-error {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🗺️ Localizando estantería...</h1>
-        <p class="info-text">Calculando la ruta óptima para encontrar el libro con la signatura:</p>
-        
-        <div id="sig-display" class="signatura-badge">Cargando...</div>
-        
-        <div class="loader"></div>
-        <p class="info-text" id="mensaje-estado">Sigue las indicaciones del mapa...</p>
+    <div class="loader-container" id="contenedor-principal">
+        <div class="spinner"></div>
+        <h2>Buscando ubicación...</h2>
+        <p>Comprobando la signatura en la base de datos de la biblioteca.</p>
     </div>
 
     <script>
         const params = new URLSearchParams(window.location.search);
-        const signaturaBuscada = params.get('sig');
-        
-        if (signaturaBuscada) {
-            document.getElementById('sig-display').innerText = signaturaBuscada;
-        } else {
-            document.getElementById('sig-display').innerText = "Signatura no proporcionada";
+        let sigBuscada = params.get('sig');
+        const sigOriginal = params.get('orig'); // Se captura la original
+
+        // Normalización preventiva si la URL llega con texto intermedio antes de números con '='
+        if (sigBuscada) {
+            sigBuscada = sigBuscada.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+(?=\d+=)/gi, "/");
         }
 
-        setTimeout(() => {
-            document.getElementById('mensaje-estado').innerText = "¡Has llegado al pasillo!";
-            
-            if (signaturaBuscada) {
-                localStorage.setItem('signaturaObjetivo', signaturaBuscada);
-            }
-            
-            window.location.href = "encontrado.html";
-            
-        }, 3000); 
+        // Hacemos una petición para leer el archivo externo signaturas.json
+        fetch('signaturas.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("No se pudo cargar el archivo de datos");
+                }
+                return response.json(); // Convertimos la respuesta a un objeto Javascript
+            })
+            .then(baseDatos => {
+                setTimeout(() => {
+                    if (sigBuscada && baseDatos[sigBuscada]) {
+                        const datos = baseDatos[sigBuscada];
+                        
+                        const paramsUrl = new URLSearchParams({
+                            sig: sigBuscada,
+                            orig: sigOriginal || sigBuscada, // Se traspasa la original
+                            planta: datos.planta,
+                            sala: datos.sala,
+                            ubicacion: datos.ubicacion,
+                            estanteria: datos.estanteria
+                        });
+
+                        window.location.href = datos.html + "?" + paramsUrl.toString();
+                    } else {
+                        mostrarError(sigBuscada);
+                    }
+                }, 600);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                mostrarError(sigBuscada, "Error al cargar el archivo signaturas.json.");
+            });
+
+        function mostrarError(sig, mensajeExtra = "") {
+            const contenedor = document.getElementById('contenedor-principal');
+            contenedor.innerHTML = `
+                <div class="icono-error">⚠️</div>
+                <h2>Signatura no encontrada</h2>
+                <p>La signatura no existe o es incorrecta. Puedes realizar la comprobación en el catálogo.</p>
+                <p><strong>Signatura buscada:</strong> ${sig || "Ninguna"}</p>
+                ${mensajeExtra ? `<p style="color:red; font-size: 0.8em;">${mensajeExtra}</p>` : ""}
+                <button class="btn-volver" onclick="window.history.back()">Volver al buscador</button>
+            `;
+        }
     </script>
 </body>
 </html>
