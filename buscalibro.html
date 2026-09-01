@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navegación en Estantería con Cámara</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', system-ui, sans-serif; text-align: center; margin: 0; padding: 15px; background-color: #121214; color: #fff; }
+        #contenedor-camara { position: relative; width: 100%; max-width: 400px; margin: 0 auto; border: 3px solid #333; border-radius: 16px; overflow: hidden; }
+        video { width: 100%; display: block; }
+        .guia-enfoque { position: absolute; top: 35%; left: 10%; width: 80%; height: 30%; border: 3px dashed #00ffcc; box-sizing: border-box; pointer-events: none; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6); }
+        
+        /* Panel de Flechas y Estados */
+        #panel-direccion { margin: 20px auto; width: 100%; max-width: 400px; height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 16px; background: #22222b; border: 2px solid #333; transition: all 0.3s ease; padding: 10px; box-sizing: border-box;}
+        .flecha { font-size: 70px; line-height: 1; margin: 0; }
+        .texto-dir { font-size: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
+        .subtexto { font-size: 14px; color: #e0e0e0; margin-top: 5px; font-weight: normal; }
+        
+        /* Colores de estado */
+        .dir-izq { background-color: #0288d1 !important; border-color: #00e5ff !important; }
+        .dir-der { background-color: #388e3c !important; border-color: #00e676 !important; }
+        .dir-arr { background-color: #f57c00 !important; border-color: #ffea00 !important; } /* Buscando / Arriba */
+        .dir-ok  { background-color: #8e44ad !important; border-color: #9b59b6 !important; } /* Éxito */
+
+        #lectura { font-size: 14px; color: #888; margin-top: 15px; }
+        #texto-visto { color: #00ffcc; font-weight: bold; }
+        
+        #info-objetivo { background: #1e1e24; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9em; border: 1px solid #333; }
+        .highlight { color: #ffeb3b; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2 style="margin: 10px 0;">Buscador de Estantería</h2>
+    
+    <div id="info-objetivo">
+        Sección: <span id="txt-sig-buscada" class="highlight">-</span><br>
+        Libro exacto: <span id="txt-sig-original" class="highlight">-</span>
+    </div>
+
+    <div id="contenedor-camara">
+        <video id="camara" autoplay playsinline></video>
+        <div class="guia-enfoque"></div>
+    </div>
+
+    <div id="panel-direccion">
+        <p class="flecha">📷</p>
+        <p class="texto-dir">Iniciando...</p>
+    </div>
+    
+    <div id="lectura">Viendo: <span id="texto-visto">-</span></div>
+    <canvas id="canvas-procesamiento" style="display: none;"></canvas>
+
+    <script>
+        // Obtener parámetros de la URL
+        const params = new URLSearchParams(window.location.search);
+        const sigBuscada = (params.get('sig') || '').toUpperCase().trim();
+        const sigOriginal = (params.get('orig') || '').toUpperCase().trim();
+        
+        // Extraer lo que sobra para ordenar (El sufijo. Ej: Si original es "821 CER don" y buscada "821 CER", el sufijo es "don")
+        const sufijoObjetivo = sigOriginal.replace(sigBuscada, '').trim();
+
+        // Mostrar en la interfaz
+        document.getElementById('txt-sig-buscada').innerText = sigBuscada || "No definida";
+        document.getElementById('txt-sig-original').innerText = sigOriginal || "No definida";
+
+        const video = document.getElementById('camara');
+        const canvas = document.getElementById('canvas-procesamiento');
+        const panelDir = document.getElementById('panel-direccion');
+        const textoVisto = document.getElementById('texto-visto');
+        
+        let trabajadorOCR = null;
+        
+        // Máquina de estados: 
+        // 1. BUSCANDO_ESTANTE (busca sigBuscada)
+        // 2. BUSCANDO_LIBRO (compara el sufijo para ir izq/der)
+        // 3. ENCONTRADO
+        let estadoActual = sigBuscada ? "BUSCANDO_ESTANTE" : "ERROR"; 
+        let direccionActual = ""; 
+
+        async function iniciarOCR() {
+            if(estadoActual === "ERROR") {
+                actualizarPanel("⚠️", "Faltan datos", "Vuelve atrás y haz una búsqueda", "");
+                return;
+            }
+            textoVisto.innerText = "Cargando motor de lectura...";
+            trabajadorOCR = await Tesseract.createWorker('spa');
+            textoVisto.innerText = "Esperando cámara...";
+            actualizarPanel("👀", "Busca la sección", `Enfoca etiquetas con: ${sigBuscada}`, "dir-arr");
+            arrancarCamara();
+        }
+
+        function arrancarCamara() {
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } })
+            .then(stream => { video.srcObject = stream; video.onloadedmetadata = () => bucleEscaneo(); })
+            .catch(err => {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => { video.srcObject = stream; video.onloadedmetadata = () => bucleEscaneo(); })
+                .catch(e => alert("Error de cámara: " + e.message));
+            });
+        }
+
+        async function bucleEscaneo() {
+            if(estadoActual === "ENCONTRADO") return; // Si ya lo encontró, detenemos el escaneo continuo
+
+            const ctx = canvas.getContext('2d');
+            const x = video.videoWidth * 0.10;
+            const y = video.videoHeight * 0.35;
+            const ancho = video.videoWidth * 0.80;
+            const alto = video.videoHeight * 0.30;
+
+            canvas.width = ancho;
+            canvas.height = alto;
+            ctx.drawImage(video, x, y, ancho, alto, 0, 0, ancho, alto);
+
+            try {
+                const { data: { text } } = await trabajadorOCR.recognize(canvas);
+                evaluarTexto(text);
+            } catch (error) { console.error(error); }
+
+            setTimeout(bucleEscaneo, 400); // Un poco más lento para procesar mejor
+        }
+
+        function evaluarTexto(textoLimpio) {
+            // Limpiamos saltos de línea y espacios extra del OCR
+            const texto = textoLimpio.toUpperCase().replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+            if(!texto) return;
+            
+            textoVisto.innerText = texto;
+
+            if (estadoActual === "BUSCANDO_ESTANTE") {
+                // Eliminamos espacios para hacer una comparación más robusta a fallos del OCR
+                let txtSinEspacios = texto.replace(/\s+/g, '');
+                let sigSinEspacios = sigBuscada.replace(/\s+/g, '');
+
+                if (txtSinEspacios.includes(sigSinEspacios)) {
+                    estadoActual = "BUSCANDO_LIBRO";
+                    actualizarPanel("📚", "Estantería Correcta", "Ahora busca el libro exacto", "dir-ok");
+                    notificarCambio("ESTANTE_ENCONTRADO", "Estantería correcta. Buscando sufijo.");
+                }
+            } 
+            else if (estadoActual === "BUSCANDO_LIBRO") {
+                // Intentamos encontrar la base en el texto para leer lo que sigue
+                let indexBase = texto.indexOf(sigBuscada);
+                
+                if (indexBase !== -1) {
+                    // Extraemos lo que hay DESPUÉS de la signatura base
+                    let restoTexto = texto.substring(indexBase + sigBuscada.length).trim();
+                    // Cogemos la primera "palabra" como sufijo leído
+                    let sufijoLeido = restoTexto.split(' ')[0];
+
+                    if(sufijoLeido) {
+                        // Comparación alfanumérica inteligente (Ej: 2 < 10, A < B)
+                        let comparacion = sufijoLeido.localeCompare(sufijoObjetivo, undefined, {numeric: true, sensitivity: 'base'});
+                        
+                        // Obtenemos solo el primer bloque del sufijo objetivo para comparar peras con peras
+                        let sufijoObjBloque1 = sufijoObjetivo.split(' ')[0];
+                        let compBloque1 = sufijoLeido.localeCompare(sufijoObjBloque1, undefined, {numeric: true, sensitivity: 'base'});
+
+                        if (texto.includes(sigOriginal) || (compBloque1 === 0 && restoTexto.includes(sufijoObjetivo))) {
+                            estadoActual = "ENCONTRADO";
+                            actualizarPanel("🎯", "¡Libro Encontrado!", sigOriginal, "dir-ok");
+                            notificarCambio("ENCONTRADO", "Libro localizado.");
+                        } 
+                        else if (compBloque1 < 0) {
+                            actualizarPanel("▶", "Derecha", `Leído: ${sufijoLeido} | Buscado: ${sufijoObjetivo}`, "dir-der");
+                            notificarCambio("DERECHA", "Derecha");
+                        } 
+                        else {
+                            actualizarPanel("◀", "Izquierda", `Leído: ${sufijoLeido} | Buscado: ${sufijoObjetivo}`, "dir-izq");
+                            notificarCambio("IZQUIERDA", "Izquierda");
+                        }
+                    }
+                }
+            }
+        }
+
+        function actualizarPanel(icono, textoPrincipal, subtexto, claseColor) {
+            panelDir.className = ""; 
+            if(claseColor) panelDir.classList.add(claseColor);
+            
+            panelDir.innerHTML = `
+                <p class="flecha">${icono}</p>
+                <p class="texto-dir">${textoPrincipal}</p>
+                ${subtexto ? `<p class="subtexto">${subtexto}</p>` : ''}
+            `;
+        }
+
+        function notificarCambio(idDireccion, mensajeVoz) {
+            if (idDireccion !== direccionActual) {
+                direccionActual = idDireccion;
+                emitirVoz(mensajeVoz);
+                ejecutarVibracion(idDireccion);
+            }
+        }
+
+        function emitirVoz(mensaje) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(mensaje);
+            utterance.lang = 'es-ES';
+            utterance.rate = 1.1;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function ejecutarVibracion(direccion) {
+            if (!("vibrate" in navigator)) return; 
+
+            switch (direccion) {
+                case "IZQUIERDA": navigator.vibrate(400); break;
+                case "DERECHA": navigator.vibrate([150, 100, 150]); break;
+                case "ESTANTE_ENCONTRADO": navigator.vibrate([100, 50, 100, 50, 300]); break;
+                case "ENCONTRADO": navigator.vibrate([500, 200, 500, 200, 800]); break;
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', iniciarOCR);
+    </script>
+</body>
+</html>
