@@ -453,7 +453,7 @@
             window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
         }
         
-        function buscarEnCatalogo() {
+function buscarEnCatalogo() {
     const signatura = document.getElementById("campoSignatura").value.trim();
     
     if (signatura === "" || signatura === "HG") {
@@ -461,11 +461,10 @@
     } else {
         const signaturaLimpia = signatura.replace(/^["']|["']$/g, '');
         
-        // Construimos la URL exacta
         const urlFinal = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=%22" + encodeURIComponent(signaturaLimpia) + "%22&START=1&FORM=1";
         
-        // Imprime la URL en la consola (F12 -> Consola) para ver qué texto exacto se genera
-        console.log("URL generada:", urlFinal);
+        // Muestra la URL en una alerta emergente
+        alert("URL generada: " + urlFinal);
         
         window.open(urlFinal, "_blank");
     }
