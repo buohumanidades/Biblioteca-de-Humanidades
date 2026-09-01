@@ -235,7 +235,7 @@
 
     <header>
         <h1>Escáner Ultrarrápido HG</h1>
-        <p class="subtitle">Lectura exacta y completa del código</p>
+        <p class="subtitle">Lectura exacta y multilínea del código</p>
     </header>
 
     <div class="camera-container">
@@ -287,8 +287,8 @@
             worker = await Tesseract.createWorker('eng');
             
             await worker.setParameters({
-                tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
-                // El modo 11 (Sparse text) es significativamente más rápido para encontrar palabras sueltas
+                // Se añaden minúsculas, barra (/) y guion (-) a la lista blanca
+                tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/-',
                 tessedit_pageseg_mode: '11', 
             });
             
@@ -315,7 +315,6 @@
                 statusDot.className = 'status-dot active';
                 statusText.textContent = "Escaneando...";
 
-                // Reducido a 150ms para un reconocimiento ultrarrápido
                 scanInterval = setInterval(processFrame, 150);
             } catch (err) {
                 console.error(err);
@@ -360,21 +359,26 @@
             try {
                 const { data } = await worker.recognize(canvas);
                 
-                // 1. Limpieza absoluta: Solo letras y números
-                const cleanedText = data.text.replace(/[^A-Z0-9]/g, '');
+                // 1. Convertir a mayúsculas para estandarizar textos como "Kuhn" o "Aris-Curr"
+                const rawText = data.text.toUpperCase();
 
-                // 2. Extraer códigos completos incluyendo el HG.
-                // Esta expresión regular asegura que captura el HG y todo lo que le sigue, 
-                // cortando inteligentemente si empieza otro HG justo pegado.
-                const regex = /HG(?:(?!HG)[A-Z0-9])+/g;
-                const results = cleanedText.match(regex) || [];
+                // 2. Extraer el bloque completo de la signatura basándonos en proximidad.
+                // Esta expresión busca: "HG", espacios/saltos opcionales, números, barra opcional, y letras.
+                const regex = /HG[\s\n]*\d+[\s\n]*\/?[\s\n]*[A-Z\-]+/g;
+                const matches = rawText.match(regex) || [];
+
+                // 3. Compactar los resultados
+                const results = matches.map(match => {
+                    // Se eliminan los espacios, saltos de línea y guiones para unir la signatura
+                    // "HG 860 ANDR" -> "HG860ANDR", "HG167 / KUHN" -> "HG167/KUHN"
+                    return match.replace(/[\s\-]+/g, '');
+                });
 
                 if (results.length > 0) {
                     statusDot.className = 'status-dot detected';
                     statusText.textContent = `¡Capturado!`;
                     matchCount.textContent = `${results.length} detectado(s)`;
 
-                    // Generar lista mostrando el valor exacto y completo
                     matchesList.innerHTML = results.map((val, idx) => `
                         <div class="match-card">
                             <span class="match-value">${val}</span>
