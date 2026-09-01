@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escáner OCR - Detección Exacta "HG"</title>
+    <title>Escáner OCR - Detección HG Avanzada</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         * {
@@ -112,19 +112,6 @@
             box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
         }
 
-        .scan-region::before {
-            content: "Área de Detección Rápida";
-            position: absolute;
-            top: -24px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            color: #ffeb3b;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-        }
-
         .controls {
             margin-top: 12px;
             display: flex;
@@ -175,7 +162,6 @@
             font-size: 0.8rem;
             color: #aaa;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
             font-weight: bold;
         }
 
@@ -192,8 +178,6 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            max-height: 180px;
-            overflow-y: auto;
         }
 
         .match-card {
@@ -204,18 +188,16 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-top: 1px solid #222;
-            border-right: 1px solid #222;
-            border-bottom: 1px solid #222;
+            border: 1px solid #222;
+            border-left: 4px solid #00e676;
         }
 
         .match-value {
             color: #00e676;
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             font-weight: bold;
             font-family: monospace;
             letter-spacing: 2px;
-            word-break: break-all;
         }
 
         .empty-state {
@@ -234,8 +216,8 @@
 <body>
 
     <header>
-        <h1>Escáner Ultrarrápido HG</h1>
-        <p class="subtitle">Lectura exacta y multilínea del código</p>
+        <h1>Escáner Espacial HG</h1>
+        <p class="subtitle">Prioriza la derecha y elimina símbolos</p>
     </header>
 
     <div class="camera-container">
@@ -256,8 +238,8 @@
 
     <div class="results-container">
         <div class="results-header">
-            <span class="results-title">Códigos Detectados</span>
-            <span class="match-count" id="matchCount">0 detectados</span>
+            <span class="results-title">Código Capturado</span>
+            <span class="match-count" id="matchCount">Esperando...</span>
         </div>
         <div class="matches-list" id="matchesList">
             <div class="empty-state">Inicia la cámara para comenzar el escaneo...</div>
@@ -287,8 +269,9 @@
             worker = await Tesseract.createWorker('eng');
             
             await worker.setParameters({
-                // Se añaden minúsculas, barra (/) y guion (-) a la lista blanca
-                tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/-',
+                // Permitimos que reconozca los símbolos para que no se confundan con letras, 
+                // pero luego Javascript los eliminará por completo.
+                tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/-.,',
                 tessedit_pageseg_mode: '11', 
             });
             
@@ -315,11 +298,10 @@
                 statusDot.className = 'status-dot active';
                 statusText.textContent = "Escaneando...";
 
-                scanInterval = setInterval(processFrame, 150);
+                scanInterval = setInterval(processFrame, 200);
             } catch (err) {
                 console.error(err);
                 alert("No se pudo acceder a la cámara.");
-                statusText.textContent = "Error de cámara";
             }
         });
 
@@ -350,51 +332,91 @@
             canvas.width = cropWidth;
             canvas.height = cropHeight;
 
-            ctx.drawImage(
-                video,
-                startX, startY, cropWidth, cropHeight,
-                0, 0, cropWidth, cropHeight
-            );
+            ctx.drawImage(video, startX, startY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
 
             try {
+                // Pedimos a Tesseract que nos devuelva el análisis por palabras con coordenadas
                 const { data } = await worker.recognize(canvas);
                 
-                // 1. Convertir a mayúsculas para estandarizar textos como "Kuhn" o "Aris-Curr"
-                const rawText = data.text.toUpperCase();
+                let rightmostWord = null;
+                let maxX = -1;
 
-                // 2. Extraer el bloque completo de la signatura basándonos en proximidad.
-                // Esta expresión busca: "HG", espacios/saltos opcionales, números, barra opcional, y letras.
-                const regex = /HG[\s\n]*\d+[\s\n]*\/?[\s\n]*[A-Z\-]+/g;
-                const matches = rawText.match(regex) || [];
-
-                // 3. Compactar los resultados
-                const results = matches.map(match => {
-                    // Se eliminan los espacios, saltos de línea y guiones para unir la signatura
-                    // "HG 860 ANDR" -> "HG860ANDR", "HG167 / KUHN" -> "HG167/KUHN"
-                    return match.replace(/[\s\-]+/g, '');
-                });
-
-                if (results.length > 0) {
-                    statusDot.className = 'status-dot detected';
-                    statusText.textContent = `¡Capturado!`;
-                    matchCount.textContent = `${results.length} detectado(s)`;
-
-                    matchesList.innerHTML = results.map((val, idx) => `
-                        <div class="match-card">
-                            <span class="match-value">${val}</span>
-                            <span style="font-size:0.75rem; color:#888;">#${idx + 1}</span>
-                        </div>
-                    `).join('');
-
-                    setTimeout(() => {
-                        if (stream && stream.active) {
-                            statusDot.className = 'status-dot active';
-                            statusText.textContent = "Escaneando...";
+                // PASO 1: Buscar el "HG" que esté más a la derecha en la imagen
+                if (data.words) {
+                    data.words.forEach(word => {
+                        if (word.text.toUpperCase().includes('HG')) {
+                            if (word.bbox.x0 > maxX) {
+                                maxX = word.bbox.x0; // Actualizamos la coordenada X máxima
+                                rightmostWord = word;
+                            }
                         }
-                    }, 400);
+                    });
+                }
+
+                if (rightmostWord) {
+                    const targetX = rightmostWord.bbox.x0;
+                    const targetY = rightmostWord.bbox.y0;
+                    const targetBottom = rightmostWord.bbox.y1;
+
+                    // PASO 2: Filtrar espacialmente las palabras que interesan
+                    let candidateWords = data.words.filter(w => {
+                        // Descartamos lo que esté en una línea superior a nuestro HG
+                        const isBelowOrSameLine = w.bbox.y0 >= targetY - 15;
+                        // Permitimos hasta aprox. 2 líneas por debajo
+                        const isWithinTwoLines = w.bbox.y0 <= targetBottom + 100;
+                        // Descartamos todo lo que esté claramente a la izquierda del HG
+                        const isAlignedOrRight = w.bbox.x1 >= targetX - 80;
+
+                        return isBelowOrSameLine && isWithinTwoLines && isAlignedOrRight;
+                    });
+
+                    // Ordenamos las palabras capturadas de arriba hacia abajo y de izquierda a derecha
+                    candidateWords.sort((a, b) => {
+                        if (Math.abs(a.bbox.y0 - b.bbox.y0) < 15) {
+                            return a.bbox.x0 - b.bbox.x0;
+                        }
+                        return a.bbox.y0 - b.bbox.y0;
+                    });
+
+                    // Unimos las palabras en un texto plano
+                    let rawExtracted = candidateWords.map(w => w.text).join(' ');
+
+                    // PASO 3: RECHAZAR SÍMBOLOS
+                    // Esto borra completamente barras, guiones, puntos... pero mantiene las letras, números y los espacios.
+                    // Al borrar, "Aris-Curr" se convierte en "ArisCurr" (junto).
+                    let cleanedForPattern = rawExtracted.toUpperCase().replace(/[^A-Z0-9\s\n]/g, '');
+
+                    // PASO 4: Aislar exactamente las 3 partes de la signatura (HG + Números + Letras/Números)
+                    const regex = /HG[\s\n]*\d+[\s\n]*[A-Z0-9]+/;
+                    const match = cleanedForPattern.match(regex);
+
+                    if (match) {
+                        // Quitamos todos los espacios y saltos de línea restantes para la versión final
+                        const finalSignature = match[0].replace(/[\s\n]/g, '');
+                        
+                        // Actualizar UI
+                        statusDot.className = 'status-dot detected';
+                        statusText.textContent = `¡Foco a la derecha!`;
+                        matchCount.textContent = `1 Aislado`;
+
+                        matchesList.innerHTML = `
+                            <div class="match-card">
+                                <span class="match-value">${finalSignature}</span>
+                                <span style="font-size:0.75rem; color:#888;">(Derecha)</span>
+                            </div>
+                        `;
+
+                        // Pausa breve visual antes de seguir
+                        setTimeout(() => {
+                            if (stream && stream.active) {
+                                statusDot.className = 'status-dot active';
+                                statusText.textContent = "Escaneando...";
+                            }
+                        }, 600);
+                    }
                 }
             } catch (err) {
-                console.error("Error en lectura OCR:", err);
+                console.error("Error en lectura espacial:", err);
             } finally {
                 isProcessing = false;
             }
