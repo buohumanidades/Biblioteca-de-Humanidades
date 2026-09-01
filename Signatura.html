@@ -458,8 +458,8 @@
             if (signatura === "" || signatura === "HG") {
                 window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
             } else {
-                const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
-                  const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "&START=1&FORM=1";
+                const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=%22";
+                  const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "%22&START=1&FORM=1";
                 window.open(urlFinal, "_blank");
             }
         }
