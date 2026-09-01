@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escáner Ultra Rápido - Texto Horizontal</title>
+    <title>Escáner Ultra Rápido - Texto Horizontal Limpio</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
@@ -25,7 +25,7 @@
         /* Caja de escaneo HORIZONTAL */
         .scan-region { 
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            width: 80%; height: 25%; /* Rectángulo horizontal */
+            width: 80%; height: 25%; 
             border: 3px solid #ffeb3b; border-radius: 8px; 
             box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6); 
         }
@@ -41,7 +41,7 @@
         .btn-secondary { background-color: #424242; color: white; }
         
         .results-container { margin-top: 15px; width: 100%; max-width: 480px; background-color: #1e1e1e; border-radius: 12px; padding: 15px; }
-        .output-box { background-color: #0d0d0d; border-radius: 8px; padding: 12px; min-height: 80px; font-family: monospace; font-size: 1.1rem; color: #00e676; font-weight: bold; text-align: center; }
+        .output-box { background-color: #0d0d0d; border-radius: 8px; padding: 12px; min-height: 80px; font-family: monospace; font-size: 1.1rem; color: #00e676; font-weight: bold; text-align: center; letter-spacing: 2px;}
         
         canvas { display: none; }
     </style>
@@ -49,7 +49,7 @@
 <body>
 
     <header>
-        <h1>Escáner Ultra Rápido (HG)</h1>
+        <h1>Escáner Rápido (HG) Limpio</h1>
     </header>
 
     <div class="camera-container">
@@ -91,7 +91,7 @@
             
             await worker.setParameters({
                 tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
-                tessedit_pageseg_mode: '6', // Asume un bloque uniforme de texto
+                tessedit_pageseg_mode: '6', 
             });
             
             document.getElementById('statusText').textContent = "Listo";
@@ -110,7 +110,6 @@
                 document.getElementById('statusDot').className = 'status-dot active';
                 document.getElementById('statusText').textContent = "Escaneando";
                 
-                // Intervalo de escaneo muy rápido (300ms)
                 scanInterval = setInterval(processFrame, 300);
             } catch (err) {
                 alert("Error de cámara");
@@ -130,29 +129,27 @@
             if (isProcessing || !worker || video.videoWidth === 0) return;
             isProcessing = true;
             
-            // 1. Extraer una porción central HORIZONTAL
-            const cropWidth = video.videoWidth * 0.70;  // 70% del ancho del video
-            const cropHeight = video.videoHeight * 0.25; // 25% del alto del video
+            const cropWidth = video.videoWidth * 0.70;  
+            const cropHeight = video.videoHeight * 0.25; 
             const startX = (video.videoWidth - cropWidth) / 2;
             const startY = (video.videoHeight - cropHeight) / 2;
 
-            // 2. Configurar Canvas para coincidir con el recorte
             canvas.width = cropWidth; 
             canvas.height = cropHeight;
 
-            // 3. Dibujar el recorte directamente (sin rotar)
             ctx.drawImage(
                 video, 
-                startX, startY, cropWidth, cropHeight, // Zona de origen en el video
-                0, 0, cropWidth, cropHeight            // Zona de destino en el canvas
+                startX, startY, cropWidth, cropHeight, 
+                0, 0, cropWidth, cropHeight            
             );
 
-            // 4. Enviar a Tesseract
             try {
                 const { data } = await worker.recognize(canvas);
-                const text = data.text.replace(/\s+/g, '').trim(); // Elimina espacios en blanco
+                
+                // LIMPIEZA DE TEXTO: Elimina todo lo que NO sea letra mayúscula (A-Z) o número (0-9).
+                // Esto elimina automáticamente /, -, _, espacios y cualquier otro símbolo.
+                const text = data.text.replace(/[^A-Z0-9]/g, '');
 
-                // Solo actualiza si encuentra las letras "HG"
                 if (text.includes('HG')) {
                     outputBox.textContent = text;
                     document.getElementById('statusDot').style.backgroundColor = "#00e676";
