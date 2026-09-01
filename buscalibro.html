@@ -2,176 +2,75 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Navegación en Estantería con Cámara</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.1.1/tesseract.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navegación Completa: Flechas, Voz y Vibración</title>
+    <!-- Cargamos Tesseract.js -->
+    <script src="https://jsdelivr.net"></script>
     <style>
-        html, body { 
-            margin: 0; padding: 0; 
-            width: 100vw; height: 100dvh; 
-            overflow: hidden; 
-            font-family: 'Segoe UI', system-ui, sans-serif; 
-            background-color: #121214; color: #fff; 
-            display: flex; flex-direction: column;
-        }
-
-        #pantalla-inicio {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100%; width: 100%; padding: 20px; box-sizing: border-box; text-align: center;
-        }
-        #btn-iniciar {
-            background: linear-gradient(135deg, #27ae60, #2ecc71); border: none;
-            color: white; font-size: 1.2em; font-weight: bold; padding: 15px 30px;
-            border-radius: 12px; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
-            margin-top: 20px;
-        }
-
-        #interfaz-principal {
-            display: none; 
-            flex-direction: column; height: 100%; width: 100%;
-        }
-
-        #info-objetivo { 
-            background: #1e1e24; padding: 10px; border-bottom: 2px solid #333; 
-            font-size: 0.9em; text-align: center; flex-shrink: 0;
-        }
-        .highlight { color: #ffeb3b; font-weight: bold; }
-
-        #contenedor-camara { 
-            position: relative; width: 100%; flex-grow: 1; 
-            background: #000; overflow: hidden;
-        }
-        video { 
-            width: 100%; height: 100%; 
-            object-fit: cover; 
-            display: block; 
-        }
-        .guia-enfoque { 
-            position: absolute; top: 35%; left: 10%; width: 80%; height: 30%; 
-            border: 3px dashed #00ffcc; box-sizing: border-box; pointer-events: none; 
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6); z-index: 2; 
-        }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; text-align: center; margin: 0; padding: 15px; background-color: #121214; color: #fff; }
+        #contenedor-camara { position: relative; width: 100%; max-width: 400px; margin: 0 auto; border: 3px solid #333; border-radius: 16px; overflow: hidden; }
+        video { width: 100%; display: block; }
+        .guia-enfoque { position: absolute; top: 35%; left: 10%; width: 80%; height: 30%; border: 3px dashed #00ffcc; box-sizing: border-box; pointer-events: none; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6); }
         
-        #panel-direccion { 
-            width: 100%; height: 150px; flex-shrink: 0; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            background: #22222b; border-top: 2px solid #333; transition: all 0.3s ease; 
-            padding: 10px; box-sizing: border-box; text-align: center;
-        }
-        .flecha { font-size: 50px; line-height: 1; margin: 0; }
-        .texto-dir { font-size: 18px; font-weight: bold; text-transform: uppercase; margin-top: 5px; margin-bottom: 0;}
-        .subtexto { font-size: 13px; color: #e0e0e0; margin-top: 5px; font-weight: normal; margin-bottom: 0; }
+        /* Panel de Flechas */
+        #panel-direccion { margin: 20px auto; width: 100%; max-width: 400px; height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 16px; background: #22222b; border: 2px solid #333; transition: all 0.2s ease; }
+        .flecha { font-size: 80px; line-height: 1; margin: 0; }
+        .texto-dir { font-size: 22px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
         
-        .dir-izq { background-color: #0288d1 !important; border-top-color: #00e5ff !important; }
-        .dir-der { background-color: #388e3c !important; border-top-color: #00e676 !important; }
-        .dir-arr { background-color: #f57c00 !important; border-top-color: #ffea00 !important; } 
-        .dir-ok  { background-color: #8e44ad !important; border-top-color: #9b59b6 !important; } 
+        /* Colores de alto contraste */
+        .dir-izq { background-color: #0288d1 !important; border-color: #00e5ff !important; }
+        .dir-der { background-color: #388e3c !important; border-color: #00e676 !important; }
+        .dir-arr { background-color: #f57c00 !important; border-color: #ffea00 !important; }
+        .dir-aba { background-color: #d32f2f !important; border-color: #ff1744 !important; }
 
-        #lectura { font-size: 12px; color: #888; position: absolute; bottom: 5px; left: 10px; z-index: 10; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px;}
+        #lectura { font-size: 14px; color: #888; margin-top: 15px; }
         #texto-visto { color: #00ffcc; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="pantalla-inicio">
-        <h2>Buscador de Estantería</h2>
-        <p>Para encender la cámara y activar las indicaciones por voz, pulsa el botón.</p>
-        <button id="btn-iniciar">📷 Iniciar Escáner</button>
+    <h2 style="margin: 10px 0;">Navegador háptico y visual</h2>
+    
+    <div id="contenedor-camara">
+        <video id="camara" autoplay playsinline></video>
+        <div class="guia-enfoque"></div>
     </div>
 
-    <div id="interfaz-principal">
-        <div id="info-objetivo">
-            Sección: <span id="txt-sig-buscada" class="highlight">-</span> | 
-            Libro: <span id="txt-sig-original" class="highlight">-</span>
-        </div>
-
-        <div id="contenedor-camara">
-            <video id="camara" autoplay playsinline muted></video>
-            <div class="guia-enfoque"></div>
-            <div id="lectura">Viendo: <span id="texto-visto">-</span></div>
-        </div>
-
-        <div id="panel-direccion">
-            <p class="flecha">⏳</p>
-            <p class="texto-dir">Cargando...</p>
-        </div>
+    <div id="panel-direccion">
+        <p class="flecha">📷</p>
+        <p class="texto-dir">Apunta a una palabra</p>
     </div>
     
+    <div id="lectura">Viendo: <span id="texto-visto">-</span></div>
     <canvas id="canvas-procesamiento" style="display: none;"></canvas>
 
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const sigBuscada = (params.get('sig') || '').toUpperCase().trim();
-        const sigOriginal = (params.get('orig') || '').toUpperCase().trim();
-        const sufijoObjetivo = sigOriginal.replace(sigBuscada, '').trim();
-
-        document.getElementById('txt-sig-buscada').innerText = sigBuscada || "ND";
-        document.getElementById('txt-sig-original').innerText = sigOriginal || "ND";
-
         const video = document.getElementById('camara');
         const canvas = document.getElementById('canvas-procesamiento');
         const panelDir = document.getElementById('panel-direccion');
         const textoVisto = document.getElementById('texto-visto');
         
         let trabajadorOCR = null;
-        let estadoActual = sigBuscada ? "BUSCANDO_ESTANTE" : "ERROR"; 
         let direccionActual = ""; 
-        let escaneandoActivo = false;
-
-        document.getElementById('btn-iniciar').addEventListener('click', async () => {
-            document.getElementById('pantalla-inicio').style.display = 'none';
-            document.getElementById('interfaz-principal').style.display = 'flex';
-            
-            if ('speechSynthesis' in window) {
-                const initVoz = new SpeechSynthesisUtterance('');
-                window.speechSynthesis.speak(initVoz);
-            }
-            
-            iniciarOCR();
-        });
 
         async function iniciarOCR() {
-            if(estadoActual === "ERROR") {
-                actualizarPanel("⚠️", "Faltan datos", "Haz la búsqueda desde la web principal", "");
-                return;
-            }
-            
-            try {
-                textoVisto.innerText = "Cargando OCR...";
-                trabajadorOCR = await Tesseract.createWorker('spa', 1);
-                textoVisto.innerText = "Activando cámara...";
-                await arrancarCamara();
-            } catch (err) {
-                actualizarPanel("❌", "Error OCR", err.message, "");
-            }
+            textoVisto.innerText = "Iniciando sistemas...";
+            trabajadorOCR = await Tesseract.createWorker('spa');
+            textoVisto.innerText = "Esperando cámara...";
+            arrancarCamara();
         }
 
-        async function arrancarCamara() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: { ideal: "environment" } } 
-                });
-                video.srcObject = stream;
-                
-                video.onloadedmetadata = () => {
-                    video.play();
-                    actualizarPanel("👀", "Busca la sección", `Enfoca: ${sigBuscada}`, "dir-arr");
-                    if (!escaneandoActivo) {
-                        escaneandoActivo = true;
-                        bucleEscaneo();
-                    }
-                };
-            } catch (err) {
-                actualizarPanel("🚫", "Sin Cámara", "Da permisos a la web para usarla", "");
-            }
+        function arrancarCamara() {
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } })
+            .then(stream => { video.srcObject = stream; video.onloadedmetadata = () => bucleEscaneo(); })
+            .catch(err => {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => { video.srcObject = stream; video.onloadedmetadata = () => bucleEscaneo(); })
+                .catch(e => alert("Error de cámara: " + e.message));
+            });
         }
 
         async function bucleEscaneo() {
-            if (estadoActual === "ENCONTRADO" || !video.videoWidth) {
-                setTimeout(bucleEscaneo, 500);
-                return;
-            }
-
             const ctx = canvas.getContext('2d');
             const x = video.videoWidth * 0.10;
             const y = video.videoHeight * 0.35;
@@ -185,94 +84,87 @@
             try {
                 const { data: { text } } = await trabajadorOCR.recognize(canvas);
                 evaluarTexto(text);
-            } catch (error) {}
+            } catch (error) { console.error(error); }
 
-            setTimeout(bucleEscaneo, 400); 
+            setTimeout(bucleEscaneo, 250);
         }
 
         function evaluarTexto(textoLimpio) {
-            let texto = textoLimpio.toUpperCase()
-                .replace(/[^A-Z0-9.\- ]/g, ' ') 
-                .replace(/\s+/g, ' ')
-                .trim();
-                
-            if (!texto || texto.length < 3) return;
+            const texto = textoLimpio.toUpperCase().trim();
+            textoVisto.innerText = texto || "(Buscando...)";
 
-            let matchIndex = texto.search(/\d/);
-            if (matchIndex === -1) return; 
-            
-            let signaturaLeida = texto.substring(matchIndex);
-            textoVisto.innerText = signaturaLeida;
+            let nuevaDireccion = "";
+            let HTMLFlecha = "";
 
-            let leidoStr = signaturaLeida.replace(/\s+/g, '');
-            let targetStr = sigOriginal.replace(/\s+/g, '');
-            let baseStr = sigBuscada.replace(/\s+/g, ''); 
-
-            if (leidoStr.includes(targetStr)) {
-                 estadoActual = "ENCONTRADO";
-                 actualizarPanel("🎯", "¡LIBRO ENCONTRADO!", sigOriginal, "dir-ok");
-                 notificarCambio("ENCONTRADO", "Libro localizado. Puedes cogerlo.");
-                 return;
+            if (texto.includes("IZQUIERDA") || texto.includes("IZQ")) {
+                nuevaDireccion = "IZQUIERDA";
+                HTMLFlecha = `<p class="flecha">◀</p><p class="texto-dir">Izquierda</p>`;
+            } 
+            else if (texto.includes("DERECHA") || texto.includes("DER")) {
+                nuevaDireccion = "DERECHA";
+                HTMLFlecha = `<p class="flecha">▶</p><p class="texto-dir">Derecha</p>`;
+            } 
+            else if (texto.includes("ARRIBA") || texto.includes("ARR")) {
+                nuevaDireccion = "ARRIBA";
+                HTMLFlecha = `<p class="flecha">▲</p><p class="texto-dir">Arriba</p>`;
+            } 
+            else if (texto.includes("ABAJO") || texto.includes("ABA")) {
+                nuevaDireccion = "ABAJO";
+                HTMLFlecha = `<p class="flecha">▼</p><p class="texto-dir">Abajo</p>`;
             }
 
-            if (estadoActual === "BUSCANDO_ESTANTE" && leidoStr.includes(baseStr)) {
-                estadoActual = "BUSCANDO_LIBRO";
-                actualizarPanel("📚", "Sección Correcta", "Ahora busca tu libro", "dir-arr");
-                notificarCambio("ESTANTE_ENCONTRADO", "Sección correcta.");
-                return;
-            }
-
-            if (estadoActual === "BUSCANDO_LIBRO") {
-                let comp = leidoStr.localeCompare(targetStr);
+            if (nuevaDireccion !== "") {
+                panelDir.className = ""; 
+                if (nuevaDireccion === "IZQUIERDA") panelDir.classList.add("dir-izq");
+                if (nuevaDireccion === "DERECHA") panelDir.classList.add("dir-der");
+                if (nuevaDireccion === "ARRIBA") panelDir.classList.add("dir-arr");
+                if (nuevaDireccion === "ABAJO") panelDir.classList.add("dir-aba");
                 
-                if (leidoStr.length < 4) return;
+                panelDir.innerHTML = HTMLFlecha;
 
-                if (comp < 0) {
-                    actualizarPanel("▶", "DERECHA", `Viendo: ${signaturaLeida}`, "dir-der");
-                    notificarCambio("DERECHA", "Derecha");
-                } else if (comp > 0) {
-                    actualizarPanel("◀", "IZQUIERDA", `Viendo: ${signaturaLeida}`, "dir-izq");
-                    notificarCambio("IZQUIERDA", "Izquierda");
+                // Solo ejecuta acciones si la dirección ha cambiado realmente
+                if (nuevaDireccion !== direccionActual) {
+                    direccionActual = nuevaDireccion;
+                    emitirVoz(nuevaDireccion);
+                    ejecutarVibracion(nuevaDireccion);
                 }
             }
         }
 
-        function actualizarPanel(icono, textoPrincipal, subtexto, claseColor) {
-            panelDir.className = ""; 
-            if(claseColor) panelDir.classList.add(claseColor);
-            panelDir.innerHTML = `
-                <p class="flecha">${icono}</p>
-                <p class="texto-dir">${textoPrincipal}</p>
-                ${subtexto ? `<p class="subtexto">${subtexto}</p>` : ''}
-            `;
-        }
-
-        function notificarCambio(idDireccion, mensajeVoz) {
-            if (idDireccion !== direccionActual) {
-                direccionActual = idDireccion;
-                emitirVoz(mensajeVoz);
-                ejecutarVibracion(idDireccion);
-            }
-        }
-
         function emitirVoz(mensaje) {
-            if (!('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(mensaje);
             utterance.lang = 'es-ES';
-            utterance.rate = 1.1;
+            utterance.rate = 1.2;
             window.speechSynthesis.speak(utterance);
         }
 
+        // 5. Lógica de Vibración Inteligente por Patrones
         function ejecutarVibracion(direccion) {
-            if (!("vibrate" in navigator)) return; 
+            if (!("vibrate" in navigator)) return; // Si el dispositivo no soporta vibración, no hace nada
+
+            // Los números representan milisegundos: [vibración, pausa, vibración, pausa...]
             switch (direccion) {
-                case "IZQUIERDA": navigator.vibrate(400); break;
-                case "DERECHA": navigator.vibrate([150, 100, 150]); break;
-                case "ESTANTE_ENCONTRADO": navigator.vibrate([100, 50, 100, 50, 300]); break;
-                case "ENCONTRADO": navigator.vibrate([500, 200, 500, 200, 800]); break;
+                case "IZQUIERDA":
+                    // Un pulso largo único
+                    navigator.vibrate(400); 
+                    break;
+                case "DERECHA":
+                    // Dos pulsos cortos rápidos
+                    navigator.vibrate([150, 100, 150]); 
+                    break;
+                case "ARRIBA":
+                    // Tres pulsos ultra-cortos tipo ráfaga
+                    navigator.vibrate([80, 80, 80, 80, 80]); 
+                    break;
+                case "ABAJO":
+                    // Un pulso corto y uno muy largo (estilo código morse)
+                    navigator.vibrate([100, 150, 500]); 
+                    break;
             }
         }
+
+        window.addEventListener('DOMContentLoaded', iniciarOCR);
     </script>
 </body>
 </html>
