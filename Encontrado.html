@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ubicación del Libro | Biblioteca</title>
-    <!-- Enlace a FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <!-- Enlace a Google icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 
     <style>
@@ -135,8 +133,17 @@
             border: none;
             display: block;
         }
-        .btn-new-search {
+        
+        /* Contenedor de botones para gestionarlos mejor */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
             flex-shrink: 0;
+            width: 100%;
+        }
+
+        .btn-action {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -148,15 +155,30 @@
             border-radius: 8px;
             text-decoration: none;
             color: #ffffff;
-            background: linear-gradient(135deg, #2c3e50, #34495e);
-            box-shadow: 0 4px 10px rgba(44, 62, 80, 0.3);
             transition: all 0.2s ease;
             box-sizing: border-box;
         }
+        
+        .btn-new-search {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            box-shadow: 0 4px 10px rgba(44, 62, 80, 0.3);
+        }
+        
         .btn-new-search:active {
             transform: translateY(2px);
             box-shadow: 0 2px 5px rgba(44, 62, 80, 0.3);
             background: #1a252f;
+        }
+
+        .btn-camera {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-camera:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 5px rgba(39, 174, 96, 0.3);
+            background: #219a52;
         }
 
         /* =========================================================
@@ -177,7 +199,6 @@
                 padding-bottom: 12px;
             }
             
-            /* Hacemos que la ruta sea horizontal en lugar de vertical */
             .location-route {
                 flex-direction: row;
                 flex-wrap: wrap;
@@ -185,7 +206,7 @@
                 justify-content: center;
                 gap: 15px;
                 padding: 15px;
-                border-left: none; /* Cambiamos la barra lateral por una superior */
+                border-left: none; 
                 border-top: 4px solid #3498db;
                 border-radius: 10px;
             }
@@ -205,14 +226,23 @@
                 margin-bottom: 20px;
             }
 
-            .btn-new-search {
-                width: 30%; /* Botón proporcionado al tamaño del PC */
-                margin: 0 auto; 
+            .action-buttons {
+                flex-direction: row;
+                justify-content: center;
+            }
+
+            .btn-action {
+                width: 30%; 
                 padding: 14px;
                 font-size: 1.1em;
             }
             .btn-new-search:hover {
                 background: #1a252f;
+            }
+            
+            /* Ocultar botón de cámara en PC */
+            .btn-camera {
+                display: none;
             }
         }
 
@@ -228,6 +258,10 @@
                 border-radius: 0;
                 padding: 15px;
             }
+            /* Asegurar que el botón de cámara sea visible en móvil */
+            .btn-camera {
+                display: flex;
+            }
         }
     </style>
 </head>
@@ -235,12 +269,11 @@
     <div class="container">
         <h1>Biblioteca de Humanidades</h1>
 
-        <!-- Ruta de localización con IDs -->
         <div class="location-route">
             <div class="route-step step-planta">
                 <div class="planta-left">
                    <i class="fa-solid fa-school" style="color: #3498db; font-size: 24px;"></i>
-  <span id="txt-planta">PLANTA 2</span>
+                   <span id="txt-planta">PLANTA 2</span>
                 </div>
                 <div id="display-signatura" class="signatura-badge" style="display: none;"></div>
             </div>
@@ -255,14 +288,18 @@
             </div>
         </div>
 
-        <!-- Iframe con los resultados del catálogo -->
         <div class="iframe-container">
             <iframe id="iframeCatalogo" title="Resultados en el catálogo de la biblioteca"></iframe>
         </div>
 
-        <a href="Signatura.html" class="btn-new-search">
-            <span class="icon">🔄</span> Nueva búsqueda
-        </a>
+        <div class="action-buttons">
+            <a id="btnCamera" href="#" class="btn-action btn-camera">
+                <i class="fa-solid fa-camera"></i> Buscar con la cámara
+            </a>
+            <a href="Signatura.html" class="btn-action btn-new-search">
+                <span class="icon">🔄</span> Nueva búsqueda
+            </a>
+        </div>
     </div>
 
     <script>
@@ -287,6 +324,15 @@
             const badge = document.getElementById('display-signatura');
             badge.textContent = sigBuscada;
             badge.style.display = 'inline-block';
+        }
+
+        // Configurar el botón de la cámara para enviar la signatura original
+        const btnCamera = document.getElementById('btnCamera');
+        if (sigOriginal) {
+            btnCamera.href = `escaner.html?buscar=${encodeURIComponent(sigOriginal)}`;
+        } else {
+            // Si no hay signatura, ocultar el botón incluso en móvil para evitar errores
+            btnCamera.style.display = 'none';
         }
 
         const iframe = document.getElementById('iframeCatalogo');
