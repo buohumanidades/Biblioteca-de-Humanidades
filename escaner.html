@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escáner OCR - Captura Ampliada "HG"</title>
+    <title>Escáner OCR - Detección Exacta "HG"</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         * {
@@ -100,7 +100,6 @@
             box-shadow: 0 0 10px #00e676;
         }
 
-        /* Área de escaneo amplia (92% de ancho, 75% de alto) */
         .scan-region {
             position: absolute;
             top: 50%;
@@ -114,7 +113,7 @@
         }
 
         .scan-region::before {
-            content: "Área de Escaneo Ampliada (Busca todos los 'HG')";
+            content: "Área de Detección Rápida";
             position: absolute;
             top: -24px;
             left: 0;
@@ -201,28 +200,21 @@
             background-color: #0d0d0d;
             border-left: 4px solid #00e676;
             border-radius: 6px;
-            padding: 10px 12px;
+            padding: 12px 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-family: monospace;
             border-top: 1px solid #222;
             border-right: 1px solid #222;
             border-bottom: 1px solid #222;
         }
 
-        .match-label {
-            color: #ffeb3b;
-            font-weight: bold;
-            font-size: 0.9rem;
-            margin-right: 6px;
-        }
-
         .match-value {
             color: #00e676;
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             font-weight: bold;
-            letter-spacing: 1px;
+            font-family: monospace;
+            letter-spacing: 2px;
             word-break: break-all;
         }
 
@@ -242,8 +234,8 @@
 <body>
 
     <header>
-        <h1>Escáner Multidetección HG</h1>
-        <p class="subtitle">Captura ampliada. Muestra todo lo que encuentra tras "HG"</p>
+        <h1>Escáner Ultrarrápido HG</h1>
+        <p class="subtitle">Lectura exacta y completa del código</p>
     </header>
 
     <div class="camera-container">
@@ -264,11 +256,11 @@
 
     <div class="results-container">
         <div class="results-header">
-            <span class="results-title">Coincidencias Encontradas</span>
+            <span class="results-title">Códigos Detectados</span>
             <span class="match-count" id="matchCount">0 detectados</span>
         </div>
         <div class="matches-list" id="matchesList">
-            <div class="empty-state">Inicia la cámara para comenzar el escaneo amplio...</div>
+            <div class="empty-state">Inicia la cámara para comenzar el escaneo...</div>
         </div>
     </div>
 
@@ -291,16 +283,16 @@
         let worker = null;
 
         async function initOCR() {
-            statusText.textContent = "Cargando motor OCR...";
+            statusText.textContent = "Iniciando Motor IA...";
             worker = await Tesseract.createWorker('eng');
             
-            // Permitir solo letras mayúsculas y números para máxima precisión y velocidad
             await worker.setParameters({
                 tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
-                tessedit_pageseg_mode: '6', // Trata la imagen como un bloque continuo de texto
+                // El modo 11 (Sparse text) es significativamente más rápido para encontrar palabras sueltas
+                tessedit_pageseg_mode: '11', 
             });
             
-            statusText.textContent = "OCR listo";
+            statusText.textContent = "Sistema Listo";
         }
         initOCR();
 
@@ -321,10 +313,10 @@
                 btnStart.disabled = true;
                 btnStop.disabled = false;
                 statusDot.className = 'status-dot active';
-                statusText.textContent = "Escaneando pantalla...";
+                statusText.textContent = "Escaneando...";
 
-                // Escaneo rápido cada 350ms
-                scanInterval = setInterval(processFrame, 350);
+                // Reducido a 150ms para un reconocimiento ultrarrápido
+                scanInterval = setInterval(processFrame, 150);
             } catch (err) {
                 console.error(err);
                 alert("No se pudo acceder a la cámara.");
@@ -351,7 +343,6 @@
             
             isProcessing = true;
 
-            // Recuadro ampliado: 92% del ancho y 75% del alto del vídeo
             const cropWidth = video.videoWidth * 0.92;
             const cropHeight = video.videoHeight * 0.75;
             const startX = (video.videoWidth - cropWidth) / 2;
@@ -360,7 +351,6 @@
             canvas.width = cropWidth;
             canvas.height = cropHeight;
 
-            // Dibujar recuadro en el canvas
             ctx.drawImage(
                 video,
                 startX, startY, cropWidth, cropHeight,
@@ -370,34 +360,24 @@
             try {
                 const { data } = await worker.recognize(canvas);
                 
-                // 1. Eliminar caracteres especiales (/, -, _, espacios, etc.) conservando solo A-Z y 0-9
+                // 1. Limpieza absoluta: Solo letras y números
                 const cleanedText = data.text.replace(/[^A-Z0-9]/g, '');
 
-                // 2. Buscar todas las ocurrencias de "HG" y extraer el texto inmediatamente posterior
-                // La Expresión Regular busca "HG" y captura todos los caracteres válidos siguientes hasta el próximo "HG" o final
-                const regex = /HG([A-Z0-9]+)/g;
-                let match;
-                const results = [];
+                // 2. Extraer códigos completos incluyendo el HG.
+                // Esta expresión regular asegura que captura el HG y todo lo que le sigue, 
+                // cortando inteligentemente si empieza otro HG justo pegado.
+                const regex = /HG(?:(?!HG)[A-Z0-9])+/g;
+                const results = cleanedText.match(regex) || [];
 
-                while ((match = regex.exec(cleanedText)) !== null) {
-                    if (match[1] && match[1].length > 0) {
-                        results.push(match[1]);
-                    }
-                }
-
-                // 3. Si se encontraron resultados, actualizar la pantalla
                 if (results.length > 0) {
                     statusDot.className = 'status-dot detected';
-                    statusText.textContent = `¡${results.length} encontrado(s)!`;
+                    statusText.textContent = `¡Capturado!`;
                     matchCount.textContent = `${results.length} detectado(s)`;
 
-                    // Generar lista en pantalla
+                    // Generar lista mostrando el valor exacto y completo
                     matchesList.innerHTML = results.map((val, idx) => `
                         <div class="match-card">
-                            <div>
-                                <span class="match-label">HG</span>
-                                <span class="match-value">${val}</span>
-                            </div>
+                            <span class="match-value">${val}</span>
                             <span style="font-size:0.75rem; color:#888;">#${idx + 1}</span>
                         </div>
                     `).join('');
@@ -405,9 +385,9 @@
                     setTimeout(() => {
                         if (stream && stream.active) {
                             statusDot.className = 'status-dot active';
-                            statusText.textContent = "Escaneando pantalla...";
+                            statusText.textContent = "Escaneando...";
                         }
-                    }, 600);
+                    }, 400);
                 }
             } catch (err) {
                 console.error("Error en lectura OCR:", err);
