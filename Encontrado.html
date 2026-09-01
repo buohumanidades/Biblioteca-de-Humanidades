@@ -3,307 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Navegación en Estantería con Cámara</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.1.1/tesseract.min.js"></script>
+    <title>Ubicación del Libro | Biblioteca</title>
+    <!-- Enlace a FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Enlace a Google icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
     <style>
-        html, body { 
-            margin: 0; padding: 0; 
-            width: 100vw; height: 100dvh; 
+        html, body {
+            height: 100%;
+            height: 100dvh; 
+            margin: 0;
+            padding: 0;
             overflow: hidden; 
-            font-family: 'Segoe UI', system-ui, sans-serif; 
-            background-color: #121214; color: #fff; 
-            display: flex; flex-direction: column;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0; 
+            box-sizing: border-box;
+            
+            /* Animación de fondo de colores */
+            background: linear-gradient(45deg, #a8edea, #fed6e3, #e0c3fc, #8ec5fc);
+            background-size: 400% 400%;
+            animation: gradientBG 12s ease infinite;
         }
 
-        #pantalla-inicio {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100%; width: 100%; padding: 20px; box-sizing: border-box; text-align: center;
-        }
-        #btn-iniciar {
-            background: linear-gradient(135deg, #27ae60, #2ecc71); border: none;
-            color: white; font-size: 1.2em; font-weight: bold; padding: 15px 30px;
-            border-radius: 12px; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
-            margin-top: 20px;
-            cursor: pointer;
+        /* Keyframes para el fondo animado */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        #interfaz-principal {
-            display: none; 
-            flex-direction: column; height: 100%; width: 100%;
+        .container { 
+            display: flex;
+            flex-direction: column;
+            width: 95vw;
+            max-width: 1300px;
+            height: 94dvh; 
+            background: #fff; 
+            padding: 15px; 
+            border-radius: 12px; 
+            box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
+            transition: all 0.3s ease;
         }
-
-        #info-objetivo { 
-            background: #1e1e24; padding: 10px; border-bottom: 2px solid #333; 
-            font-size: 0.9em; text-align: center; flex-shrink: 0;
+        h1 { 
+            font-family: 'Romana Moderna', Georgia, serif; 
+            color: #1a252f; 
+            text-align: center; 
+            border-bottom: 2px solid #ecf0f1; 
+            padding-bottom: 8px; 
+            font-size: 1.4em; 
+            margin: 0 0 12px 0;
+            flex-shrink: 0; 
         }
-        .highlight { color: #ffeb3b; font-weight: bold; }
-
-        #contenedor-camara { 
-            position: relative; width: 100%; flex-grow: 1; 
-            background: #000; overflow: hidden;
+        .location-route {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 10px 10px 10px 15px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px; 
+            flex-shrink: 0;
+            transition: all 0.3s ease;
         }
-        video { 
-            width: 100%; height: 100%; 
-            object-fit: cover; 
-            display: block; 
+        .route-step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95em; 
+            color: #34495e;
+            font-weight: 600;
         }
-        
-        .guia-enfoque { 
-            position: absolute; top: 35%; left: 10%; width: 80%; height: 30%; 
-            border: 3px dashed #00ffcc; box-sizing: border-box; pointer-events: none; 
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6); z-index: 2; 
-            overflow: hidden;
-        }
-
-        /* LÍNEA DE ESCANEO (Animación de progreso) */
-        #linea-escaner {
-            position: absolute;
+        .step-planta {
+            justify-content: space-between;
             width: 100%;
-            height: 3px;
-            background: #00ffcc;
-            box-shadow: 0 0 15px #00ffcc, 0 0 5px #ffffff;
-            animation: scanAnim 2s infinite ease-in-out;
-            display: none; /* Se activa al encender la cámara */
+            padding-right: 5px; 
+            box-sizing: border-box;
         }
-        @keyframes scanAnim {
-            0% { top: -5%; opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { top: 105%; opacity: 0; }
+        .planta-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        
-        #panel-direccion { 
-            width: 100%; height: 150px; flex-shrink: 0; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            background: #22222b; border-top: 2px solid #333; transition: all 0.3s ease; 
-            padding: 10px; box-sizing: border-box; text-align: center;
+        .signatura-badge {
+            font-size: 0.85em;
+            color: #d35400; 
+            background-color: #fdf2e9;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid #e67e22;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(230, 126, 34, 0.1);
         }
-        .flecha { font-size: 55px; line-height: 1; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        .texto-dir { font-size: 20px; font-weight: bold; text-transform: uppercase; margin-top: 5px; margin-bottom: 0;}
-        .subtexto { font-size: 14px; color: #e0e0e0; margin-top: 5px; font-weight: normal; margin-bottom: 0; }
-        
-        .dir-izq { background-color: #0288d1 !important; border-top-color: #00e5ff !important; }
-        .dir-der { background-color: #388e3c !important; border-top-color: #00e676 !important; }
-        .dir-arr { background-color: #f57c00 !important; border-top-color: #ffea00 !important; } 
-        .dir-ok  { background-color: #8e44ad !important; border-top-color: #9b59b6 !important; } 
+        .route-step.final-step {
+            color: #2980b9;
+            font-size: 1.1em;
+            font-weight: 800;
+            background: #ebf5fb;
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin-left: -10px; 
+            box-shadow: 0 2px 4px rgba(41, 128, 185, 0.15);
+            border: 1px solid #d6eaf8;
+            transition: all 0.3s ease;
+        }
+        .icon {
+            font-size: 1.1em;
+        }
+        .iframe-container {
+            flex-grow: 1; 
+            min-height: 0; 
+            width: 100%;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            overflow: hidden; 
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            border: 1px solid #ecf0f1;
+            background-color: #ffffff;
+            display: flex; 
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+        .btn-new-search {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px;
+            font-size: 1.05em;
+            font-weight: bold;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #ffffff;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            box-shadow: 0 4px 10px rgba(44, 62, 80, 0.3);
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+        .btn-new-search:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 5px rgba(44, 62, 80, 0.3);
+            background: #1a252f;
+        }
 
-        #lectura { font-size: 13px; color: #fff; position: absolute; bottom: 10px; left: 10px; z-index: 10; background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 6px; border: 1px solid #444;}
-        #texto-visto { color: #00ffcc; font-weight: bold; letter-spacing: 1px;}
-        
-        /* Loader de Tesseract */
-        .spinner {
-            display: inline-block; width: 12px; height: 12px;
-            border: 2px solid rgba(255,255,255,0.3); border-radius: 50%;
-            border-top-color: #fff; animation: spin 1s ease-in-out infinite;
+        /* =========================================================
+           ADAPTACIÓN PARA PANTALLAS GRANDES Y MÓVILES
+           ========================================================= */
+
+        /* 💻 PANTALLAS GRANDES / ORDENADORES */
+        @media (min-width: 901px) {
+            body {
+                padding: 0; 
+            }
+            .container { 
+                padding: 25px 35px; 
+            }
+            h1 {
+                font-size: 2em;
+                margin-bottom: 20px;
+                padding-bottom: 12px;
+            }
+            
+            /* Hacemos que la ruta sea horizontal en lugar de vertical */
+            .location-route {
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+                padding: 15px;
+                border-left: none; /* Cambiamos la barra lateral por una superior */
+                border-top: 4px solid #3498db;
+                border-radius: 10px;
+            }
+            
+            .step-planta {
+                width: auto;
+                padding-right: 0;
+                gap: 15px;
+            }
+            
+            .route-step.final-step {
+                margin-left: 0;
+                padding: 8px 16px;
+            }
+            
+            .iframe-container {
+                margin-bottom: 20px;
+            }
+
+            .btn-new-search {
+                width: 30%; /* Botón proporcionado al tamaño del PC */
+                margin: 0 auto; 
+                padding: 14px;
+                font-size: 1.1em;
+            }
+            .btn-new-search:hover {
+                background: #1a252f;
+            }
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* 📱 PANTALLAS PEQUEÑAS / MÓVILES */
+        @media (max-width: 900px) {
+            body {
+                align-items: flex-start;
+                padding: 0;
+            }
+            .container { 
+                height: 100dvh;
+                width: 100vw; 
+                border-radius: 0;
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Biblioteca de Humanidades</h1>
 
-    <div id="pantalla-inicio">
-        <h2>Buscador de Estantería</h2>
-        <p>Para encender la cámara y activar las indicaciones por voz, pulsa el botón.</p>
-        <button id="btn-iniciar">📷 Iniciar Escáner</button>
-    </div>
-
-    <div id="interfaz-principal">
-        <div id="info-objetivo">
-            Sección: <span id="txt-sig-buscada" class="highlight">-</span> | 
-            Libro: <span id="txt-sig-original" class="highlight">-</span>
-        </div>
-
-        <div id="contenedor-camara">
-            <video id="camara" autoplay playsinline muted></video>
-            <div class="guia-enfoque">
-                <div id="linea-escaner"></div>
+        <!-- Ruta de localización con IDs -->
+        <div class="location-route">
+            <div class="route-step step-planta">
+                <div class="planta-left">
+                   <i class="fa-solid fa-school" style="color: #3498db; font-size: 24px;"></i>
+  <span id="txt-planta">PLANTA 2</span>
+                </div>
+                <div id="display-signatura" class="signatura-badge" style="display: none;"></div>
             </div>
-            <div id="lectura">Viendo: <span id="texto-visto">-</span></div>
+            <div class="route-step">
+                <span class="icon">➡️</span> <span id="txt-sala">Sala de la derecha</span>
+            </div>
+            <div class="route-step">
+                <span class="icon">➡️</span> <span id="txt-ubicacion">Estanterías de la derecha</span>
+            </div>
+            <div class="route-step final-step">
+                <span class="icon">📚</span> <span id="txt-estanteria">Estantería 3</span>
+            </div>
         </div>
 
-        <div id="panel-direccion">
-            <p class="flecha">⏳</p>
-            <p class="texto-dir">Cargando motor OCR...</p>
+        <!-- Iframe con los resultados del catálogo -->
+        <div class="iframe-container">
+            <iframe id="iframeCatalogo" title="Resultados en el catálogo de la biblioteca"></iframe>
         </div>
+
+        <a href="Signatura.html" class="btn-new-search">
+            <span class="icon">🔄</span> Nueva búsqueda
+        </a>
     </div>
-    
-    <canvas id="canvas-procesamiento" style="display: none;"></canvas>
 
     <script>
         const params = new URLSearchParams(window.location.search);
-        const sigBuscada = (params.get('sig') || '').toUpperCase().trim();
-        const sigOriginal = (params.get('orig') || '').toUpperCase().trim();
-
-        document.getElementById('txt-sig-buscada').innerText = sigBuscada || "ND";
-        document.getElementById('txt-sig-original').innerText = sigOriginal || "ND";
-
-        const video = document.getElementById('camara');
-        const canvas = document.getElementById('canvas-procesamiento');
-        const panelDir = document.getElementById('panel-direccion');
-        const textoVisto = document.getElementById('texto-visto');
-        const lineaEscaner = document.getElementById('linea-escaner');
         
-        let trabajadorOCR = null;
-        let estadoActual = sigBuscada ? "BUSCANDO_ESTANTE" : "ERROR"; 
-        let direccionActual = ""; 
-        let escaneandoActivo = false;
+        // Obtenemos las dos versiones de la signatura y los textos
+        const sigBuscada = params.get('sig'); // La recortada
+        const sigOriginal = params.get('orig') || sigBuscada; // La completa
+        const valPlanta = params.get('planta');
+        const valSala = params.get('sala');
+        const valUbicacion = params.get('ubicacion');
+        const valEstanteria = params.get('estanteria');
 
-        document.getElementById('btn-iniciar').addEventListener('click', async () => {
-            document.getElementById('pantalla-inicio').style.display = 'none';
-            document.getElementById('interfaz-principal').style.display = 'flex';
-            
-            // Inicializar motor de voz por interacción del usuario
-            if ('speechSynthesis' in window) {
-                const initVoz = new SpeechSynthesisUtterance('Iniciando sistema');
-                initVoz.volume = 0; // Silenciado solo para arrancar el motor
-                window.speechSynthesis.speak(initVoz);
-            }
-            
-            iniciarOCR();
-        });
+        // Textos dinámicos
+        if (valPlanta) document.getElementById('txt-planta').textContent = valPlanta;
+        if (valSala) document.getElementById('txt-sala').textContent = valSala;
+        if (valUbicacion) document.getElementById('txt-ubicacion').textContent = valUbicacion;
+        if (valEstanteria) document.getElementById('txt-estanteria').textContent = valEstanteria;
 
-        async function iniciarOCR() {
-            if(estadoActual === "ERROR") {
-                actualizarPanel("⚠️", "Faltan datos", "Haz la búsqueda desde la web principal", "");
-                return;
-            }
-            
-            try {
-                textoVisto.innerHTML = "<div class='spinner'></div> Inicializando...";
-                trabajadorOCR = await Tesseract.createWorker('spa', 1);
-                textoVisto.innerText = "Activando cámara...";
-                await arrancarCamara();
-            } catch (err) {
-                actualizarPanel("❌", "Error OCR", err.message, "");
-            }
+        // Mostrar la etiqueta de la signatura RECORTADA a la derecha
+        if (sigBuscada) {
+            const badge = document.getElementById('display-signatura');
+            badge.textContent = sigBuscada;
+            badge.style.display = 'inline-block';
         }
 
-        async function arrancarCamara() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: { ideal: "environment" } } 
-                });
-                video.srcObject = stream;
-                
-                video.onloadedmetadata = () => {
-                    video.play();
-                    lineaEscaner.style.display = 'block'; // Activar láser visual
-                    actualizarPanel("👀", "Busca la sección", `Enfoca: ${sigBuscada}`, "dir-arr");
-                    if (!escaneandoActivo) {
-                        escaneandoActivo = true;
-                        bucleEscaneo();
-                    }
-                };
-            } catch (err) {
-                actualizarPanel("🚫", "Sin Cámara", "Da permisos a la web para usarla", "");
-            }
-        }
+        const iframe = document.getElementById('iframeCatalogo');
 
-        async function bucleEscaneo() {
-            // Detenemos el escaneo si ya encontramos el libro
-            if (estadoActual === "ENCONTRADO" || !video.videoWidth) {
-                setTimeout(bucleEscaneo, 1000);
-                return;
-            }
-
-            const ctx = canvas.getContext('2d');
-            const x = video.videoWidth * 0.10;
-            const y = video.videoHeight * 0.35;
-            const ancho = video.videoWidth * 0.80;
-            const alto = video.videoHeight * 0.30;
-
-            canvas.width = ancho;
-            canvas.height = alto;
-            ctx.drawImage(video, x, y, ancho, alto, 0, 0, ancho, alto);
-
-            try {
-                const { data: { text } } = await trabajadorOCR.recognize(canvas);
-                evaluarTexto(text);
-            } catch (error) {}
-
-            // 1200ms para evitar sobrecalentar/colgar el procesador móvil
-            setTimeout(bucleEscaneo, 1200); 
-        }
-
-        function evaluarTexto(textoLimpio) {
-            // Limpieza robusta: dejamos letras, números, puntos y guiones
-            let texto = textoLimpio.toUpperCase().replace(/[^A-Z0-9.\-]/g, '');
-            if (!texto || texto.length < 4) return;
-
-            textoVisto.innerText = texto;
-
-            let targetStr = sigOriginal.replace(/[^A-Z0-9.\-]/g, '');
-            let baseStr = sigBuscada.replace(/[^A-Z0-9.\-]/g, ''); 
-
-            // FASE 1: Buscar la estantería/sección (relajado, comprobamos si los primeros 5 caracteres coinciden)
-            if (estadoActual === "BUSCANDO_ESTANTE" && (texto.includes(baseStr.substring(0, 5)))) {
-                estadoActual = "BUSCANDO_LIBRO";
-                actualizarPanel("🔍", "Sección Correcta", "Guiando al libro exacto...", "dir-arr");
-                notificarCambio("ESTANTE_ENCONTRADO", "Sección correcta. Continúa escaneando.");
-                return;
-            }
-
-            // FASE 2: Navegar hacia el libro exacto
-            if (estadoActual === "BUSCANDO_LIBRO") {
-                // Si encontramos el libro (coincidencia exacta limpia)
-                if (texto.includes(targetStr) || targetStr.includes(texto)) {
-                     estadoActual = "ENCONTRADO";
-                     lineaEscaner.style.display = 'none'; // Apagar láser
-                     actualizarPanel("🎯", "¡LIBRO ENCONTRADO!", sigOriginal, "dir-ok");
-                     notificarCambio("ENCONTRADO", "Libro localizado. Puedes cogerlo.");
-                     return;
-                }
-
-                // Comparación alfabética/numérica flexible
-                let comp = texto.localeCompare(targetStr);
-                
-                if (comp < 0) {
-                    actualizarPanel("➡️", "DERECHA", `Viendo: ${texto}`, "dir-der");
-                    notificarCambio("DERECHA", "Ve hacia la derecha");
-                } else if (comp > 0) {
-                    actualizarPanel("⬅️", "IZQUIERDA", `Viendo: ${texto}`, "dir-izq");
-                    notificarCambio("IZQUIERDA", "Ve hacia la izquierda");
-                }
-            }
-        }
-
-        function actualizarPanel(icono, textoPrincipal, subtexto, claseColor) {
-            panelDir.className = ""; 
-            if(claseColor) panelDir.classList.add(claseColor);
-            panelDir.innerHTML = `
-                <p class="flecha">${icono}</p>
-                <p class="texto-dir">${textoPrincipal}</p>
-                ${subtexto ? `<p class="subtexto">${subtexto}</p>` : ''}
+        // Buscar en el catálogo usando la signatura COMPLETA original
+        if (sigOriginal) {
+            const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
+            const urlFinal = urlBase + encodeURIComponent(sigOriginal) + "&START=1&FORM=1";
+            iframe.src = urlFinal;
+        } else {
+            iframe.srcdoc = `
+                <div style="font-family: Arial, sans-serif; height: 100%; display: flex; 
+                            align-items: center; justify-content: center; color: #7f8c8d; text-align: center; padding: 20px;">
+                    No se ha detectado ninguna signatura en la búsqueda.
+                </div>
             `;
-        }
-
-        function notificarCambio(idDireccion, mensajeVoz) {
-            if (idDireccion !== direccionActual) {
-                direccionActual = idDireccion;
-                emitirVoz(mensajeVoz);
-                ejecutarVibracion(idDireccion);
-            }
-        }
-
-        function emitirVoz(mensaje) {
-            if (!('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(mensaje);
-            utterance.lang = 'es-ES';
-            utterance.rate = 1.1; // Un poco más rápido para dar dinamismo
-            window.speechSynthesis.speak(utterance);
-        }
-
-        function ejecutarVibracion(direccion) {
-            if (!("vibrate" in navigator)) return; 
-            try {
-                switch (direccion) {
-                    case "IZQUIERDA": navigator.vibrate(400); break;
-                    case "DERECHA": navigator.vibrate([150, 100, 150]); break;
-                    case "ESTANTE_ENCONTRADO": navigator.vibrate([100, 50, 100, 50, 300]); break;
-                    case "ENCONTRADO": navigator.vibrate([500, 200, 500, 200, 800]); break;
-                }
-            } catch (e) {} // Previene errores si el navegador bloquea la vibración
         }
     </script>
 </body>
