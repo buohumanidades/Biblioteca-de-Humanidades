@@ -21,6 +21,7 @@
             align-items: center;
             min-height: 100vh;
             padding: 12px;
+            padding-bottom: 30px; /* Margen inferior para el botón final */
         }
 
         header {
@@ -140,7 +141,7 @@
         }
 
         /* =======================================================
-           ESTILOS DE PANELES LUMINOSOS TIPO AUTOPISTA
+           ESTILOS DE PANELES LUMINOSOS Y ALERTA DE COINCIDENCIA
            ======================================================= */
         .highway-indicator {
             position: absolute;
@@ -165,38 +166,21 @@
             right: 10px;
         }
 
-        .highway-indicator.match {
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 230, 118, 0.85);
-            flex-direction: column;
-            border: 3px solid #00e676;
-            box-shadow: 0 0 30px rgba(0, 230, 118, 0.6);
-            padding: 20px 30px;
-            animation: popIn 0.3s ease-out;
-        }
-
         .chevron {
             font-size: 3.5rem;
             color: #ffeb3b;
             font-weight: 900;
             line-height: 1;
-            margin: 0 -8px; /* Solapamiento de las flechas */
+            margin: 0 -8px; 
             text-shadow: 0 0 15px #ffeb3b, 0 0 30px #ffeb3b;
         }
 
-        /* Animación para la derecha */
-        .highway-indicator.right .chevron {
-            animation: slideRight 1s infinite linear;
-        }
+        .highway-indicator.right .chevron { animation: slideRight 1s infinite linear; }
         .highway-indicator.right .chevron:nth-child(1) { animation-delay: 0s; }
         .highway-indicator.right .chevron:nth-child(2) { animation-delay: 0.2s; }
         .highway-indicator.right .chevron:nth-child(3) { animation-delay: 0.4s; }
 
-        /* Animación para la izquierda */
-        .highway-indicator.left .chevron {
-            animation: slideLeft 1s infinite linear;
-        }
+        .highway-indicator.left .chevron { animation: slideLeft 1s infinite linear; }
         .highway-indicator.left .chevron:nth-child(3) { animation-delay: 0s; }
         .highway-indicator.left .chevron:nth-child(2) { animation-delay: 0.2s; }
         .highway-indicator.left .chevron:nth-child(1) { animation-delay: 0.4s; }
@@ -213,17 +197,25 @@
             100% { opacity: 0; transform: translateX(-15px); }
         }
 
-        @keyframes popIn {
-            0% { transform: translate(-50%, -50%) scale(0.7); opacity: 0; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        /* ALERTA ROJA PARPADEANTE EN EL CENTRO */
+        .red-alert-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            background-color: #ff0000;
+            border-radius: 50%;
+            display: none; 
+            z-index: 30;
+            box-shadow: 0 0 40px #ff0000, inset 0 0 20px rgba(0,0,0,0.5);
+            animation: flashRed 0.25s infinite alternate;
         }
 
-        .match-text {
-            color: white;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-top: 10px;
-            text-transform: uppercase;
+        @keyframes flashRed {
+            0% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.6); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 60px #ff0000, 0 0 100px #ff0000; }
         }
 
         .controls {
@@ -245,15 +237,8 @@
             transition: background 0.2s;
         }
 
-        .btn-primary {
-            background-color: #2196f3;
-            color: white;
-        }
-
-        .btn-secondary {
-            background-color: #333;
-            color: white;
-        }
+        .btn-primary { background-color: #2196f3; color: white; }
+        .btn-secondary { background-color: #333; color: white; }
 
         .results-container {
             margin-top: 12px;
@@ -321,6 +306,35 @@
             font-style: italic;
         }
 
+        /* Botón Inferior de Nueva Búsqueda */
+        .bottom-action-container {
+            width: 100%;
+            max-width: 520px;
+            margin-top: 15px;
+        }
+        
+        .btn-new-search-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px;
+            font-size: 1.05em;
+            font-weight: bold;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #ffffff;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            box-shadow: 0 4px 10px rgba(44, 62, 80, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .btn-new-search-bottom:active {
+            transform: translateY(2px);
+            background: #1a252f;
+        }
+
         canvas {
             display: none;
         }
@@ -357,11 +371,8 @@
                 <span class="chevron">❯</span><span class="chevron">❯</span><span class="chevron">❯</span>
             </div>
 
-            <!-- Indicador Coincidencia -->
-            <div id="indicatorMatch" class="highway-indicator match">
-                <span style="font-size: 4rem;">🎉</span>
-                <span class="match-text">¡ENCONTRADO!</span>
-            </div>
+            <!-- Indicador Círculo Rojo Parpadeante (Coincidencia) -->
+            <div id="indicatorMatch" class="red-alert-circle"></div>
         </div>
     </div>
 
@@ -378,6 +389,13 @@
         <div class="matches-list" id="matchesList">
             <div class="empty-state">Inicia la cámara para comenzar el escaneo...</div>
         </div>
+    </div>
+
+    <!-- Botón para nueva búsqueda en la parte inferior -->
+    <div class="bottom-action-container">
+        <a href="Signatura.html" class="btn-new-search-bottom">
+            🔄 Nueva búsqueda
+        </a>
     </div>
 
     <canvas id="captureCanvas"></canvas>
@@ -422,6 +440,9 @@
 
         let lastScannedSignature = '';
         let indicatorTimeout = null;
+        
+        // Variable para el contexto de audio
+        let audioCtx = null;
 
         async function initOCR() {
             statusText.textContent = "Iniciando Motor IA...";
@@ -443,13 +464,46 @@
                     navigator.vibrate(pattern);
                 }
             } catch (e) {
-                console.warn("La vibración no está soportada o fue bloqueada.", e);
+                console.warn("La vibración no está soportada.", e);
+            }
+        }
+
+        // Función para emitir sonido de alerta corto y fuerte
+        function playBeepAlert() {
+            if (!audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                // Tipo de onda cuadrada para que sea estridente y notorio
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(1000, audioCtx.currentTime); // 1000Hz
+                
+                // Volumen alto que desciende rápidamente (corto)
+                gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.2); // Dura 0.2 segundos
+            } catch (e) {
+                console.warn("No se pudo reproducir el audio.", e);
             }
         }
 
         btnStart.addEventListener('click', async () => {
-            // Desbloqueo inicial de vibración (truco para algunos navegadores móviles)
+            // Desbloqueo inicial de vibración
             triggerVibration(1);
+            
+            // Inicializar y desbloquear contexto de audio por interacción del usuario
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
 
             try {
                 stream = await navigator.mediaDevices.getUserMedia({
@@ -501,7 +555,8 @@
                 indicatorRight.style.display = 'flex';
                 triggerVibration([200, 100, 200]);
             } else if (type === 'match') {
-                indicatorMatch.style.display = 'flex';
+                indicatorMatch.style.display = 'block'; // Mostrar círculo rojo
+                playBeepAlert(); // Sonido corto y fuerte
                 triggerVibration([100, 50, 100, 50, 300]); // Patrón de éxito
             }
 
@@ -610,7 +665,7 @@
                                     // La que buscamos es MENOR -> Panel indicando Izquierda
                                     showIndicator('left');
                                 } else {
-                                    // Coincidencia
+                                    // Coincidencia: Activar alerta roja y sonido
                                     showIndicator('match');
                                 }
                             }
