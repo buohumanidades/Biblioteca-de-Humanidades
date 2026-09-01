@@ -454,20 +454,19 @@
         }
         
 function buscarEnCatalogo() {
-    alert("¡La función se ha activado!"); // Si esto no salta, el botón no está llamando a la función
-    
-    const signatura = document.getElementById("campoSignatura").value.trim();
-    
-    if (signatura === "" || signatura === "HG") {
-        window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
-    } else {
-        const signaturaLimpia = signatura.replace(/^["']|["']$/g, '');
-        const urlFinal = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=%22" + encodeURIComponent(signaturaLimpia) + "%22&START=1&FORM=1";
-        
-        alert("URL generada: " + urlFinal);
-        window.open(urlFinal, "_blank");
-    }
-}
+
+            const signatura = document.getElementById("campoSignatura").value.trim();
+
+            if (signatura === "" || signatura === "HG") {
+                window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
+            } else {
+                const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
+                const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "&START=1&FORM=1";
+                window.open(urlFinal, "_blank");
+
+            }
+
+        }
     </script>
 </body>
 </html>
