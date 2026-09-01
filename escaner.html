@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escáner de Texto con Filtro "HG"</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            color: #4da6ff;
+            margin-bottom: 5px;
+        }
+
+        p.subtitle {
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
+        .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            aspect-ratio: 4/3;
+            background-color: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            border: 2px solid #333;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px;
+        }
+
+        .status-badge {
+            align-self: flex-start;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ff9800;
+        }
+
+        .status-dot.active {
+            background-color: #4caf50;
+            box-shadow: 0 0 8px #4caf50;
+        }
+
+        .status-dot.detected {
+            background-color: #00e676;
+            animation: pulse 0.8s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.4); }
+        }
+
+        .scan-region {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 40%;
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.35);
+        }
+
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            max-width: 480px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 18px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: #2196f3;
+            color: white;
+        }
+
+        .btn-primary:active {
+            background-color: #1976d2;
+        }
+
+        .btn-secondary {
+            background-color: #424242;
+            color: white;
+        }
+
+        .results-container {
+            margin-top: 15px;
+            width: 100%;
+            max-width: 480px;
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid #333;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .results-title {
+            font-size: 0.9rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detection-alert {
+            display: none;
+            background-color: rgba(76, 175, 80, 0.15);
+            border: 1px solid #4caf50;
+            color: #81c784;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .output-box {
+            background-color: #0d0d0d;
+            border-radius: 8px;
+            padding: 12px;
+            min-height: 80px;
+            max-height: 180px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+            color: #e0e0e0;
+            border: 1px solid #2a2a2a;
+        }
+
+        .highlight-hg {
+            background-color: #ffeb3b;
+            color: #000;
+            font-weight: bold;
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+
+        canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Escáner OCR - Detección "HG"</h1>
+        <p class="subtitle">Apunta con la cámara. Detecta texto al encontrar <strong>HG</strong>.</p>
+    </header>
+
+    <div class="camera-container">
+        <video id="webcam" playsinline autoplay muted></video>
+        <div class="overlay">
+            <div class="status-badge">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Cámara apagada</span>
+            </div>
+            <div class="scan-region"></div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnStart" class="btn-primary">Iniciar Cámara</button>
+        <button id="btnStop" class="btn-secondary" disabled>Detener</button>
+    </div>
+
+    <div class="results-container">
+        <div class="results-header">
+            <span class="results-title">Última Detección</span>
+            <span id="lastScanTime" style="font-size: 0.75rem; color: #666;">-</span>
+        </div>
+        <div id="detectionAlert" class="detection-alert">
+            ✓ Coincidencia encontrada: Patrón "HG" detectado
+        </div>
+        <div id="outputBox" class="output-box">Presiona "Iniciar Cámara" para comenzar el escaneo.</div>
+    </div>
+
+    <canvas id="captureCanvas"></canvas>
+
+    <script>
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('captureCanvas');
+        const ctx = canvas.getContext('2d');
+        const btnStart = document.getElementById('btnStart');
+        const btnStop = document.getElementById('btnStop');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const outputBox = document.getElementById('outputBox');
+        const detectionAlert = document.getElementById('detectionAlert');
+        const lastScanTime = document.getElementById('lastScanTime');
+
+        let stream = null;
+        let isProcessing = false;
+        let scanInterval = null;
+        let worker = null;
+
+        async function initOCR() {
+            statusText.textContent = "Cargando motor OCR...";
+            worker = await Tesseract.createWorker('eng');
+            statusText.textContent = "OCR listo";
+        }
+
+        initOCR();
+
+        btnStart.addEventListener('click', async () => {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: { ideal: 'environment' },
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                });
+
+                video.srcObject = stream;
+                await video.play();
+
+                btnStart.disabled = true;
+                btnStop.disabled = false;
+                statusDot.classList.add('active');
+                statusText.textContent = "Escaneando...";
+                outputBox.textContent = "Buscando patrón 'HG' en el vídeo...";
+
+                scanInterval = setInterval(processFrame, 1200);
+            } catch (err) {
+                console.error("Error al acceder a la cámara:", err);
+                alert("No se pudo acceder a la cámara. Asegúrate de otorgar permisos de cámara en tu navegador.");
+                statusText.textContent = "Error de cámara";
+            }
+        });
+
+        btnStop.addEventListener('click', stopCamera);
+
+        function stopCamera() {
+            if (scanInterval) clearInterval(scanInterval);
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+            }
+            btnStart.disabled = false;
+            btnStop.disabled = true;
+            statusDot.className = 'status-dot';
+            statusText.textContent = "Cámara apagada";
+            detectionAlert.style.display = 'none';
+        }
+
+        async function processFrame() {
+            if (isProcessing || !worker || video.readyState !== video.HAVE_ENOUGH_DATA) return;
+            
+            isProcessing = true;
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            try {
+                const { data } = await worker.recognize(canvas);
+                const rawText = data.text.trim();
+
+                // Verificar la presencia exacta de "HG" en mayúsculas y juntas
+                if (rawText.includes('HG')) {
+                    statusDot.className = 'status-dot detected';
+                    statusText.textContent = "¡'HG' DETECTADO!";
+                    detectionAlert.style.display = 'block';
+
+                    const escapedText = escapeHtml(rawText);
+                    const highlightedText = escapedText.replace(/HG/g, '<span class="highlight-hg">HG</span>');
+                    
+                    outputBox.innerHTML = highlightedText;
+                    lastScanTime.textContent = new Date().toLocaleTimeString();
+                    
+                    setTimeout(() => {
+                        if (stream && stream.active) {
+                            statusDot.className = 'status-dot active';
+                            statusText.textContent = "Escaneando...";
+                        }
+                    }, 2000);
+                }
+            } catch (err) {
+                console.error("Error en OCR:", err);
+            } finally {
+                isProcessing = false;
+            }
+        }
+
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
