@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escáner OCR - Detección HG Avanzada</title>
+    <title>Escáner OCR - Alineación Vertical HG</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         * {
@@ -182,7 +182,6 @@
 
         .match-card {
             background-color: #0d0d0d;
-            border-left: 4px solid #00e676;
             border-radius: 6px;
             padding: 12px 14px;
             display: flex;
@@ -216,8 +215,8 @@
 <body>
 
     <header>
-        <h1>Escáner Espacial HG</h1>
-        <p class="subtitle">Prioriza la derecha y elimina símbolos</p>
+        <h1>Escáner Alineación Vertical HG</h1>
+        <p class="subtitle">Prioriza derecha y respeta columna izquierda</p>
     </header>
 
     <div class="camera-container">
@@ -269,8 +268,6 @@
             worker = await Tesseract.createWorker('eng');
             
             await worker.setParameters({
-                // Permitimos que reconozca los símbolos para que no se confundan con letras, 
-                // pero luego Javascript los eliminará por completo.
                 tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/-.,',
                 tessedit_pageseg_mode: '11', 
             });
@@ -335,18 +332,17 @@
             ctx.drawImage(video, startX, startY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
 
             try {
-                // Pedimos a Tesseract que nos devuelva el análisis por palabras con coordenadas
                 const { data } = await worker.recognize(canvas);
                 
                 let rightmostWord = null;
                 let maxX = -1;
 
-                // PASO 1: Buscar el "HG" que esté más a la derecha en la imagen
+                // PASO 1: Encontrar el "HG" más a la derecha en la pantalla
                 if (data.words) {
                     data.words.forEach(word => {
                         if (word.text.toUpperCase().includes('HG')) {
                             if (word.bbox.x0 > maxX) {
-                                maxX = word.bbox.x0; // Actualizamos la coordenada X máxima
+                                maxX = word.bbox.x0;
                                 rightmostWord = word;
                             }
                         }
@@ -354,59 +350,55 @@
                 }
 
                 if (rightmostWord) {
-                    const targetX = rightmostWord.bbox.x0;
-                    const targetY = rightmostWord.bbox.y0;
-                    const targetBottom = rightmostWord.bbox.y1;
+                    const hgLeft = rightmostWord.bbox.x0; // Margen izquierdo de la H de HG
+                    const hgTop = rightmostWord.bbox.y0;
+                    const hgBottom = rightmostWord.bbox.y1;
 
-                    // PASO 2: Filtrar espacialmente las palabras que interesan
+                    // PASO 2: Filtrar estrictamente por columna vertical izquierda (alineados con la H)
+                    // y que estén en la misma línea o debajo (hasta 3 líneas aprox).
                     let candidateWords = data.words.filter(w => {
-                        // Descartamos lo que esté en una línea superior a nuestro HG
-                        const isBelowOrSameLine = w.bbox.y0 >= targetY - 15;
-                        // Permitimos hasta aprox. 2 líneas por debajo
-                        const isWithinTwoLines = w.bbox.y0 <= targetBottom + 100;
-                        // Descartamos todo lo que esté claramente a la izquierda del HG
-                        const isAlignedOrRight = w.bbox.x1 >= targetX - 80;
+                        const isBelowOrSameLine = w.bbox.y0 >= hgTop - 10;
+                        const isWithinVerticalRange = w.bbox.y0 <= hgBottom + 160; // 2 o 3 líneas abajo
+                        
+                        // Coincidencia estricta en el Eje X: 
+                        // El texto de abajo debe compartir la misma línea vertical izquierda (margen de tolerancia de +-30 píxeles)
+                        // O estar extendido hacia la derecha de ese mismo bloque.
+                        const matchesLeftColumn = Math.abs(w.bbox.x0 - hgLeft) < 35 || (w.bbox.x0 >= hgLeft - 10 && w.bbox.x0 < hgLeft + 80);
 
-                        return isBelowOrSameLine && isWithinTwoLines && isAlignedOrRight;
+                        return isBelowOrSameLine && isWithinVerticalRange && matchesLeftColumn;
                     });
 
-                    // Ordenamos las palabras capturadas de arriba hacia abajo y de izquierda a derecha
+                    // Ordenar de arriba hacia abajo (respetando las líneas)
                     candidateWords.sort((a, b) => {
-                        if (Math.abs(a.bbox.y0 - b.bbox.y0) < 15) {
-                            return a.bbox.x0 - b.bbox.x0;
+                        if (Math.abs(a.bbox.y0 - b.bbox.y0) < 18) {
+                            return a.bbox.x0 - b.bbox.x0; // Si están en la misma línea, de izquierda a derecha
                         }
-                        return a.bbox.y0 - b.bbox.y0;
+                        return a.bbox.y0 - b.bbox.y0; // Si están en líneas distintas, de arriba a abajo
                     });
 
-                    // Unimos las palabras en un texto plano
                     let rawExtracted = candidateWords.map(w => w.text).join(' ');
 
-                    // PASO 3: RECHAZAR SÍMBOLOS
-                    // Esto borra completamente barras, guiones, puntos... pero mantiene las letras, números y los espacios.
-                    // Al borrar, "Aris-Curr" se convierte en "ArisCurr" (junto).
-                    let cleanedForPattern = rawExtracted.toUpperCase().replace(/[^A-Z0-9\s\n]/g, '');
+                    // PASO 3: RECHAZAR SÍMBOLOS (Solo se permiten letras y números)
+                    let cleanedText = rawExtracted.toUpperCase().replace(/[^A-Z0-9]/g, '');
 
-                    // PASO 4: Aislar exactamente las 3 partes de la signatura (HG + Números + Letras/Números)
-                    const regex = /HG[\s\n]*\d+[\s\n]*[A-Z0-9]+/;
-                    const match = cleanedForPattern.match(regex);
+                    // PASO 4: Asegurar que empiece exactamente con HG seguido de números y texto
+                    const regex = /HG\d+[A-Z0-9]+/;
+                    const match = cleanedText.match(regex);
 
                     if (match) {
-                        // Quitamos todos los espacios y saltos de línea restantes para la versión final
-                        const finalSignature = match[0].replace(/[\s\n]/g, '');
+                        const finalSignature = match[0];
                         
-                        // Actualizar UI
                         statusDot.className = 'status-dot detected';
-                        statusText.textContent = `¡Foco a la derecha!`;
+                        statusText.textContent = `¡Alineado correctamente!`;
                         matchCount.textContent = `1 Aislado`;
 
                         matchesList.innerHTML = `
                             <div class="match-card">
                                 <span class="match-value">${finalSignature}</span>
-                                <span style="font-size:0.75rem; color:#888;">(Derecha)</span>
+                                <span style="font-size:0.75rem; color:#888;">(Vertical)</span>
                             </div>
                         `;
 
-                        // Pausa breve visual antes de seguir
                         setTimeout(() => {
                             if (stream && stream.active) {
                                 statusDot.className = 'status-dot active';
@@ -416,7 +408,7 @@
                     }
                 }
             } catch (err) {
-                console.error("Error en lectura espacial:", err);
+                console.error("Error en alineación vertical:", err);
             } finally {
                 isProcessing = false;
             }
