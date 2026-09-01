@@ -458,9 +458,10 @@
             if (signatura === "" || signatura === "HG") {
                 window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
             } else {
-                const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=%22";
-                  const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "%22&START=1&FORM=1";
-                window.open(urlFinal, "_blank");
+                const signaturaLimpia = signatura.replace(/^["']|["']$/g, '');
+        // Forzamos explícitamente el uso de %22 y %2F para que la URL sea idéntica a la que te funciona
+        const urlFinal = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=%22" + encodeURIComponent(signaturaLimpia) + "%22&START=1&FORM=1";
+        window.open(urlFinal, "_blank");
             }
         }
     </script>
