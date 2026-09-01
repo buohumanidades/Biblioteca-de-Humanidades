@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escáner Ultra Rápido - Texto Horizontal Limpio</title>
+    <title>Escáner Ultra Rápido - Filtro HG840</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
@@ -41,7 +41,8 @@
         .btn-secondary { background-color: #424242; color: white; }
         
         .results-container { margin-top: 15px; width: 100%; max-width: 480px; background-color: #1e1e1e; border-radius: 12px; padding: 15px; }
-        .output-box { background-color: #0d0d0d; border-radius: 8px; padding: 12px; min-height: 80px; font-family: monospace; font-size: 1.1rem; color: #00e676; font-weight: bold; text-align: center; letter-spacing: 2px;}
+        .output-box { background-color: #0d0d0d; border-radius: 8px; padding: 12px; min-height: 80px; font-family: monospace; font-size: 1.4rem; color: #00e676; font-weight: bold; text-align: center; letter-spacing: 2px;}
+        .label { font-size: 0.8rem; color: #888; display: block; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
         
         canvas { display: none; }
     </style>
@@ -49,7 +50,7 @@
 <body>
 
     <header>
-        <h1>Escáner Rápido (HG) Limpio</h1>
+        <h1>Escáner Rápido (HG840)</h1>
     </header>
 
     <div class="camera-container">
@@ -69,6 +70,7 @@
     </div>
 
     <div class="results-container">
+        <span class="label">Texto posterior a HG840:</span>
         <div id="outputBox" class="output-box">-</div>
     </div>
 
@@ -146,12 +148,20 @@
             try {
                 const { data } = await worker.recognize(canvas);
                 
-                // LIMPIEZA DE TEXTO: Elimina todo lo que NO sea letra mayúscula (A-Z) o número (0-9).
-                // Esto elimina automáticamente /, -, _, espacios y cualquier otro símbolo.
+                // 1. Limpieza de texto (solo letras mayúsculas y números)
                 const text = data.text.replace(/[^A-Z0-9]/g, '');
 
-                if (text.includes('HG')) {
-                    outputBox.textContent = text;
+                // 2. Buscar la última aparición de HG840
+                const target = 'HG840';
+                const lastIndex = text.lastIndexOf(target);
+
+                // 3. Si encuentra HG840, extrae lo que hay después
+                if (lastIndex !== -1) {
+                    const extractedText = text.substring(lastIndex + target.length);
+                    
+                    // Muestra el texto extraído (o un aviso si no hay nada después)
+                    outputBox.textContent = extractedText.length > 0 ? extractedText : "[Sin datos posteriores]";
+                    
                     document.getElementById('statusDot').style.backgroundColor = "#00e676";
                     
                     setTimeout(() => {
