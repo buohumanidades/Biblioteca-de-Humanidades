@@ -21,7 +21,7 @@
             align-items: center;
             min-height: 100vh;
             padding: 12px;
-            padding-bottom: 30px; /* Margen inferior para el botón final */
+            padding-bottom: 30px;
         }
 
         header {
@@ -140,9 +140,6 @@
             box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
         }
 
-        /* =======================================================
-           ESTILOS DE PANELES LUMINOSOS Y ALERTA DE COINCIDENCIA
-           ======================================================= */
         .highway-indicator {
             position: absolute;
             top: 50%;
@@ -197,7 +194,6 @@
             100% { opacity: 0; transform: translateX(-15px); }
         }
 
-        /* ALERTA ROJA PARPADEANTE EN EL CENTRO */
         .red-alert-circle {
             position: absolute;
             top: 50%;
@@ -306,7 +302,6 @@
             font-style: italic;
         }
 
-        /* Botón Inferior de Nueva Búsqueda */
         .bottom-action-container {
             width: 100%;
             max-width: 520px;
@@ -361,17 +356,17 @@
             </div>
             <div class="scan-region"></div>
             
-            <!-- Indicador Izquierda (Menor) -->
+            <!-- Indicador Izquierda -->
             <div id="indicatorLeft" class="highway-indicator left">
                 <span class="chevron">❮</span><span class="chevron">❮</span><span class="chevron">❮</span>
             </div>
 
-            <!-- Indicador Derecha (Mayor) -->
+            <!-- Indicador Derecha -->
             <div id="indicatorRight" class="highway-indicator right">
                 <span class="chevron">❯</span><span class="chevron">❯</span><span class="chevron">❯</span>
             </div>
 
-            <!-- Indicador Círculo Rojo Parpadeante (Coincidencia) -->
+            <!-- Círculo Rojo Parpadeante (Coincidencia) -->
             <div id="indicatorMatch" class="red-alert-circle"></div>
         </div>
     </div>
@@ -391,7 +386,6 @@
         </div>
     </div>
 
-    <!-- Botón para nueva búsqueda en la parte inferior -->
     <div class="bottom-action-container">
         <a href="Signatura.html" class="btn-new-search-bottom">
             🔄 Nueva búsqueda
@@ -405,7 +399,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const signatureToFind = urlParams.get('buscar') || '';
         
-        // Limpiamos la signatura buscada
         const targetSignatureClean = signatureToFind.toUpperCase().replace(/[^A-Z0-9]/g, '');
 
         if (signatureToFind) {
@@ -440,8 +433,6 @@
 
         let lastScannedSignature = '';
         let indicatorTimeout = null;
-        
-        // Variable para el contexto de audio
         let audioCtx = null;
 
         async function initOCR() {
@@ -457,7 +448,6 @@
         }
         initOCR();
 
-        // Función segura para vibrar
         function triggerVibration(pattern) {
             try {
                 if (navigator.vibrate) {
@@ -468,18 +458,15 @@
             }
         }
 
-        // Función para emitir sonido de alerta corto y fuerte
         function playBeepAlert() {
             if (!audioCtx) return;
             try {
                 const osc = audioCtx.createOscillator();
                 const gainNode = audioCtx.createGain();
                 
-                // Tipo de onda cuadrada para que sea estridente y notorio
                 osc.type = 'square';
-                osc.frequency.setValueAtTime(1000, audioCtx.currentTime); // 1000Hz
+                osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
                 
-                // Volumen alto que desciende rápidamente (corto)
                 gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
                 
@@ -487,17 +474,42 @@
                 gainNode.connect(audioCtx.destination);
                 
                 osc.start();
-                osc.stop(audioCtx.currentTime + 0.2); // Dura 0.2 segundos
+                osc.stop(audioCtx.currentTime + 0.2);
             } catch (e) {
                 console.warn("No se pudo reproducir el audio.", e);
             }
         }
 
+        // Función personalizada donde los números son mayores que las letras
+        function getCharWeight(c) {
+            if (!c) return 0;
+            if (/[0-9]/.test(c)) {
+                // Asignamos un peso mayor a los números para que superen a las letras (ASCII de letras van de 65 a 90)
+                return 100 + parseInt(c, 10);
+            } else if (/[A-Z]/.test(c)) {
+                return c.charCodeAt(0);
+            }
+            return c.charCodeAt(0);
+        }
+
+        function compareCustom(str1, str2) {
+            const len = Math.max(str1.length, str2.length);
+            for (let i = 0; i < len; i++) {
+                const c1 = str1[i] || '';
+                const c2 = str2[i] || '';
+                if (c1 === c2) continue;
+                const w1 = getCharWeight(c1);
+                const w2 = getCharWeight(c2);
+                if (w1 !== w2) {
+                    return w1 < w2 ? -1 : 1;
+                }
+            }
+            return 0;
+        }
+
         btnStart.addEventListener('click', async () => {
-            // Desbloqueo inicial de vibración
             triggerVibration(1);
             
-            // Inicializar y desbloquear contexto de audio por interacción del usuario
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
@@ -555,12 +567,11 @@
                 indicatorRight.style.display = 'flex';
                 triggerVibration([200, 100, 200]);
             } else if (type === 'match') {
-                indicatorMatch.style.display = 'block'; // Mostrar círculo rojo
-                playBeepAlert(); // Sonido corto y fuerte
-                triggerVibration([100, 50, 100, 50, 300]); // Patrón de éxito
+                indicatorMatch.style.display = 'block';
+                playBeepAlert();
+                triggerVibration([100, 50, 100, 50, 300]);
             }
 
-            // Ocultar tras 2 segundos si no hay cambios
             if (indicatorTimeout) clearTimeout(indicatorTimeout);
             indicatorTimeout = setTimeout(() => {
                 hideAllIndicators();
@@ -653,19 +664,20 @@
                             </div>
                         `;
 
-                        // Comparación: si la signatura escaneada es distinta a la anterior
                         if (scannedClean !== lastScannedSignature) {
                             lastScannedSignature = scannedClean;
 
                             if (targetSignatureClean) {
-                                if (targetSignatureClean > scannedClean) {
-                                    // La que buscamos es MAYOR -> Panel indicando Derecha
-                                    showIndicator('right');
-                                } else if (targetSignatureClean < scannedClean) {
-                                    // La que buscamos es MENOR -> Panel indicando Izquierda
+                                const comparisonResult = compareCustom(targetSignatureClean, scannedClean);
+
+                                if (comparisonResult < 0) {
+                                    // Target es menor que Scanned bajo la nueva regla -> Izquierda
                                     showIndicator('left');
+                                } else if (comparisonResult > 0) {
+                                    // Target es mayor que Scanned bajo la nueva regla -> Derecha
+                                    showIndicator('right');
                                 } else {
-                                    // Coincidencia: Activar alerta roja y sonido
+                                    // Coincidencia exacta
                                     showIndicator('match');
                                 }
                             }
