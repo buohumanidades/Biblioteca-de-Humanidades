@@ -454,16 +454,22 @@
         }
         
         function buscarEnCatalogo() {
-            const signatura = document.getElementById("campoSignatura").value.trim();
-            if (signatura === "" || signatura === "HG") {
-                window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
-            } else {
-                const signaturaLimpia = signatura.replace(/^["']|["']$/g, '');
-        // Forzamos explícitamente el uso de %22 y %2F para que la URL sea idéntica a la que te funciona
+    const signatura = document.getElementById("campoSignatura").value.trim();
+    
+    if (signatura === "" || signatura === "HG") {
+        window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
+    } else {
+        const signaturaLimpia = signatura.replace(/^["']|["']$/g, '');
+        
+        // Construimos la URL exacta
         const urlFinal = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=%22" + encodeURIComponent(signaturaLimpia) + "%22&START=1&FORM=1";
+        
+        // Imprime la URL en la consola (F12 -> Consola) para ver qué texto exacto se genera
+        console.log("URL generada:", urlFinal);
+        
         window.open(urlFinal, "_blank");
-            }
-        }
+    }
+}
     </script>
 </body>
 </html>
