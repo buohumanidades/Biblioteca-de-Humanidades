@@ -140,6 +140,46 @@
             box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
         }
 
+        /* Indicador de Dirección Llamativo */
+        .direction-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.85);
+            border: 3px solid #ffeb3b;
+            border-radius: 20px;
+            padding: 20px 30px;
+            z-index: 20;
+            box-shadow: 0 0 25px rgba(255, 235, 59, 0.6);
+            animation: popIn 0.2s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0.7); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .direction-arrow {
+            font-size: 5rem;
+            line-height: 1;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+        }
+
+        .direction-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
         .controls {
             margin-top: 12px;
             display: flex;
@@ -247,6 +287,7 @@
         <p class="subtitle">Optimizado para máxima velocidad y precisión</p>
     </header>
 
+    <!-- Banner que muestra la signatura buscada -->
     <div id="targetSearchBanner" class="target-search-banner">
         <span>Buscando:</span>
         <span id="targetValue" class="target-value"></span>
@@ -260,6 +301,12 @@
                 <span id="statusText">Cargando...</span>
             </div>
             <div class="scan-region"></div>
+            
+            <!-- Flechas direccionales en pantalla -->
+            <div id="directionOverlay" class="direction-overlay">
+                <div id="directionArrow" class="direction-arrow">⬅️</div>
+                <div id="directionText" class="direction-text">Mover a la izquierda</div>
+            </div>
         </div>
     </div>
 
@@ -282,15 +329,18 @@
     <canvas id="processingCanvas"></canvas>
 
     <script>
-        // Cargar el parámetro "buscar" de la URL y mostrarlo
+        // Cargar el parámetro "buscar" de la URL y limpiarlo (sin símbolos)
         const urlParams = new URLSearchParams(window.location.search);
-        const signatureToFind = urlParams.get('buscar');
+        const signatureToFind = urlParams.get('buscar') || '';
         
+        // Variable que guarda la signatura a buscar limpia (solo letras y números)
+        const targetSignatureClean = signatureToFind.toUpperCase().replace(/[^A-Z0-9]/g, '');
+
         if (signatureToFind) {
             const banner = document.getElementById('targetSearchBanner');
             const targetSpan = document.getElementById('targetValue');
             targetSpan.textContent = signatureToFind;
-            banner.style.display = 'flex'; // Mostrar el banner si hay signatura
+            banner.style.display = 'flex';
         }
 
         const video = document.getElementById('webcam');
@@ -307,10 +357,17 @@
         const matchesList = document.getElementById('matchesList');
         const matchCount = document.getElementById('matchCount');
 
+        const directionOverlay = document.getElementById('directionOverlay');
+        const directionArrow = document.getElementById('directionArrow');
+        const directionText = document.getElementById('directionText');
+
         let stream = null;
         let isProcessing = false;
         let scanInterval = null;
         let worker = null;
+
+        let lastScannedSignature = '';
+        let arrowTimeout = null;
 
         async function initOCR() {
             statusText.textContent = "Iniciando Motor IA...";
@@ -344,7 +401,6 @@
                 statusDot.className = 'status-dot active';
                 statusText.textContent = "Escaneando...";
 
-                // Intervalo ajustado a 100ms para máxima fluidez
                 scanInterval = setInterval(processFrame, 100);
             } catch (err) {
                 console.error(err);
@@ -364,6 +420,34 @@
             btnStop.disabled = true;
             statusDot.className = 'status-dot';
             statusText.textContent = "Cámara apagada";
+            hideDirection();
+        }
+
+        function showDirection(arrow, text, isMatch = false) {
+            directionArrow.textContent = arrow;
+            directionText.textContent = text;
+            directionOverlay.style.borderColor = isMatch ? '#00e676' : '#ffeb3b';
+            directionOverlay.style.boxShadow = isMatch ? '0 0 25px rgba(0, 230, 118, 0.8)' : '0 0 25px rgba(255, 235, 59, 0.6)';
+            directionOverlay.style.display = 'flex';
+
+            // Ejecutar vibración si el dispositivo la soporta
+            if (navigator.vibrate) {
+                if (isMatch) {
+                    navigator.vibrate([100, 50, 100, 50, 200]); // Patrón de éxito
+                } else {
+                    navigator.vibrate(200); // Vibración simple
+                }
+            }
+
+            // Reiniciar el temporizador de 2 segundos
+            if (arrowTimeout) clearTimeout(arrowTimeout);
+            arrowTimeout = setTimeout(() => {
+                hideDirection();
+            }, 2000);
+        }
+
+        function hideDirection() {
+            directionOverlay.style.display = 'none';
         }
 
         async function processFrame() {
@@ -380,7 +464,6 @@
             canvas.height = cropHeight;
             ctx.drawImage(video, startX, startY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
 
-            // Reducción de escala (Scale down) a un ancho máximo de 800px para acelerar el OCR
             const targetWidth = Math.min(cropWidth, 800);
             const scaleFactor = targetWidth / cropWidth;
             const targetHeight = cropHeight * scaleFactor;
@@ -434,6 +517,7 @@
 
                     if (match) {
                         const finalSignature = match[0];
+                        const scannedClean = finalSignature.toUpperCase().replace(/[^A-Z0-9]/g, '');
                         
                         statusDot.className = 'status-dot detected';
                         statusText.textContent = `¡Capturado!`;
@@ -445,6 +529,24 @@
                                 <span style="font-size:0.75rem; color:#888;">(Rápido)</span>
                             </div>
                         `;
+
+                        // Si la signatura ha cambiado con respecto a la última escaneada
+                        if (scannedClean !== lastScannedSignature) {
+                            lastScannedSignature = scannedClean;
+
+                            if (targetSignatureClean) {
+                                if (targetSignatureClean > scannedClean) {
+                                    // La buscada es MAYOR -> Flecha a la izquierda
+                                    showDirection('⬅️', 'Ir a la izquierda');
+                                } else if (targetSignatureClean < scannedClean) {
+                                    // La buscada es MENOR -> Flecha a la derecha
+                                    showDirection('➡️', 'Ir a la derecha');
+                                } else {
+                                    // Coincidencia exacta
+                                    showDirection('🎉', '¡Encontrado!', true);
+                                }
+                            }
+                        }
 
                         setTimeout(() => {
                             if (stream && stream.active) {
