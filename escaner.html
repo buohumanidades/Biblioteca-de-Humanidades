@@ -39,9 +39,8 @@
             color: #aaa;
         }
         
-        /* Estilos para el bloque de búsqueda objetivo */
         .target-search-banner {
-            display: none; /* Oculto por defecto si no hay búsqueda */
+            display: none; 
             background-color: rgba(77, 166, 255, 0.15);
             border: 1px solid #4da6ff;
             color: #fff;
@@ -140,23 +139,78 @@
             box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
         }
 
-        /* Indicador de Dirección Llamativo */
-        .direction-overlay {
+        /* =======================================================
+           ESTILOS DE PANELES LUMINOSOS TIPO AUTOPISTA
+           ======================================================= */
+        .highway-indicator {
             position: absolute;
             top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: none;
-            flex-direction: column;
+            transform: translateY(-50%);
+            display: none; 
+            flex-direction: row;
             align-items: center;
             justify-content: center;
-            background: rgba(0, 0, 0, 0.85);
-            border: 3px solid #ffeb3b;
-            border-radius: 20px;
-            padding: 20px 30px;
             z-index: 20;
-            box-shadow: 0 0 25px rgba(255, 235, 59, 0.6);
-            animation: popIn 0.2s ease-out;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 10px 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        .highway-indicator.left {
+            left: 10px;
+        }
+
+        .highway-indicator.right {
+            right: 10px;
+        }
+
+        .highway-indicator.match {
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 230, 118, 0.85);
+            flex-direction: column;
+            border: 3px solid #00e676;
+            box-shadow: 0 0 30px rgba(0, 230, 118, 0.6);
+            padding: 20px 30px;
+            animation: popIn 0.3s ease-out;
+        }
+
+        .chevron {
+            font-size: 3.5rem;
+            color: #ffeb3b;
+            font-weight: 900;
+            line-height: 1;
+            margin: 0 -8px; /* Solapamiento de las flechas */
+            text-shadow: 0 0 15px #ffeb3b, 0 0 30px #ffeb3b;
+        }
+
+        /* Animación para la derecha */
+        .highway-indicator.right .chevron {
+            animation: slideRight 1s infinite linear;
+        }
+        .highway-indicator.right .chevron:nth-child(1) { animation-delay: 0s; }
+        .highway-indicator.right .chevron:nth-child(2) { animation-delay: 0.2s; }
+        .highway-indicator.right .chevron:nth-child(3) { animation-delay: 0.4s; }
+
+        /* Animación para la izquierda */
+        .highway-indicator.left .chevron {
+            animation: slideLeft 1s infinite linear;
+        }
+        .highway-indicator.left .chevron:nth-child(3) { animation-delay: 0s; }
+        .highway-indicator.left .chevron:nth-child(2) { animation-delay: 0.2s; }
+        .highway-indicator.left .chevron:nth-child(1) { animation-delay: 0.4s; }
+
+        @keyframes slideRight {
+            0% { opacity: 0; transform: translateX(-15px); }
+            50% { opacity: 1; }
+            100% { opacity: 0; transform: translateX(15px); }
+        }
+
+        @keyframes slideLeft {
+            0% { opacity: 0; transform: translateX(15px); }
+            50% { opacity: 1; }
+            100% { opacity: 0; transform: translateX(-15px); }
         }
 
         @keyframes popIn {
@@ -164,20 +218,12 @@
             100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
         }
 
-        .direction-arrow {
-            font-size: 5rem;
-            line-height: 1;
-            margin-bottom: 8px;
-            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
-        }
-
-        .direction-text {
-            font-size: 1.1rem;
+        .match-text {
+            color: white;
+            font-size: 1.5rem;
             font-weight: bold;
-            color: #ffffff;
+            margin-top: 10px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            text-align: center;
         }
 
         .controls {
@@ -287,7 +333,6 @@
         <p class="subtitle">Optimizado para máxima velocidad y precisión</p>
     </header>
 
-    <!-- Banner que muestra la signatura buscada -->
     <div id="targetSearchBanner" class="target-search-banner">
         <span>Buscando:</span>
         <span id="targetValue" class="target-value"></span>
@@ -302,10 +347,20 @@
             </div>
             <div class="scan-region"></div>
             
-            <!-- Flechas direccionales en pantalla -->
-            <div id="directionOverlay" class="direction-overlay">
-                <div id="directionArrow" class="direction-arrow">⬅️</div>
-                <div id="directionText" class="direction-text">Mover a la izquierda</div>
+            <!-- Indicador Izquierda (Menor) -->
+            <div id="indicatorLeft" class="highway-indicator left">
+                <span class="chevron">❮</span><span class="chevron">❮</span><span class="chevron">❮</span>
+            </div>
+
+            <!-- Indicador Derecha (Mayor) -->
+            <div id="indicatorRight" class="highway-indicator right">
+                <span class="chevron">❯</span><span class="chevron">❯</span><span class="chevron">❯</span>
+            </div>
+
+            <!-- Indicador Coincidencia -->
+            <div id="indicatorMatch" class="highway-indicator match">
+                <span style="font-size: 4rem;">🎉</span>
+                <span class="match-text">¡ENCONTRADO!</span>
             </div>
         </div>
     </div>
@@ -329,11 +384,10 @@
     <canvas id="processingCanvas"></canvas>
 
     <script>
-        // Cargar el parámetro "buscar" de la URL y limpiarlo (sin símbolos)
         const urlParams = new URLSearchParams(window.location.search);
         const signatureToFind = urlParams.get('buscar') || '';
         
-        // Variable que guarda la signatura a buscar limpia (solo letras y números)
+        // Limpiamos la signatura buscada
         const targetSignatureClean = signatureToFind.toUpperCase().replace(/[^A-Z0-9]/g, '');
 
         if (signatureToFind) {
@@ -357,9 +411,9 @@
         const matchesList = document.getElementById('matchesList');
         const matchCount = document.getElementById('matchCount');
 
-        const directionOverlay = document.getElementById('directionOverlay');
-        const directionArrow = document.getElementById('directionArrow');
-        const directionText = document.getElementById('directionText');
+        const indicatorLeft = document.getElementById('indicatorLeft');
+        const indicatorRight = document.getElementById('indicatorRight');
+        const indicatorMatch = document.getElementById('indicatorMatch');
 
         let stream = null;
         let isProcessing = false;
@@ -367,7 +421,7 @@
         let worker = null;
 
         let lastScannedSignature = '';
-        let arrowTimeout = null;
+        let indicatorTimeout = null;
 
         async function initOCR() {
             statusText.textContent = "Iniciando Motor IA...";
@@ -382,7 +436,21 @@
         }
         initOCR();
 
+        // Función segura para vibrar
+        function triggerVibration(pattern) {
+            try {
+                if (navigator.vibrate) {
+                    navigator.vibrate(pattern);
+                }
+            } catch (e) {
+                console.warn("La vibración no está soportada o fue bloqueada.", e);
+            }
+        }
+
         btnStart.addEventListener('click', async () => {
+            // Desbloqueo inicial de vibración (truco para algunos navegadores móviles)
+            triggerVibration(1);
+
             try {
                 stream = await navigator.mediaDevices.getUserMedia({
                     video: {
@@ -420,34 +488,34 @@
             btnStop.disabled = true;
             statusDot.className = 'status-dot';
             statusText.textContent = "Cámara apagada";
-            hideDirection();
+            hideAllIndicators();
         }
 
-        function showDirection(arrow, text, isMatch = false) {
-            directionArrow.textContent = arrow;
-            directionText.textContent = text;
-            directionOverlay.style.borderColor = isMatch ? '#00e676' : '#ffeb3b';
-            directionOverlay.style.boxShadow = isMatch ? '0 0 25px rgba(0, 230, 118, 0.8)' : '0 0 25px rgba(255, 235, 59, 0.6)';
-            directionOverlay.style.display = 'flex';
-
-            // Ejecutar vibración si el dispositivo la soporta
-            if (navigator.vibrate) {
-                if (isMatch) {
-                    navigator.vibrate([100, 50, 100, 50, 200]); // Patrón de éxito
-                } else {
-                    navigator.vibrate(200); // Vibración simple
-                }
+        function showIndicator(type) {
+            hideAllIndicators();
+            
+            if (type === 'left') {
+                indicatorLeft.style.display = 'flex';
+                triggerVibration([200, 100, 200]);
+            } else if (type === 'right') {
+                indicatorRight.style.display = 'flex';
+                triggerVibration([200, 100, 200]);
+            } else if (type === 'match') {
+                indicatorMatch.style.display = 'flex';
+                triggerVibration([100, 50, 100, 50, 300]); // Patrón de éxito
             }
 
-            // Reiniciar el temporizador de 2 segundos
-            if (arrowTimeout) clearTimeout(arrowTimeout);
-            arrowTimeout = setTimeout(() => {
-                hideDirection();
+            // Ocultar tras 2 segundos si no hay cambios
+            if (indicatorTimeout) clearTimeout(indicatorTimeout);
+            indicatorTimeout = setTimeout(() => {
+                hideAllIndicators();
             }, 2000);
         }
 
-        function hideDirection() {
-            directionOverlay.style.display = 'none';
+        function hideAllIndicators() {
+            indicatorLeft.style.display = 'none';
+            indicatorRight.style.display = 'none';
+            indicatorMatch.style.display = 'none';
         }
 
         async function processFrame() {
@@ -530,20 +598,20 @@
                             </div>
                         `;
 
-                        // Si la signatura ha cambiado con respecto a la última escaneada
+                        // Comparación: si la signatura escaneada es distinta a la anterior
                         if (scannedClean !== lastScannedSignature) {
                             lastScannedSignature = scannedClean;
 
                             if (targetSignatureClean) {
                                 if (targetSignatureClean > scannedClean) {
-                                    // La buscada es MAYOR -> Flecha a la izquierda
-                                    showDirection('⬅️', 'Ir a la izquierda');
+                                    // La que buscamos es MAYOR -> Panel indicando Derecha
+                                    showIndicator('right');
                                 } else if (targetSignatureClean < scannedClean) {
-                                    // La buscada es MENOR -> Flecha a la derecha
-                                    showDirection('➡️', 'Ir a la derecha');
+                                    // La que buscamos es MENOR -> Panel indicando Izquierda
+                                    showIndicator('left');
                                 } else {
-                                    // Coincidencia exacta
-                                    showDirection('🎉', '¡Encontrado!', true);
+                                    // Coincidencia
+                                    showIndicator('match');
                                 }
                             }
                         }
