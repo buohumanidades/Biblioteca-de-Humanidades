@@ -3,54 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escáner Ultra Rápido - Filtro HG840</title>
+    <title>Escáner OCR - Captura Ampliada "HG"</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background-color: #121212; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; }
-        header { text-align: center; margin-bottom: 15px; }
-        h1 { font-size: 1.4rem; color: #4da6ff; margin-bottom: 5px; }
-        
-        .camera-container { 
-            position: relative; width: 100%; max-width: 480px; aspect-ratio: 4/3; 
-            background-color: #000; border-radius: 12px; overflow: hidden; border: 2px solid #333; 
-        }
-        video { width: 100%; height: 100%; object-fit: cover; }
-        
-        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-        .status-badge { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.7); padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background-color: #ff9800; }
-        .status-dot.active { background-color: #4caf50; }
-        
-        /* Caja de escaneo HORIZONTAL */
-        .scan-region { 
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            width: 80%; height: 25%; 
-            border: 3px solid #ffeb3b; border-radius: 8px; 
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6); 
-        }
-        .scan-region::after {
-            content: "Alinea texto aquí";
-            position: absolute; top: -25px; left: 0; width: 100%; text-align: center;
-            color: #ffeb3b; font-size: 0.8rem; font-weight: bold;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        .controls { margin-top: 15px; display: flex; gap: 10px; width: 100%; max-width: 480px; }
-        button { flex: 1; padding: 12px; font-size: 0.95rem; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; }
-        .btn-primary { background-color: #2196f3; color: white; }
-        .btn-secondary { background-color: #424242; color: white; }
-        
-        .results-container { margin-top: 15px; width: 100%; max-width: 480px; background-color: #1e1e1e; border-radius: 12px; padding: 15px; }
-        .output-box { background-color: #0d0d0d; border-radius: 8px; padding: 12px; min-height: 80px; font-family: monospace; font-size: 1.4rem; color: #00e676; font-weight: bold; text-align: center; letter-spacing: 2px;}
-        .label { font-size: 0.8rem; color: #888; display: block; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
-        
-        canvas { display: none; }
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: 1.3rem;
+            color: #4da6ff;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 520px;
+            height: 60vh;
+            max-height: 500px;
+            background-color: #000;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 2px solid #333;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255,255,255,0.15);
+            z-index: 10;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background-color: #ff9800;
+        }
+
+        .status-dot.active {
+            background-color: #4caf50;
+            box-shadow: 0 0 8px #4caf50;
+        }
+
+        .status-dot.detected {
+            background-color: #00e676;
+            box-shadow: 0 0 10px #00e676;
+        }
+
+        /* Área de escaneo amplia (92% de ancho, 75% de alto) */
+        .scan-region {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 92%;
+            height: 75%;
+            border: 2px dashed #ffeb3b;
+            border-radius: 10px;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+        }
+
+        .scan-region::before {
+            content: "Área de Escaneo Ampliada (Busca todos los 'HG')";
+            position: absolute;
+            top: -24px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: #ffeb3b;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .controls {
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            max-width: 520px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #2196f3;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #333;
+            color: white;
+        }
+
+        .results-container {
+            margin-top: 12px;
+            width: 100%;
+            max-width: 520px;
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            padding: 14px;
+            border: 1px solid #333;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .results-title {
+            font-size: 0.8rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: bold;
+        }
+
+        .match-count {
+            font-size: 0.75rem;
+            background: #2b384c;
+            color: #4da6ff;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .matches-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+
+        .match-card {
+            background-color: #0d0d0d;
+            border-left: 4px solid #00e676;
+            border-radius: 6px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: monospace;
+            border-top: 1px solid #222;
+            border-right: 1px solid #222;
+            border-bottom: 1px solid #222;
+        }
+
+        .match-label {
+            color: #ffeb3b;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-right: 6px;
+        }
+
+        .match-value {
+            color: #00e676;
+            font-size: 1.1rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            word-break: break-all;
+        }
+
+        .empty-state {
+            color: #666;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 20px 10px;
+            font-style: italic;
+        }
+
+        canvas {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Escáner Rápido (HG840)</h1>
+        <h1>Escáner Multidetección HG</h1>
+        <p class="subtitle">Captura ampliada. Muestra todo lo que encuentra tras "HG"</p>
     </header>
 
     <div class="camera-container">
@@ -58,20 +251,25 @@
         <div class="overlay">
             <div class="status-badge">
                 <div class="status-dot" id="statusDot"></div>
-                <span id="statusText">Iniciando...</span>
+                <span id="statusText">Cargando...</span>
             </div>
-            <div class="scan-region" id="scanBox"></div>
+            <div class="scan-region"></div>
         </div>
     </div>
 
     <div class="controls">
-        <button id="btnStart" class="btn-primary">Iniciar</button>
+        <button id="btnStart" class="btn-primary">Iniciar Cámara</button>
         <button id="btnStop" class="btn-secondary" disabled>Detener</button>
     </div>
 
     <div class="results-container">
-        <span class="label">Texto posterior a HG840:</span>
-        <div id="outputBox" class="output-box">-</div>
+        <div class="results-header">
+            <span class="results-title">Coincidencias Encontradas</span>
+            <span class="match-count" id="matchCount">0 detectados</span>
+        </div>
+        <div class="matches-list" id="matchesList">
+            <div class="empty-state">Inicia la cámara para comenzar el escaneo amplio...</div>
+        </div>
     </div>
 
     <canvas id="captureCanvas"></canvas>
@@ -80,96 +278,139 @@
         const video = document.getElementById('webcam');
         const canvas = document.getElementById('captureCanvas');
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        const outputBox = document.getElementById('outputBox');
-        
+        const btnStart = document.getElementById('btnStart');
+        const btnStop = document.getElementById('btnStop');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const matchesList = document.getElementById('matchesList');
+        const matchCount = document.getElementById('matchCount');
+
         let stream = null;
         let isProcessing = false;
         let scanInterval = null;
         let worker = null;
 
         async function initOCR() {
-            document.getElementById('statusText').textContent = "Cargando IA...";
+            statusText.textContent = "Cargando motor OCR...";
             worker = await Tesseract.createWorker('eng');
             
+            // Permitir solo letras mayúsculas y números para máxima precisión y velocidad
             await worker.setParameters({
                 tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
-                tessedit_pageseg_mode: '6', 
+                tessedit_pageseg_mode: '6', // Trata la imagen como un bloque continuo de texto
             });
             
-            document.getElementById('statusText').textContent = "Listo";
+            statusText.textContent = "OCR listo";
         }
         initOCR();
 
-        document.getElementById('btnStart').addEventListener('click', async () => {
+        btnStart.addEventListener('click', async () => {
             try {
                 stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } } 
+                    video: {
+                        facingMode: { ideal: 'environment' },
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
                 });
+
                 video.srcObject = stream;
-                
-                document.getElementById('btnStart').disabled = true;
-                document.getElementById('btnStop').disabled = false;
-                document.getElementById('statusDot').className = 'status-dot active';
-                document.getElementById('statusText').textContent = "Escaneando";
-                
-                scanInterval = setInterval(processFrame, 300);
+                await video.play();
+
+                btnStart.disabled = true;
+                btnStop.disabled = false;
+                statusDot.className = 'status-dot active';
+                statusText.textContent = "Escaneando pantalla...";
+
+                // Escaneo rápido cada 350ms
+                scanInterval = setInterval(processFrame, 350);
             } catch (err) {
-                alert("Error de cámara");
+                console.error(err);
+                alert("No se pudo acceder a la cámara.");
+                statusText.textContent = "Error de cámara";
             }
         });
 
-        document.getElementById('btnStop').addEventListener('click', () => {
-            clearInterval(scanInterval);
-            if (stream) stream.getTracks().forEach(track => track.stop());
-            document.getElementById('btnStart').disabled = false;
-            document.getElementById('btnStop').disabled = true;
-            document.getElementById('statusDot').className = 'status-dot';
-            document.getElementById('statusText').textContent = "Apagada";
-        });
+        btnStop.addEventListener('click', stopCamera);
+
+        function stopCamera() {
+            if (scanInterval) clearInterval(scanInterval);
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+            }
+            btnStart.disabled = false;
+            btnStop.disabled = true;
+            statusDot.className = 'status-dot';
+            statusText.textContent = "Cámara apagada";
+        }
 
         async function processFrame() {
-            if (isProcessing || !worker || video.videoWidth === 0) return;
-            isProcessing = true;
+            if (isProcessing || !worker || video.readyState !== video.HAVE_ENOUGH_DATA) return;
             
-            const cropWidth = video.videoWidth * 0.70;  
-            const cropHeight = video.videoHeight * 0.25; 
+            isProcessing = true;
+
+            // Recuadro ampliado: 92% del ancho y 75% del alto del vídeo
+            const cropWidth = video.videoWidth * 0.92;
+            const cropHeight = video.videoHeight * 0.75;
             const startX = (video.videoWidth - cropWidth) / 2;
             const startY = (video.videoHeight - cropHeight) / 2;
 
-            canvas.width = cropWidth; 
+            canvas.width = cropWidth;
             canvas.height = cropHeight;
 
+            // Dibujar recuadro en el canvas
             ctx.drawImage(
-                video, 
-                startX, startY, cropWidth, cropHeight, 
-                0, 0, cropWidth, cropHeight            
+                video,
+                startX, startY, cropWidth, cropHeight,
+                0, 0, cropWidth, cropHeight
             );
 
             try {
                 const { data } = await worker.recognize(canvas);
                 
-                // 1. Limpieza de texto (solo letras mayúsculas y números)
-                const text = data.text.replace(/[^A-Z0-9]/g, '');
+                // 1. Eliminar caracteres especiales (/, -, _, espacios, etc.) conservando solo A-Z y 0-9
+                const cleanedText = data.text.replace(/[^A-Z0-9]/g, '');
 
-                // 2. Buscar la última aparición de HG840
-                const target = 'HG840';
-                const lastIndex = text.lastIndexOf(target);
+                // 2. Buscar todas las ocurrencias de "HG" y extraer el texto inmediatamente posterior
+                // La Expresión Regular busca "HG" y captura todos los caracteres válidos siguientes hasta el próximo "HG" o final
+                const regex = /HG([A-Z0-9]+)/g;
+                let match;
+                const results = [];
 
-                // 3. Si encuentra HG840, extrae lo que hay después
-                if (lastIndex !== -1) {
-                    const extractedText = text.substring(lastIndex + target.length);
-                    
-                    // Muestra el texto extraído (o un aviso si no hay nada después)
-                    outputBox.textContent = extractedText.length > 0 ? extractedText : "[Sin datos posteriores]";
-                    
-                    document.getElementById('statusDot').style.backgroundColor = "#00e676";
-                    
+                while ((match = regex.exec(cleanedText)) !== null) {
+                    if (match[1] && match[1].length > 0) {
+                        results.push(match[1]);
+                    }
+                }
+
+                // 3. Si se encontraron resultados, actualizar la pantalla
+                if (results.length > 0) {
+                    statusDot.className = 'status-dot detected';
+                    statusText.textContent = `¡${results.length} encontrado(s)!`;
+                    matchCount.textContent = `${results.length} detectado(s)`;
+
+                    // Generar lista en pantalla
+                    matchesList.innerHTML = results.map((val, idx) => `
+                        <div class="match-card">
+                            <div>
+                                <span class="match-label">HG</span>
+                                <span class="match-value">${val}</span>
+                            </div>
+                            <span style="font-size:0.75rem; color:#888;">#${idx + 1}</span>
+                        </div>
+                    `).join('');
+
                     setTimeout(() => {
-                        document.getElementById('statusDot').style.backgroundColor = "#4caf50";
-                    }, 500);
+                        if (stream && stream.active) {
+                            statusDot.className = 'status-dot active';
+                            statusText.textContent = "Escaneando pantalla...";
+                        }
+                    }, 600);
                 }
             } catch (err) {
-                console.error(err);
+                console.error("Error en lectura OCR:", err);
             } finally {
                 isProcessing = false;
             }
