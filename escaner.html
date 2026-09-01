@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escáner OCR - Alineación Vertical HG</title>
+    <title>Escáner Ultrarrápido HG</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         * {
@@ -215,8 +215,8 @@
 <body>
 
     <header>
-        <h1>Escáner Alineación Vertical HG</h1>
-        <p class="subtitle">Prioriza derecha y respeta columna izquierda</p>
+        <h1>Escáner Ultrarrápido HG</h1>
+        <p class="subtitle">Optimizado para máxima velocidad y precisión</p>
     </header>
 
     <div class="camera-container">
@@ -247,10 +247,16 @@
 
     <canvas id="captureCanvas"></canvas>
 
+    <canvas id="processingCanvas"></canvas>
+
     <script>
         const video = document.getElementById('webcam');
         const canvas = document.getElementById('captureCanvas');
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        
+        const procCanvas = document.getElementById('processingCanvas');
+        const procCtx = procCanvas.getContext('2d', { willReadFrequently: true });
+
         const btnStart = document.getElementById('btnStart');
         const btnStop = document.getElementById('btnStop');
         const statusDot = document.getElementById('statusDot');
@@ -295,7 +301,8 @@
                 statusDot.className = 'status-dot active';
                 statusText.textContent = "Escaneando...";
 
-                scanInterval = setInterval(processFrame, 200);
+                // Intervalo ajustado a 100ms para máxima fluidez
+                scanInterval = setInterval(processFrame, 100);
             } catch (err) {
                 console.error(err);
                 alert("No se pudo acceder a la cámara.");
@@ -328,16 +335,23 @@
 
             canvas.width = cropWidth;
             canvas.height = cropHeight;
-
             ctx.drawImage(video, startX, startY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
 
+            // Reducción de escala (Scale down) a un ancho máximo de 800px para acelerar el OCR
+            const targetWidth = Math.min(cropWidth, 800);
+            const scaleFactor = targetWidth / cropWidth;
+            const targetHeight = cropHeight * scaleFactor;
+
+            procCanvas.width = targetWidth;
+            procCanvas.height = targetHeight;
+            procCtx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
+
             try {
-                const { data } = await worker.recognize(canvas);
+                const { data } = await worker.recognize(procCanvas);
                 
                 let rightmostWord = null;
                 let maxX = -1;
 
-                // PASO 1: Encontrar el "HG" más a la derecha en la pantalla
                 if (data.words) {
                     data.words.forEach(word => {
                         if (word.text.toUpperCase().includes('HG')) {
@@ -350,38 +364,28 @@
                 }
 
                 if (rightmostWord) {
-                    const hgLeft = rightmostWord.bbox.x0; // Margen izquierdo de la H de HG
+                    const hgLeft = rightmostWord.bbox.x0;
                     const hgTop = rightmostWord.bbox.y0;
                     const hgBottom = rightmostWord.bbox.y1;
 
-                    // PASO 2: Filtrar estrictamente por columna vertical izquierda (alineados con la H)
-                    // y que estén en la misma línea o debajo (hasta 3 líneas aprox).
                     let candidateWords = data.words.filter(w => {
-                        const isBelowOrSameLine = w.bbox.y0 >= hgTop - 10;
-                        const isWithinVerticalRange = w.bbox.y0 <= hgBottom + 160; // 2 o 3 líneas abajo
-                        
-                        // Coincidencia estricta en el Eje X: 
-                        // El texto de abajo debe compartir la misma línea vertical izquierda (margen de tolerancia de +-30 píxeles)
-                        // O estar extendido hacia la derecha de ese mismo bloque.
-                        const matchesLeftColumn = Math.abs(w.bbox.x0 - hgLeft) < 35 || (w.bbox.x0 >= hgLeft - 10 && w.bbox.x0 < hgLeft + 80);
+                        const isBelowOrSameLine = w.bbox.y0 >= hgTop - 8;
+                        const isWithinVerticalRange = w.bbox.y0 <= hgBottom + 120;
+                        const matchesLeftColumn = Math.abs(w.bbox.x0 - hgLeft) < 25 || (w.bbox.x0 >= hgLeft - 8 && w.bbox.x0 < hgLeft + 60);
 
                         return isBelowOrSameLine && isWithinVerticalRange && matchesLeftColumn;
                     });
 
-                    // Ordenar de arriba hacia abajo (respetando las líneas)
                     candidateWords.sort((a, b) => {
-                        if (Math.abs(a.bbox.y0 - b.bbox.y0) < 18) {
-                            return a.bbox.x0 - b.bbox.x0; // Si están en la misma línea, de izquierda a derecha
+                        if (Math.abs(a.bbox.y0 - b.bbox.y0) < 14) {
+                            return a.bbox.x0 - b.bbox.x0;
                         }
-                        return a.bbox.y0 - b.bbox.y0; // Si están en líneas distintas, de arriba a abajo
+                        return a.bbox.y0 - b.bbox.y0;
                     });
 
                     let rawExtracted = candidateWords.map(w => w.text).join(' ');
-
-                    // PASO 3: RECHAZAR SÍMBOLOS (Solo se permiten letras y números)
                     let cleanedText = rawExtracted.toUpperCase().replace(/[^A-Z0-9]/g, '');
 
-                    // PASO 4: Asegurar que empiece exactamente con HG seguido de números y texto
                     const regex = /HG\d+[A-Z0-9]+/;
                     const match = cleanedText.match(regex);
 
@@ -389,13 +393,13 @@
                         const finalSignature = match[0];
                         
                         statusDot.className = 'status-dot detected';
-                        statusText.textContent = `¡Alineado correctamente!`;
+                        statusText.textContent = `¡Capturado!`;
                         matchCount.textContent = `1 Aislado`;
 
                         matchesList.innerHTML = `
                             <div class="match-card">
                                 <span class="match-value">${finalSignature}</span>
-                                <span style="font-size:0.75rem; color:#888;">(Vertical)</span>
+                                <span style="font-size:0.75rem; color:#888;">(Rápido)</span>
                             </div>
                         `;
 
@@ -404,11 +408,11 @@
                                 statusDot.className = 'status-dot active';
                                 statusText.textContent = "Escaneando...";
                             }
-                        }, 600);
+                        }, 400);
                     }
                 }
             } catch (err) {
-                console.error("Error en alineación vertical:", err);
+                console.error("Error en escaneo rápido:", err);
             } finally {
                 isProcessing = false;
             }
