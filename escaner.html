@@ -440,8 +440,8 @@
             worker = await Tesseract.createWorker('eng');
             
             await worker.setParameters({
-                tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/-.,',
-                tessedit_pageseg_mode: '11', 
+                tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+                tessedit_pageseg_mode: '7', // Modo línea única ultrarrápido
             });
             
             statusText.textContent = "Sistema Listo";
@@ -480,11 +480,10 @@
             }
         }
 
-        // Función personalizada donde los números son mayores que las letras
+        // Números mayores que letras
         function getCharWeight(c) {
             if (!c) return 0;
             if (/[0-9]/.test(c)) {
-                // Asignamos un peso mayor a los números para que superen a las letras (ASCII de letras van de 65 a 90)
                 return 100 + parseInt(c, 10);
             } else if (/[A-Z]/.test(c)) {
                 return c.charCodeAt(0);
@@ -535,7 +534,7 @@
                 statusDot.className = 'status-dot active';
                 statusText.textContent = "Escaneando...";
 
-                scanInterval = setInterval(processFrame, 100);
+                scanInterval = setInterval(processFrame, 80);
             } catch (err) {
                 console.error(err);
                 alert("No se pudo acceder a la cámara.");
@@ -598,7 +597,8 @@
             canvas.height = cropHeight;
             ctx.drawImage(video, startX, startY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
 
-            const targetWidth = Math.min(cropWidth, 800);
+            // Resolución reducida a 450px para velocidad extrema de procesamiento
+            const targetWidth = Math.min(cropWidth, 450);
             const scaleFactor = targetWidth / cropWidth;
             const targetHeight = cropHeight * scaleFactor;
 
@@ -606,90 +606,64 @@
             procCanvas.height = targetHeight;
             procCtx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
 
+            // Preprocesamiento binarizado (escala de grises y contraste fuerte para velocidad de OCR)
             try {
+                const imgData = procCtx.getImageData(0, 0, targetWidth, targetHeight);
+                const pixels = imgData.data;
+                for (let i = 0; i < pixels.length; i += 4) {
+                    let avg = (pixels[i] + pixels[i+1] + pixels[i+2]) / 3;
+                    let v = avg < 140 ? 0 : 255;
+                    pixels[i] = v;
+                    pixels[i+1] = v;
+                    pixels[i+2] = v;
+                }
+                procCtx.putImageData(imgData, 0, 0);
+
                 const { data } = await worker.recognize(procCanvas);
                 
-                let rightmostWord = null;
-                let maxX = -1;
+                let rawExtracted = data.text || '';
+                let cleanedText = rawExtracted.toUpperCase().replace(/[^A-Z0-9]/g, '');
 
-                if (data.words) {
-                    data.words.forEach(word => {
-                        if (word.text.toUpperCase().includes('HG')) {
-                            if (word.bbox.x0 > maxX) {
-                                maxX = word.bbox.x0;
-                                rightmostWord = word;
+                const regex = /HG\d+[A-Z0-9]+/;
+                const match = cleanedText.match(regex);
+
+                if (match) {
+                    const finalSignature = match[0];
+                    const scannedClean = finalSignature.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                    
+                    statusDot.className = 'status-dot detected';
+                    statusText.textContent = `¡Capturado!`;
+                    matchCount.textContent = `1 Aislado`;
+
+                    matchesList.innerHTML = `
+                        <div class="match-card">
+                            <span class="match-value">${finalSignature}</span>
+                            <span style="font-size:0.75rem; color:#888;">(Ultrarrápido)</span>
+                        </div>
+                    `;
+
+                    if (scannedClean !== lastScannedSignature) {
+                        lastScannedSignature = scannedClean;
+
+                        if (targetSignatureClean) {
+                            const comparisonResult = compareCustom(targetSignatureClean, scannedClean);
+
+                            if (comparisonResult < 0) {
+                                showIndicator('left');
+                            } else if (comparisonResult > 0) {
+                                showIndicator('right');
+                            } else {
+                                showIndicator('match');
                             }
                         }
-                    });
-                }
-
-                if (rightmostWord) {
-                    const hgLeft = rightmostWord.bbox.x0;
-                    const hgTop = rightmostWord.bbox.y0;
-                    const hgBottom = rightmostWord.bbox.y1;
-
-                    let candidateWords = data.words.filter(w => {
-                        const isBelowOrSameLine = w.bbox.y0 >= hgTop - 8;
-                        const isWithinVerticalRange = w.bbox.y0 <= hgBottom + 120;
-                        const matchesLeftColumn = Math.abs(w.bbox.x0 - hgLeft) < 25 || (w.bbox.x0 >= hgLeft - 8 && w.bbox.x0 < hgLeft + 60);
-
-                        return isBelowOrSameLine && isWithinVerticalRange && matchesLeftColumn;
-                    });
-
-                    candidateWords.sort((a, b) => {
-                        if (Math.abs(a.bbox.y0 - b.bbox.y0) < 14) {
-                            return a.bbox.x0 - b.bbox.x0;
-                        }
-                        return a.bbox.y0 - b.bbox.y0;
-                    });
-
-                    let rawExtracted = candidateWords.map(w => w.text).join(' ');
-                    let cleanedText = rawExtracted.toUpperCase().replace(/[^A-Z0-9]/g, '');
-
-                    const regex = /HG\d+[A-Z0-9]+/;
-                    const match = cleanedText.match(regex);
-
-                    if (match) {
-                        const finalSignature = match[0];
-                        const scannedClean = finalSignature.toUpperCase().replace(/[^A-Z0-9]/g, '');
-                        
-                        statusDot.className = 'status-dot detected';
-                        statusText.textContent = `¡Capturado!`;
-                        matchCount.textContent = `1 Aislado`;
-
-                        matchesList.innerHTML = `
-                            <div class="match-card">
-                                <span class="match-value">${finalSignature}</span>
-                                <span style="font-size:0.75rem; color:#888;">(Rápido)</span>
-                            </div>
-                        `;
-
-                        if (scannedClean !== lastScannedSignature) {
-                            lastScannedSignature = scannedClean;
-
-                            if (targetSignatureClean) {
-                                const comparisonResult = compareCustom(targetSignatureClean, scannedClean);
-
-                                if (comparisonResult < 0) {
-                                    // Target es menor que Scanned bajo la nueva regla -> Izquierda
-                                    showIndicator('left');
-                                } else if (comparisonResult > 0) {
-                                    // Target es mayor que Scanned bajo la nueva regla -> Derecha
-                                    showIndicator('right');
-                                } else {
-                                    // Coincidencia exacta
-                                    showIndicator('match');
-                                }
-                            }
-                        }
-
-                        setTimeout(() => {
-                            if (stream && stream.active) {
-                                statusDot.className = 'status-dot active';
-                                statusText.textContent = "Escaneando...";
-                            }
-                        }, 400);
                     }
+
+                    setTimeout(() => {
+                        if (stream && stream.active) {
+                            statusDot.className = 'status-dot active';
+                            statusText.textContent = "Escaneando...";
+                        }
+                    }, 400);
                 }
             } catch (err) {
                 console.error("Error en escaneo rápido:", err);
