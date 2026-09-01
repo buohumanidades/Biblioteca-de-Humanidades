@@ -1,29 +1,213 @@
-function evaluarTexto(textoLimpio) {
-            // 1. Limpieza base: Todo mayúsculas, unificar espacios, quitar símbolos raros
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Navegación en Estantería con Cámara</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.1.1/tesseract.min.js"></script>
+    <style>
+        html, body { 
+            margin: 0; padding: 0; 
+            width: 100vw; height: 100dvh; 
+            overflow: hidden; 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background-color: #121214; color: #fff; 
+            display: flex; flex-direction: column;
+        }
+
+        #pantalla-inicio {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; width: 100%; padding: 20px; box-sizing: border-box; text-align: center;
+        }
+        #btn-iniciar {
+            background: linear-gradient(135deg, #27ae60, #2ecc71); border: none;
+            color: white; font-size: 1.2em; font-weight: bold; padding: 15px 30px;
+            border-radius: 12px; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+            margin-top: 20px;
+        }
+
+        #interfaz-principal {
+            display: none; 
+            flex-direction: column; height: 100%; width: 100%;
+        }
+
+        #info-objetivo { 
+            background: #1e1e24; padding: 10px; border-bottom: 2px solid #333; 
+            font-size: 0.9em; text-align: center; flex-shrink: 0;
+        }
+        .highlight { color: #ffeb3b; font-weight: bold; }
+
+        #contenedor-camara { 
+            position: relative; width: 100%; flex-grow: 1; 
+            background: #000; overflow: hidden;
+        }
+        video { 
+            width: 100%; height: 100%; 
+            object-fit: cover; 
+            display: block; 
+        }
+        .guia-enfoque { 
+            position: absolute; top: 35%; left: 10%; width: 80%; height: 30%; 
+            border: 3px dashed #00ffcc; box-sizing: border-box; pointer-events: none; 
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6); z-index: 2; 
+        }
+        
+        #panel-direccion { 
+            width: 100%; height: 150px; flex-shrink: 0; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            background: #22222b; border-top: 2px solid #333; transition: all 0.3s ease; 
+            padding: 10px; box-sizing: border-box; text-align: center;
+        }
+        .flecha { font-size: 50px; line-height: 1; margin: 0; }
+        .texto-dir { font-size: 18px; font-weight: bold; text-transform: uppercase; margin-top: 5px; margin-bottom: 0;}
+        .subtexto { font-size: 13px; color: #e0e0e0; margin-top: 5px; font-weight: normal; margin-bottom: 0; }
+        
+        .dir-izq { background-color: #0288d1 !important; border-top-color: #00e5ff !important; }
+        .dir-der { background-color: #388e3c !important; border-top-color: #00e676 !important; }
+        .dir-arr { background-color: #f57c00 !important; border-top-color: #ffea00 !important; } 
+        .dir-ok  { background-color: #8e44ad !important; border-top-color: #9b59b6 !important; } 
+
+        #lectura { font-size: 12px; color: #888; position: absolute; bottom: 5px; left: 10px; z-index: 10; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px;}
+        #texto-visto { color: #00ffcc; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="pantalla-inicio">
+        <h2>Buscador de Estantería</h2>
+        <p>Para encender la cámara y activar las indicaciones por voz, pulsa el botón.</p>
+        <button id="btn-iniciar">📷 Iniciar Escáner</button>
+    </div>
+
+    <div id="interfaz-principal">
+        <div id="info-objetivo">
+            Sección: <span id="txt-sig-buscada" class="highlight">-</span> | 
+            Libro: <span id="txt-sig-original" class="highlight">-</span>
+        </div>
+
+        <div id="contenedor-camara">
+            <video id="camara" autoplay playsinline muted></video>
+            <div class="guia-enfoque"></div>
+            <div id="lectura">Viendo: <span id="texto-visto">-</span></div>
+        </div>
+
+        <div id="panel-direccion">
+            <p class="flecha">⏳</p>
+            <p class="texto-dir">Cargando...</p>
+        </div>
+    </div>
+    
+    <canvas id="canvas-procesamiento" style="display: none;"></canvas>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const sigBuscada = (params.get('sig') || '').toUpperCase().trim();
+        const sigOriginal = (params.get('orig') || '').toUpperCase().trim();
+        const sufijoObjetivo = sigOriginal.replace(sigBuscada, '').trim();
+
+        document.getElementById('txt-sig-buscada').innerText = sigBuscada || "ND";
+        document.getElementById('txt-sig-original').innerText = sigOriginal || "ND";
+
+        const video = document.getElementById('camara');
+        const canvas = document.getElementById('canvas-procesamiento');
+        const panelDir = document.getElementById('panel-direccion');
+        const textoVisto = document.getElementById('texto-visto');
+        
+        let trabajadorOCR = null;
+        let estadoActual = sigBuscada ? "BUSCANDO_ESTANTE" : "ERROR"; 
+        let direccionActual = ""; 
+        let escaneandoActivo = false;
+
+        document.getElementById('btn-iniciar').addEventListener('click', async () => {
+            document.getElementById('pantalla-inicio').style.display = 'none';
+            document.getElementById('interfaz-principal').style.display = 'flex';
+            
+            if ('speechSynthesis' in window) {
+                const initVoz = new SpeechSynthesisUtterance('');
+                window.speechSynthesis.speak(initVoz);
+            }
+            
+            iniciarOCR();
+        });
+
+        async function iniciarOCR() {
+            if(estadoActual === "ERROR") {
+                actualizarPanel("⚠️", "Faltan datos", "Haz la búsqueda desde la web principal", "");
+                return;
+            }
+            
+            try {
+                textoVisto.innerText = "Cargando OCR...";
+                trabajadorOCR = await Tesseract.createWorker('spa', 1);
+                textoVisto.innerText = "Activando cámara...";
+                await arrancarCamara();
+            } catch (err) {
+                actualizarPanel("❌", "Error OCR", err.message, "");
+            }
+        }
+
+        async function arrancarCamara() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: { ideal: "environment" } } 
+                });
+                video.srcObject = stream;
+                
+                video.onloadedmetadata = () => {
+                    video.play();
+                    actualizarPanel("👀", "Busca la sección", `Enfoca: ${sigBuscada}`, "dir-arr");
+                    if (!escaneandoActivo) {
+                        escaneandoActivo = true;
+                        bucleEscaneo();
+                    }
+                };
+            } catch (err) {
+                actualizarPanel("🚫", "Sin Cámara", "Da permisos a la web para usarla", "");
+            }
+        }
+
+        async function bucleEscaneo() {
+            if (estadoActual === "ENCONTRADO" || !video.videoWidth) {
+                setTimeout(bucleEscaneo, 500);
+                return;
+            }
+
+            const ctx = canvas.getContext('2d');
+            const x = video.videoWidth * 0.10;
+            const y = video.videoHeight * 0.35;
+            const ancho = video.videoWidth * 0.80;
+            const alto = video.videoHeight * 0.30;
+
+            canvas.width = ancho;
+            canvas.height = alto;
+            ctx.drawImage(video, x, y, ancho, alto, 0, 0, ancho, alto);
+
+            try {
+                const { data: { text } } = await trabajadorOCR.recognize(canvas);
+                evaluarTexto(text);
+            } catch (error) {}
+
+            setTimeout(bucleEscaneo, 400); 
+        }
+
+        function evaluarTexto(textoLimpio) {
             let texto = textoLimpio.toUpperCase()
-                .replace(/[^A-Z0-9.\- ]/g, ' ') // Solo letras, números, puntos y guiones
+                .replace(/[^A-Z0-9.\- ]/g, ' ') 
                 .replace(/\s+/g, ' ')
                 .trim();
                 
             if (!texto || texto.length < 3) return;
 
-            // 2. Extraer inteligentemente desde el primer número
-            // (Ignora carteles que digan "Sala", "Estante", etc.)
             let matchIndex = texto.search(/\d/);
-            if (matchIndex === -1) return; // Si no hay números, no es una signatura de biblioteca
+            if (matchIndex === -1) return; 
             
             let signaturaLeida = texto.substring(matchIndex);
-            
-            // Mostrar en pantalla lo que el sistema "entiende" que está leyendo
             textoVisto.innerText = signaturaLeida;
 
-            // 3. Preparar cadenas comprimidas (sin espacios) para evitar fallos del OCR
-            // Ejemplo: "821.134   ALV" se convierte en "821.134ALV"
             let leidoStr = signaturaLeida.replace(/\s+/g, '');
             let targetStr = sigOriginal.replace(/\s+/g, '');
             let baseStr = sigBuscada.replace(/\s+/g, ''); 
 
-            // 4. Verificaciones de Éxito
             if (leidoStr.includes(targetStr)) {
                  estadoActual = "ENCONTRADO";
                  actualizarPanel("🎯", "¡LIBRO ENCONTRADO!", sigOriginal, "dir-ok");
@@ -38,21 +222,57 @@ function evaluarTexto(textoLimpio) {
                 return;
             }
 
-            // 5. Comparación Direccional Continua
-            // Se usa localeCompare estándar. En la clasificación decimal (CDU), 
-            // 821.2 va después de 821.134 porque el caracter '2' es mayor que '1'.
-            let comp = leidoStr.localeCompare(targetStr);
-            
-            // Ignoramos lecturas demasiado cortas para evitar "saltos" en las flechas
-            if (leidoStr.length < 4) return;
+            if (estadoActual === "BUSCANDO_LIBRO") {
+                let comp = leidoStr.localeCompare(targetStr);
+                
+                if (leidoStr.length < 4) return;
 
-            if (comp < 0) {
-                // Lo que enfocamos es MENOR (ej. Leemos ALV y buscamos CER) -> Está a la Derecha
-                actualizarPanel("▶", "DERECHA", `Viendo: ${signaturaLeida}`, "dir-der");
-                notificarCambio("DERECHA", "Derecha");
-            } else if (comp > 0) {
-                // Lo que enfocamos es MAYOR (ej. Leemos GOM y buscamos CER) -> Está a la Izquierda
-                actualizarPanel("◀", "IZQUIERDA", `Viendo: ${signaturaLeida}`, "dir-izq");
-                notificarCambio("IZQUIERDA", "Izquierda");
+                if (comp < 0) {
+                    actualizarPanel("▶", "DERECHA", `Viendo: ${signaturaLeida}`, "dir-der");
+                    notificarCambio("DERECHA", "Derecha");
+                } else if (comp > 0) {
+                    actualizarPanel("◀", "IZQUIERDA", `Viendo: ${signaturaLeida}`, "dir-izq");
+                    notificarCambio("IZQUIERDA", "Izquierda");
+                }
             }
         }
+
+        function actualizarPanel(icono, textoPrincipal, subtexto, claseColor) {
+            panelDir.className = ""; 
+            if(claseColor) panelDir.classList.add(claseColor);
+            panelDir.innerHTML = `
+                <p class="flecha">${icono}</p>
+                <p class="texto-dir">${textoPrincipal}</p>
+                ${subtexto ? `<p class="subtexto">${subtexto}</p>` : ''}
+            `;
+        }
+
+        function notificarCambio(idDireccion, mensajeVoz) {
+            if (idDireccion !== direccionActual) {
+                direccionActual = idDireccion;
+                emitirVoz(mensajeVoz);
+                ejecutarVibracion(idDireccion);
+            }
+        }
+
+        function emitirVoz(mensaje) {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(mensaje);
+            utterance.lang = 'es-ES';
+            utterance.rate = 1.1;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function ejecutarVibracion(direccion) {
+            if (!("vibrate" in navigator)) return; 
+            switch (direccion) {
+                case "IZQUIERDA": navigator.vibrate(400); break;
+                case "DERECHA": navigator.vibrate([150, 100, 150]); break;
+                case "ESTANTE_ENCONTRADO": navigator.vibrate([100, 50, 100, 50, 300]); break;
+                case "ENCONTRADO": navigator.vibrate([500, 200, 500, 200, 800]); break;
+            }
+        }
+    </script>
+</body>
+</html>
