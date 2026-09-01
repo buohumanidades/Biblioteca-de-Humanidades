@@ -15,7 +15,6 @@
             display: flex; flex-direction: column;
         }
 
-        /* La interfaz principal ahora es visible por defecto */
         #interfaz-principal {
             display: flex; 
             flex-direction: column; height: 100%; width: 100%;
@@ -44,7 +43,6 @@
             overflow: hidden;
         }
 
-        /* LÍNEA DE ESCANEO (Animación de progreso) */
         #linea-escaner {
             position: absolute; width: 100%; height: 3px;
             background: #00ffcc; box-shadow: 0 0 15px #00ffcc, 0 0 5px #ffffff;
@@ -120,9 +118,7 @@
         let direccionActual = ""; 
         let escaneandoActivo = false;
 
-        // Arrancar automáticamente al cargar la página
         window.onload = async () => {
-            // Desbloquear motor de voz al primer toque en la pantalla
             document.body.addEventListener('click', function unlockAudio() {
                 if ('speechSynthesis' in window) {
                     const initVoz = new SpeechSynthesisUtterance('');
@@ -142,22 +138,27 @@
             }
             
             try {
-                // Corrección de la inicialización para Tesseract v4
-                textoVisto.innerText = "Cargando motor de lectura...";
+                textoVisto.innerText = "Preparando lector...";
+                
                 trabajadorOCR = await Tesseract.createWorker({
                     logger: m => {
                         if(m.status === 'loading tesseract core') textoVisto.innerText = "Cargando núcleo...";
-                        if(m.status === 'initializing api') textoVisto.innerText = "Iniciando IA...";
-                        if(m.status === 'recognizing text') textoVisto.innerText = "Analizando...";
+                        if(m.status === 'loading language traineddata') {
+                            textoVisto.innerText = `Descargando IA: ${Math.round(m.progress * 100)}%`;
+                        }
+                        if(m.status === 'initializing api') textoVisto.innerText = "Iniciando motor...";
+                        if(m.status === 'recognizing text') textoVisto.innerText = "Analizando estantería...";
                     }
                 });
-                await trabajadorOCR.loadLanguage('spa');
-                await trabajadorOCR.initialize('spa');
+                
+                // Usamos 'eng' para lectura ultrarrápida y ligera de códigos alfanuméricos
+                await trabajadorOCR.loadLanguage('eng');
+                await trabajadorOCR.initialize('eng');
                 
                 textoVisto.innerText = "Motor listo. Abriendo cámara...";
                 await arrancarCamara();
             } catch (err) {
-                actualizarPanel("❌", "Error OCR", "Revisa tu conexión", "");
+                actualizarPanel("❌", "Error OCR", "Revisa tu conexión a internet", "");
             }
         }
 
