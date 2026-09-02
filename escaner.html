@@ -133,9 +133,9 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            /* Área reducida para obligar al usuario a centrar y capturar menos ruido */
-            width: 80%;
-            height: 40%;
+            /* Área mucho más reducida para capturar menos ruido y procesar más rápido */
+            width: 70%;
+            height: 25%;
             border: 2px dashed #ffeb3b;
             border-radius: 10px;
             box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.65);
@@ -440,7 +440,6 @@
             statusText.textContent = "Iniciando Motor IA...";
             worker = await Tesseract.createWorker('eng');
             
-            // OPTIMIZACIÓN: Se excluyen minúsculas si no aplican y se utiliza PSM 6 para un bloque uniforme de texto
             await worker.setParameters({
                 tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/-.,',
                 tessedit_pageseg_mode: '6', 
@@ -600,9 +599,10 @@
             
             isProcessing = true;
 
-            // OPTIMIZACIÓN: Reducción del área de escaneo (Crop) a un 80% ancho y 40% alto
-            const cropWidth = video.videoWidth * 0.80;
-            const cropHeight = video.videoHeight * 0.40;
+            // OPTIMIZACIÓN EXTREMA: Área de recorte reducida al 70% ancho y 25% alto
+            // Esto disminuye drásticamente la cantidad de píxeles a analizar
+            const cropWidth = video.videoWidth * 0.70;
+            const cropHeight = video.videoHeight * 0.25;
             const startX = (video.videoWidth - cropWidth) / 2;
             const startY = (video.videoHeight - cropHeight) / 2;
 
@@ -610,8 +610,8 @@
             canvas.height = cropHeight;
             ctx.drawImage(video, startX, startY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
 
-            // OPTIMIZACIÓN: Reducción masiva de la resolución destino a un máximo de 500px
-            const targetWidth = Math.min(cropWidth, 500);
+            // OPTIMIZACIÓN EXTREMA: Resolución destino máxima bajada de 500px a 350px
+            const targetWidth = Math.min(cropWidth, 350);
             const scaleFactor = targetWidth / cropWidth;
             const targetHeight = cropHeight * scaleFactor;
 
@@ -619,7 +619,6 @@
             procCanvas.height = targetHeight;
             procCtx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
 
-            // OPTIMIZACIÓN: Binarización (Blanco y Negro puro) para simplificar la lectura OCR
             const imageData = procCtx.getImageData(0, 0, targetWidth, targetHeight);
             const data = imageData.data;
             for (let i = 0; i < data.length; i += 4) {
@@ -691,24 +690,29 @@
                             lastScannedSignature = scannedClean;
 
                             if (targetSignatureClean) {
-                                const comparisonResult = compareCustom(targetSignatureClean, scannedClean);
+                                // MODIFICACIÓN CLAVE: Solo hacer la comparación visual (flechas/rojo)
+                                // si las longitudes de la signatura escaneada y la buscada son exactamente iguales.
+                                if (scannedClean.length === targetSignatureClean.length) {
+                                    const comparisonResult = compareCustom(targetSignatureClean, scannedClean);
 
-                                if (comparisonResult < 0) {
-                                    showIndicator('left');
-                                } else if (comparisonResult > 0) {
-                                    showIndicator('right');
-                                } else {
-                                    showIndicator('match');
+                                    if (comparisonResult < 0) {
+                                        showIndicator('left');
+                                    } else if (comparisonResult > 0) {
+                                        showIndicator('right');
+                                    } else {
+                                        showIndicator('match');
+                                    }
                                 }
                             }
                         }
 
+                        // Aliviar el loop de procesamiento
                         setTimeout(() => {
                             if (stream && stream.active) {
                                 statusDot.className = 'status-dot active';
                                 statusText.textContent = "Escaneando...";
                             }
-                        }, 400);
+                        }, 200); // Reducido el timeout para permitir reanudar más rápido
                     }
                 }
             } catch (err) {
