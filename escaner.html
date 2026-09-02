@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escáner Ultrarrápido HG v3</title>
+    <title>Escáner Ultrarrápido HG v4</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         * {
@@ -21,7 +21,7 @@
             align-items: center;
             min-height: 100vh;
             padding: 12px;
-            padding-bottom: 50px; /* Mas espacio en el fondo */
+            padding-bottom: 50px;
         }
 
         header {
@@ -45,7 +45,7 @@
             background-color: rgba(77, 166, 255, 0.15);
             border: 1px solid #4da6ff;
             color: #fff;
-            padding: 10px 18px; /* Un poco mas grande */
+            padding: 10px 18px;
             border-radius: 8px;
             margin-bottom: 12px;
             width: 100%;
@@ -71,8 +71,8 @@
             position: relative;
             width: 100%;
             max-width: 520px;
-            max-height: 600px; /* Pantalla mas alta */
-            height: 70vh; /* Mas alta */
+            max-height: 600px;
+            height: 70vh; 
             background-color: #000;
             border-radius: 14px;
             overflow: hidden;
@@ -130,11 +130,10 @@
 
         .scan-region {
             position: absolute;
-            /* Región mas baja y estrecha para enfocarse solo en la etiqueta de la signatura */
-            width: 30%; /* Mas estrecha */
-            height: 20%; /* Mas corta */
+            width: 30%; 
+            height: 20%; 
             left: 50%;
-            top: 75%; /* Mas baja en el video, donde están las etiquetas */
+            top: 75%; 
             transform: translate(-50%, -50%);
             border: 2px dashed #ffeb3b;
             border-radius: 10px;
@@ -154,16 +153,11 @@
             border-radius: 15px;
             padding: 10px 15px;
             box-shadow: 0 0 20px rgba(0,0,0,0.8);
-            width: 120px; /* Un poco mas grande */
+            width: 120px;
         }
 
-        .highway-indicator.left {
-            left: 10px;
-        }
-
-        .highway-indicator.right {
-            right: 10px;
-        }
+        .highway-indicator.left { left: 10px; }
+        .highway-indicator.right { right: 10px; }
 
         .chevron {
             font-size: 3.5rem;
@@ -226,7 +220,7 @@
 
         button {
             flex: 1;
-            padding: 14px; /* Un poco mas grandes */
+            padding: 14px;
             font-size: 1rem;
             font-weight: bold;
             border: none;
@@ -327,11 +321,6 @@
             transition: all 0.2s ease;
         }
 
-        .btn-new-search-bottom:active {
-            transform: translateY(2px);
-            background: #1a252f;
-        }
-
         canvas {
             display: none;
         }
@@ -340,7 +329,7 @@
 <body>
 
     <header>
-        <h1>Escáner Ultrarrápido HG v3</h1>
+        <h1>Escáner Ultrarrápido HG v4</h1>
         <p class="subtitle">Alinee la etiqueta de signatura de la base de los libros</p>
     </header>
 
@@ -354,22 +343,15 @@
         <div class="overlay">
             <div class="status-badge">
                 <div class="status-dot" id="statusDot"></div>
-                <span id="statusText">Cargando...</span>
+                <span id="statusText">Cargando IA...</span>
             </div>
-            <!-- Región mas baja y estrecha -->
             <div class="scan-region"></div>
-            
-            <!-- Indicador Izquierda -->
             <div id="indicatorLeft" class="highway-indicator left">
                 <span class="chevron">❮</span><span class="chevron">❮</span><span class="chevron">❮</span>
             </div>
-
-            <!-- Indicador Derecha -->
             <div id="indicatorRight" class="highway-indicator right">
                 <span class="chevron">❯</span><span class="chevron">❯</span><span class="chevron">❯</span>
             </div>
-
-            <!-- Círculo Rojo Parpadeante (Coincidencia) -->
             <div id="indicatorMatch" class="red-alert-circle"></div>
         </div>
     </div>
@@ -401,20 +383,17 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const signatureToFind = urlParams.get('buscar') || '';
-        
         const targetSignatureClean = signatureToFind.toUpperCase().replace(/[^A-Z0-9]/g, '');
 
         if (signatureToFind) {
             const banner = document.getElementById('targetSearchBanner');
-            const targetSpan = document.getElementById('targetValue');
-            targetSpan.textContent = signatureToFind;
+            document.getElementById('targetValue').textContent = signatureToFind;
             banner.style.display = 'flex';
         }
 
         const video = document.getElementById('webcam');
         const canvas = document.getElementById('captureCanvas');
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        
         const procCanvas = document.getElementById('processingCanvas');
         const procCtx = procCanvas.getContext('2d', { willReadFrequently: true });
 
@@ -425,43 +404,31 @@
         const matchesList = document.getElementById('matchesList');
         const matchCount = document.getElementById('matchCount');
 
-        const indicatorLeft = document.getElementById('indicatorLeft');
-        const indicatorRight = document.getElementById('indicatorRight');
-        const indicatorMatch = document.getElementById('indicatorMatch');
-
         let stream = null;
         let isProcessing = false;
         let isScanning = false;
         let worker = null;
-
         let lastScannedSignature = '';
         let indicatorTimeout = null;
         let audioCtx = null;
 
         async function initOCR() {
-            statusText.textContent = "Iniciando Motor IA...";
-            worker = await Tesseract.createWorker('eng');
-            
-            // Whitelist ajustada para la signatura. Incluye espacios para las líneas de la etiqueta.
-            await worker.setParameters({
-                tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\s
--./',
-                // Modo multilínea para la etiqueta.
-                tessedit_pageseg_mode: '6', 
-            });
-            
-            statusText.textContent = "Sistema Listo";
+            try {
+                worker = await Tesseract.createWorker('eng');
+                await worker.setParameters({
+                    tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\s\n-./',
+                    tessedit_pageseg_mode: '6', 
+                });
+                statusText.textContent = "Sistema Listo";
+            } catch (e) {
+                console.error("Error cargando Tesseract:", e);
+                statusText.textContent = "Error de IA";
+            }
         }
         initOCR();
 
         function triggerVibration(pattern) {
-            try {
-                if (navigator.vibrate) {
-                    navigator.vibrate(pattern);
-                }
-            } catch (e) {
-                console.warn("La vibración no está soportada.", e);
-            }
+            try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) {}
         }
 
         function playBeepAlert() {
@@ -469,30 +436,101 @@
             try {
                 const osc = audioCtx.createOscillator();
                 const gainNode = audioCtx.createGain();
-                
                 osc.type = 'square';
                 osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
-                
                 gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-                
                 osc.connect(gainNode);
                 gainNode.connect(audioCtx.destination);
-                
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.2);
-            } catch (e) {
-                console.warn("No se pudo reproducir el audio.", e);
+            } catch (e) {}
+        }
+
+        btnStart.addEventListener('click', async () => {
+            try { triggerVibration(1); } catch (e) {}
+            try {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass && !audioCtx) audioCtx = new AudioContextClass();
+                if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+            } catch (e) {}
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert("Tu navegador no soporta el acceso a la cámara.");
+                return;
             }
+
+            try {
+                statusText.textContent = "Iniciando cámara...";
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: 'environment' },
+                        audio: false
+                    });
+                } catch (err1) {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                }
+
+                video.srcObject = stream;
+                
+                video.onloadedmetadata = async () => {
+                    try {
+                        await video.play();
+                        btnStart.disabled = true;
+                        btnStop.disabled = false;
+                        statusDot.className = 'status-dot active';
+                        statusText.textContent = "Escaneando...";
+                        isScanning = true;
+                        requestAnimationFrame(scanLoop);
+                    } catch (playErr) {
+                        alert("No se pudo iniciar el video.");
+                    }
+                };
+
+            } catch (err) {
+                alert("Permiso de cámara denegado o no disponible.");
+            }
+        });
+
+        btnStop.addEventListener('click', () => {
+            isScanning = false;
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+            }
+            btnStart.disabled = false;
+            btnStop.disabled = true;
+            statusDot.className = 'status-dot';
+            statusText.textContent = "Cámara apagada";
+            hideAllIndicators();
+        });
+
+        function showIndicator(type) {
+            hideAllIndicators();
+            if (type === 'left') {
+                document.getElementById('indicatorLeft').style.display = 'flex';
+                triggerVibration([200, 100, 200]);
+            } else if (type === 'right') {
+                document.getElementById('indicatorRight').style.display = 'flex';
+                triggerVibration([200, 100, 200]);
+            } else if (type === 'match') {
+                document.getElementById('indicatorMatch').style.display = 'block';
+                playBeepAlert();
+                triggerVibration([100, 50, 100, 50, 300]);
+            }
+            if (indicatorTimeout) clearTimeout(indicatorTimeout);
+            indicatorTimeout = setTimeout(() => hideAllIndicators(), 2000);
+        }
+
+        function hideAllIndicators() {
+            document.getElementById('indicatorLeft').style.display = 'none';
+            document.getElementById('indicatorRight').style.display = 'none';
+            document.getElementById('indicatorMatch').style.display = 'none';
         }
 
         function getCharWeight(c) {
             if (!c) return 0;
-            if (/[0-9]/.test(c)) {
-                return 100 + parseInt(c, 10);
-            } else if (/[A-Z]/.test(c)) {
-                return c.charCodeAt(0);
-            }
+            if (/[0-9]/.test(c)) return 100 + parseInt(c, 10);
             return c.charCodeAt(0);
         }
 
@@ -504,117 +542,30 @@
                 if (c1 === c2) continue;
                 const w1 = getCharWeight(c1);
                 const w2 = getCharWeight(c2);
-                if (w1 !== w2) {
-                    return w1 < w2 ? -1 : 1;
-                }
+                if (w1 !== w2) return w1 < w2 ? -1 : 1;
             }
             return 0;
         }
 
         function scanLoop() {
             if (!isScanning) return;
-            
-            if (!isProcessing) {
-                processFrame(); 
-            }
-            
+            if (!isProcessing) processFrame(); 
             requestAnimationFrame(scanLoop);
-        }
-
-        btnStart.addEventListener('click', async () => {
-            triggerVibration(1);
-            
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: { ideal: 'environment' },
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    },
-                    audio: false
-                });
-
-                video.srcObject = stream;
-                await video.play();
-
-                btnStart.disabled = true;
-                btnStop.disabled = false;
-                statusDot.className = 'status-dot active';
-                statusText.textContent = "Escaneando...";
-
-                isScanning = true;
-                requestAnimationFrame(scanLoop);
-            } catch (err) {
-                console.error(err);
-                alert("No se pudo acceder a la cámara.");
-            }
-        });
-
-        btnStop.addEventListener('click', stopCamera);
-
-        function stopCamera() {
-            isScanning = false;
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                video.srcObject = null;
-            }
-            btnStart.disabled = false;
-            btnStop.disabled = true;
-            statusDot.className = 'status-dot';
-            statusText.textContent = "Cámara apagada";
-            hideAllIndicators();
-        }
-
-        function showIndicator(type) {
-            hideAllIndicators();
-            
-            if (type === 'left') {
-                indicatorLeft.style.display = 'flex';
-                triggerVibration([200, 100, 200]);
-            } else if (type === 'right') {
-                indicatorRight.style.display = 'flex';
-                triggerVibration([200, 100, 200]);
-            } else if (type === 'match') {
-                indicatorMatch.style.display = 'block';
-                playBeepAlert();
-                triggerVibration([100, 50, 100, 50, 300]);
-            }
-
-            if (indicatorTimeout) clearTimeout(indicatorTimeout);
-            indicatorTimeout = setTimeout(() => {
-                hideAllIndicators();
-            }, 2000);
-        }
-
-        function hideAllIndicators() {
-            indicatorLeft.style.display = 'none';
-            indicatorRight.style.display = 'none';
-            indicatorMatch.style.display = 'none';
         }
 
         async function processFrame() {
             if (!worker || video.readyState !== video.HAVE_ENOUGH_DATA) return;
-            
             isProcessing = true;
 
-            // OPTIMIZACIÓN v3: Recorte mas estrecho y bajo (enfocado solo en la etiqueta de base)
             const cropWidth = video.videoWidth * 0.30;
             const cropHeight = video.videoHeight * 0.20;
             const startX = (video.videoWidth - cropWidth) / 2;
-            const startY = (video.videoHeight * 0.75) - (cropHeight / 2); // Baja en el video
+            const startY = (video.videoHeight * 0.75) - (cropHeight / 2);
 
             canvas.width = cropWidth;
             canvas.height = cropHeight;
             ctx.drawImage(video, startX, startY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
 
-            // OPTIMIZACIÓN v3: Resolución destino baja.
             const targetWidth = Math.min(cropWidth, 350);
             const scaleFactor = targetWidth / cropWidth;
             const targetHeight = cropHeight * scaleFactor;
@@ -623,76 +574,50 @@
             procCanvas.height = targetHeight;
             procCtx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
 
-            // OPTIMIZACIÓN v3: Binarización.
             const imageData = procCtx.getImageData(0, 0, targetWidth, targetHeight);
             const data = imageData.data;
             for (let i = 0; i < data.length; i += 4) {
                 const brightness = 0.34 * data[i] + 0.5 * data[i + 1] + 0.16 * data[i + 2];
-                const color = brightness > 120 ? 255 : 0; // Umbral de binarización
+                const color = brightness > 120 ? 255 : 0;
                 data[i] = data[i + 1] = data[i + 2] = color;
             }
             procCtx.putImageData(imageData, 0, 0);
 
             try {
-                // OCR con Tesseract multilínea
                 const { data: { text: ocrText } } = await worker.recognize(procCanvas);
-                
                 if (ocrText) {
-                    // Extraer texto y limpiar líneas.
-                    let cleanLines = ocrText.split(/\s*
-\s*/).map(line => line.trim()).filter(line => line.length > 0);
+                    let cleanLines = ocrText.split(/\s*\n\s*/).map(line => line.trim()).filter(line => line.length > 0);
                     let finalExtractedText = cleanLines.join(' ');
-                    
-                    // Limpieza final de la signatura para comparación (sin espacios).
                     let scannedClean = finalExtractedText.toUpperCase().replace(/[^A-Z0-9]/g, '');
 
-                    // Regex de patrón de signatura (HG\d+[A-Z]+) para todas las líneas unificadas.
                     const regex = /HG\d+[A-Z]+/;
                     const match = scannedClean.match(regex);
 
                     if (match) {
                         const finalSignature = match[0];
-                        const scannedCompare = finalSignature;
-                        
                         statusDot.className = 'status-dot detected';
                         statusText.textContent = `¡Capturado!`;
                         matchCount.textContent = `1 Aislado`;
+                        matchesList.innerHTML = `<div class="match-card"><span class="match-value">${finalSignature}</span><span style="font-size:0.75rem; color:#888;">(Etiqueta)</span></div>`;
 
-                        matchesList.innerHTML = `
-                            <div class="match-card">
-                                <span class="match-value">${finalSignature}</span>
-                                <span style="font-size:0.75rem; color:#888;">(Etiqueta)</span>
-                            </div>
-                        `;
-
-                        if (scannedCompare !== lastScannedSignature) {
-                            lastScannedSignature = scannedCompare;
-
+                        if (finalSignature !== lastScannedSignature) {
+                            lastScannedSignature = finalSignature;
                             if (targetSignatureClean) {
-                                // v3: COMPROBACIÓN DE DIFERENCIA DE LONGITUD DE UNA LETRA (O MENOS).
-                                const lengthDiff = Math.abs(scannedCompare.length - targetSignatureClean.length);
-                                
-                                if (lengthDiff <= 1) { // MODIFICACIÓN CLAVE
-                                    const comparisonResult = compareCustom(targetSignatureClean, scannedCompare);
-
-                                    if (comparisonResult < 0) {
-                                        showIndicator('left');
-                                    } else if (comparisonResult > 0) {
-                                        showIndicator('right');
-                                    } else {
-                                        showIndicator('match');
-                                    }
+                                const lengthDiff = Math.abs(finalSignature.length - targetSignatureClean.length);
+                                if (lengthDiff <= 1) { 
+                                    const comparisonResult = compareCustom(targetSignatureClean, finalSignature);
+                                    if (comparisonResult < 0) showIndicator('left');
+                                    else if (comparisonResult > 0) showIndicator('right');
+                                    else showIndicator('match');
                                 }
                             }
                         }
-
-                        // Aliviar el loop
                         setTimeout(() => {
                             if (stream && stream.active) {
                                 statusDot.className = 'status-dot active';
                                 statusText.textContent = "Escaneando...";
                             }
-                        }, 200); // Rápido
+                        }, 200);
                     }
                 }
             } catch (err) {
