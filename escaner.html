@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escáner Ultrarrápido HG</title>
+    <title>Escáner Ultrarrápido HG v3</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         * {
@@ -21,7 +21,7 @@
             align-items: center;
             min-height: 100vh;
             padding: 12px;
-            padding-bottom: 30px;
+            padding-bottom: 50px; /* Mas espacio en el fondo */
         }
 
         header {
@@ -45,7 +45,7 @@
             background-color: rgba(77, 166, 255, 0.15);
             border: 1px solid #4da6ff;
             color: #fff;
-            padding: 8px 16px;
+            padding: 10px 18px; /* Un poco mas grande */
             border-radius: 8px;
             margin-bottom: 12px;
             width: 100%;
@@ -71,8 +71,8 @@
             position: relative;
             width: 100%;
             max-width: 520px;
-            height: 60vh;
-            max-height: 500px;
+            max-height: 600px; /* Pantalla mas alta */
+            height: 70vh; /* Mas alta */
             background-color: #000;
             border-radius: 14px;
             overflow: hidden;
@@ -130,12 +130,12 @@
 
         .scan-region {
             position: absolute;
-            top: 50%;
+            /* Región mas baja y estrecha para enfocarse solo en la etiqueta de la signatura */
+            width: 30%; /* Mas estrecha */
+            height: 20%; /* Mas corta */
             left: 50%;
+            top: 75%; /* Mas baja en el video, donde están las etiquetas */
             transform: translate(-50%, -50%);
-            /* Área mucho más reducida para capturar menos ruido y procesar más rápido */
-            width: 70%;
-            height: 25%;
             border: 2px dashed #ffeb3b;
             border-radius: 10px;
             box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.65);
@@ -154,6 +154,7 @@
             border-radius: 15px;
             padding: 10px 15px;
             box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            width: 120px; /* Un poco mas grande */
         }
 
         .highway-indicator.left {
@@ -225,8 +226,8 @@
 
         button {
             flex: 1;
-            padding: 12px;
-            font-size: 0.95rem;
+            padding: 14px; /* Un poco mas grandes */
+            font-size: 1rem;
             font-weight: bold;
             border: none;
             border-radius: 8px;
@@ -339,8 +340,8 @@
 <body>
 
     <header>
-        <h1>Escáner Ultrarrápido HG</h1>
-        <p class="subtitle">Apunte el recuadro a las signaturas</p>
+        <h1>Escáner Ultrarrápido HG v3</h1>
+        <p class="subtitle">Alinee la etiqueta de signatura de la base de los libros</p>
     </header>
 
     <div id="targetSearchBanner" class="target-search-banner">
@@ -355,6 +356,7 @@
                 <div class="status-dot" id="statusDot"></div>
                 <span id="statusText">Cargando...</span>
             </div>
+            <!-- Región mas baja y estrecha -->
             <div class="scan-region"></div>
             
             <!-- Indicador Izquierda -->
@@ -440,8 +442,11 @@
             statusText.textContent = "Iniciando Motor IA...";
             worker = await Tesseract.createWorker('eng');
             
+            // Whitelist ajustada para la signatura. Incluye espacios para las líneas de la etiqueta.
             await worker.setParameters({
-                tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/-.,',
+                tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\s
+-./',
+                // Modo multilínea para la etiqueta.
                 tessedit_pageseg_mode: '6', 
             });
             
@@ -599,18 +604,17 @@
             
             isProcessing = true;
 
-            // OPTIMIZACIÓN EXTREMA: Área de recorte reducida al 70% ancho y 25% alto
-            // Esto disminuye drásticamente la cantidad de píxeles a analizar
-            const cropWidth = video.videoWidth * 0.70;
-            const cropHeight = video.videoHeight * 0.25;
+            // OPTIMIZACIÓN v3: Recorte mas estrecho y bajo (enfocado solo en la etiqueta de base)
+            const cropWidth = video.videoWidth * 0.30;
+            const cropHeight = video.videoHeight * 0.20;
             const startX = (video.videoWidth - cropWidth) / 2;
-            const startY = (video.videoHeight - cropHeight) / 2;
+            const startY = (video.videoHeight * 0.75) - (cropHeight / 2); // Baja en el video
 
             canvas.width = cropWidth;
             canvas.height = cropHeight;
             ctx.drawImage(video, startX, startY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
 
-            // OPTIMIZACIÓN EXTREMA: Resolución destino máxima bajada de 500px a 350px
+            // OPTIMIZACIÓN v3: Resolución destino baja.
             const targetWidth = Math.min(cropWidth, 350);
             const scaleFactor = targetWidth / cropWidth;
             const targetHeight = cropHeight * scaleFactor;
@@ -619,61 +623,36 @@
             procCanvas.height = targetHeight;
             procCtx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
 
+            // OPTIMIZACIÓN v3: Binarización.
             const imageData = procCtx.getImageData(0, 0, targetWidth, targetHeight);
             const data = imageData.data;
             for (let i = 0; i < data.length; i += 4) {
                 const brightness = 0.34 * data[i] + 0.5 * data[i + 1] + 0.16 * data[i + 2];
-                const color = brightness > 120 ? 255 : 0; 
+                const color = brightness > 120 ? 255 : 0; // Umbral de binarización
                 data[i] = data[i + 1] = data[i + 2] = color;
             }
             procCtx.putImageData(imageData, 0, 0);
 
             try {
-                const { data: ocrData } = await worker.recognize(procCanvas);
+                // OCR con Tesseract multilínea
+                const { data: { text: ocrText } } = await worker.recognize(procCanvas);
                 
-                let rightmostWord = null;
-                let maxX = -1;
+                if (ocrText) {
+                    // Extraer texto y limpiar líneas.
+                    let cleanLines = ocrText.split(/\s*
+\s*/).map(line => line.trim()).filter(line => line.length > 0);
+                    let finalExtractedText = cleanLines.join(' ');
+                    
+                    // Limpieza final de la signatura para comparación (sin espacios).
+                    let scannedClean = finalExtractedText.toUpperCase().replace(/[^A-Z0-9]/g, '');
 
-                if (ocrData.words) {
-                    ocrData.words.forEach(word => {
-                        if (word.text.toUpperCase().includes('HG')) {
-                            if (word.bbox.x0 > maxX) {
-                                maxX = word.bbox.x0;
-                                rightmostWord = word;
-                            }
-                        }
-                    });
-                }
-
-                if (rightmostWord) {
-                    const hgLeft = rightmostWord.bbox.x0;
-                    const hgTop = rightmostWord.bbox.y0;
-                    const hgBottom = rightmostWord.bbox.y1;
-
-                    let candidateWords = ocrData.words.filter(w => {
-                        const isBelowOrSameLine = w.bbox.y0 >= hgTop - 8;
-                        const isWithinVerticalRange = w.bbox.y0 <= hgBottom + 120;
-                        const matchesLeftColumn = Math.abs(w.bbox.x0 - hgLeft) < 25 || (w.bbox.x0 >= hgLeft - 8 && w.bbox.x0 < hgLeft + 60);
-
-                        return isBelowOrSameLine && isWithinVerticalRange && matchesLeftColumn;
-                    });
-
-                    candidateWords.sort((a, b) => {
-                        if (Math.abs(a.bbox.y0 - b.bbox.y0) < 14) {
-                            return a.bbox.x0 - b.bbox.x0;
-                        }
-                        return a.bbox.y0 - b.bbox.y0;
-                    });
-
-                    let rawExtracted = candidateWords.map(w => w.text).join(' ');
-                    let cleanedText = rawExtracted.toUpperCase().replace(/[^A-Z0-9]/g, '');
-
-                    const regex = /HG\d+[A-Z0-9]+/;
-                    const match = cleanedText.match(regex);
+                    // Regex de patrón de signatura (HG\d+[A-Z]+) para todas las líneas unificadas.
+                    const regex = /HG\d+[A-Z]+/;
+                    const match = scannedClean.match(regex);
 
                     if (match) {
                         const finalSignature = match[0];
-                        const scannedClean = finalSignature.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                        const scannedCompare = finalSignature;
                         
                         statusDot.className = 'status-dot detected';
                         statusText.textContent = `¡Capturado!`;
@@ -682,18 +661,19 @@
                         matchesList.innerHTML = `
                             <div class="match-card">
                                 <span class="match-value">${finalSignature}</span>
-                                <span style="font-size:0.75rem; color:#888;">(Rápido)</span>
+                                <span style="font-size:0.75rem; color:#888;">(Etiqueta)</span>
                             </div>
                         `;
 
-                        if (scannedClean !== lastScannedSignature) {
-                            lastScannedSignature = scannedClean;
+                        if (scannedCompare !== lastScannedSignature) {
+                            lastScannedSignature = scannedCompare;
 
                             if (targetSignatureClean) {
-                                // MODIFICACIÓN CLAVE: Solo hacer la comparación visual (flechas/rojo)
-                                // si las longitudes de la signatura escaneada y la buscada son exactamente iguales.
-                                if (scannedClean.length === targetSignatureClean.length) {
-                                    const comparisonResult = compareCustom(targetSignatureClean, scannedClean);
+                                // v3: COMPROBACIÓN DE DIFERENCIA DE LONGITUD DE UNA LETRA (O MENOS).
+                                const lengthDiff = Math.abs(scannedCompare.length - targetSignatureClean.length);
+                                
+                                if (lengthDiff <= 1) { // MODIFICACIÓN CLAVE
+                                    const comparisonResult = compareCustom(targetSignatureClean, scannedCompare);
 
                                     if (comparisonResult < 0) {
                                         showIndicator('left');
@@ -706,13 +686,13 @@
                             }
                         }
 
-                        // Aliviar el loop de procesamiento
+                        // Aliviar el loop
                         setTimeout(() => {
                             if (stream && stream.active) {
                                 statusDot.className = 'status-dot active';
                                 statusText.textContent = "Escaneando...";
                             }
-                        }, 200); // Reducido el timeout para permitir reanudar más rápido
+                        }, 200); // Rápido
                     }
                 }
             } catch (err) {
