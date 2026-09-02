@@ -62,7 +62,7 @@
         .btn-volver:hover {
             background-color: #d35400;
         }
-        .icono-error {
+        .icono-aviso {
             font-size: 3em;
             margin-bottom: 10px;
         }
@@ -109,7 +109,8 @@
 
                         window.location.href = datos.html + "?" + paramsUrl.toString();
                     } else {
-                        mostrarError(sigBuscada);
+                        // Si no está en el primer archivo, buscamos en el repositorio general
+                        buscarEnTodasSignaturas(sigBuscada);
                     }
                 }, 600);
             })
@@ -118,10 +119,52 @@
                 mostrarError(sigBuscada, "Error al cargar el archivo signaturas.json.");
             });
 
+        function buscarEnTodasSignaturas(sig) {
+            if (!sig) {
+                mostrarError(sig);
+                return;
+            }
+
+            fetch('todassignaturas.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("No se pudo cargar el archivo todassignaturas.json");
+                    }
+                    return response.json();
+                })
+                .then(todas => {
+                    // Busca el objeto dentro del array donde la propiedad "signaturas" coincida con la buscada
+                    const encontrada = todas.find(item => item.signaturas === sig);
+
+                    if (encontrada) {
+                        mostrarAvisoPersonal(encontrada);
+                    } else {
+                        mostrarError(sig);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    mostrarError(sig, "Error al cargar la base de datos secundaria.");
+                });
+        }
+
+        function mostrarAvisoPersonal(datos) {
+            const contenedor = document.getElementById('contenedor-principal');
+            // Formatea el campo descripción (si está vacío, no muestra el guion)
+            const descripcionTexto = datos.descripcion ? ` ${datos.descripcion}` : '';
+            
+            contenedor.innerHTML = `
+                <div class="icono-aviso">ℹ️</div>
+                <h2>Aviso de ubicación</h2>
+                <p>La signatura <strong>${datos.signaturas}</strong>${descripcionTexto}, no se encuentra en las SALAS. Acuda al personal de la biblioteca para solicitar el libro.</p>
+                <button class="btn-volver" onclick="window.history.back()">Volver al buscador</button>
+            `;
+        }
+
         function mostrarError(sig, mensajeExtra = "") {
             const contenedor = document.getElementById('contenedor-principal');
             contenedor.innerHTML = `
-                <div class="icono-error">⚠️</div>
+                <div class="icono-aviso">⚠️</div>
                 <h2>Signatura no encontrada</h2>
                 <p>La signatura no existe o es incorrecta. Puedes realizar la comprobación en el catálogo.</p>
                 <p><strong>Signatura buscada:</strong> ${sig || "Ninguna"}</p>
