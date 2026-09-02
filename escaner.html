@@ -133,11 +133,12 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 92%;
-            height: 75%;
+            /* Área reducida para obligar al usuario a centrar y capturar menos ruido */
+            width: 80%;
+            height: 40%;
             border: 2px dashed #ffeb3b;
             border-radius: 10px;
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.65);
         }
 
         .highway-indicator {
@@ -339,7 +340,7 @@
 
     <header>
         <h1>Escáner Ultrarrápido HG</h1>
-        <p class="subtitle">Optimizado para máxima velocidad y precisión</p>
+        <p class="subtitle">Apunte el recuadro a las signaturas</p>
     </header>
 
     <div id="targetSearchBanner" class="target-search-banner">
@@ -428,7 +429,7 @@
 
         let stream = null;
         let isProcessing = false;
-        let scanInterval = null;
+        let isScanning = false;
         let worker = null;
 
         let lastScannedSignature = '';
@@ -439,9 +440,10 @@
             statusText.textContent = "Iniciando Motor IA...";
             worker = await Tesseract.createWorker('eng');
             
+            // OPTIMIZACIÓN: Se excluyen minúsculas si no aplican y se utiliza PSM 6 para un bloque uniforme de texto
             await worker.setParameters({
-                tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/-.,',
-                tessedit_pageseg_mode: '11', 
+                tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/-.,',
+                tessedit_pageseg_mode: '6', 
             });
             
             statusText.textContent = "Sistema Listo";
@@ -480,11 +482,9 @@
             }
         }
 
-        // Función personalizada donde los números son mayores que las letras
         function getCharWeight(c) {
             if (!c) return 0;
             if (/[0-9]/.test(c)) {
-                // Asignamos un peso mayor a los números para que superen a las letras (ASCII de letras van de 65 a 90)
                 return 100 + parseInt(c, 10);
             } else if (/[A-Z]/.test(c)) {
                 return c.charCodeAt(0);
@@ -505,6 +505,16 @@
                 }
             }
             return 0;
+        }
+
+        function scanLoop() {
+            if (!isScanning) return;
+            
+            if (!isProcessing) {
+                processFrame(); 
+            }
+            
+            requestAnimationFrame(scanLoop);
         }
 
         btnStart.addEventListener('click', async () => {
@@ -535,7 +545,8 @@
                 statusDot.className = 'status-dot active';
                 statusText.textContent = "Escaneando...";
 
-                scanInterval = setInterval(processFrame, 100);
+                isScanning = true;
+                requestAnimationFrame(scanLoop);
             } catch (err) {
                 console.error(err);
                 alert("No se pudo acceder a la cámara.");
@@ -545,7 +556,7 @@
         btnStop.addEventListener('click', stopCamera);
 
         function stopCamera() {
-            if (scanInterval) clearInterval(scanInterval);
+            isScanning = false;
             if (stream) {
                 stream.getTracks().forEach(track => track.stop());
                 video.srcObject = null;
@@ -585,12 +596,13 @@
         }
 
         async function processFrame() {
-            if (isProcessing || !worker || video.readyState !== video.HAVE_ENOUGH_DATA) return;
+            if (!worker || video.readyState !== video.HAVE_ENOUGH_DATA) return;
             
             isProcessing = true;
 
-            const cropWidth = video.videoWidth * 0.92;
-            const cropHeight = video.videoHeight * 0.75;
+            // OPTIMIZACIÓN: Reducción del área de escaneo (Crop) a un 80% ancho y 40% alto
+            const cropWidth = video.videoWidth * 0.80;
+            const cropHeight = video.videoHeight * 0.40;
             const startX = (video.videoWidth - cropWidth) / 2;
             const startY = (video.videoHeight - cropHeight) / 2;
 
@@ -598,7 +610,8 @@
             canvas.height = cropHeight;
             ctx.drawImage(video, startX, startY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
 
-            const targetWidth = Math.min(cropWidth, 800);
+            // OPTIMIZACIÓN: Reducción masiva de la resolución destino a un máximo de 500px
+            const targetWidth = Math.min(cropWidth, 500);
             const scaleFactor = targetWidth / cropWidth;
             const targetHeight = cropHeight * scaleFactor;
 
@@ -606,14 +619,24 @@
             procCanvas.height = targetHeight;
             procCtx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
 
+            // OPTIMIZACIÓN: Binarización (Blanco y Negro puro) para simplificar la lectura OCR
+            const imageData = procCtx.getImageData(0, 0, targetWidth, targetHeight);
+            const data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                const brightness = 0.34 * data[i] + 0.5 * data[i + 1] + 0.16 * data[i + 2];
+                const color = brightness > 120 ? 255 : 0; 
+                data[i] = data[i + 1] = data[i + 2] = color;
+            }
+            procCtx.putImageData(imageData, 0, 0);
+
             try {
-                const { data } = await worker.recognize(procCanvas);
+                const { data: ocrData } = await worker.recognize(procCanvas);
                 
                 let rightmostWord = null;
                 let maxX = -1;
 
-                if (data.words) {
-                    data.words.forEach(word => {
+                if (ocrData.words) {
+                    ocrData.words.forEach(word => {
                         if (word.text.toUpperCase().includes('HG')) {
                             if (word.bbox.x0 > maxX) {
                                 maxX = word.bbox.x0;
@@ -628,7 +651,7 @@
                     const hgTop = rightmostWord.bbox.y0;
                     const hgBottom = rightmostWord.bbox.y1;
 
-                    let candidateWords = data.words.filter(w => {
+                    let candidateWords = ocrData.words.filter(w => {
                         const isBelowOrSameLine = w.bbox.y0 >= hgTop - 8;
                         const isWithinVerticalRange = w.bbox.y0 <= hgBottom + 120;
                         const matchesLeftColumn = Math.abs(w.bbox.x0 - hgLeft) < 25 || (w.bbox.x0 >= hgLeft - 8 && w.bbox.x0 < hgLeft + 60);
@@ -671,13 +694,10 @@
                                 const comparisonResult = compareCustom(targetSignatureClean, scannedClean);
 
                                 if (comparisonResult < 0) {
-                                    // Target es menor que Scanned bajo la nueva regla -> Izquierda
                                     showIndicator('left');
                                 } else if (comparisonResult > 0) {
-                                    // Target es mayor que Scanned bajo la nueva regla -> Derecha
                                     showIndicator('right');
                                 } else {
-                                    // Coincidencia exacta
                                     showIndicator('match');
                                 }
                             }
