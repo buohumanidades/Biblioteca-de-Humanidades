@@ -109,30 +109,28 @@
             margin: 0;
         }
 
-        /* =========================================
-           SECCIÓN CENTRAL: BIBLIOGRAFÍA Y MATERIAS
-           ========================================= */
+        /* NUEVO: Contenedor para alinear Bibliografía y Materias */
         .middle-section-wrapper {
             display: flex;
             gap: 2vw;
-            align-items: stretch; /* Iguala las alturas de ambos recuadros */
-            margin: 1vh 0;
+            align-items: stretch;
         }
 
-        /* Estilo base para los recuadros */
-        .info-fieldset {
-            flex: 1;
+        /* Recuadro de materias y bibliografía (Estilo "Página de libro") */
+        .subjects-fieldset {
+            flex: 1; /* Hace que ambas cajas ocupen el mismo ancho */
             border: 1px solid #d3cbb8; 
             border-radius: 12px;
-            padding: 1.5vh 1.5vw;
+            padding: 1.8vh 2vw;
             margin: 0;
             background: linear-gradient(135deg, #fdfcfb 0%, #f4efe6 100%);
             box-shadow: inset 0 0 20px rgba(139, 115, 85, 0.03), 0 4px 15px rgba(0,0,0,0.02);
             display: flex;
             flex-direction: column;
+            justify-content: center;
         }
 
-        .info-legend {
+        .subjects-legend {
             font-weight: 600;
             color: #5c4b37; 
             font-size: 1.1em;
@@ -144,34 +142,32 @@
             border-radius: 4px;
         }
 
-        /* Contenedor interior de botones */
+        /* Cuadrícula de botones */
         .subjects-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1vh 1vw; /* Gap reducido para botones más pequeños */
-            flex-grow: 1;
+            gap: 1.5vh 1vw; /* Ajuste horizontal por la división de pantalla */
         }
-
+        
         .bibliography-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-grow: 1;
-            padding: 1vh 0;
+            height: 100%;
         }
 
-        /* Botones generales */
+        /* Botones de materias (MODIFICADO: padding más pequeño) */
         .subject-btn {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 1vh 1.2vw; /* Padding reducido para disminuir el tamaño del botón */
+            padding: 1vh 1vw; /* Reducido para hacer el botón más pequeño */
             border-radius: 8px;
             text-decoration: none;
             color: #ffffff;
             background: linear-gradient(135deg, #4b6584, #2c3e50); 
             font-weight: 500;
-            font-size: 1.05em; /* Tamaño de letra mantenido */
+            font-size: 1.05em; /* TAMAÑO DE LETRA INTACTO */
             transition: all 0.2s ease;
             box-shadow: 0 4px 10px rgba(0,0,0,0.08);
         }
@@ -182,15 +178,14 @@
             box-shadow: 0 6px 15px rgba(0,0,0,0.15);
         }
 
-        /* Botón de Grados destacado */
+        /* Nuevo botón para Grados */
         .degree-btn {
             width: 100%;
             padding: 2.5vh 1.5vw;
-            background: linear-gradient(135deg, #6c5ce7, #4834d4); /* Tono violeta académico llamativo */
+            background: linear-gradient(135deg, #6c5ce7, #4834d4);
             font-size: 1.15em;
-            font-weight: 600;
         }
-        
+
         .degree-btn:hover {
             background: linear-gradient(135deg, #5f27cd, #341f97);
         }
@@ -198,7 +193,7 @@
         .btn-content {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         /* Botón de Signatura FLOTANTE Y ULTRA DESTACADO */
@@ -206,14 +201,16 @@
             display: inline-flex;
             align-items: center;
             padding: 12px 42px 12px 12px; 
+            /* Gradiente vibrante y llamativo que destaca sobre los demás botones */
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #0f2027 100%); 
             border: 2px solid rgba(255, 255, 255, 0.4);
             border-radius: 60px; 
             text-decoration: none;
             color: #ffffff;
             font-weight: 700;
-            font-size: 1.35em;
+            font-size: 1.35em; /* Aún más protagonista */
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* Sombra profunda y marcada para dar efecto de relieve flotante */
             box-shadow: 0 12px 30px rgba(30, 60, 114, 0.4), 0 4px 6px rgba(0, 0, 0, 0.1);
             width: max-content; 
             margin: 1.5vh auto; 
@@ -224,7 +221,7 @@
 
         .signature-btn:hover {
             background: linear-gradient(135deg, #2a5298 0%, #1e3c72 50%, #1f4037 100%); 
-            transform: translateY(-6px) scale(1.02); 
+            transform: translateY(-6px) scale(1.02); /* Efecto de flotación pronunciado */
             box-shadow: 0 18px 40px rgba(30, 60, 114, 0.5), 0 6px 12px rgba(0, 0, 0, 0.15);
             border-color: rgba(255, 255, 255, 0.8);
         }
@@ -293,25 +290,24 @@
             .professional-badge { font-size: 1.4em; bottom: 15px; right: 20px; text-align: right; }
             .main-content { overflow-y: auto; justify-content: flex-start; gap: 20px; }
             
-            /* Apilar Bibliografía y Materias verticalmente en móvil */
-            .middle-section-wrapper { flex-direction: column; gap: 15px; margin: 5px 0; }
-            .subjects-container { grid-template-columns: 1fr; gap: 10px; }
-            .degree-btn { padding: 1.5vh 2vw; }
+            /* MODIFICADO: Apilar recuadros en móvil */
+            .middle-section-wrapper { flex-direction: column; gap: 15px; }
             
-            /* Forzar que el botón Signatura mantenga tamaño en móviles */
+            .subjects-container { grid-template-columns: 1fr; gap: 10px; }
+            .links-container { grid-template-columns: 1fr; gap: 10px; }
+            
+            /* MODIFICADO: Blindar el tamaño del botón signatura en móvil */
             .signature-btn {
                 font-size: 1.35em !important;
                 padding: 12px 42px 12px 12px !important;
-                margin: 20px auto !important;
             }
-            
-            .links-container { grid-template-columns: 1fr; gap: 10px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         
+        <!-- Sección Hero Panorámica -->
         <div class="hero-section">
             <img src="sala.png" alt="Interior detallado de biblioteca moderna" class="shelf-photo-panoramic" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
             
@@ -320,37 +316,96 @@
             </div>
         </div>
 
+        <!-- Contenido Distribuido -->
         <div class="main-content">
             
+            <!-- Título Principal -->
             <h1>Biblioteca de Humanidades</h1>
 
+            <!-- ENVOLTORIO PARA BIBLIOGRAFÍA Y MATERIAS -->
             <div class="middle-section-wrapper">
                 
-                <fieldset class="info-fieldset">
-                    <legend class="info-legend">Bibliografía</legend>
+                <!-- Bibliografía (Nueva caja a la izquierda) -->
+                <fieldset class="subjects-fieldset">
+                    <legend class="subjects-legend">Bibliografía</legend>
                     <div class="bibliography-container">
                         <a href="#" class="subject-btn degree-btn">
-                            <div class="btn-content">
-                                <span class="btn-icon">🎓</span>
-                                <span>GRADOS del Campus de El Milán</span>
-                            </div>
+                            <div class="btn-content"><span class="btn-icon">🎓</span><span>GRADOS de Campus del Milán</span></div>
                             <span>➔</span>
                         </a>
                     </div>
                 </fieldset>
 
-                <fieldset class="info-fieldset">
-                    <legend class="info-legend">Materias</legend>
+                <!-- Materias (Caja original a la derecha, flechas restauradas) -->
+                <fieldset class="subjects-fieldset">
+                    <legend class="subjects-legend">Materias</legend>
                     <div class="subjects-container">
                         <a href="8.html" class="subject-btn">
                             <div class="btn-content"><span class="btn-icon">📖</span><span>Lenguaje, Lingüística, Literatura</span></div>
+                            <span>➔</span>
                         </a>
                         <a href="9.html" class="subject-btn">
                             <div class="btn-content"><span class="btn-icon">🌍</span><span>Geografía e Historia</span></div>
+                            <span>➔</span>
                         </a>
                         <a href="7.html" class="subject-btn">
                             <div class="btn-content"><span class="btn-icon">🎨</span><span>Arte y Arquitectura</span></div>
+                            <span>➔</span>
                         </a>
                         <a href="1.html" class="subject-btn">
                             <div class="btn-content"><span class="btn-icon">🧠</span><span>Filosofía y Ciencias Sociales</span></div>
+                            <span>➔</span>
                         </a>
+                    </div>
+                </fieldset>
+
+            </div>
+
+            <!-- Signatura Destacado (Flotante y Destacado) -->
+            <a href="Signatura.html" class="signature-btn">
+                <div class="signature-icon-circle">
+                    <!-- Icono SVG de libro clásico abierto con colores -->
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 20.5C12 20.5 8.5 19 4 19C3.44772 19 3 18.5523 3 18V6C3 5.44772 3.44772 5 4 5C8.5 5 12 7.5 12 7.5" fill="#E2E8F0" stroke="#334155" stroke-width="1.2" stroke-linejoin="round"/>
+                        <path d="M12 20.5C12 20.5 15.5 19 20 19C20.5523 19 21 18.5523 21 18V6C21 5.44772 20.5523 5 20 5C15.5 5 12 7.5 12 7.5" fill="#E2E8F0" stroke="#334155" stroke-width="1.2" stroke-linejoin="round"/>
+                        <path d="M3 18C3 18.5523 3.44772 19 4 19C8.5 19 12 20.5 12 20.5V7.5C12 7.5 8.5 5 4 5" fill="#4ECDC4"/>
+                        <path d="M21 18C21 18.5523 20.5523 19 20 19C15.5 19 12 20.5 12 20.5V7.5C12 7.5 15.5 5 20 5" fill="#FF6B6B"/>
+                        <path d="M5.5 9.5H10" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M5.5 12.5H8.5" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M14 9.5H18.5" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M14 12.5H17" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M12 7.5V17L13.5 15.5L15 17V7.5" fill="#FFD166"/>
+                        <path d="M12 20.5V7.5" stroke="#334155" stroke-width="1.2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <span>Sé la SIGNATURA</span>
+            </a>
+
+            <!-- Servicios Adicionales -->
+            <div class="services-wrapper">
+                <h2 class="section-title">Servicios Adicionales</h2>
+                <div class="links-container">
+                    <a href="https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=101" target="_blank">Búsqueda general en el catálogo</a>
+                    <a href="https://buo.uniovi.es/" target="_blank">Portal de la Biblioteca (BUO)</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Script de detección de SO -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            const body = document.body;
+
+            if (/windows/i.test(userAgent)) {
+                body.classList.add('os-windows');
+            }
+            if (/android|iphone|ipad|ipod/i.test(userAgent)) {
+                body.classList.add('is-mobile-device');
+            }
+        });
+    </script>
+</body>
+</html>
