@@ -201,7 +201,6 @@
             display: inline-flex;
             align-items: center;
             padding: 12px 42px 12px 12px; 
-            /* Gradiente vibrante y llamativo que destaca sobre los demás botones */
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #0f2027 100%); 
             border: 2px solid rgba(255, 255, 255, 0.4);
             border-radius: 60px; 
@@ -210,7 +209,6 @@
             font-weight: 700;
             font-size: 1.35em; /* Aún más protagonista */
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            /* Sombra profunda y marcada para dar efecto de relieve flotante */
             box-shadow: 0 12px 30px rgba(30, 60, 114, 0.4), 0 4px 6px rgba(0, 0, 0, 0.1);
             width: max-content; 
             margin: 1.5vh auto; 
@@ -221,7 +219,7 @@
 
         .signature-btn:hover {
             background: linear-gradient(135deg, #2a5298 0%, #1e3c72 50%, #1f4037 100%); 
-            transform: translateY(-6px) scale(1.02); /* Efecto de flotación pronunciado */
+            transform: translateY(-6px) scale(1.02); 
             box-shadow: 0 18px 40px rgba(30, 60, 114, 0.5), 0 6px 12px rgba(0, 0, 0, 0.15);
             border-color: rgba(255, 255, 255, 0.8);
         }
@@ -283,23 +281,45 @@
         }
 
         /* =========================================
-           ADAPTACIÓN PARA PANTALLAS PEQUEÑAS
+           ADAPTACIÓN PARA PANTALLAS PEQUEÑAS (AJUSTES PARA EVITAR SCROLL)
            ========================================= */
         @media (max-width: 900px) {
             .container { height: 98vh; width: 98vw; }
-            .professional-badge { font-size: 1.4em; bottom: 15px; right: 20px; text-align: right; }
-            .main-content { overflow-y: auto; justify-content: flex-start; gap: 20px; }
             
-            /* MODIFICADO: Apilar recuadros en móvil */
-            .middle-section-wrapper { flex-direction: column; gap: 15px; }
+            /* Reducimos ligeramente la imagen superior para ganar espacio vertical */
+            .hero-section { flex: 0 0 20vh; }
+            .professional-badge { font-size: 1.3em; bottom: 10px; right: 15px; text-align: right; }
             
-            .subjects-container { grid-template-columns: 1fr; gap: 10px; }
-            .links-container { grid-template-columns: 1fr; gap: 10px; }
+            /* Comprimimos el contenedor y evitamos el scroll lateral/vertical */
+            .main-content { 
+                padding: 1vh 3vw; 
+                overflow: hidden; 
+                justify-content: space-between; 
+            }
             
-            /* MODIFICADO: Blindar el tamaño del botón signatura en móvil */
+            /* Título forzado a una línea y con tamaño menor */
+            h1 { 
+                font-size: 1.5em; 
+                white-space: nowrap; 
+                padding-bottom: 0.5vh; 
+            }
+            
+            /* Comprimir los espacios entre las cajas (gaps y paddings reducidos) */
+            .middle-section-wrapper { flex-direction: column; gap: 1vh; margin: 0; }
+            .subjects-fieldset { padding: 1vh 3vw; }
+            .subjects-container { grid-template-columns: 1fr; gap: 0.8vh; }
+            .degree-btn { padding: 1.2vh 3vw; }
+            
+            /* Comprimir los botones de servicios adicionales */
+            .services-wrapper { gap: 0.5vh; }
+            .links-container { grid-template-columns: 1fr; gap: 0.8vh; }
+            .links-container a { padding: 1vh 2vw; }
+            
+            /* Blindar el tamaño del botón signatura en móvil, ajustando su margen */
             .signature-btn {
                 font-size: 1.35em !important;
-                padding: 12px 42px 12px 12px !important;
+                padding: 10px 42px 10px 12px !important;
+                margin: 0.5vh auto !important;
             }
         }
     </style>
