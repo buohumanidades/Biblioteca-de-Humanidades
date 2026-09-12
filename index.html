@@ -116,9 +116,9 @@
             align-items: stretch;
         }
 
-        /* Recuadro de materias y bibliografía (Estilo "Página de libro") */
+        /* Recuadro de materias y bibliografía */
         .subjects-fieldset {
-            flex: 1; /* Hace que ambas cajas ocupen el mismo ancho */
+            flex: 1; 
             border: 1px solid #d3cbb8; 
             border-radius: 12px;
             padding: 1.8vh 2vw;
@@ -146,7 +146,7 @@
         .subjects-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1.5vh 1vw; /* Ajuste horizontal por la división de pantalla */
+            gap: 1.5vh 1vw; 
         }
         
         .bibliography-container {
@@ -179,7 +179,7 @@
             box-shadow: 0 6px 15px rgba(0,0,0,0.15);
         }
 
-        /* Nuevo botón para Grados */
+        /* Botón para Grados */
         .degree-btn {
             width: 100%;
             padding: 2.5vh 1.5vw;
@@ -281,7 +281,7 @@
         }
 
         /* =========================================
-           ESTILOS DEL MENÚ EMERGENTE (MODAL) GRADOS
+           ESTILOS DE LOS MODALES (GRADOS Y ALERTA)
            ========================================= */
         .modal-overlay {
             position: fixed;
@@ -312,6 +312,38 @@
             transform: translateY(20px);
             transition: transform 0.3s ease;
         }
+        
+        /* Modal Específico para las alertas (como Bibliografía en proceso) */
+        .modal-alert {
+            max-width: 400px;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .modal-alert p {
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin: 1.5rem 0;
+            font-weight: 500;
+        }
+
+        .btn-entendido {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn-entendido:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 60, 114, 0.3);
+        }
+
         .modal-overlay.active .modal-content {
             transform: translateY(0);
         }
@@ -329,7 +361,7 @@
             margin-top: 0;
             font-family: 'Playfair Display', serif;
             color: #1a252f;
-            border-bottom: 3px solid #f1c40f; /* Color amarillo del encabezado original */
+            border-bottom: 3px solid #f1c40f; 
             padding-bottom: 10px;
             margin-bottom: 20px;
         }
@@ -401,11 +433,10 @@
             <!-- ENVOLTORIO PARA BIBLIOGRAFÍA Y MATERIAS -->
             <div class="middle-section-wrapper">
                 
-                <!-- Bibliografía (Nueva caja a la izquierda) -->
+                <!-- Bibliografía -->
                 <fieldset class="subjects-fieldset">
                     <legend class="subjects-legend">Bibliografía</legend>
                     <div class="bibliography-container">
-                        <!-- MODIFICADO: Se añade el evento onclick para abrir el modal -->
                         <a href="#" class="subject-btn degree-btn" onclick="abrirModalGrados(event)">
                             <div class="btn-content"><span class="btn-icon">🎓</span><span>GRADOS: Campus de El Milán</span></div>
                             <span>➔</span>
@@ -413,7 +444,7 @@
                     </div>
                 </fieldset>
 
-                <!-- Materias (Caja original a la derecha, flechas restauradas) -->
+                <!-- Materias -->
                 <fieldset class="subjects-fieldset">
                     <legend class="subjects-legend">Materias</legend>
                     <div class="subjects-container">
@@ -438,10 +469,9 @@
 
             </div>
 
-            <!-- Signatura Destacado (Flotante y Destacado) -->
+            <!-- Signatura Destacado -->
             <a href="Signatura.html" class="signature-btn">
                 <div class="signature-icon-circle">
-                    <!-- Icono SVG de libro clásico abierto con colores -->
                     <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 20.5C12 20.5 8.5 19 4 19C3.44772 19 3 18.5523 3 18V6C3 5.44772 3.44772 5 4 5C8.5 5 12 7.5 12 7.5" fill="#E2E8F0" stroke="#334155" stroke-width="1.2" stroke-linejoin="round"/>
                         <path d="M12 20.5C12 20.5 15.5 19 20 19C20.5523 19 21 18.5523 21 18V6C21 5.44772 20.5523 5 20 5C15.5 5 12 7.5 12 7.5" fill="#E2E8F0" stroke="#334155" stroke-width="1.2" stroke-linejoin="round"/>
@@ -470,7 +500,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE GRADOS (NUEVO) -->
+    <!-- MODAL DE GRADOS -->
     <div class="modal-overlay" id="modalGrados" onclick="cerrarModalGrados(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="cerrarModalGrados(event)">✖</button>
@@ -489,9 +519,17 @@
         </div>
     </div>
 
+    <!-- MODAL DE ALERTA PERSONALIZADA (NUEVO) -->
+    <div class="modal-overlay" id="customAlertModal" onclick="cerrarModalAlerta()">
+        <div class="modal-content modal-alert" onclick="event.stopPropagation()">
+            <div style="font-size: 3em; margin-bottom: 10px;">⚠️</div>
+            <p id="alertMessageText">Mensaje de alerta</p>
+            <button class="btn-entendido" onclick="cerrarModalAlerta()">Entendido</button>
+        </div>
+    </div>
+
     <!-- Scripts funcionales -->
     <script>
-        // Detección de Sistema Operativo original
         document.addEventListener("DOMContentLoaded", function() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
             const body = document.body;
@@ -504,12 +542,11 @@
             }
         });
 
-        // Funciones para la ventana Modal de Grados
+        /* --- Lógica del Modal de Grados --- */
         function abrirModalGrados(e) {
             e.preventDefault();
             const modal = document.getElementById('modalGrados');
             modal.style.display = 'flex';
-            // Pequeño timeout para asegurar que la transición de opacidad funcione
             setTimeout(() => {
                 modal.classList.add('active');
             }, 10);
@@ -519,29 +556,44 @@
             if(e) e.preventDefault();
             const modal = document.getElementById('modalGrados');
             modal.classList.remove('active');
-            // Espera a que termine la animación antes de ocultarlo completamente
             setTimeout(() => {
                 modal.style.display = 'none';
             }, 300);
         }
 
-        // Función que intercepta el clic, comprueba si existe el HTML y reacciona
+        /* --- Lógica del Nuevo Modal de Alerta --- */
+        function mostrarModal(mensaje) {
+            document.getElementById('alertMessageText').textContent = mensaje;
+            const alertModal = document.getElementById('customAlertModal');
+            alertModal.style.display = 'flex';
+            setTimeout(() => {
+                alertModal.classList.add('active');
+            }, 10);
+        }
+
+        function cerrarModalAlerta() {
+            const alertModal = document.getElementById('customAlertModal');
+            alertModal.classList.remove('active');
+            setTimeout(() => {
+                alertModal.style.display = 'none';
+            }, 300);
+        }
+
+        /* --- Lógica de Navegación Segura --- */
         async function navegarSeguro(e, urlDestino) {
             e.preventDefault();
             try {
-                // Hacemos una petición HEAD (solo pide las cabeceras, sin descargar la página entera)
                 let respuesta = await fetch(urlDestino, { method: 'HEAD' });
                 
                 if (respuesta.ok) {
-                    // Si el archivo existe, navegamos hacia él
                     window.location.href = urlDestino;
                 } else {
-                    // Si responde con un 404 Not Found, mostramos la alerta
-                    alert("Página en construcción");
+                    // LLamamos a la función mostrarModal con el texto que has pedido
+                    mostrarModal("Bibliografía en proceso");
                 }
             } catch (error) {
-                // Fallback de seguridad por si hay bloqueos CORS (ej. ejecutando el archivo localmente con doble clic file://)
-                alert("Página en construcción");
+                // Fallback por si hay bloqueos CORS (ej. ejecutando archivo local file://)
+                mostrarModal("Bibliografía en proceso");
             }
         }
     </script>
