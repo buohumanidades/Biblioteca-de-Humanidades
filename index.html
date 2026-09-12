@@ -109,7 +109,7 @@
             margin: 0;
         }
 
-        /* Contenedor para alinear Bibliografía y Materias */
+        /* NUEVO: Contenedor para alinear Bibliografía y Materias */
         .middle-section-wrapper {
             display: flex;
             gap: 2vw;
@@ -118,7 +118,7 @@
 
         /* Recuadro de materias y bibliografía */
         .subjects-fieldset {
-            flex: 1;
+            flex: 1; 
             border: 1px solid #d3cbb8; 
             border-radius: 12px;
             padding: 1.8vh 2vw;
@@ -281,7 +281,7 @@
         }
 
         /* =========================================
-           ESTILOS GENERALES PARA MODALES
+           ESTILOS DE LOS MODALES (GRADOS Y ALERTA)
            ========================================= */
         .modal-overlay {
             position: fixed;
@@ -312,6 +312,38 @@
             transform: translateY(20px);
             transition: transform 0.3s ease;
         }
+        
+        /* Modal Específico para las alertas (como Bibliografía en proceso) */
+        .modal-alert {
+            max-width: 400px;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .modal-alert p {
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin: 1.5rem 0;
+            font-weight: 500;
+        }
+
+        .btn-entendido {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn-entendido:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 60, 114, 0.3);
+        }
+
         .modal-overlay.active .modal-content {
             transform: translateY(0);
         }
@@ -325,8 +357,6 @@
         .close-btn:hover {
             color: #e74c3c;
         }
-
-        /* Estilos específicos Modal Grados */
         .modal-title {
             margin-top: 0;
             font-family: 'Playfair Display', serif;
@@ -355,40 +385,6 @@
             background: #f8fafc;
             color: #6c5ce7;
             padding-left: 15px;
-        }
-
-        /* Estilos específicos Modal de Alerta / Mensaje */
-        .modal-mensaje-content {
-            max-width: 400px;
-            text-align: center;
-            padding: 2rem 2.5rem;
-        }
-        .modal-icon {
-            font-size: 3.5rem;
-            margin-bottom: 15px;
-        }
-        .mensaje-texto {
-            font-size: 1.15em;
-            color: #34495e;
-            font-weight: 500;
-            margin-bottom: 25px;
-        }
-        .btn-entendido {
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.05em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .btn-entendido:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-            background: linear-gradient(135deg, #2a5298, #1e3c72);
         }
 
         /* =========================================
@@ -523,12 +519,12 @@
         </div>
     </div>
 
-    <!-- MODAL DE ALERTAS (NUEVO) -->
-    <div class="modal-overlay" id="modalMensaje" onclick="cerrarModalMensaje(event)">
-        <div class="modal-content modal-mensaje-content" onclick="event.stopPropagation()">
-            <div class="modal-icon">🚧</div>
-            <p id="textoMensaje" class="mensaje-texto"></p>
-            <button class="btn-entendido" onclick="cerrarModalMensaje(event)">Entendido</button>
+    <!-- MODAL DE ALERTA PERSONALIZADA (NUEVO) -->
+    <div class="modal-overlay" id="customAlertModal" onclick="cerrarModalAlerta()">
+        <div class="modal-content modal-alert" onclick="event.stopPropagation()">
+            <div style="font-size: 3em; margin-bottom: 10px;">⚠️</div>
+            <p id="alertMessageText">Mensaje de alerta</p>
+            <button class="btn-entendido" onclick="cerrarModalAlerta()">Entendido</button>
         </div>
     </div>
 
@@ -546,59 +542,57 @@
             }
         });
 
-        // ==========================================
-        // FUNCIONES MODAL GRADOS
-        // ==========================================
+        /* --- Lógica del Modal de Grados --- */
         function abrirModalGrados(e) {
             e.preventDefault();
             const modal = document.getElementById('modalGrados');
             modal.style.display = 'flex';
-            setTimeout(() => { modal.classList.add('active'); }, 10);
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
         }
 
         function cerrarModalGrados(e) {
             if(e) e.preventDefault();
             const modal = document.getElementById('modalGrados');
             modal.classList.remove('active');
-            setTimeout(() => { modal.style.display = 'none'; }, 300);
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
         }
 
-        // ==========================================
-        // FUNCIONES MODAL MENSAJES/ALERTAS (NUEVO)
-        // ==========================================
+        /* --- Lógica del Nuevo Modal de Alerta --- */
         function mostrarModal(mensaje) {
-            const modal = document.getElementById('modalMensaje');
-            const texto = document.getElementById('textoMensaje');
-            
-            texto.innerText = mensaje;
-            modal.style.display = 'flex';
-            setTimeout(() => { modal.classList.add('active'); }, 10);
+            document.getElementById('alertMessageText').textContent = mensaje;
+            const alertModal = document.getElementById('customAlertModal');
+            alertModal.style.display = 'flex';
+            setTimeout(() => {
+                alertModal.classList.add('active');
+            }, 10);
         }
 
-        function cerrarModalMensaje(e) {
-            if(e) e.preventDefault();
-            const modal = document.getElementById('modalMensaje');
-            modal.classList.remove('active');
-            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        function cerrarModalAlerta() {
+            const alertModal = document.getElementById('customAlertModal');
+            alertModal.classList.remove('active');
+            setTimeout(() => {
+                alertModal.style.display = 'none';
+            }, 300);
         }
 
-        // ==========================================
-        // NAVEGACIÓN SEGURA CON FETCH
-        // ==========================================
+        /* --- Lógica de Navegación Segura --- */
         async function navegarSeguro(e, urlDestino) {
             e.preventDefault();
             try {
-                // Hacemos una petición HEAD (solo pide las cabeceras)
                 let respuesta = await fetch(urlDestino, { method: 'HEAD' });
                 
                 if (respuesta.ok) {
                     window.location.href = urlDestino;
                 } else {
-                    // LLAMADA AL NUEVO MODAL CON EL MENSAJE ESPECÍFICO
+                    // LLamamos a la función mostrarModal con el texto que has pedido
                     mostrarModal("Bibliografía en proceso");
                 }
             } catch (error) {
-                // Si hay un error de CORS (por abrirlo en local file://) o red
+                // Fallback por si hay bloqueos CORS (ej. ejecutando archivo local file://)
                 mostrarModal("Bibliografía en proceso");
             }
         }
