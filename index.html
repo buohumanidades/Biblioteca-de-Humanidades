@@ -281,7 +281,7 @@
         }
 
         /* =========================================
-           ESTILOS DE LOS MODALES (GRADOS Y ALERTA)
+           ESTILOS DE LOS MODALES (GRADOS, CURSOS Y ALERTA)
            ========================================= */
         .modal-overlay {
             position: fixed;
@@ -385,6 +385,45 @@
             background: #f8fafc;
             color: #6c5ce7;
             padding-left: 15px;
+        }
+
+        /* --- ESTILOS NUEVOS PARA LA TABLA DE CURSOS --- */
+        .tabla-cursos {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #dcdcdc;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .curso-header {
+            background-color: #ffff00; /* Amarillo resaltado como en la imagen */
+            color: #000;
+            font-weight: 500;
+            padding: 10px 12px;
+            border-bottom: 1px solid #dcdcdc;
+            border-top: 1px solid #dcdcdc;
+            text-transform: uppercase;
+        }
+        .curso-header:first-child {
+            border-top: none;
+        }
+        .semestre-link {
+            display: block;
+            padding: 10px 12px;
+            text-align: right; /* Alineado a la derecha como en la imagen */
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
+            background-color: #fff;
+            transition: background 0.2s;
+        }
+        .semestre-link:last-child {
+            border-bottom: none;
+        }
+        .semestre-link:hover {
+            background-color: #f1f5f9;
+            color: #2980b9;
         }
 
         /* =========================================
@@ -506,20 +545,52 @@
             <button class="close-btn" onclick="cerrarModalGrados(event)">✖</button>
             <h2 class="modal-title">Artes y Humanidades</h2>
             <ul class="grados-list">
-                <li><a href="#" onclick="navegarSeguro(event, 'grado1.html')">Grado en Estudios Clásicos y Románicos</a></li>
-                <li><a href="#" onclick="navegarSeguro(event, 'grado2.html')">Grado en Estudios Ingleses</a></li>
-                <li><a href="#" onclick="navegarSeguro(event, 'grado3.html')">Grado en Filosofía</a></li>
-                <li><a href="#" onclick="navegarSeguro(event, 'grado4.html')">Grado en Geografía y Ordenación del territorio</a></li>
-                <li><a href="#" onclick="navegarSeguro(event, 'grado5.html')">Grado en Historia</a></li>
-                <li><a href="#" onclick="navegarSeguro(event, 'grado6.html')">Grado en Historia del Arte</a></li>
-                <li><a href="#" onclick="navegarSeguro(event, 'grado7.html')">Grado en Historia y Ciencias de la Música</a></li>
-                <li><a href="#" onclick="navegarSeguro(event, 'grado8.html')">Grado en Lengua Española y sus Literaturas</a></li>
-                <li><a href="#" onclick="navegarSeguro(event, 'grado9.html')">Grado en Lenguas Modernas y sus Literaturas</a></li>
+                <!-- Se ha modificado para que abran el menú de cursos pasándole el identificador de grado -->
+                <li><a href="#" onclick="abrirModalCursos(event, 'grado1', 'Grado en Estudios Clásicos y Románicos')">Grado en Estudios Clásicos y Románicos</a></li>
+                <li><a href="#" onclick="abrirModalCursos(event, 'grado2', 'Grado en Estudios Ingleses')">Grado en Estudios Ingleses</a></li>
+                <li><a href="#" onclick="abrirModalCursos(event, 'grado3', 'Grado en Filosofía')">Grado en Filosofía</a></li>
+                <li><a href="#" onclick="abrirModalCursos(event, 'grado4', 'Grado en Geografía y Ordenación del territorio')">Grado en Geografía y Ordenación del territorio</a></li>
+                <li><a href="#" onclick="abrirModalCursos(event, 'grado5', 'Grado en Historia')">Grado en Historia</a></li>
+                <li><a href="#" onclick="abrirModalCursos(event, 'grado6', 'Grado en Historia del Arte')">Grado en Historia del Arte</a></li>
+                <li><a href="#" onclick="abrirModalCursos(event, 'grado7', 'Grado en Historia y Ciencias de la Música')">Grado en Historia y Ciencias de la Música</a></li>
+                <li><a href="#" onclick="abrirModalCursos(event, 'grado8', 'Grado en Lengua Española y sus Literaturas')">Grado en Lengua Española y sus Literaturas</a></li>
+                <li><a href="#" onclick="abrirModalCursos(event, 'grado9', 'Grado en Lenguas Modernas y sus Literaturas')">Grado en Lenguas Modernas y sus Literaturas</a></li>
             </ul>
         </div>
     </div>
 
-    <!-- MODAL DE ALERTA PERSONALIZADA (NUEVO) -->
+    <!-- MODAL DE CURSOS Y SEMESTRES (NUEVO) -->
+    <div class="modal-overlay" id="modalCursos" onclick="cerrarModalCursos(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="cerrarModalCursos(event)">✖</button>
+            <h2 class="modal-title" id="tituloModalCursos">Título del Grado</h2>
+            
+            <div class="tabla-cursos">
+                <!-- PRIMER CURSO -->
+                <div class="curso-header">PRIMER CURSO</div>
+                <a href="#" class="semestre-link" onclick="navegarSemestre(event, 1, 1)">Primer Semestre</a>
+                <a href="#" class="semestre-link" onclick="navegarSemestre(event, 1, 2)">Segundo Semestre</a>
+
+                <!-- SEGUNDO CURSO -->
+                <div class="curso-header">SEGUNDO CURSO</div>
+                <a href="#" class="semestre-link" onclick="navegarSemestre(event, 2, 1)">Primer Semestre</a>
+                <a href="#" class="semestre-link" onclick="navegarSemestre(event, 2, 2)">Segundo Semestre</a>
+
+                <!-- TERCER CURSO -->
+                <div class="curso-header">TERCER CURSO</div>
+                <a href="#" class="semestre-link" onclick="navegarSemestre(event, 3, 1)">Primer Semestre</a>
+                <a href="#" class="semestre-link" onclick="navegarSemestre(event, 3, 2)">Segundo Semestre</a>
+
+                <!-- CUARTO CURSO -->
+                <div class="curso-header">CUARTO CURSO</div>
+                <a href="#" class="semestre-link" onclick="navegarSemestre(event, 4, 1)">Primer Semestre</a>
+                <a href="#" class="semestre-link" onclick="navegarSemestre(event, 4, 2)">Segundo Semestre</a>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- MODAL DE ALERTA PERSONALIZADA -->
     <div class="modal-overlay" id="customAlertModal" onclick="cerrarModalAlerta()">
         <div class="modal-content modal-alert" onclick="event.stopPropagation()">
             <div style="font-size: 3em; margin-bottom: 10px;">⚠️</div>
@@ -530,6 +601,9 @@
 
     <!-- Scripts funcionales -->
     <script>
+        // Variable global para almacenar qué grado se ha seleccionado
+        let gradoActual = ''; 
+
         document.addEventListener("DOMContentLoaded", function() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
             const body = document.body;
@@ -561,6 +635,36 @@
             }, 300);
         }
 
+        /* --- NUEVO: Lógica del Modal de Cursos --- */
+        function abrirModalCursos(e, idGrado, nombreGrado) {
+            e.preventDefault();
+            gradoActual = idGrado; // Se guarda 'grado1', 'grado2', etc.
+            
+            // Actualiza el título del modal con el nombre del grado
+            document.getElementById('tituloModalCursos').textContent = nombreGrado;
+
+            // Oculta el modal de grados inmediatamente sin delay
+            const modalGrados = document.getElementById('modalGrados');
+            modalGrados.classList.remove('active');
+            modalGrados.style.display = 'none';
+
+            // Abre el modal de cursos
+            const modalCursos = document.getElementById('modalCursos');
+            modalCursos.style.display = 'flex';
+            setTimeout(() => {
+                modalCursos.classList.add('active');
+            }, 10);
+        }
+
+        function cerrarModalCursos(e) {
+            if(e) e.preventDefault();
+            const modal = document.getElementById('modalCursos');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
         /* --- Lógica del Nuevo Modal de Alerta --- */
         function mostrarModal(mensaje) {
             document.getElementById('alertMessageText').textContent = mensaje;
@@ -579,20 +683,28 @@
             }, 300);
         }
 
+        /* --- Lógica para procesar el Semestre seleccionado --- */
+        function navegarSemestre(e, curso, semestre) {
+            e.preventDefault();
+            // Esto construirá un nombre de archivo del tipo "grado1_curso1_semestre1.html"
+            const urlDestino = `${gradoActual}_curso${curso}_semestre${semestre}.html`;
+            navegarSeguro(e, urlDestino);
+        }
+
         /* --- Lógica de Navegación Segura --- */
         async function navegarSeguro(e, urlDestino) {
-            e.preventDefault();
+            if(e) e.preventDefault();
             try {
                 let respuesta = await fetch(urlDestino, { method: 'HEAD' });
                 
                 if (respuesta.ok) {
                     window.location.href = urlDestino;
                 } else {
-                    // LLamamos a la función mostrarModal con el texto que has pedido
+                    // Si el archivo del semestre no existe, mostramos la alerta
                     mostrarModal("En breve tendrás la Bibliografía");
                 }
             } catch (error) {
-                // Fallback por si hay bloqueos CORS (ej. ejecutando archivo local file://)
+                // Fallback por si hay bloqueos CORS ejecutándolo en local
                 mostrarModal("Bibliografía en proceso");
             }
         }
