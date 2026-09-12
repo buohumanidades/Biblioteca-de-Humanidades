@@ -156,20 +156,21 @@
             height: 100%;
         }
 
-        /* Botones de materias (MODIFICADO: padding más pequeño) */
+        /* Botones de materias */
         .subject-btn {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 1vh 1vw; /* Reducido para hacer el botón más pequeño */
+            padding: 1vh 1vw;
             border-radius: 8px;
             text-decoration: none;
             color: #ffffff;
             background: linear-gradient(135deg, #4b6584, #2c3e50); 
             font-weight: 500;
-            font-size: 1.05em; /* TAMAÑO DE LETRA INTACTO */
+            font-size: 1.05em; 
             transition: all 0.2s ease;
             box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            cursor: pointer;
         }
 
         .subject-btn:hover {
@@ -207,7 +208,7 @@
             text-decoration: none;
             color: #ffffff;
             font-weight: 700;
-            font-size: 1.35em; /* Aún más protagonista */
+            font-size: 1.35em; 
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 12px 30px rgba(30, 60, 114, 0.4), 0 4px 6px rgba(0, 0, 0, 0.1);
             width: max-content; 
@@ -224,7 +225,6 @@
             border-color: rgba(255, 255, 255, 0.8);
         }
 
-        /* El círculo interior para el icono */
         .signature-icon-circle {
             display: flex;
             align-items: center;
@@ -281,46 +281,102 @@
         }
 
         /* =========================================
-           ADAPTACIÓN PARA PANTALLAS PEQUEÑAS (AJUSTES PARA EVITAR SCROLL)
+           ESTILOS DEL MENÚ EMERGENTE (MODAL) GRADOS
+           ========================================= */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-content {
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 550px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+        .close-btn {
+            position: absolute;
+            top: 15px; right: 20px;
+            background: none; border: none;
+            font-size: 1.8rem; cursor: pointer; color: #7f8c8d;
+            transition: color 0.2s;
+        }
+        .close-btn:hover {
+            color: #e74c3c;
+        }
+        .modal-title {
+            margin-top: 0;
+            font-family: 'Playfair Display', serif;
+            color: #1a252f;
+            border-bottom: 3px solid #f1c40f; /* Color amarillo del encabezado original */
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .grados-list {
+            list-style: none; padding: 0; margin: 0;
+        }
+        .grados-list li {
+            margin-bottom: 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .grados-list a {
+            display: block;
+            padding: 12px 10px;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .grados-list a:hover {
+            background: #f8fafc;
+            color: #6c5ce7;
+            padding-left: 15px;
+        }
+
+        /* =========================================
+           ADAPTACIÓN PARA PANTALLAS PEQUEÑAS
            ========================================= */
         @media (max-width: 900px) {
             .container { height: 98vh; width: 98vw; }
-            
-            /* Reducimos ligeramente la imagen superior para ganar espacio vertical */
             .hero-section { flex: 0 0 20vh; }
             .professional-badge { font-size: 1.3em; bottom: 10px; right: 15px; text-align: right; }
-            
-            /* Comprimimos el contenedor y evitamos el scroll lateral/vertical */
-            .main-content { 
-                padding: 1vh 3vw; 
-                overflow: hidden; 
-                justify-content: space-between; 
-            }
-            
-            /* Título forzado a una línea y con tamaño menor */
-            h1 { 
-                font-size: 1.5em; 
-                white-space: nowrap; 
-                padding-bottom: 0.5vh; 
-            }
-            
-            /* Comprimir los espacios entre las cajas (gaps y paddings reducidos) */
+            .main-content { padding: 1vh 3vw; overflow: hidden; justify-content: space-between; }
+            h1 { font-size: 1.5em; white-space: nowrap; padding-bottom: 0.5vh; }
             .middle-section-wrapper { flex-direction: column; gap: 1vh; margin: 0; }
             .subjects-fieldset { padding: 1vh 3vw; }
             .subjects-container { grid-template-columns: 1fr; gap: 0.8vh; }
             .degree-btn { padding: 1.2vh 3vw; }
-            
-            /* Comprimir los botones de servicios adicionales */
             .services-wrapper { gap: 0.5vh; }
             .links-container { grid-template-columns: 1fr; gap: 0.8vh; }
             .links-container a { padding: 1vh 2vw; }
-            
-            /* Blindar el tamaño del botón signatura en móvil, ajustando su margen */
             .signature-btn {
                 font-size: 1.35em !important;
                 padding: 10px 42px 10px 12px !important;
                 margin: 0.5vh auto !important;
             }
+            .modal-content { padding: 1.5rem; }
         }
     </style>
 </head>
@@ -349,7 +405,8 @@
                 <fieldset class="subjects-fieldset">
                     <legend class="subjects-legend">Bibliografía</legend>
                     <div class="bibliography-container">
-                        <a href="#" class="subject-btn degree-btn">
+                        <!-- MODIFICADO: Se añade el evento onclick para abrir el modal -->
+                        <a href="#" class="subject-btn degree-btn" onclick="abrirModalGrados(event)">
                             <div class="btn-content"><span class="btn-icon">🎓</span><span>GRADOS: Campus de El Milán</span></div>
                             <span>➔</span>
                         </a>
@@ -413,8 +470,28 @@
         </div>
     </div>
 
-    <!-- Script de detección de SO -->
+    <!-- MODAL DE GRADOS (NUEVO) -->
+    <div class="modal-overlay" id="modalGrados" onclick="cerrarModalGrados(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="cerrarModalGrados(event)">✖</button>
+            <h2 class="modal-title">GRADOS</h2>
+            <ul class="grados-list">
+                <li><a href="#" onclick="navegarSeguro(event, 'grado1.html')">Grado en Estudios Clásicos y Románicos</a></li>
+                <li><a href="#" onclick="navegarSeguro(event, 'grado2.html')">Grado en Estudios Ingleses</a></li>
+                <li><a href="#" onclick="navegarSeguro(event, 'grado3.html')">Grado en Filosofía</a></li>
+                <li><a href="#" onclick="navegarSeguro(event, 'grado4.html')">Grado en Geografía y Ordenación del territorio</a></li>
+                <li><a href="#" onclick="navegarSeguro(event, 'grado5.html')">Grado en Historia</a></li>
+                <li><a href="#" onclick="navegarSeguro(event, 'grado6.html')">Grado en Historia del Arte</a></li>
+                <li><a href="#" onclick="navegarSeguro(event, 'grado7.html')">Grado en Historia y Ciencias de la Música</a></li>
+                <li><a href="#" onclick="navegarSeguro(event, 'grado8.html')">Grado en Lengua Española y sus Literaturas</a></li>
+                <li><a href="#" onclick="navegarSeguro(event, 'grado9.html')">Grado en Lenguas Modernas y sus Literaturas</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Scripts funcionales -->
     <script>
+        // Detección de Sistema Operativo original
         document.addEventListener("DOMContentLoaded", function() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
             const body = document.body;
@@ -426,6 +503,47 @@
                 body.classList.add('is-mobile-device');
             }
         });
+
+        // Funciones para la ventana Modal de Grados
+        function abrirModalGrados(e) {
+            e.preventDefault();
+            const modal = document.getElementById('modalGrados');
+            modal.style.display = 'flex';
+            // Pequeño timeout para asegurar que la transición de opacidad funcione
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+        }
+
+        function cerrarModalGrados(e) {
+            if(e) e.preventDefault();
+            const modal = document.getElementById('modalGrados');
+            modal.classList.remove('active');
+            // Espera a que termine la animación antes de ocultarlo completamente
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        // Función que intercepta el clic, comprueba si existe el HTML y reacciona
+        async function navegarSeguro(e, urlDestino) {
+            e.preventDefault();
+            try {
+                // Hacemos una petición HEAD (solo pide las cabeceras, sin descargar la página entera)
+                let respuesta = await fetch(urlDestino, { method: 'HEAD' });
+                
+                if (respuesta.ok) {
+                    // Si el archivo existe, navegamos hacia él
+                    window.location.href = urlDestino;
+                } else {
+                    // Si responde con un 404 Not Found, mostramos la alerta
+                    alert("Página en construcción");
+                }
+            } catch (error) {
+                // Fallback de seguridad por si hay bloqueos CORS (ej. ejecutando el archivo localmente con doble clic file://)
+                alert("Página en construcción");
+            }
+        }
     </script>
 </body>
 </html>
