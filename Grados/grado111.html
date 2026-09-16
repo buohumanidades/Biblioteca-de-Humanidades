@@ -165,7 +165,7 @@
             background-color: #ffffff;
         }
 
-        /* --- NUEVO: ESTILO PARA LOS BOTONES DE SIGNATURAS --- */
+        /* --- ESTILO PARA LOS BOTONES DE SIGNATURAS --- */
         .sig-badge {
             display: inline-block;
             background-color: #e3f2fd; /* Fondo azul claro */
@@ -178,6 +178,7 @@
             font-weight: bold;
             border: 1px solid #90caf9;
             transition: all 0.2s ease-in-out;
+            cursor: pointer;
         }
 
         .sig-badge:hover {
@@ -307,7 +308,7 @@
                         <td>F. I. Sebastián Yarza, <strong>Diccionario Griego Español</strong>. ed. Áurea [diversas reediciones]</td>
                         <td>
                             <div class="sig-container">
-                                <a href="localizador.html?sig=HG807.5/03/Seba" class="sig-badge" target="_blank">HG807.5/03/Seba</a>
+                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG807.5/03/Seba</a>
                             </div>
                         </td>
                     </tr>
@@ -315,8 +316,8 @@
                         <td>J. M. Pabón, <strong>Diccionario Griego-Español</strong>, ed. Vox, Barcelona [diversas reediciones]</td>
                         <td>
                             <div class="sig-container">
-                                <a href="localizador.html?sig=L807A-0298" class="sig-badge" target="_blank">L807A-0298</a>
-                                <a href="localizador.html?sig=HR807.5/03/Pabo" class="sig-badge" target="_blank">HR807.5/03/Pabo</a>
+                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">L807A-0298</a>
+                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HR807.5/03/Pabo</a>
                             </div>
                         </td>
                     </tr>
@@ -324,8 +325,8 @@
                         <td>J. Berenguer Amenós, <strong>Gramática Griega</strong>, ed. Bosch., Barcelona [diversas reediciones]</td>
                         <td>
                             <div class="sig-container">
-                                <a href="localizador.html?sig=HG807.5-5/Bere" class="sig-badge" target="_blank">HG807.5-5/Bere</a>
-                                <a href="localizador.html?sig=L807A-0342" class="sig-badge" target="_blank">L807A-0342</a>
+                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG807.5-5/Bere</a>
+                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">L807A-0342</a>
                             </div>
                         </td>
                     </tr>
@@ -334,23 +335,88 @@
         </div>
     </div>
 
-    <!-- SCRIPT PARA CONTROLAR LA VENTANA MODAL -->
+    <!-- ========================================== -->
+    <!-- MODAL PARA MENSAJES Y ADVERTENCIAS         -->
+    <!-- ========================================== -->
+    <div id="customModalMensajes" class="modal-overlay">
+        <div class="modal-content" style="text-align: center; margin: 20% auto; max-width: 350px;">
+            <p id="modalMessageText" style="white-space: pre-wrap; font-size: 1em; font-weight: 500; color: #1c1c1e; margin-bottom: 20px; line-height: 1.4;"></p>
+            <button onclick="cerrarModalMensajes()" style="background: #007AFF; color: #fff; border: none; padding: 12px 25px; border-radius: 10px; font-size: 1.05em; cursor: pointer; width: 100%; font-weight: 600;">Aceptar</button>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE CONTROL DE MODALES Y LOCALIZACIÓN -->
     <script>
-        // Función para abrir el modal
+        // Función para abrir modal de bibliografía
         function abrirModal(id) {
             document.getElementById(id).style.display = "block";
         }
 
-        // Función para cerrar el modal mediante la 'X'
+        // Función para cerrar modal de bibliografía
         function cerrarModal(id) {
             document.getElementById(id).style.display = "none";
         }
 
-        // Cerrar el modal al hacer clic en el fondo oscuro exterior
+        // Funciones para el modal de advertencias de signatura
+        function mostrarModalMensajes(mensaje) {
+            document.getElementById("modalMessageText").innerText = mensaje;
+            document.getElementById("customModalMensajes").style.display = "block";
+        }
+
+        function cerrarModalMensajes() {
+            document.getElementById("customModalMensajes").style.display = "none";
+        }
+
+        // Cerrar modales al hacer clic fuera del contenido (en el fondo oscuro)
         window.onclick = function(event) {
             if (event.target.classList.contains('modal-overlay')) {
                 event.target.style.display = "none";
             }
+        }
+
+        // Función para procesar y localizar la signatura pulsada
+        function localizarLibro(event, elemento) {
+            event.preventDefault();
+            
+            // Obtener el texto de la signatura del elemento donde se hizo clic
+            let signatura = elemento.innerText.trim();
+
+            if (signatura === "" || signatura === "HG") {
+                mostrarModalMensajes("Por favor, selecciona una signatura válida.");
+                return;
+            }
+
+            if (!signatura.startsWith("HG")) {
+                mostrarModalMensajes("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudaremos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
+                return; 
+            }
+
+            let fichero = signatura;
+
+            fichero = fichero.replace(/\/AST$/i, "");
+            fichero = fichero.replace(/\/COMIC$/i, "");
+
+            if (!fichero.endsWith("/4")) {
+                fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
+            }
+
+            let sig = "";
+            let ultimoIndiceBarra = fichero.lastIndexOf("/");
+
+            if (ultimoIndiceBarra !== -1) {
+                let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
+
+                if (parteDerecha === "4") {
+                    sig = "HG/4";
+                } else {
+                    sig = fichero.substring(0, ultimoIndiceBarra);
+                }
+            } else {
+                sig = fichero;
+            }
+
+            // Redirige o abre en nueva pestaña pasando los parámetros requeridos
+            window.open("localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura), "_blank");
         }
     </script>
 
