@@ -415,8 +415,8 @@
                 sig = fichero;
             }
 
-            // Redirige o abre en nueva pestaña pasando los parámetros requeridos
-            window.open("localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura), "_blank");
+            // Redirige o abre en nueva pestaña subiendo un nivel hacia la carpeta raíz
+            window.open("../localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura), "_blank");
         }
     </script>
 
