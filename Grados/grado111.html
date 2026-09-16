@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Primer Semestre - Estudios Clásicos y Románicos</title>
     <style>
-        /* Estilos optimizados para cargarse dentro de un iframe */
+        /* --- ESTILOS ORIGINALES --- */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 10px; /* Reducido ligeramente para encajar mejor en el iframe */
+            padding: 10px; 
             background-color: #ffffff;
         }
 
@@ -22,7 +22,6 @@
             border-bottom: 2px solid #000;
         }
 
-        /* --- NUEVO CONTENEDOR PARA AGRUPAR CURSO Y SEMESTRE --- */
         .left-titles {
             display: flex;
             flex-direction: column;
@@ -37,20 +36,19 @@
 
         .title-semestre {
             font-size: 1.2em;
-            color: #555; /* Un gris oscuro para diferenciarlo del título principal */
+            color: #555; 
         }
 
         .title-grado {
             font-size: 1.5em;
             font-weight: bold;
-            color: #d32f2f; /* Rojo de la imagen */
+            color: #d32f2f; 
             text-align: right;
         }
 
-        /* --- ESTILOS PARA LAS INSTRUCCIONES --- */
         .instructions-box {
-            background-color: #f4f8fc; /* Fondo azul muy claro */
-            border-left: 4px solid #1976d2; /* Línea de acento a juego con los enlaces */
+            background-color: #f4f8fc; 
+            border-left: 4px solid #1976d2; 
             padding: 12px 16px;
             margin-bottom: 15px;
             border-radius: 0 4px 4px 0;
@@ -63,54 +61,139 @@
         }
 
         .instructions-box strong {
-            color: #1976d2; /* Destaca las palabras clave */
+            color: #1976d2; 
         }
-        /* --------------------------------------------- */
 
-        table {
+        table.main-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 1em;
         }
 
-        th {
-            background-color: #f1c40f; /* Amarillo de la cabecera */
+        .main-table th {
+            background-color: #f1c40f; 
             color: #000;
             text-align: left;
             padding: 8px 12px;
             font-weight: normal;
         }
 
-        td {
+        .main-table td {
             padding: 8px 12px;
-            border: 1px solid #dcdcdc; /* Borde de las celdas */
+            border: 1px solid #dcdcdc; 
             color: #000;
         }
 
-        /* Filas grises (pares e impares según imagen) */
-        tr.grey-row td {
-            background-color: #d9d9d9;
-        }
-        
-        tr.light-grey-row td {
-            background-color: #e6e6e6; 
-        }
+        tr.grey-row td { background-color: #d9d9d9; }
+        tr.light-grey-row td { background-color: #e6e6e6; }
 
-        /* Estilo para los enlaces de las asignaturas */
         a.asignatura-link {
-            color: #1976d2; /* Azul clásico de los enlaces */
+            color: #1976d2; 
             text-decoration: underline;
         }
 
-        a.asignatura-link:hover {
-            color: #0d47a1;
-        }
-
-        .centered {
-            text-align: center;
+        a.asignatura-link:hover { color: #0d47a1; }
+        .centered { text-align: center; }
+        
+        /* --- ESTILOS PARA LA VENTANA MODAL Y BIBLIOGRAFÍA --- */
+        .bib-enlace {
+            color: #d32f2f;
+            font-weight: bold;
+            text-decoration: underline;
+            cursor: pointer;
         }
         
-        /* Ajuste para pantallas pequeñas dentro del iframe */
+        .bib-enlace:hover {
+            color: #9a0007;
+        }
+
+        .modal-overlay {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0,0,0,0.5); 
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            margin: 10% auto; 
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%; 
+            max-width: 800px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .close-btn {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #000;
+        }
+
+        table.bib-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.95em;
+        }
+
+        .bib-table th {
+            background-color: #f7d0b3; 
+            color: #000;
+            font-weight: bold;
+            text-align: left;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .bib-table td {
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            background-color: #ffffff;
+        }
+
+        /* --- NUEVO: ESTILO PARA LOS BOTONES DE SIGNATURAS --- */
+        .sig-badge {
+            display: inline-block;
+            background-color: #e3f2fd; /* Fondo azul claro */
+            color: #0d47a1; /* Texto azul oscuro */
+            padding: 4px 8px;
+            margin: 2px 0;
+            border-radius: 4px;
+            text-decoration: none;
+            font-family: monospace;
+            font-weight: bold;
+            border: 1px solid #90caf9;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .sig-badge:hover {
+            background-color: #1976d2;
+            color: #ffffff;
+            border-color: #1976d2;
+            transform: scale(1.02);
+        }
+
+        /* Contenedor flexible para alinear varias signaturas en la misma celda */
+        .sig-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
         @media (max-width: 600px) {
             .header-container {
                 flex-direction: column;
@@ -120,13 +203,13 @@
                 text-align: left;
                 margin-top: 10px;
             }
-            table { font-size: 0.9em; }
+            .main-table { font-size: 0.9em; }
+            .modal-content { width: 95%; margin: 20% auto; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Cabecera principal modificada -->
     <div class="header-container">
         <div class="left-titles">
             <div class="title-curso">PRIMER CURSO</div>
@@ -135,20 +218,19 @@
         <div class="title-grado">Estudios Clásicos y Románicos</div>
     </div>
     
-    <!-- Instrucciones destacadas modificadas -->
     <div class="instructions-box">
         <p>🎯 <strong>¡Pulsa</strong> en la <strong>ASIGNATURA</strong> para ver la GUÍA DOCENTE!</p>
         <p>📚 <strong>¡Pulsa</strong> en <strong>BIBLIOGRAFÍA</strong> de la asignatura para ver los textos recomendados!</p>
     </div>
 
-    <!-- Tabla de asignaturas -->
-    <table>
+    <!-- Tabla principal de asignaturas -->
+    <table class="main-table">
         <thead>
             <tr>
                 <th style="width: 45%;">Asignatura</th>
                 <th style="width: 10%;">Créditos</th>
                 <th style="width: 25%;">Carácter</th>
-                <th style="width: 20%; background-color: transparent;"></th> <!-- Columna transparente para la bibliografía -->
+                <th style="width: 20%; background-color: transparent;"></th> 
             </tr>
         </thead>
         <tbody>
@@ -156,7 +238,9 @@
                 <td><a href="https://www.uniovi.es/estudia/grados/humanidades/estudiosclasicosromanicos/-/fof/asignatura/GESCLR01-1-001" class="asignatura-link" target="_parent">Griego I</a></td>
                 <td class="centered">6</td>
                 <td>Formación Básica</td>
-                <td style="background-color: #ffffff; border: none;">BIBLIOGRAFÍA</td>
+                <td style="background-color: #ffffff; border: none; text-align: center;">
+                    <span class="bib-enlace" onclick="abrirModal('modalGriegoI')">BIBLIOGRAFÍA</span>
+                </td>
             </tr>
             <tr class="light-grey-row">
                 <td><a href="https://www.uniovi.es/estudia/grados/humanidades/estudiosclasicosromanicos/-/fof/asignatura/GESCLR01-1-002" class="asignatura-link" target="_parent">Latín I</a></td>
@@ -202,6 +286,73 @@
             </tr>
         </tbody>
     </table>
+
+    <!-- ========================================== -->
+    <!-- VENTANA MODAL PARA BIBLIOGRAFÍA DE GRIEGO I -->
+    <!-- ========================================== -->
+    <div id="modalGriegoI" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarModal('modalGriegoI')">&times;</span>
+            <h2 style="margin-top: 0; color: #333;">Bibliografía: Griego I</h2>
+            
+            <table class="bib-table">
+                <thead>
+                    <tr>
+                        <th style="width: 70%;">BIBLIOGRAFIA</th>
+                        <th style="width: 30%;">SIGNATURAS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>F. I. Sebastián Yarza, <strong>Diccionario Griego Español</strong>. ed. Áurea [diversas reediciones]</td>
+                        <td>
+                            <div class="sig-container">
+                                <a href="localizador.html?sig=HG807.5/03/Seba" class="sig-badge" target="_blank">HG807.5/03/Seba</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>J. M. Pabón, <strong>Diccionario Griego-Español</strong>, ed. Vox, Barcelona [diversas reediciones]</td>
+                        <td>
+                            <div class="sig-container">
+                                <a href="localizador.html?sig=L807A-0298" class="sig-badge" target="_blank">L807A-0298</a>
+                                <a href="localizador.html?sig=HR807.5/03/Pabo" class="sig-badge" target="_blank">HR807.5/03/Pabo</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>J. Berenguer Amenós, <strong>Gramática Griega</strong>, ed. Bosch., Barcelona [diversas reediciones]</td>
+                        <td>
+                            <div class="sig-container">
+                                <a href="localizador.html?sig=HG807.5-5/Bere" class="sig-badge" target="_blank">HG807.5-5/Bere</a>
+                                <a href="localizador.html?sig=L807A-0342" class="sig-badge" target="_blank">L807A-0342</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SCRIPT PARA CONTROLAR LA VENTANA MODAL -->
+    <script>
+        // Función para abrir el modal
+        function abrirModal(id) {
+            document.getElementById(id).style.display = "block";
+        }
+
+        // Función para cerrar el modal mediante la 'X'
+        function cerrarModal(id) {
+            document.getElementById(id).style.display = "none";
+        }
+
+        // Cerrar el modal al hacer clic en el fondo oscuro exterior
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.style.display = "none";
+            }
+        }
+    </script>
 
 </body>
 </html>
