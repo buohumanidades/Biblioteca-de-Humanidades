@@ -286,6 +286,304 @@
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0¡Claro que sí! Para conseguir lo que pides, he modificado la función `navegarSemestre` en tu `index.html` para que genere exactamente el formato de nombre de archivo que deseas (por ejemplo, `grado111.html`). 
+
+Además, he creado desde cero el archivo `grado111.html` reproduciendo fielmente el diseño de la tabla que aparece en la imagen, con sus correspondientes enlaces en los nombres de las asignaturas.
+
+Aquí tienes los dos archivos listos para usar:
+
+### 1. Archivo `index.html` (Modificado)
+He actualizado el script al final del documento para que la variable `urlDestino` apunte al formato `grado111.html`.
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca de Humanidades | Búsqueda</title>
+    <style>
+        /* Importar fuente elegante para encabezados */
+        @import url('[https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap](https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap)');
+
+        :root {
+            /* 👇 ZONA PARA RETOCAR EL TAMAÑO DE LA IMAGEN 👇 */
+            --alto-de-la-imagen: 25vh;  
+            --ancho-de-la-imagen: 100%; 
+            /* 👆 ========================================== 👆 */
+        }
+
+        /* Animación para el fondo juvenil */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Estilos generales */
+        body { 
+            font-family: 'Inter', Helvetica, Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background: linear-gradient(-45deg, #a1c4fd, #c2e9fb, #e0c3fc, #ffc3a0);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #2c3e50; 
+            height: 100vh; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; 
+        }
+        
+        /* Contenedor principal con efecto "Glassmorphism" */
+        .container { 
+            width: 95vw; 
+            max-width: 1300px; 
+            height: 94vh; 
+            background: rgba(255, 255, 255, 0.92); 
+            backdrop-filter: blur(12px); 
+            border-radius: 16px; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15); 
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; 
+        }
+        
+        /* =========================================
+           SECCIÓN DE LA IMAGEN
+           ========================================= */
+        .hero-section {
+            width: var(--ancho-de-la-imagen);
+            flex: 0 0 var(--alto-de-la-imagen); 
+            position: relative;
+            background-color: #34495e;
+            overflow: hidden;
+        }
+
+        .shelf-photo-panoramic {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            object-position: center 60%;
+            filter: brightness(0.85); 
+        }
+
+        /* "Necesito encontrar un libro" */
+        .professional-badge {
+            position: absolute;
+            bottom: 25px;
+            right: 35px;
+            background: transparent;
+            color: #ffffff;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.8), 0 0 15px rgba(0,0,0,0.6);
+            padding: 0;
+            border: none;
+        }
+
+        /* =========================================
+           CONTENIDO PRINCIPAL
+           ========================================= */
+        .main-content {
+            flex: 1; 
+            padding: 2vh 4vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; 
+        }
+
+        /* Título */
+        h1 { 
+            font-family: 'Playfair Display', serif; 
+            color: #1a252f; 
+            text-align: center; 
+            border-bottom: 1px solid #dce6f1; 
+            padding-bottom: 1vh; 
+            font-size: 2.2em; 
+            margin: 0;
+        }
+
+        /* NUEVO: Contenedor para alinear Bibliografía y Materias */
+        .middle-section-wrapper {
+            display: flex;
+            gap: 2vw;
+            align-items: stretch;
+        }
+
+        /* Recuadro de materias y bibliografía */
+        .subjects-fieldset {
+            flex: 1; 
+            border: 1px solid #d3cbb8; 
+            border-radius: 12px;
+            padding: 1.8vh 2vw;
+            margin: 0;
+            background: linear-gradient(135deg, #fdfcfb 0%, #f4efe6 100%);
+            box-shadow: inset 0 0 20px rgba(139, 115, 85, 0.03), 0 4px 15px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .subjects-legend {
+            font-weight: 600;
+            color: #5c4b37; 
+            font-size: 1.1em;
+            padding: 0 12px;
+            margin-left: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: #fdfcfb; 
+            border-radius: 4px;
+        }
+
+        /* Cuadrícula de botones */
+        .subjects-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5vh 1vw; 
+        }
+        
+        .bibliography-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        /* Botones de materias */
+        .subject-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1vh 1vw;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #ffffff;
+            background: linear-gradient(135deg, #4b6584, #2c3e50); 
+            font-weight: 500;
+            font-size: 1.05em; 
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            cursor: pointer;
+        }
+
+        .subject-btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #34495e, #1a252f);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        /* Botón para Grados */
+        .degree-btn {
+            width: 100%;
+            padding: 2.5vh 1.5vw;
+            background: linear-gradient(135deg, #6c5ce7, #4834d4);
+            font-size: 1.15em;
+        }
+
+        .degree-btn:hover {
+            background: linear-gradient(135deg, #5f27cd, #341f97);
+        }
+
+        .btn-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Botón de Signatura FLOTANTE Y ULTRA DESTACADO */
+        .signature-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 42px 12px 12px; 
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #0f2027 100%); 
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 60px; 
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.35em; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 12px 30px rgba(30, 60, 114, 0.4), 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: max-content; 
+            margin: 1.5vh auto; 
+            gap: 18px; 
+            position: relative;
+            z-index: 10;
+        }
+
+        .signature-btn:hover {
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 50%, #1f4037 100%); 
+            transform: translateY(-6px) scale(1.02); 
+            box-shadow: 0 18px 40px rgba(30, 60, 114, 0.5), 0 6px 12px rgba(0, 0, 0, 0.15);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .signature-icon-circle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 58px;
+            height: 58px;
+            background-color: #ffffff; 
+            border-radius: 50%; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        /* Servicios Adicionales */
+        .services-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 1vh;
+        }
+
+        h2.section-title { 
+            color: #7f8c8d; 
+            font-size: 0.9em; 
+            margin: 0; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .links-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5vw;
+        }
+
+        .links-container a { 
+            display: block; 
+            padding: 1.4vh 1vw; 
+            background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%); 
+            text-decoration: none; 
+            color: #1e293b; 
+            border-radius: 8px; 
+            text-align: center; 
+            font-weight: 600; 
+            border: 1px solid #cbd5e1; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.06); 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            font-size: 0.95em;
+        }
+        
+        .links-container a:hover { 
+            background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%); 
+            color: #0f172a;
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1); 
+            border-color: #94a3b8;
+        }
+
+        /* =========================================
+           ESTILOS DE LOS MODALES (GRADOS, CURSOS Y ALERTA)
+           ========================================= */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0, 0, 0, 0.4);
             display: none;
             justify-content: center;
@@ -456,7 +754,7 @@
         
         <!-- Sección Hero Panorámica -->
         <div class="hero-section">
-            <img src="sala.png" alt="Interior detallado de biblioteca moderna" class="shelf-photo-panoramic" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
+            <img src="sala.png" alt="Interior detallado de biblioteca moderna" class="shelf-photo-panoramic" onerror="this.src='[https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades](https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades)'">
             
             <div class="professional-badge">
                 Necesito encontrar un libro
@@ -506,7 +804,7 @@
             <!-- Signatura Destacado -->
             <a href="Signatura.html" class="signature-btn">
                 <div class="signature-icon-circle">
-                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)">
                         <path d="M12 20.5C12 20.5 8.5 19 4 19C3.44772 19 3 18.5523 3 18V6C3 5.44772 3.44772 5 4 5C8.5 5 12 7.5 12 7.5" fill="#E2E8F0" stroke="#334155" stroke-width="1.2" stroke-linejoin="round"/>
                         <path d="M12 20.5C12 20.5 15.5 19 20 19C20.5523 19 21 18.5523 21 18V6C21 5.44772 20.5523 5 20 5C15.5 5 12 7.5 12 7.5" fill="#E2E8F0" stroke="#334155" stroke-width="1.2" stroke-linejoin="round"/>
                         <path d="M3 18C3 18.5523 3.44772 19 4 19C8.5 19 12 20.5 12 20.5V7.5C12 7.5 8.5 5 4 5" fill="#4ECDC4"/>
@@ -526,8 +824,8 @@
             <div class="services-wrapper">
                 <h2 class="section-title">Servicios Adicionales</h2>
                 <div class="links-container">
-                    <a href="https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=101" target="_blank">Búsqueda general en el catálogo</a>
-                    <a href="https://buo.uniovi.es/" target="_blank">Portal de la Biblioteca (BUO)</a>
+                    <a href="[https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=101](https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=101)" target="_blank">Búsqueda general en el catálogo</a>
+                    <a href="[https://buo.uniovi.es/](https://buo.uniovi.es/)" target="_blank">Portal de la Biblioteca (BUO)</a>
                 </div>
             </div>
 
@@ -595,6 +893,7 @@
     </div>
 
     <!-- Scripts funcionales -->
+    <!-- Desarrollado por Manuel Fernández -->
     <script>
         // Variable global para almacenar qué grado se ha seleccionado
         let gradoActual = ''; 
@@ -681,8 +980,8 @@
         /* --- Lógica para procesar el Semestre seleccionado --- */
         function navegarSemestre(e, curso, semestre) {
             e.preventDefault();
-            // Esto construirá un nombre de archivo del tipo "grado1_curso1_semestre1.html"
-            const urlDestino = `${gradoActual}_curso${curso}_semestre${semestre}.html`;
+            // Esto construirá un nombre de archivo del tipo "grado111.html"
+            const urlDestino = `${gradoActual}${curso}${semestre}.html`;
             navegarSeguro(e, urlDestino);
         }
 

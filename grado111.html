@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primer Semestre - Estudios Clásicos y Románicos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding-bottom: 5px;
+            margin-bottom: 0;
+            border-bottom: 2px solid #000;
+        }
+
+        .title-curso {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .title-grado {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: #d32f2f; /* Rojo de la imagen */
+        }
+
+        .semestre-container {
+            text-align: right;
+            padding: 5px 0;
+            font-size: 1.2em;
+            color: #000;
+            background-color: #fff9e6; /* Fondo ligeramente amarillento */
+            border-bottom: 2px solid #000;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1em;
+        }
+
+        th {
+            background-color: #f1c40f; /* Amarillo de la cabecera */
+            color: #000;
+            text-align: left;
+            padding: 8px 12px;
+            font-weight: normal;
+        }
+
+        td {
+            padding: 8px 12px;
+            border: 1px solid #dcdcdc; /* Borde de las celdas */
+            color: #000;
+        }
+
+        /* Filas grises (pares e impares según imagen) */
+        tr.grey-row td {
+            background-color: #d9d9d9;
+        }
+        
+        tr.light-grey-row td {
+            background-color: #e6e6e6; 
+        }
+
+        /* Estilo para los enlaces de las asignaturas */
+        a.asignatura-link {
+            color: #1976d2; /* Azul clásico de los enlaces */
+            text-decoration: underline;
+        }
+
+        a.asignatura-link:hover {
+            color: #0d47a1;
+        }
+
+        .centered {
+            text-align: center;
+        }
+
+        /* Botón volver */
+        .btn-volver {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #34495e;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .btn-volver:hover {
+            background-color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cabecera principal -->
+    <div class="header-container">
+        <div class="title-curso">PRIMER CURSO</div>
+        <div class="title-grado">Estudios Clásicos y Románicos</div>
+    </div>
+    
+    <!-- Semestre -->
+    <div class="semestre-container">
+        Primer Semestre
+    </div>
+
+    <!-- Tabla de asignaturas -->
+    <!-- Desarrollado por Manuel Fernández -->
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 45%;">Asignatura</th>
+                <th style="width: 10%;">Créditos</th>
+                <th style="width: 25%;">Carácter</th>
+                <th style="width: 20%; background-color: transparent;"></th> <!-- Columna transparente para la bibliografía -->
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="grey-row">
+                <td><a href="url_asignatura_griego1.html" class="asignatura-link">Griego I</a></td>
+                <td class="centered">6</td>
+                <td>Formación Básica</td>
+                <td style="background-color: #ffffff; border: none;">BIBLIOGRAFÍA</td>
+            </tr>
+            <tr class="light-grey-row">
+                <td><a href="url_asignatura_latin1.html" class="asignatura-link">Latín I</a></td>
+                <td class="centered">6</td>
+                <td>Formación Básica</td>
+                <td style="background-color: #ffffff; border: none;">BIBLIOGRAFÍA</td>
+            </tr>
+            <tr class="grey-row">
+                <td><a href="url_asignatura_aleman.html" class="asignatura-link">Idioma Moderno: Alemán</a></td>
+                <td class="centered">6</td>
+                <td>Formación Básica</td>
+                <td style="background-color: #ffffff; border: none;">BIBLIOGRAFÍA</td>
+            </tr>
+            <tr class="light-grey-row">
+                <td><a href="url_asignatura_frances.html" class="asignatura-link">Idioma Moderno: Francés</a></td>
+                <td class="centered">6</td>
+                <td>Formación Básica</td>
+                <td style="background-color: #ffffff; border: none;">BIBLIOGRAFÍA</td>
+            </tr>
+            <tr class="grey-row">
+                <td><a href="url_asignatura_italiano.html" class="asignatura-link">Idioma Moderno: Italiano</a></td>
+                <td class="centered">6</td>
+                <td>Formación Básica</td>
+                <td style="background-color: #ffffff; border: none;">BIBLIOGRAFÍA</td>
+            </tr>
+            <tr class="light-grey-row">
+                <td><a href="url_asignatura_ingles1.html" class="asignatura-link">Comunicación Oral y Escrita en Inglés I</a></td>
+                <td class="centered">6</td>
+                <td>Formación Básica</td>
+                <td style="background-color: #ffffff; border: none;">BIBLIOGRAFÍA</td>
+            </tr>
+            <tr class="grey-row">
+                <td><a href="url_asignatura_linguistica.html" class="asignatura-link">Lingüística</a></td>
+                <td class="centered">6</td>
+                <td>Formación Básica</td>
+                <td style="background-color: #ffffff; border: none;">BIBLIOGRAFÍA</td>
+            </tr>
+            <tr class="light-grey-row">
+                <td><a href="url_asignatura_arabe.html" class="asignatura-link">Idioma Moderno: Árabe</a></td>
+                <td class="centered">6</td>
+                <td>Formación Básica</td>
+                <td style="background-color: #ffffff; border: none;">NO TIENE</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="index.html" class="btn-volver">← Volver al inicio</a>
+
+</body>
+</html>
