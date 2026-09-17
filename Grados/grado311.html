@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primer Semestre - Grado de Filosofía</title>
+    <style>
+        /* --- ESTILOS ORIGINALES --- */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px; 
+            background-color: #ffffff;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #000;
+        }
+
+        .left-titles {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .title-curso {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .title-semestre {
+            font-size: 1.2em;
+            color: #555; 
+        }
+
+        .title-grado {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #d32f2f; 
+            text-align: right;
+        }
+
+        .instructions-box {
+            background-color: #f4f8fc; 
+            border-left: 4px solid #1976d2; 
+            padding: 12px 16px;
+            margin-bottom: 15px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .instructions-box p {
+            margin: 6px 0;
+            font-size: 0.95em;
+            color: #333;
+        }
+
+        .instructions-box strong {
+            color: #1976d2; 
+        }
+
+        table.main-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1em;
+        }
+
+        .main-table th {
+            background-color: #f1c40f; 
+            color: #000;
+            text-align: left;
+            padding: 8px 12px;
+            font-weight: normal;
+        }
+
+        .main-table td {
+            padding: 8px 12px;
+            border: 1px solid #dcdcdc; 
+            color: #000;
+        }
+
+        tr.grey-row td { background-color: #d9d9d9; }
+        tr.light-grey-row td { background-color: #e6e6e6; }
+
+        a.asignatura-link {
+            color: #1976d2; 
+            text-decoration: underline;
+        }
+
+        a.asignatura-link:hover { color: #0d47a1; }
+        .centered { text-align: center; }
+        
+        /* --- ESTILOS PARA LA VENTANA MODAL Y BIBLIOGRAFÍA --- */
+        .bib-enlace {
+            color: #d32f2f;
+            font-weight: bold;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        
+        .bib-enlace:hover {
+            color: #9a0007;
+        }
+
+        .modal-overlay {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0,0,0,0.5); 
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            margin: 10% auto; 
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%; 
+            max-width: 800px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #000;
+        }
+
+        table.bib-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.95em;
+        }
+
+        .bib-table th {
+            background-color: #f7d0b3; 
+            color: #000;
+            font-weight: bold;
+            text-align: left;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .bib-table td {
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            background-color: #ffffff;
+        }
+
+        /* --- ESTILO PARA LOS BOTONES DE SIGNATURAS --- */
+        .sig-badge {
+            display: inline-block;
+            background-color: #e3f2fd; 
+            color: #0d47a1; 
+            padding: 4px 8px;
+            margin: 2px 0;
+            border-radius: 4px;
+            text-decoration: none;
+            font-family: monospace;
+            font-weight: bold;
+            border: 1px solid #90caf9;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+
+        .sig-badge:hover {
+            background-color: #1976d2;
+            color: #ffffff;
+            border-color: #1976d2;
+            transform: scale(1.02);
+        }
+
+        /* Contenedor flexible para alinear varias signaturas en la misma celda */
+        .sig-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        @media (max-width: 600px) {
+            .header-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .title-grado {
+                text-align: left;
+                margin-top: 10px;
+            }
+            .main-table { font-size: 0.9em; }
+            .modal-content { width: 95%; margin: 20% auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <div class="left-titles">
+            <div class="title-curso">PRIMER CURSO</div>
+            <div class="title-semestre">Primer Semestre</div>
+        </div>
+        <div class="title-grado">Grado de Filosofía</div>
+    </div>
+    
+    <div class="instructions-box">
+        <p>🎯 <strong>¡Pulsa</strong> en la <strong>ASIGNATURA</strong> para ver la GUÍA DOCENTE!</p>
+        <p>📚 <strong>¡Pulsa</strong> en <strong>BIBLIOGRAFÍA</strong> de la asignatura para ver los textos recomendados!</p>
+    </div>
+
+    <!-- Tabla principal de asignaturas -->
+    <table class="main-table">
+        <thead>
+            <tr>
+                <th style="width: 45%;">Asignatura</th>
+                <th style="width: 10%;">Créditos</th>
+                <th style="width: 25%;">Carácter</th>
+                <th style="width: 20%; background-color: transparent;"></th> 
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="grey-row">
+                <td><a href="https://www.uniovi.es/estudia/grados/humanidades/filosofia/-/fof/asignatura/GFILOS01-1-001" class="asignatura-link" target="_parent">Fundamentos de Filosofía</a></td>
+                <td class="centered">6</td>
+                <td>Formación Básica</td>
+                <td style="background-color: #ffffff; border: none; text-align: center;">
+                    <span class="bib-enlace" onclick="abrirModal('modalFundamentos')">BIBLIOGRAFÍA</span>
+                </td>
+            </tr>
+            <tr class="light-grey-row">
+                <td><a href="https://www.uniovi.es/estudia/grados/humanidades/filosofia/-/fof/asignatura/GFILOS01-1-002" class="asignatura-link" target="_parent">Ética</a></td>
+                <td class="centered">6</td>
+                <td>Formación Básica</td>
+                <td style="background-color: #ffffff; border: none; text-align: center;">
+                    <span class="bib-enlace" onclick="abrirModal('modalEtica')">BIBLIOGRAFÍA</span>
+                </td>
+            </tr>
+            <tr class="grey-row">
+                <td><a href="https://www.uniovi.es/estudia/grados/humanidades/filosofia/-/fof/asignatura/GFILOS01-1-003" class="asignatura-link" target="_parent">Historia de la Filosofía Griega</a></td>
+                <td class="centered">6</td>
+                <td>Formación Básica</td>
+                <td style="background-color: #ffffff; border: none; text-align: center;">
+                    <span class="bib-enlace" onclick="abrirModal('modalHistoriaGriega')">BIBLIOGRAFÍA</span>
+                </td>
+            </tr>
+            <tr class="light-grey-row">
+                <td><a href="https://www.uniovi.es/estudia/grados/humanidades/filosofia/-/fof/asignatura/GFILOS01-1-004" class="asignatura-link" target="_parent">Lógica Elemental</a></td>
+                <td class="centered">6</td>
+                <td>Formación Básica</td>
+                <td style="background-color: #ffffff; border: none; text-align: center;">
+                    <span class="bib-enlace" onclick="abrirModal('modalLogica')">BIBLIOGRAFÍA</span>
+                </td>
+            </tr>
+            <tr class="grey-row">
+                <td><a href="https://www.uniovi.es/estudia/grados/humanidades/filosofia/-/fof/asignatura/GFILOS01-1-005" class="asignatura-link" target="_parent">Griego</a></td>
+                <td class="centered">6</td>
+                <td>Formación Básica</td>
+                <td style="background-color: #ffffff; border: none; text-align: center;">
+                    <span class="bib-enlace" onclick="abrirModal('modalGriego')">BIBLIOGRAFÍA</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- ========================================== -->
+    <!-- VENTANA MODAL PARA FUNDAMENTOS DE FILOSOFÍA -->
+    <!-- ========================================== -->
+    <div id="modalFundamentos" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarModal('modalFundamentos')">&times;</span>
+            <h2 style="margin-top: 0; color: #333;">Bibliografía: Fundamentos de Filosofía</h2>
+            
+            <table class="bib-table">
+                <thead>
+                    <tr>
+                        <th style="width: 70%;">BIBLIOGRAFÍA</th>
+                        <th style="width: 30%;">SIGNATURAS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bueno, Gustavo, <strong>El papel de la filosofía en el conjunto del saber</strong>, Ciencia Nueva, Madrid, 1970.</td>
+                        <td>
+                            <div class="sig-container">
+                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG1/Buen</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Russell, Bertrand, <strong>Los problemas de la filosofía</strong>, Labor, Barcelona.</td>
+                        <td>
+                            <div class="sig-container">
+                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG1/Russ</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VENTANA MODAL PARA ÉTICA                   -->
+    <!-- ========================================== -->
+    <div id="modalEtica" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarModal('modalEtica')">&times;</span>
+            <h2 style="margin-top: 0; color: #333;">Bibliografía: Ética</h2>
+            
+            <table class="bib-table">
+                <thead>
+                    <tr>
+                        <th style="width: 70%;">BIBLIOGRAFÍA</th>
+                        <th style="width: 30%;">SIGNATURAS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Aranguren, José Luis, <strong>Ética</strong>, Revista de Occidente, Madrid.</td>
+                        <td>
+                            <div class="sig-container">
+                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG17/Aran</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Singer, Peter (ed.), <strong>Compendio de Ética</strong>, Alianza Editorial, Madrid.</td>
+                        <td>
+                            <div class="sig-container">
+                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG17/Sing</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VENTANA MODAL PARA HISTORIA DE LA FILOSOFÍA GRIEGA -->
+    <!-- ========================================== -->
+    <div id="modalHistoriaGriega" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarModal('modalHistoriaGriega')">&times;</span>
+            <h2 style="margin-top: 0; color: #333;">Bibliografía: Historia de la Filosofía Griega</h2>
+            
+            <table class="bib-table">
+                <thead>
+                    <tr>
+                        <th style="width: 70%;">BIBLIOGRAFÍA</th>
+                        <th style="width: 30%;">SIGNATURAS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Guthrie, W.K.C., <strong>Historia de la Filosofía Griega</strong>, Gredos, Madrid.</td>
+                        <td>
+                            <div class="sig-container">
+                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG1(091)/Guth</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Kirk, G.S., Raven, J.E. y Schofield, M., <strong>Los filósofos presocráticos</strong>, Gredos, Madrid.</td>
+                        <td>
+                            <div class="sig-container">
+                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG1(091)/Kirk</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VENTANA MODAL PARA LÓGICA ELEMENTAL         -->
+    <!-- ========================================== -->
+    <div id="modalLogica" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarModal('modalLogica')">&times;</span>
+            <h2 style="margin-top: 0; color: #333;">Bibliografía: Lógica Elemental</h2>
+            
+            <table class="bib-table">
+                <thead>
+                    <tr>
+                        <th style="width: 70%;">BIBLIOGRAFÍA</th>
+                        <th style="width: 30%;">SIGNATURAS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Garrido, Manuel, <strong>Lógica simbólica</strong>, Tecnos, Madrid.</td>
+                        <td>
+                            <div class="sig-container">
+                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG16/Garr</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Deaño, Alfredo, <strong>Introducción a la lógica formal</strong>, Alianza Editorial, Madrid.</td>
+                        <td>
+                            <div class="sig-container">
+                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG16/Dean</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VENTANA MODAL PARA GRIEGO                   -->
+    <!-- ========================================== -->
+    <div id="modalGriego" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarModal('modalGriego')">&times;</span>
+            <h2 style="margin-top: 0; color: #333;">Bibliografía: Griego</h2>
+            
+            <table class="bib-table">
+                <thead>
+                    <tr>
+                        <th style="width: 70%;">BIBLIOGRAFÍA</th>
+                        <th style="width: 30%;">SIGNATURAS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Berenguer Amenós, J., <strong>Gramática Griega</strong>, ed. Bosch, Barcelona.</td>
+                        <td>
+                            <div class="sig-container">
+                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG807.5-5/Bere</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Pabón, J. M., <strong>Diccionario Griego-Español</strong>, ed. Vox, Barcelona.</td>
+                        <td>
+                            <div class="sig-container">
+                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HR807.5/03/Pabo</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL PARA MENSAJES Y ADVERTENCIAS         -->
+    <!-- ========================================== -->
+    <div id="customModalMensajes" class="modal-overlay">
+        <div class="modal-content" style="text-align: center; margin: 20% auto; max-width: 350px;">
+            <p id="modalMessageText" style="white-space: pre-wrap; font-size: 1em; font-weight: 500; color: #1c1c1e; margin-bottom: 20px; line-height: 1.4;"></p>
+            <button onclick="cerrarModalMensajes()" style="background: #007AFF; color: #fff; border: none; padding: 12px 25px; border-radius: 10px; font-size: 1.05em; cursor: pointer; width: 100%; font-weight: 600;">Aceptar</button>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE CONTROL DE MODALES Y LOCALIZACIÓN -->
+    <script>
+        // Función para abrir modal de bibliografía
+        function abrirModal(id) {
+            document.getElementById(id).style.display = "block";
+        }
+
+        // Función para cerrar modal de bibliografía
+        function cerrarModal(id) {
+            document.getElementById(id).style.display = "none";
+        }
+
+        // Funciones para el modal de advertencias de signatura
+        function mostrarModalMensajes(mensaje) {
+            document.getElementById("modalMessageText").innerText = mensaje;
+            document.getElementById("customModalMensajes").style.display = "block";
+        }
+
+        function cerrarModalMensajes() {
+            document.getElementById("customModalMensajes").style.display = "none";
+        }
+
+        // Cerrar modales al hacer clic fuera del contenido (en el fondo oscuro)
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.style.display = "none";
+            }
+        }
+
+        // Función para procesar y localizar la signatura pulsada
+        function localizarLibro(event, elemento) {
+            event.preventDefault();
+            
+            // Obtener el texto de la signatura del elemento donde se hizo clic
+            let signatura = elemento.innerText.trim();
+
+            if (signatura === "" || signatura === "HG") {
+                mostrarModalMensajes("Por favor, selecciona una signatura válida.");
+                return;
+            }
+
+            if (!signatura.startsWith("HG")) {
+                mostrarModalMensajes("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudaremos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
+                return; 
+            }
+
+            let fichero = signatura;
+
+            fichero = fichero.replace(/\/AST$/i, "");
+            fichero = fichero.replace(/\/COMIC$/i, "");
+
+            if (!fichero.endsWith("/4")) {
+                fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
+            }
+
+            let sig = "";
+            let ultimoIndiceBarra = fichero.lastIndexOf("/");
+
+            if (ultimoIndiceBarra !== -1) {
+                let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
+
+                if (parteDerecha === "4") {
+                    sig = "HG/4";
+                } else {
+                    sig = fichero.substring(0, ultimoIndiceBarra);
+                }
+            } else {
+                sig = fichero;
+            }
+
+            // Redirige o abre en nueva pestaña subiendo un nivel hacia la carpeta raíz
+            window.open("../localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura), "_blank");
+        }
+    </script>
+
+</body>
+</html>
