@@ -3,12 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bibliografía de Asignaturas</title>
+    <title>Bibliografía y Guías Docentes</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
             background-color: #f4f6f9;
+        }
+
+        .asignaturas-lista {
+            max-width: 900px;
+            margin: 0 auto 30px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .asignatura-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .asignatura-card:last-child {
+            border-bottom: none;
+        }
+
+        .btn-guia {
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .btn-guia:hover {
+            text-decoration: underline;
+        }
+
+        .btn-modal {
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .btn-modal:hover {
+            background-color: #115293;
         }
 
         /* Estilos del modal */
@@ -61,7 +107,6 @@
             background-color: #f2f2f2;
         }
 
-        /* Estilo para convertir el texto bibliográfico en enlace al OPAC */
         .bib-texto-link {
             color: #2b2b2b;
             text-decoration: none;
@@ -75,7 +120,6 @@
             text-decoration: underline;
         }
 
-        /* Badges para las signaturas */
         .sig-container {
             display: flex;
             flex-wrap: wrap;
@@ -98,11 +142,17 @@
 </head>
 <body>
 
+    <div class="asignaturas-lista">
+        <h2>Asignaturas del Grado</h2>
+        <div id="contenedorAsignaturas">Cargando asignaturas...</div>
+    </div>
+
     <!-- Estructura del Modal -->
     <div id="modalBibliografia" class="modal">
         <div class="modal-content">
             <span class="close" onclick="cerrarModal()">&times;</span>
             <h2 id="modalTitulo">Título Asignatura</h2>
+            <div id="modalGuiaDocenteLink" style="margin-bottom: 10px;"></div>
             <table>
                 <thead>
                     <tr>
@@ -118,13 +168,66 @@
     </div>
 
     <script>
-        // Carga de datos JSON
+        document.addEventListener("DOMContentLoaded", cargarAsignaturasInicio);
+
         async function cargarDatos() {
             const response = await fetch('grado3.json');
             if (!response.ok) {
-                throw new Error('Error al cargar el archivo grado3.json');
+                throw new Error('No se pudo acceder al archivo grado3.json');
             }
             return await response.json();
+        }
+
+        // Carga la lista inicial de asignaturas desde el JSON
+        async function cargarAsignaturasInicio() {
+            const contenedor = document.getElementById("contenedorAsignaturas");
+            try {
+                const data = await cargarDatos();
+                
+                // Agrupar asignaturas únicas
+                const asignaturasMap = new Map();
+                data.forEach(item => {
+                    if (item.ASIGNATURA && !asignaturasMap.has(item.ASIGNATURA.trim())) {
+                        asignaturasMap.set(item.ASIGNATURA.trim(), {
+                            nombre: item.ASIGNATURA.trim(),
+                            grado: item.GRADO,
+                            guia: item["URL Guía Docente"] || item["URL_GUIA"] || "#"
+                        });
+                    }
+                });
+
+                contenedor.innerHTML = "";
+
+                if (asignaturasMap.size === 0) {
+                    contenedor.innerHTML = "<p>No se encontraron asignaturas en el fichero.</p>";
+                    return;
+                }
+
+                asignaturasMap.forEach(asig => {
+                    const card = document.createElement("div");
+                    card.className = "asignatura-card";
+                    card.innerHTML = `
+                        <div>
+                            <a href="${asig.guia}" target="_blank" rel="noopener noreferrer" class="btn-guia" title="Abrir Guía Docente en nueva ventana">
+                                ${asig.nombre}
+                            </a>
+                        </div>
+                        <button class="btn-modal" onclick="abrirModalBibliografia('${asig.nombre.replace(/'/g, "\\'")}', '${asig.grado}', '${asig.guia}')">
+                            Ver Bibliografía
+                        </button>
+                    `;
+                    contenedor.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error(error);
+                contenedor.innerHTML = `
+                    <div style="color: #c62828; background: #ffebee; padding: 15px; border-radius: 4px;">
+                        <strong>Error al cargar los datos:</strong> ${error.message}.<br><br>
+                        <em>Nota: Si estás abriendo el archivo haciendo doble clic en él, abre tu editor (ej. VS Code) y usa la extensión <strong>Live Server</strong> para ejecutarlo bajo protocolo HTTP.</em>
+                    </div>
+                `;
+            }
         }
 
         function cerrarModal() {
@@ -136,20 +239,26 @@
             alert("Localizando libro con signatura: " + elemento.textContent);
         }
 
-        // Función para abrir modal y generar enlaces al OPAC
-        async function abrirModalBibliografia(nombreAsignatura, codigoGrado) {
+        async function abrirModalBibliografia(nombreAsignatura, codigoGrado, urlGuiaDocente) {
             const modal = document.getElementById("modalBibliografia");
             const tituloModal = document.getElementById("modalTitulo");
+            const divGuiaLink = document.getElementById("modalGuiaDocenteLink");
             const cuerpoTabla = document.getElementById("modalTablaCuerpo");
 
             tituloModal.innerText = nombreAsignatura;
+
+            if (urlGuiaDocente && urlGuiaDocente !== "#") {
+                divGuiaLink.innerHTML = `<a href="${urlGuiaDocente}" target="_blank" rel="noopener noreferrer" style="color: #1976d2; font-weight: bold;">📄 Consultar Guía Docente (se abre en nueva ventana)</a>`;
+            } else {
+                divGuiaLink.innerHTML = '';
+            }
+
             cuerpoTabla.innerHTML = '<tr><td colspan="2" style="text-align: center; padding: 20px;">Cargando bibliografía...</td></tr>';
             modal.style.display = "block";
 
             try {
                 const data = await cargarDatos();
 
-                // Filtrar por asignatura y código GRADO
                 const items = data.filter(item => 
                     item.ASIGNATURA && 
                     item.ASIGNATURA.trim().toLowerCase() === nombreAsignatura.trim().toLowerCase() &&
@@ -166,7 +275,6 @@
                 items.forEach(item => {
                     const tr = document.createElement("tr");
 
-                    // 1. Preparar texto bibliográfico con título en negrita
                     let textoCompleto = item["Texto completo de la obra donde se extrae la información"] || "";
                     let titulo = item["Obra/Título"] || "";
                     let autor = item["AUTOR"] || "";
@@ -177,21 +285,19 @@
 
                     const tdBib = document.createElement("td");
 
-                    // URL de la búsqueda en el OPAC
                     const urlOpac = item["URL de búsqueda OPAC"] || 
                         `https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH&xsqf01=${encodeURIComponent(autor + ' ' + titulo)}`;
 
-                    // Crear el enlace <a> interactivo sobre la bibliografía
                     const aBib = document.createElement("a");
                     aBib.className = "bib-texto-link";
                     aBib.href = urlOpac;
                     aBib.target = "_blank";
+                    aBib.rel = "noopener noreferrer";
                     aBib.title = `Buscar "${titulo}" en el OPAC`;
                     aBib.innerHTML = textoCompleto;
 
                     tdBib.appendChild(aBib);
 
-                    // 2. Columna de Signaturas
                     const tdSig = document.createElement("td");
                     const divSigContainer = document.createElement("div");
                     divSigContainer.className = "sig-container";
@@ -222,6 +328,5 @@
             }
         }
     </script>
-
 </body>
 </html>
