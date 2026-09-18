@@ -317,8 +317,8 @@
     </div>
     
     <div class="instructions-box">
-        <p>🎯 <strong>¡Pulsa</strong> en la <strong>ASIGNATURA</strong> para ver la GUÍA DOCENTE!</p>
-        <p>📚 <strong>¡Pulsa</strong> en <strong>BIBLIOGRAFÍA</strong> de la asignatura para ver los textos recomendados!</p>
+        <p>🎯 <strong>Pulsa</strong> en la <strong>ASIGNATURA</strong> para ver la GUÍA DOCENTE</p>
+        <p>📚 <strong>Pulsa</strong> en <strong>BIBLIOGRAFÍA</strong> de la asignatura para ver los textos recomendados</p>
     </div>
 
     <!-- Tabla principal de asignaturas -->
@@ -340,7 +340,7 @@
     <div id="modalBibliografia" class="modal-overlay">
         <div class="modal-content">
             <span class="close-btn" onclick="cerrarModal('modalBibliografia')">&times;</span>
-            <h2 id="modalTitulo" style="margin-top: 0; color: #333;">Bibliografía</h2>
+            <h2 id="modalTitulo" style="margin-top: 0; color: #EB3324;">Bibliografía</h2>
             
             <table class="bib-table">
                 <thead>
@@ -369,6 +369,7 @@
         let cursoActual = 1;
         let trimestreActual = 1;
         let datosGrado = null;
+        let datosGuias = null; // Variable para almacenar las URLs de las guías docentes
 
         // Carga inicial y almacenamiento del JSON grado3.json
         async function cargarDatos() {
@@ -380,6 +381,40 @@
                 datosGrado = await response.json();
             }
             return datosGrado;
+        }
+
+        // Carga y procesamiento del archivo de texto con las URLs de las guías docentes
+        async function cargarGuias() {
+            if (!datosGuias) {
+                try {
+                    const response = await fetch('Grado3.txt');
+                    if (!response.ok) {
+                        throw new Error('No se pudo cargar el fichero Grado3.txt');
+                    }
+                    const text = await response.text();
+                    
+                    const lineas = text.trim().split('\n');
+                    datosGuias = [];
+                    
+                    // Saltamos la primera línea (cabecera)
+                    for (let i = 1; i < lineas.length; i++) {
+                        const columnas = lineas[i].split('\t');
+                        // Nos aseguramos de que existan al menos 4 columnas (GRADO, Asignatura, Guia docente, url)
+                        if (columnas.length >= 4) {
+                            datosGuias.push({
+                                grado: columnas[0].trim(),
+                                asignatura: columnas[1].trim(),
+                                guia: columnas[2].trim(),
+                                url: columnas[3].trim()
+                            });
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error al cargar las guías de Grado3.txt:", error);
+                    datosGuias = [];
+                }
+            }
+            return datosGuias;
         }
 
         // Función para cambiar de curso
@@ -414,7 +449,9 @@
             tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px;">Cargando asignaturas...</td></tr>';
 
             try {
+                // Se cargan tanto los datos de bibliografía/asignaturas como el mapeo de las URLs de las guías
                 const data = await cargarDatos();
+                const guiasData = await cargarGuias();
 
                 // Formato del código GRADO: Grado (3) + Curso (1..4) + Trimestre (1..2) -> p.ej. 311
                 const codigoGrado = parseInt(`3${cursoActual}${trimestreActual}`);
@@ -454,12 +491,17 @@
                     const tr = document.createElement("tr");
                     tr.className = (index % 2 === 0) ? "grey-row" : "light-grey-row";
 
+                    // Búsqueda de la URL de la guía correspondiente en los datos de Grado3.txt
+                    const infoGuia = guiasData.find(g => g.asignatura.toLowerCase() === nombreAsignatura.toLowerCase());
+                    // Si no se encuentra, se deja una por defecto o genérica
+                    const urlGuiaDocente = infoGuia ? infoGuia.url : "https://www.uniovi.es/estudia/grados/humanidades/filosofia";
+
                     // 1. Asignatura y Guía Docente
                     const tdAsig = document.createElement("td");
                     const aLink = document.createElement("a");
                     aLink.className = "asignatura-link";
-                    aLink.target = "_parent";
-                    aLink.href = "https://www.uniovi.es/estudia/grados/humanidades/filosofia";
+                    aLink.target = "_blank"; // Abriremos la guía en una nueva ventana
+                    aLink.href = urlGuiaDocente;
                     aLink.textContent = nombreAsignatura;
                     tdAsig.appendChild(aLink);
 
