@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grado de Filosofía</title>
+    <style>
+        /* --- ESTILOS GENERALES Y ENCABEZADO --- */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px; 
+            background-color: #ffffff;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #000;
+        }
+
+        .left-titles {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .title-curso {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .title-semestre {
+            font-size: 1.2em;
+            color: #555; 
+        }
+
+        .title-grado {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #d32f2f; 
+            text-align: right;
+        }
+
+        /* --- CONTROLES DE SELECCIÓN (CURSO Y TRIMESTRE) --- */
+        .controls-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-label {
+            font-weight: bold;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .btn-curso, .btn-trimestre {
+            background-color: #ffffff;
+            border: 1px solid #1976d2;
+            color: #1976d2;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+        }
+
+        .btn-curso:hover, .btn-trimestre:hover {
+            background-color: #e3f2fd;
+        }
+
+        .btn-curso.active, .btn-trimestre.active {
+            background-color: #1976d2;
+            color: #ffffff;
+        }
+
+        .instructions-box {
+            background-color: #f4f8fc; 
+            border-left: 4px solid #1976d2; 
+            padding: 12px 16px;
+            margin-bottom: 15px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .instructions-box p {
+            margin: 6px 0;
+            font-size: 0.95em;
+            color: #333;
+        }
+
+        .instructions-box strong {
+            color: #1976d2; 
+        }
+
+        /* --- TABLA PRINCIPAL --- */
+        table.main-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1em;
+        }
+
+        .main-table th {
+            background-color: #f1c40f; 
+            color: #000;
+            text-align: left;
+            padding: 8px 12px;
+            font-weight: normal;
+        }
+
+        .main-table td {
+            padding: 8px 12px;
+            border: 1px solid #dcdcdc; 
+            color: #000;
+        }
+
+        tr.grey-row td { background-color: #d9d9d9; }
+        tr.light-grey-row td { background-color: #e6e6e6; }
+
+        a.asignatura-link {
+            color: #1976d2; 
+            text-decoration: underline;
+        }
+
+        a.asignatura-link:hover { color: #0d47a1; }
+        .centered { text-align: center; }
+        
+        /* --- ESTILOS PARA LA VENTANA MODAL Y BIBLIOGRAFÍA --- */
+        .bib-enlace {
+            color: #d32f2f;
+            font-weight: bold;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        
+        .bib-enlace:hover {
+            color: #9a0007;
+        }
+
+        .modal-overlay {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0,0,0,0.5); 
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            margin: 10% auto; 
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%; 
+            max-width: 800px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #000;
+        }
+
+        table.bib-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.95em;
+        }
+
+        .bib-table th {
+            background-color: #f7d0b3; 
+            color: #000;
+            font-weight: bold;
+            text-align: left;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .bib-table td {
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            background-color: #ffffff;
+        }
+
+        /* --- BOTONES DE SIGNATURAS --- */
+        .sig-badge {
+            display: inline-block;
+            background-color: #e3f2fd; 
+            color: #0d47a1; 
+            padding: 4px 8px;
+            margin: 2px 0;
+            border-radius: 4px;
+            text-decoration: none;
+            font-family: monospace;
+            font-weight: bold;
+            border: 1px solid #90caf9;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+
+        .sig-badge:hover {
+            background-color: #1976d2;
+            color: #ffffff;
+            border-color: #1976d2;
+            transform: scale(1.02);
+        }
+
+        .sig-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        @media (max-width: 600px) {
+            .header-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .title-grado {
+                text-align: left;
+                margin-top: 10px;
+            }
+            .controls-box {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .main-table { font-size: 0.9em; }
+            .modal-content { width: 95%; margin: 20% auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <div class="left-titles">
+            <div class="title-curso" id="titleCursoText">PRIMER CURSO</div>
+            <div class="title-semestre" id="titleTrimestreText">Primer Trimestre</div>
+        </div>
+        <div class="title-grado">Grado de Filosofía</div>
+    </div>
+
+    <!-- Panel de selección de Curso y Trimestre -->
+    <div class="controls-box">
+        <div class="control-group">
+            <span class="control-label">Curso:</span>
+            <div class="btn-group">
+                <button class="btn-curso active" data-curso="1" onclick="cambiarCurso(1)">1º Curso</button>
+                <button class="btn-curso" data-curso="2" onclick="cambiarCurso(2)">2º Curso</button>
+                <button class="btn-curso" data-curso="3" onclick="cambiarCurso(3)">3º Curso</button>
+                <button class="btn-curso" data-curso="4" onclick="cambiarCurso(4)">4º Curso</button>
+            </div>
+        </div>
+        <div class="control-group">
+            <span class="control-label">Trimestre:</span>
+            <div class="btn-group">
+                <button class="btn-trimestre active" data-trimestre="1" onclick="cambiarTrimestre(1)">1º Trimestre</button>
+                <button class="btn-trimestre" data-trimestre="2" onclick="cambiarTrimestre(2)">2º Trimestre</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="instructions-box">
+        <p>🎯 <strong>¡Pulsa</strong> en la <strong>ASIGNATURA</strong> para ver la GUÍA DOCENTE!</p>
+        <p>📚 <strong>¡Pulsa</strong> en <strong>BIBLIOGRAFÍA</strong> de la asignatura para ver los textos recomendados!</p>
+    </div>
+
+    <!-- Tabla principal de asignaturas -->
+    <table class="main-table">
+        <thead>
+            <tr>
+                <th style="width: 45%;">Asignatura</th>
+                <th style="width: 10%;">Créditos</th>
+                <th style="width: 25%;">Carácter</th>
+                <th style="width: 20%; background-color: transparent;"></th> 
+            </tr>
+        </thead>
+        <tbody id="tablaAsignaturasCuerpo">
+            <!-- Se carga dinámicamente según el curso y trimestre seleccionados -->
+        </tbody>
+    </table>
+
+    <!-- Ventana modal dinámica de Bibliografía -->
+    <div id="modalBibliografia" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarModal('modalBibliografia')">&times;</span>
+            <h2 id="modalTitulo" style="margin-top: 0; color: #333;">Bibliografía</h2>
+            
+            <table class="bib-table">
+                <thead>
+                    <tr>
+                        <th style="width: 70%;">BIBLIOGRAFÍA</th>
+                        <th style="width: 30%;">SIGNATURAS</th>
+                    </tr>
+                </thead>
+                <tbody id="modalTablaCuerpo">
+                    <!-- Se carga dinámicamente desde grado3.json -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal para mensajes y advertencias -->
+    <div id="customModalMensajes" class="modal-overlay">
+        <div class="modal-content" style="text-align: center; margin: 20% auto; max-width: 350px;">
+            <p id="modalMessageText" style="white-space: pre-wrap; font-size: 1em; font-weight: 500; color: #1c1c1e; margin-bottom: 20px; line-height: 1.4;"></p>
+            <button onclick="cerrarModalMensajes()" style="background: #007AFF; color: #fff; border: none; padding: 12px 25px; border-radius: 10px; font-size: 1.05em; cursor: pointer; width: 100%; font-weight: 600;">Aceptar</button>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let cursoActual = 1;
+        let trimestreActual = 1;
+        let datosGrado = null;
+
+        // Carga inicial y almacenamiento del JSON grado3.json
+        async function cargarDatos() {
+            if (!datosGrado) {
+                const response = await fetch('grado3.json');
+                if (!response.ok) {
+                    throw new Error('No se pudo cargar el fichero grado3.json');
+                }
+                datosGrado = await response.json();
+            }
+            return datosGrado;
+        }
+
+        // Función para cambiar de curso
+        function cambiarCurso(numCurso) {
+            cursoActual = numCurso;
+            document.querySelectorAll('.btn-curso').forEach(btn => {
+                if (parseInt(btn.getAttribute('data-curso')) === numCurso) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            actualizarAsignaturas();
+        }
+
+        // Función para cambiar de trimestre
+        function cambiarTrimestre(numTrimestre) {
+            trimestreActual = numTrimestre;
+            document.querySelectorAll('.btn-trimestre').forEach(btn => {
+                if (parseInt(btn.getAttribute('data-trimestre')) === numTrimestre) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            actualizarAsignaturas();
+        }
+
+        // Actualizar la vista de las asignaturas en función del curso y trimestre seleccionados
+        async function actualizarAsignaturas() {
+            const tbody = document.getElementById("tablaAsignaturasCuerpo");
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px;">Cargando asignaturas...</td></tr>';
+
+            try {
+                const data = await cargarDatos();
+
+                // Formato del código GRADO: Grado (3) + Curso (1..4) + Trimestre (1..2) -> p.ej. 311
+                const codigoGrado = parseInt(`3${cursoActual}${trimestreActual}`);
+
+                // Actualizar textos del encabezado
+                const nombresCurso = ["PRIMER CURSO", "SEGUNDO CURSO", "TERCER CURSO", "CUARTO CURSO"];
+                const nombresTrimestre = ["Primer Trimestre", "Segundo Trimestre"];
+
+                document.getElementById("titleCursoText").innerText = nombresCurso[cursoActual - 1] || `${cursoActual}º CURSO`;
+                document.getElementById("titleTrimestreText").innerText = nombresTrimestre[trimestreActual - 1] || `${trimestreActual}º Trimestre`;
+
+                // Filtrar elementos por el código GRADO correspondiente
+                const itemsGrado = data.filter(item => Number(item.GRADO) === codigoGrado);
+
+                tbody.innerHTML = "";
+
+                if (itemsGrado.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px;">No se encontraron asignaturas registradas para este curso y trimestre.</td></tr>';
+                    return;
+                }
+
+                // Extraer asignaturas únicas conservando su orden
+                const asignaturasUnicas = [];
+                itemsGrado.forEach(item => {
+                    if (item.ASIGNATURA && item.ASIGNATURA.trim() !== "" && !asignaturasUnicas.includes(item.ASIGNATURA.trim())) {
+                        asignaturasUnicas.push(item.ASIGNATURA.trim());
+                    }
+                });
+
+                if (asignaturasUnicas.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px;">No hay asignaturas disponibles.</td></tr>';
+                    return;
+                }
+
+                // Generar filas de la tabla
+                asignaturasUnicas.forEach((nombreAsignatura, index) => {
+                    const tr = document.createElement("tr");
+                    tr.className = (index % 2 === 0) ? "grey-row" : "light-grey-row";
+
+                    // 1. Asignatura y Guía Docente
+                    const tdAsig = document.createElement("td");
+                    const aLink = document.createElement("a");
+                    aLink.className = "asignatura-link";
+                    aLink.target = "_parent";
+                    aLink.href = "https://www.uniovi.es/estudia/grados/humanidades/filosofia";
+                    aLink.textContent = nombreAsignatura;
+                    tdAsig.appendChild(aLink);
+
+                    // 2. Créditos
+                    const tdCred = document.createElement("td");
+                    tdCred.className = "centered";
+                    tdCred.textContent = "6";
+
+                    // 3. Carácter
+                    const tdCaract = document.createElement("td");
+                    tdCaract.textContent = (cursoActual === 1) ? "Formación Básica" : "Obligatoria";
+
+                    // 4. Enlace de Bibliografía
+                    const tdBib = document.createElement("td");
+                    tdBib.style.cssText = "background-color: #ffffff; border: none; text-align: center;";
+
+                    const spanBib = document.createElement("span");
+                    spanBib.className = "bib-enlace";
+                    spanBib.textContent = "BIBLIOGRAFÍA";
+                    spanBib.onclick = function() {
+                        abrirModalBibliografia(nombreAsignatura, codigoGrado);
+                    };
+
+                    tdBib.appendChild(spanBib);
+
+                    tr.appendChild(tdAsig);
+                    tr.appendChild(tdCred);
+                    tr.appendChild(tdCaract);
+                    tr.appendChild(tdBib);
+
+                    tbody.appendChild(tr);
+                });
+
+            } catch (error) {
+                console.error("Error al cargar asignaturas:", error);
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: red; padding: 20px;">Error al cargar los datos del servidor.</td></tr>';
+            }
+        }
+
+        // Mostrar modal con la bibliografía de la asignatura seleccionada
+        async function abrirModalBibliografia(nombreAsignatura, codigoGrado) {
+            const modal = document.getElementById("modalBibliografia");
+            const tituloModal = document.getElementById("modalTitulo");
+            const cuerpoTabla = document.getElementById("modalTablaCuerpo");
+
+            tituloModal.innerText = "Bibliografía: " + nombreAsignatura;
+            cuerpoTabla.innerHTML = '<tr><td colspan="2" style="text-align: center; padding: 20px;">Cargando bibliografía...</td></tr>';
+            modal.style.display = "block";
+
+            try {
+                const data = await cargarDatos();
+
+                // Filtrar por asignatura y código GRADO
+                const items = data.filter(item => 
+                    item.ASIGNATURA && 
+                    item.ASIGNATURA.trim().toLowerCase() === nombreAsignatura.trim().toLowerCase() &&
+                    (codigoGrado ? Number(item.GRADO) === Number(codigoGrado) : true)
+                );
+
+                cuerpoTabla.innerHTML = "";
+
+                if (items.length === 0) {
+                    cuerpoTabla.innerHTML = '<tr><td colspan="2" style="text-align: center; padding: 20px;">No se encontraron textos recomendados para esta asignatura.</td></tr>';
+                    return;
+                }
+
+                items.forEach(item => {
+                    const tr = document.createElement("tr");
+
+                    // 1. Texto de la bibliografía destacando el título en negrita
+                    let textoCompleto = item["Texto completo de la obra donde se extrae la información"] || "";
+                    let titulo = item["Obra/Título"] || "";
+
+                    if (titulo && textoCompleto.includes(titulo)) {
+                        textoCompleto = textoCompleto.replace(titulo, '<strong>' + titulo + '</strong>');
+                    }
+
+                    const tdBib = document.createElement("td");
+                    tdBib.innerHTML = textoCompleto;
+
+                    // 2. Signaturas y botones interactivos
+                    const tdSig = document.createElement("td");
+                    const divSigContainer = document.createElement("div");
+                    divSigContainer.className = "sig-container";
+
+                    let rawSignaturas = item["SIGNATURAS"] || "";
+                    if (rawSignaturas.trim() !== "") {
+                        const listaSignaturas = rawSignaturas.split(",").map(s => s.trim()).filter(s => s.length > 0);
+                        listaSignaturas.forEach(sigText => {
+                            const aBadge = document.createElement("a");
+                            aBadge.href = "#";
+                            aBadge.className = "sig-badge";
+                            aBadge.onclick = function(e) { localizarLibro(e, this); };
+                            aBadge.textContent = sigText;
+                            divSigContainer.appendChild(aBadge);
+                        });
+                    }
+
+                    tdSig.appendChild(divSigContainer);
+                    tr.appendChild(tdBib);
+                    tr.appendChild(tdSig);
+
+                    cuerpoTabla.appendChild(tr);
+                });
+
+            } catch (error) {
+                console.error("Error al cargar la bibliografía:", error);
+                cuerpoTabla.innerHTML = '<tr><td colspan="2" style="text-align: center; color: red; padding: 20px;">Error al cargar la información bibliográfica.</td></tr>';
+            }
+        }
+
+        // Control de Modales
+        function cerrarModal(id) {
+            document.getElementById(id).style.display = "none";
+        }
+
+        function mostrarModalMensajes(mensaje) {
+            document.getElementById("modalMessageText").innerText = mensaje;
+            document.getElementById("customModalMensajes").style.display = "block";
+        }
+
+        function cerrarModalMensajes() {
+            document.getElementById("customModalMensajes").style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.style.display = "none";
+            }
+        }
+
+        // Función para procesar y localizar la signatura pulsada
+        function localizarLibro(event, elemento) {
+            event.preventDefault();
+            
+            let signatura = elemento.innerText.trim();
+
+            if (signatura === "" || signatura === "HG") {
+                mostrarModalMensajes("Por favor, selecciona una signatura válida.");
+                return;
+            }
+
+            if (!signatura.startsWith("HG")) {
+                mostrarModalMensajes("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudaremos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
+                return; 
+            }
+
+            let fichero = signatura;
+            fichero = fichero.replace(/\/AST$/i, "");
+            fichero = fichero.replace(/\/COMIC$/i, "");
+
+            if (!fichero.endsWith("/4")) {
+                fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
+            }
+
+            let sig = "";
+            let ultimoIndiceBarra = fichero.lastIndexOf("/");
+
+            if (ultimoIndiceBarra !== -1) {
+                let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
+
+                if (parteDerecha === "4") {
+                    sig = "HG/4";
+                } else {
+                    sig = fichero.substring(0, ultimoIndiceBarra);
+                }
+            } else {
+                sig = fichero;
+            }
+
+            window.open("../localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura), "_blank");
+        }
+
+        // Inicialización al cargar la página
+        document.addEventListener("DOMContentLoaded", function() {
+            actualizarAsignaturas();
+        });
+    </script>
+
+</body>
+</html>
