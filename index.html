@@ -281,7 +281,7 @@
         }
 
         /* =========================================
-           ESTILOS DE LOS MODALES (GRADOS, CURSOS, ALERTA E IFRAME)
+           ESTILOS DE LOS MODALES
            ========================================= */
         .modal-overlay {
             position: fixed;
@@ -341,21 +341,21 @@
             box-shadow: 0 4px 12px rgba(30, 60, 114, 0.3);
         }
 
-        /* NUEVO: Modal Específico para el Iframe (Tabla de asignaturas) */
+        /* Modal Específico para el Iframe (Tabla de asignaturas/grado) */
         #modalSemestre .modal-content {
-            max-width: 900px; /* Más ancho para que la tabla se vea bien */
-            height: 80vh; /* Altura controlada */
-            padding: 1rem 1rem 1rem 1rem;
+            max-width: 900px;
+            height: 80vh;
+            padding: 1rem;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* El scroll lo manejará el iframe o el interior */
+            overflow: hidden;
         }
         #iframeSemestre {
             width: 100%;
-            flex: 1; /* Ocupa todo el espacio disponible */
+            flex: 1;
             border: none;
             border-radius: 8px;
-            margin-top: 25px; /* Espacio para el botón de cerrar */
+            margin-top: 25px;
         }
 
         .modal-overlay.active .modal-content {
@@ -400,45 +400,6 @@
             background: #f8fafc;
             color: #6c5ce7;
             padding-left: 15px;
-        }
-
-        /* --- ESTILOS PARA LA TABLA DE CURSOS --- */
-        .tabla-cursos {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #dcdcdc;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .curso-header {
-            background-color: #0023F5;
-            color: #FFFFFF;
-            font-weight: 500;
-            padding: 10px 12px;
-            border-bottom: 1px solid #dcdcdc;
-            border-top: 1px solid #dcdcdc;
-            text-transform: uppercase;
-        }
-        .curso-header:first-child {
-            border-top: none;
-        }
-        .semestre-link {
-            display: block;
-            padding: 10px 12px;
-            text-align: right;
-            color: #333;
-            text-decoration: none;
-            border-bottom: 1px solid #eee;
-            background-color: #fff;
-            transition: background 0.2s;
-        }
-        .semestre-link:last-child {
-            border-bottom: none;
-        }
-        .semestre-link:hover {
-            background-color: #f1f5f9;
-            color: #2980b9;
         }
 
         /* =========================================
@@ -556,51 +517,20 @@
             <button class="close-btn" onclick="cerrarModalGrados(event)">✖</button>
             <h2 class="modal-title">Artes y Humanidades</h2>
             <ul class="grados-list">
-                <li><a href="#" onclick="abrirModalCursos(event, 'grado1', 'Grado en Estudios Clásicos y Románicos')">Grado en Estudios Clásicos y Románicos</a></li>
-                <li><a href="#" onclick="abrirModalCursos(event, 'grado2', 'Grado en Estudios Ingleses')">Grado en Estudios Ingleses</a></li>
-                <li><a href="#" onclick="abrirModalCursos(event, 'grado3', 'Grado en Filosofía')">Grado en Filosofía</a></li>
-                <li><a href="#" onclick="abrirModalCursos(event, 'grado4', 'Grado en Geografía y Ordenación del territorio')">Grado en Geografía y Ordenación del territorio</a></li>
-                <li><a href="#" onclick="abrirModalCursos(event, 'grado5', 'Grado en Historia')">Grado en Historia</a></li>
-                <li><a href="#" onclick="abrirModalCursos(event, 'grado6', 'Grado en Historia del Arte')">Grado en Historia del Arte</a></li>
-                <li><a href="#" onclick="abrirModalCursos(event, 'grado7', 'Grado en Historia y Ciencias de la Música')">Grado en Historia y Ciencias de la Música</a></li>
-                <li><a href="#" onclick="abrirModalCursos(event, 'grado8', 'Grado en Lengua Española y sus Literaturas')">Grado en Lengua Española y sus Literaturas</a></li>
-                <li><a href="#" onclick="abrirModalCursos(event, 'grado9', 'Grado en Lenguas Modernas y sus Literaturas')">Grado en Lenguas Modernas y sus Literaturas</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado1')">Grado en Estudios Clásicos y Románicos</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado2')">Grado en Estudios Ingleses</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado3')">Grado en Filosofía</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado4')">Grado en Geografía y Ordenación del territorio</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado5')">Grado en Historia</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado6')">Grado en Historia del Arte</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado7')">Grado en Historia y Ciencias de la Música</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado8')">Grado en Lengua Española y sus Literaturas</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado9')">Grado en Lenguas Modernas y sus Literaturas</a></li>
             </ul>
         </div>
     </div>
 
-    <!-- MODAL DE CURSOS Y SEMESTRES -->
-    <div class="modal-overlay" id="modalCursos" onclick="cerrarModalCursos(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <button class="close-btn" onclick="cerrarModalCursos(event)">✖</button>
-            <h2 class="modal-title" id="tituloModalCursos">Título del Grado</h2>
-            
-            <div class="tabla-cursos">
-                <!-- PRIMER CURSO -->
-                <div class="curso-header">PRIMER CURSO</div>
-                <a href="#" class="semestre-link" onclick="navegarSemestre(event, 1, 1)">Primer Semestre</a>
-                <a href="#" class="semestre-link" onclick="navegarSemestre(event, 1, 2)">Segundo Semestre</a>
-
-                <!-- SEGUNDO CURSO -->
-                <div class="curso-header">SEGUNDO CURSO</div>
-                <a href="#" class="semestre-link" onclick="navegarSemestre(event, 2, 1)">Primer Semestre</a>
-                <a href="#" class="semestre-link" onclick="navegarSemestre(event, 2, 2)">Segundo Semestre</a>
-
-                <!-- TERCER CURSO -->
-                <div class="curso-header">TERCER CURSO</div>
-                <a href="#" class="semestre-link" onclick="navegarSemestre(event, 3, 1)">Primer Semestre</a>
-                <a href="#" class="semestre-link" onclick="navegarSemestre(event, 3, 2)">Segundo Semestre</a>
-
-                <!-- CUARTO CURSO -->
-                <div class="curso-header">CUARTO CURSO</div>
-                <a href="#" class="semestre-link" onclick="navegarSemestre(event, 4, 1)">Primer Semestre</a>
-                <a href="#" class="semestre-link" onclick="navegarSemestre(event, 4, 2)">Segundo Semestre</a>
-            </div>
-            
-        </div>
-    </div>
-
-    <!-- NUEVO: MODAL DE SEMESTRE (IFRAME PARA MOSTRAR LA TABLA) -->
+    <!-- MODAL PARA MOSTRAR EL FICHERO HTML DEL GRADO (IFRAME) -->
     <div class="modal-overlay" id="modalSemestre" onclick="cerrarModalSemestre(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="cerrarModalSemestre(event)">✖</button>
@@ -619,8 +549,6 @@
 
     <!-- Scripts funcionales -->
     <script>
-        let gradoActual = ''; 
-
         document.addEventListener("DOMContentLoaded", function() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
             const body = document.body;
@@ -630,35 +558,15 @@
 
         /* --- Lógica del Modal de Grados --- */
         function abrirModalGrados(e) {
-            e.preventDefault();
+            if (e) e.preventDefault();
             const modal = document.getElementById('modalGrados');
             modal.style.display = 'flex';
             setTimeout(() => modal.classList.add('active'), 10);
         }
+
         function cerrarModalGrados(e) {
-            if(e) e.preventDefault();
+            if (e) e.preventDefault();
             const modal = document.getElementById('modalGrados');
-            modal.classList.remove('active');
-            setTimeout(() => modal.style.display = 'none', 300);
-        }
-
-        /* --- Lógica del Modal de Cursos --- */
-        function abrirModalCursos(e, idGrado, nombreGrado) {
-            e.preventDefault();
-            gradoActual = idGrado; 
-            document.getElementById('tituloModalCursos').textContent = nombreGrado;
-
-            const modalGrados = document.getElementById('modalGrados');
-            modalGrados.classList.remove('active');
-            modalGrados.style.display = 'none';
-
-            const modalCursos = document.getElementById('modalCursos');
-            modalCursos.style.display = 'flex';
-            setTimeout(() => modalCursos.classList.add('active'), 10);
-        }
-        function cerrarModalCursos(e) {
-            if(e) e.preventDefault();
-            const modal = document.getElementById('modalCursos');
             modal.classList.remove('active');
             setTimeout(() => modal.style.display = 'none', 300);
         }
@@ -670,30 +578,26 @@
             alertModal.style.display = 'flex';
             setTimeout(() => alertModal.classList.add('active'), 10);
         }
+
         function cerrarModalAlerta() {
             const alertModal = document.getElementById('customAlertModal');
             alertModal.classList.remove('active');
             setTimeout(() => alertModal.style.display = 'none', 300);
         }
 
-        /* --- NUEVO: Lógica para abrir el HTML del semestre en el Iframe --- */
-        function navegarSemestre(e, curso, semestre) {
-            e.preventDefault();
-            const urlDestino = `Grados/${gradoActual}.html`;
+        /* --- Carga directa del archivo HTML correspondiente al Grado --- */
+        function abrirGradoDirecto(e, idGrado) {
+            if (e) e.preventDefault();
+            const urlDestino = `Grados/${idGrado}.html`;
             abrirModalSemestre(urlDestino);
         }
 
         async function abrirModalSemestre(urlDestino) {
             try {
-                // Comprobamos si el archivo existe
                 let respuesta = await fetch(urlDestino, { method: 'HEAD' });
                 
                 if (respuesta.ok) {
-                    // Si existe, cerramos el modal de cursos
-                    document.getElementById('modalCursos').classList.remove('active');
-                    document.getElementById('modalCursos').style.display = 'none';
-                    
-                    // Cargamos la url en el iframe y mostramos el nuevo modal
+                    cerrarModalGrados();
                     document.getElementById('iframeSemestre').src = urlDestino;
                     const modal = document.getElementById('modalSemestre');
                     modal.style.display = 'flex';
@@ -702,10 +606,7 @@
                     mostrarModal("En breve tendrás la Bibliografía");
                 }
             } catch (error) {
-                // Si el navegador bloquea la comprobación por estar en local, forzamos la apertura
-                document.getElementById('modalCursos').classList.remove('active');
-                document.getElementById('modalCursos').style.display = 'none';
-                
+                cerrarModalGrados();
                 document.getElementById('iframeSemestre').src = urlDestino;
                 const modal = document.getElementById('modalSemestre');
                 modal.style.display = 'flex';
@@ -714,12 +615,12 @@
         }
 
         function cerrarModalSemestre(e) {
-            if(e) e.preventDefault();
+            if (e) e.preventDefault();
             const modal = document.getElementById('modalSemestre');
             modal.classList.remove('active');
             setTimeout(() => {
                 modal.style.display = 'none';
-                document.getElementById('iframeSemestre').src = ''; // Limpiamos el iframe al cerrar
+                document.getElementById('iframeSemestre').src = '';
             }, 300);
         }
     </script>
