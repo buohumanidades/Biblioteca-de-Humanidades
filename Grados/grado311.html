@@ -242,7 +242,7 @@
                 <td class="centered">6</td>
                 <td>Formación Básica</td>
                 <td style="background-color: #ffffff; border: none; text-align: center;">
-                    <span class="bib-enlace" onclick="abrirModal('modalFundamentos')">BIBLIOGRAFÍA</span>
+                    <span class="bib-enlace" onclick="abrirModalBibliografia('Fundamentos de Filosofía')">BIBLIOGRAFÍA</span>
                 </td>
             </tr>
             <tr class="light-grey-row">
@@ -250,7 +250,7 @@
                 <td class="centered">6</td>
                 <td>Formación Básica</td>
                 <td style="background-color: #ffffff; border: none; text-align: center;">
-                    <span class="bib-enlace" onclick="abrirModal('modalEtica')">BIBLIOGRAFÍA</span>
+                    <span class="bib-enlace" onclick="abrirModalBibliografia('Ética')">BIBLIOGRAFÍA</span>
                 </td>
             </tr>
             <tr class="grey-row">
@@ -258,7 +258,7 @@
                 <td class="centered">6</td>
                 <td>Formación Básica</td>
                 <td style="background-color: #ffffff; border: none; text-align: center;">
-                    <span class="bib-enlace" onclick="abrirModal('modalHistoriaGriega')">BIBLIOGRAFÍA</span>
+                    <span class="bib-enlace" onclick="abrirModalBibliografia('Historia de la Filosofía Griega')">BIBLIOGRAFÍA</span>
                 </td>
             </tr>
             <tr class="light-grey-row">
@@ -266,7 +266,7 @@
                 <td class="centered">6</td>
                 <td>Formación Básica</td>
                 <td style="background-color: #ffffff; border: none; text-align: center;">
-                    <span class="bib-enlace" onclick="abrirModal('modalLogica')">BIBLIOGRAFÍA</span>
+                    <span class="bib-enlace" onclick="abrirModalBibliografia('Lógica Elemental')">BIBLIOGRAFÍA</span>
                 </td>
             </tr>
             <tr class="grey-row">
@@ -274,19 +274,19 @@
                 <td class="centered">6</td>
                 <td>Formación Básica</td>
                 <td style="background-color: #ffffff; border: none; text-align: center;">
-                    <span class="bib-enlace" onclick="abrirModal('modalGriego')">BIBLIOGRAFÍA</span>
+                    <span class="bib-enlace" onclick="abrirModalBibliografia('Griego')">BIBLIOGRAFÍA</span>
                 </td>
             </tr>
         </tbody>
     </table>
 
     <!-- ========================================== -->
-    <!-- VENTANA MODAL PARA FUNDAMENTOS DE FILOSOFÍA -->
+    <!-- VENTANA MODAL DINÁMICA DE BIBLIOGRAFÍA    -->
     <!-- ========================================== -->
-    <div id="modalFundamentos" class="modal-overlay">
+    <div id="modalBibliografia" class="modal-overlay">
         <div class="modal-content">
-            <span class="close-btn" onclick="cerrarModal('modalFundamentos')">&times;</span>
-            <h2 style="margin-top: 0; color: #333;">Bibliografía: Fundamentos de Filosofía</h2>
+            <span class="close-btn" onclick="cerrarModal('modalBibliografia')">&times;</span>
+            <h2 id="modalTitulo" style="margin-top: 0; color: #333;">Bibliografía</h2>
             
             <table class="bib-table">
                 <thead>
@@ -295,171 +295,8 @@
                         <th style="width: 30%;">SIGNATURAS</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>Bueno, Gustavo, <strong>El papel de la filosofía en el conjunto del saber</strong>, Ciencia Nueva, Madrid, 1970.</td>
-                        <td>
-                            <div class="sig-container">
-                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG1/Buen</a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Russell, Bertrand, <strong>Los problemas de la filosofía</strong>, Labor, Barcelona.</td>
-                        <td>
-                            <div class="sig-container">
-                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG1/Russ</a>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- VENTANA MODAL PARA ÉTICA                   -->
-    <!-- ========================================== -->
-    <div id="modalEtica" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-btn" onclick="cerrarModal('modalEtica')">&times;</span>
-            <h2 style="margin-top: 0; color: #333;">Bibliografía: Ética</h2>
-            
-            <table class="bib-table">
-                <thead>
-                    <tr>
-                        <th style="width: 70%;">BIBLIOGRAFÍA</th>
-                        <th style="width: 30%;">SIGNATURAS</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Aranguren, José Luis, <strong>Ética</strong>, Revista de Occidente, Madrid.</td>
-                        <td>
-                            <div class="sig-container">
-                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG17/Aran</a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Singer, Peter (ed.), <strong>Compendio de Ética</strong>, Alianza Editorial, Madrid.</td>
-                        <td>
-                            <div class="sig-container">
-                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG17/Sing</a>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- VENTANA MODAL PARA HISTORIA DE LA FILOSOFÍA GRIEGA -->
-    <!-- ========================================== -->
-    <div id="modalHistoriaGriega" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-btn" onclick="cerrarModal('modalHistoriaGriega')">&times;</span>
-            <h2 style="margin-top: 0; color: #333;">Bibliografía: Historia de la Filosofía Griega</h2>
-            
-            <table class="bib-table">
-                <thead>
-                    <tr>
-                        <th style="width: 70%;">BIBLIOGRAFÍA</th>
-                        <th style="width: 30%;">SIGNATURAS</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Guthrie, W.K.C., <strong>Historia de la Filosofía Griega</strong>, Gredos, Madrid.</td>
-                        <td>
-                            <div class="sig-container">
-                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG1(091)/Guth</a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Kirk, G.S., Raven, J.E. y Schofield, M., <strong>Los filósofos presocráticos</strong>, Gredos, Madrid.</td>
-                        <td>
-                            <div class="sig-container">
-                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG1(091)/Kirk</a>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- VENTANA MODAL PARA LÓGICA ELEMENTAL         -->
-    <!-- ========================================== -->
-    <div id="modalLogica" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-btn" onclick="cerrarModal('modalLogica')">&times;</span>
-            <h2 style="margin-top: 0; color: #333;">Bibliografía: Lógica Elemental</h2>
-            
-            <table class="bib-table">
-                <thead>
-                    <tr>
-                        <th style="width: 70%;">BIBLIOGRAFÍA</th>
-                        <th style="width: 30%;">SIGNATURAS</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Garrido, Manuel, <strong>Lógica simbólica</strong>, Tecnos, Madrid.</td>
-                        <td>
-                            <div class="sig-container">
-                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG16/Garr</a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Deaño, Alfredo, <strong>Introducción a la lógica formal</strong>, Alianza Editorial, Madrid.</td>
-                        <td>
-                            <div class="sig-container">
-                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG16/Dean</a>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- VENTANA MODAL PARA GRIEGO                   -->
-    <!-- ========================================== -->
-    <div id="modalGriego" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-btn" onclick="cerrarModal('modalGriego')">&times;</span>
-            <h2 style="margin-top: 0; color: #333;">Bibliografía: Griego</h2>
-            
-            <table class="bib-table">
-                <thead>
-                    <tr>
-                        <th style="width: 70%;">BIBLIOGRAFÍA</th>
-                        <th style="width: 30%;">SIGNATURAS</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Berenguer Amenós, J., <strong>Gramática Griega</strong>, ed. Bosch, Barcelona.</td>
-                        <td>
-                            <div class="sig-container">
-                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HG807.5-5/Bere</a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Pabón, J. M., <strong>Diccionario Griego-Español</strong>, ed. Vox, Barcelona.</td>
-                        <td>
-                            <div class="sig-container">
-                                <a href="#" class="sig-badge" onclick="localizarLibro(event, this)">HR807.5/03/Pabo</a>
-                            </div>
-                        </td>
-                    </tr>
+                <tbody id="modalTablaCuerpo">
+                    <!-- Se carga dinámicamente desde Bibliografia.json -->
                 </tbody>
             </table>
         </div>
@@ -475,14 +312,89 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE CONTROL DE MODALES Y LOCALIZACIÓN -->
+    <!-- SCRIPT DE CONTROL DE MODALES, CARGA DE JSON Y LOCALIZACIÓN -->
     <script>
-        // Función para abrir modal de bibliografía
-        function abrirModal(id) {
-            document.getElementById(id).style.display = "block";
+        // Variable en memoria para almacenar la bibliografía tras la primera carga
+        let datosBibliografia = null;
+
+        // Función para cargar los datos del JSON y mostrar el modal dinámico
+        async function abrirModalBibliografia(nombreAsignatura) {
+            const modal = document.getElementById("modalBibliografia");
+            const tituloModal = document.getElementById("modalTitulo");
+            const cuerpoTabla = document.getElementById("modalTablaCuerpo");
+
+            tituloModal.innerText = "Bibliografía: " + nombreAsignatura;
+            cuerpoTabla.innerHTML = '<tr><td colspan="2" style="text-align: center; padding: 20px;">Cargando bibliografía...</td></tr>';
+            modal.style.display = "block";
+
+            try {
+                // Carga inicial del archivo JSON
+                if (!datosBibliografia) {
+                    const response = await fetch('Bibliografia.json');
+                    if (!response.ok) {
+                        throw new Error('No se pudo cargar el fichero Bibliografia.json');
+                    }
+                    datosBibliografia = await response.json();
+                }
+
+                // Filtrar por la asignatura requerida
+                const items = datosBibliografia.filter(item => 
+                    item.ASIGNATURA && item.ASIGNATURA.trim().toLowerCase() === nombreAsignatura.trim().toLowerCase()
+                );
+
+                cuerpoTabla.innerHTML = "";
+
+                if (items.length === 0) {
+                    cuerpoTabla.innerHTML = '<tr><td colspan="2" style="text-align: center; padding: 20px;">No se encontraron textos recomendados para esta asignatura.</td></tr>';
+                    return;
+                }
+
+                items.forEach(item => {
+                    const tr = document.createElement("tr");
+
+                    // 1. Procesar el texto de la bibliografía destacando el título en negrita
+                    let textoCompleto = item["Texto completo de la obra donde se extrae la información"] || "";
+                    let titulo = item["Obra/Título"] || "";
+
+                    if (titulo && textoCompleto.includes(titulo)) {
+                        textoCompleto = textoCompleto.replace(titulo, '<strong>' + titulo + '</strong>');
+                    }
+
+                    const tdBib = document.createElement("td");
+                    tdBib.innerHTML = textoCompleto;
+
+                    // 2. Procesar las signaturas y crear botones para cada una
+                    const tdSig = document.createElement("td");
+                    const divSigContainer = document.createElement("div");
+                    divSigContainer.className = "sig-container";
+
+                    let rawSignaturas = item["SIGNATURAS"] || "";
+                    if (rawSignaturas.trim() !== "") {
+                        const listaSignaturas = rawSignaturas.split(",").map(s => s.trim()).filter(s => s.length > 0);
+                        listaSignaturas.forEach(sigText => {
+                            const aBadge = document.createElement("a");
+                            aBadge.href = "#";
+                            aBadge.className = "sig-badge";
+                            aBadge.onclick = function(e) { localizarLibro(e, this); };
+                            aBadge.textContent = sigText;
+                            divSigContainer.appendChild(aBadge);
+                        });
+                    }
+
+                    tdSig.appendChild(divSigContainer);
+                    tr.appendChild(tdBib);
+                    tr.appendChild(tdSig);
+
+                    cuerpoTabla.appendChild(tr);
+                });
+
+            } catch (error) {
+                console.error("Error al cargar la bibliografía:", error);
+                cuerpoTabla.innerHTML = '<tr><td colspan="2" style="text-align: center; color: red; padding: 20px;">Error al cargar la información bibliográfica.</td></tr>';
+            }
         }
 
-        // Función para cerrar modal de bibliografía
+        // Función para cerrar cualquier modal por su ID
         function cerrarModal(id) {
             document.getElementById(id).style.display = "none";
         }
