@@ -387,9 +387,9 @@
         async function cargarGuias() {
             if (!datosGuias) {
                 try {
-                    const response = await fetch('Grado3_2.txt'); // Usamos el txt correcto
+                    const response = await fetch('Grado3.txt'); // Usamos el txt correcto
                     if (!response.ok) {
-                        throw new Error('No se pudo cargar el fichero Grado3_2.txt');
+                        throw new Error('No se pudo cargar el fichero Grado3.txt');
                     }
                     const text = await response.text();
                     
@@ -421,7 +421,7 @@
                         }
                     }
                 } catch (error) {
-                    console.error("Error al cargar las guías de Grado3_2.txt:", error);
+                    console.error("Error al cargar las guías de Grado3.txt:", error);
                     datosGuias = [];
                 }
             }
