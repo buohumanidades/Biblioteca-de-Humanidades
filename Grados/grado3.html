@@ -144,6 +144,7 @@
         a.asignatura-link {
             color: #1976d2; 
             text-decoration: underline;
+            cursor: pointer;
         }
 
         a.asignatura-link:hover { color: #0d47a1; }
@@ -528,9 +529,16 @@
                     const tdAsig = document.createElement("td");
                     const aLink = document.createElement("a");
                     aLink.className = "asignatura-link";
-                    aLink.target = "_blank"; // Abre la URL en una nueva ventana o pestaña
                     aLink.href = urlGuiaDocente;
                     aLink.textContent = nombreAsignatura;
+                    
+                    // EVENTO NUEVO: Mensaje informativo antes de ir a la nueva ventana
+                    aLink.onclick = function(e) {
+                        e.preventDefault(); // Detenemos la apertura automática
+                        alert("Has seleccionado: " + nombreAsignatura + "\n\nSe abrirá la siguiente URL de la guía docente:\n" + urlGuiaDocente);
+                        window.open(urlGuiaDocente, "_blank"); // Abrimos en pestaña nueva
+                    };
+                    
                     tdAsig.appendChild(aLink);
 
                     // 2. Créditos
