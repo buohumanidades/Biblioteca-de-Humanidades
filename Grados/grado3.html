@@ -144,7 +144,6 @@
         a.asignatura-link {
             color: #1976d2; 
             text-decoration: underline;
-            cursor: pointer;
         }
 
         a.asignatura-link:hover { color: #0d47a1; }
@@ -384,44 +383,28 @@
             return datosGrado;
         }
 
-        // Carga y procesamiento del archivo de texto con las URLs de las guías docentes
+        // Carga y procesamiento del archivo JSON con las URLs de las guías docentes
         async function cargarGuias() {
             if (!datosGuias) {
                 try {
-                    // Corrección aplicada: se llama exactamente a grado3.txt
-                    const response = await fetch('grado3.txt');
+                    const response = await fetch('guiadocente.json');
                     if (!response.ok) {
-                        throw new Error('No se pudo cargar el fichero grado3.txt');
+                        throw new Error('No se pudo cargar el fichero guiadocente.json');
                     }
-                    const text = await response.text();
+                    const jsonDatos = await response.json();
                     
-                    const lineas = text.trim().split(/\r?\n/);
-                    datosGuias = [];
-                    
-                    // Saltamos la primera línea (cabecera: GRADO, Asignatura, Guia docente, url)
-                    for (let i = 1; i < lineas.length; i++) {
-                        const linea = lineas[i];
-                        if (!linea.trim()) continue; // Evitar líneas en blanco
-
-                        // Separamos las columnas por tabulación
-                        const partesTab = linea.split('\t');
-                        
-                        // Validamos que tenga al menos 4 columnas
-                        if (partesTab.length >= 4) {
-                            datosGuias.push({
-                                asignatura: partesTab[1].trim(), // Segunda columna: Asignatura
-                                url: partesTab[3].trim()         // Cuarta columna: URL web
-                            });
-                        }
-                    }
+                    datosGuias = jsonDatos.map(item => ({
+                        asignatura: item.Asignatura,
+                        url: item.url
+                    }));
                 } catch (error) {
-                    console.error("Error al cargar las guías de grado3.txt:", error);
+                    console.error("Error al cargar las guías de guiadocente.json:", error);
                     datosGuias = [];
                 }
             }
             return datosGuias;
         }
-
+        
         // Función para cambiar de curso
         function cambiarCurso(numCurso) {
             cursoActual = numCurso;
@@ -519,16 +502,9 @@
                     const tdAsig = document.createElement("td");
                     const aLink = document.createElement("a");
                     aLink.className = "asignatura-link";
+                    aLink.target = "_blank"; 
                     aLink.href = urlGuiaDocente;
                     aLink.textContent = nombreAsignatura;
-                    
-                    // Mensaje informativo antes de ir a la nueva ventana
-                    aLink.onclick = function(e) {
-                        e.preventDefault(); 
-                        alert("Has seleccionado: " + nombreAsignatura + "\n\nSe abrirá la siguiente URL de la guía docente:\n" + urlGuiaDocente);
-                        window.open(urlGuiaDocente, "_blank"); 
-                    };
-                    
                     tdAsig.appendChild(aLink);
 
                     // 2. Créditos
@@ -608,16 +584,17 @@
 
                     const tdBib = document.createElement("td");
                     
-                    // Convertimos el texto en un enlace de búsqueda OPAC
+                    // Modificación: Convertimos el texto en un enlace de búsqueda OPAC
                     const enlaceOpac = document.createElement("a");
+                    // Usamos la URL del OPAC si está en el JSON, o la generamos dinámicamente con el autor y el título
                     let urlBusqueda = item["URL de búsqueda OPAC"];
                     if (!urlBusqueda) {
                         urlBusqueda = `https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH&xsqf01=${encodeURIComponent(autor + ' ' + titulo)}`;
                     }
                     
                     enlaceOpac.href = urlBusqueda;
-                    enlaceOpac.target = "_blank"; 
-                    enlaceOpac.className = "opac-link"; 
+                    enlaceOpac.target = "_blank"; // Abrir en otra ventana
+                    enlaceOpac.className = "opac-link"; // Nueva clase para darle estilo interactivo
                     enlaceOpac.title = "Buscar '" + titulo + "' en OPAC";
                     enlaceOpac.innerHTML = textoCompleto;
                     
