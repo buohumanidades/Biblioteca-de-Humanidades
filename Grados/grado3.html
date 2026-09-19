@@ -160,7 +160,7 @@
             color: #9a0007;
         }
 
-        /* --- ESTILOS PARA LA VENTANA MODAL (AMENA) --- */
+        /* --- ESTILOS PARA LA VENTANA MODAL --- */
         .modal-overlay {
             display: none; 
             position: fixed; 
@@ -302,6 +302,28 @@
             transform: scale(1.03);
         }
 
+        /* --- BOTONES DE LA MODAL DE BÚSQUEDA EN CATÁLOGO --- */
+        .btn-opac-option {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+
+        .btn-opac-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
         @media (max-width: 600px) {
             .header-container {
                 flex-direction: column;
@@ -370,7 +392,7 @@
         </tbody>
     </table>
 
-    <!-- Ventana modal dinámica de Bibliografía (Diseño Ameno) -->
+    <!-- Ventana modal dinámica de Bibliografía -->
     <div id="modalBibliografia" class="modal-overlay">
         <div class="modal-content">
             <span class="close-btn" onclick="cerrarModal('modalBibliografia')">&times;</span>
@@ -385,8 +407,25 @@
         </div>
     </div>
 
+    <!-- Modal de Selección de Ámbito de Búsqueda OPAC -->
+    <div id="modalOpcionesBusqueda" class="modal-overlay" style="z-index: 1002;">
+        <div class="modal-content" style="text-align: center; margin: 12% auto; max-width: 460px; padding: 25px; border-radius: 12px;">
+            <span class="close-btn" onclick="cerrarModal('modalOpcionesBusqueda')">&times;</span>
+            <h3 style="margin-top: 0; color: #1976d2; font-size: 1.3em;">🔍 ¿Dónde quieres buscar?</h3>
+            <p id="opcionesBusquedaTitulo" style="color: #475569; font-size: 0.95em; margin-bottom: 22px; line-height: 1.4; font-weight: 500;"></p>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button id="btnTodasBibliotecas" class="btn-opac-option" style="background-color: #1976d2; color: #ffffff;">
+                    🌐 Buscar en TODAS LAS BIBLIOTECAS
+                </button>
+                <button id="btnBibliotecaHumanidades" class="btn-opac-option" style="background-color: #d32f2f; color: #ffffff;">
+                    🏛️ Buscar en LA BIBLIOTECA DE HUMANIDADES
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal para mensajes y advertencias -->
-    <div id="customModalMensajes" class="modal-overlay" style="z-index: 1001;">
+    <div id="customModalMensajes" class="modal-overlay" style="z-index: 1003;">
         <div class="modal-content" style="text-align: center; margin: 20% auto; max-width: 350px;">
             <p id="modalMessageText" style="white-space: pre-wrap; font-size: 1em; font-weight: 500; color: #1c1c1e; margin-bottom: 20px; line-height: 1.4;"></p>
             <button onclick="cerrarModalMensajes()" style="background: #007AFF; color: #fff; border: none; padding: 12px 25px; border-radius: 10px; font-size: 1.05em; cursor: pointer; width: 100%; font-weight: 600;">Aceptar</button>
@@ -559,7 +598,7 @@
             }
         }
 
-        // Mostrar modal con la bibliografía (formato tarjetas)
+        // Mostrar modal con la bibliografía de la asignatura seleccionada
         async function abrirModalBibliografia(nombreAsignatura, codigoGrado) {
             const modal = document.getElementById("modalBibliografia");
             const tituloModal = document.getElementById("modalTitulo");
@@ -603,11 +642,16 @@
                     }
                     
                     const enlaceOpac = document.createElement("a");
-                    enlaceOpac.href = urlBusqueda;
-                    enlaceOpac.target = "_blank"; 
+                    enlaceOpac.href = "#";
                     enlaceOpac.className = "opac-link"; 
-                    enlaceOpac.title = "Buscar en el OPAC";
+                    enlaceOpac.title = "Buscar en el catálogo";
                     enlaceOpac.innerHTML = textoCompleto;
+                    
+                    // Al hacer clic en la obra se abre la ventana de selección de biblioteca
+                    enlaceOpac.onclick = function(e) {
+                        e.preventDefault();
+                        mostrarOpcionesBusqueda(titulo || "esta obra", urlBusqueda);
+                    };
                     
                     divItem.appendChild(enlaceOpac);
 
@@ -642,6 +686,37 @@
                 console.error("Error al cargar la bibliografía:", error);
                 contenedorLista.innerHTML = '<div style="text-align: center; color: #d32f2f; padding: 30px;">Error al cargar la información bibliográfica.</div>';
             }
+        }
+
+        // Mostrar ventana de opciones para elegir el catálogo de búsqueda
+        function mostrarOpcionesBusqueda(tituloObra, urlBase) {
+            const modal = document.getElementById("modalOpcionesBusqueda");
+            const txtTitulo = document.getElementById("opcionesBusquedaTitulo");
+            const btnTodas = document.getElementById("btnTodasBibliotecas");
+            const btnHumanidades = document.getElementById("btnBibliotecaHumanidades");
+
+            const tituloLimpio = tituloObra.replace(/<[^>]*>?/gm, '');
+            txtTitulo.textContent = `¿Dónde deseas consultar la disponibilidad de "${tituloLimpio}"?`;
+
+            // Opción 1: Proceso original (Todas las bibliotecas)
+            btnTodas.onclick = function() {
+                window.open(urlBase, "_blank");
+                cerrarModal('modalOpcionesBusqueda');
+            };
+
+            // Opción 2: Filtro por Biblioteca de Humanidades
+            btnHumanidades.onclick = function() {
+                let urlHumanidades = urlBase;
+                if (urlHumanidades.includes("?")) {
+                    urlHumanidades += "&SUBC=HUM";
+                } else {
+                    urlHumanidades += "?SUBC=HUM";
+                }
+                window.open(urlHumanidades, "_blank");
+                cerrarModal('modalOpcionesBusqueda');
+            };
+
+            modal.style.display = "block";
         }
 
         // Control de Modales
