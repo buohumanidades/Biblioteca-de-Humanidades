@@ -387,25 +387,36 @@
         async function cargarGuias() {
             if (!datosGuias) {
                 try {
-                    const response = await fetch('Grado3_2.txt'); // Corrección de archivo
+                    const response = await fetch('Grado3_2.txt'); // Usamos el txt correcto
                     if (!response.ok) {
                         throw new Error('No se pudo cargar el fichero Grado3_2.txt');
                     }
                     const text = await response.text();
                     
-                    const lineas = text.trim().split('\n');
+                    // Aseguramos procesar correctamente los saltos de línea de Windows (\r\n) o Linux (\n)
+                    const lineas = text.trim().split(/\r?\n/);
                     datosGuias = [];
                     
                     // Saltamos la primera línea (cabecera)
                     for (let i = 1; i < lineas.length; i++) {
-                        const columnas = lineas[i].split('\t');
-                        // Nos aseguramos de que existan al menos 4 columnas (GRADO, Asignatura, Guia docente, url)
-                        if (columnas.length >= 4) {
+                        // En lugar de confiar sólo en la división por tabuladores para la última columna, 
+                        // extraemos la parte que empieza por https:// directamente de la línea completa.
+                        const linea = lineas[i];
+                        const partesTab = linea.split('\t');
+                        
+                        if (partesTab.length >= 2) {
+                            // Buscar el inicio de "https://" en la línea completa
+                            const indexHttps = linea.indexOf("https://");
+                            let urlExtraida = "";
+                            
+                            if (indexHttps !== -1) {
+                                // Cortar la línea desde donde empieza "https://" hasta el final y quitar espacios
+                                urlExtraida = linea.substring(indexHttps).trim();
+                            }
+                            
                             datosGuias.push({
-                                grado: columnas[0].trim(),
-                                asignatura: columnas[1].trim(),
-                                guia: columnas[2].trim(),
-                                url: columnas[3].trim()
+                                asignatura: partesTab[1].trim(), // La asignatura está en la segunda columna
+                                url: urlExtraida
                             });
                         }
                     }
@@ -442,6 +453,17 @@
             });
             actualizarAsignaturas();
         }
+        
+        // Función auxiliar para normalizar los nombres para comparar sin tildes ni mayúsculas
+        const normalizarNombre = (texto) => {
+            if (!texto) return "";
+            return texto
+                .normalize("NFD")                 
+                .replace(/[\u0300-\u036f]/g, "")  
+                .toLowerCase()                    
+                .replace(/\s+/g, ' ')             
+                .trim();                          
+        };
 
         // Actualizar la vista de las asignaturas en función del curso y trimestre seleccionados
         async function actualizarAsignaturas() {
@@ -491,16 +513,19 @@
                     const tr = document.createElement("tr");
                     tr.className = (index % 2 === 0) ? "grey-row" : "light-grey-row";
 
-                    // Búsqueda de la URL de la guía correspondiente en los datos de Grado3.txt
-                    const infoGuia = guiasData.find(g => g.asignatura.toLowerCase() === nombreAsignatura.toLowerCase());
-                    // Si no se encuentra, se deja una por defecto o genérica
-                    const urlGuiaDocente = infoGuia ? infoGuia.url : "https://www.uniovi.es/estudia/grados/humanidades/filosofia";
+                    // Búsqueda de la URL de la guía correspondiente normalizando ambos textos
+                    const infoGuia = guiasData.find(g => normalizarNombre(g.asignatura) === normalizarNombre(nombreAsignatura));
+                    
+                    // Validamos que tenga la URL (que no venga vacía), sino usamos la de defecto
+                    const urlGuiaDocente = (infoGuia && infoGuia.url !== "") 
+                        ? infoGuia.url 
+                        : "https://www.uniovi.es/estudia/grados/humanidades/filosofia";
 
                     // 1. Asignatura y Guía Docente
                     const tdAsig = document.createElement("td");
                     const aLink = document.createElement("a");
                     aLink.className = "asignatura-link";
-                    aLink.target = "_blank"; // Abriremos la guía en una nueva ventana
+                    aLink.target = "_blank"; 
                     aLink.href = urlGuiaDocente;
                     aLink.textContent = nombreAsignatura;
                     tdAsig.appendChild(aLink);
