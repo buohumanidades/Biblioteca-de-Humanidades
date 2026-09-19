@@ -387,7 +387,7 @@
         async function cargarGuias() {
             if (!datosGuias) {
                 try {
-                    const response = await fetch('Grado3.txt'); // Usamos el txt correcto
+                    const response = await fetch('Grado3.txt'); // Usamos el txt correcto referenciado
                     if (!response.ok) {
                         throw new Error('No se pudo cargar el fichero Grado3.txt');
                     }
@@ -399,23 +399,26 @@
                     
                     // Saltamos la primera línea (cabecera)
                     for (let i = 1; i < lineas.length; i++) {
-                        // En lugar de confiar sólo en la división por tabuladores para la última columna, 
-                        // extraemos la parte que empieza por https:// directamente de la línea completa.
                         const linea = lineas[i];
                         const partesTab = linea.split('\t');
                         
-                        if (partesTab.length >= 2) {
-                            // Buscar el inicio de "https://" en la línea completa
+                        // Si la línea cuenta con al menos 4 columnas separadas por tabulador (GRADO, Asignatura, Guia docente, url)
+                        if (partesTab.length >= 4) {
+                            datosGuias.push({
+                                asignatura: partesTab[1].trim(), // La asignatura está en la segunda columna (índice 1)
+                                url: partesTab[3].trim()         // La url está en la cuarta columna (índice 3)
+                            });
+                        } else if (partesTab.length >= 2) {
+                            // Método de respaldo por si el archivo no está perfectamente estructurado con tabuladores
                             const indexHttps = linea.indexOf("https://");
                             let urlExtraida = "";
                             
                             if (indexHttps !== -1) {
-                                // Cortar la línea desde donde empieza "https://" hasta el final y quitar espacios
                                 urlExtraida = linea.substring(indexHttps).trim();
                             }
                             
                             datosGuias.push({
-                                asignatura: partesTab[1].trim(), // La asignatura está en la segunda columna
+                                asignatura: partesTab[1].trim(),
                                 url: urlExtraida
                             });
                         }
@@ -525,7 +528,7 @@
                     const tdAsig = document.createElement("td");
                     const aLink = document.createElement("a");
                     aLink.className = "asignatura-link";
-                    aLink.target = "_blank"; 
+                    aLink.target = "_blank"; // Abre la URL en una nueva ventana o pestaña
                     aLink.href = urlGuiaDocente;
                     aLink.textContent = nombreAsignatura;
                     tdAsig.appendChild(aLink);
