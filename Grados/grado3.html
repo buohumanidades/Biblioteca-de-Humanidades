@@ -432,7 +432,7 @@
         </div>
     </div>
 
-    <!-- Modal de Resultados de Búsqueda en Biblioteca (NUEVO) -->
+    <!-- Modal de Resultados de Búsqueda en Biblioteca -->
     <div id="modalResultadosBusqueda" class="modal-overlay" style="z-index: 1004;">
         <div class="modal-content">
             <span class="close-btn" onclick="cerrarModal('modalResultadosBusqueda')">&times;</span>
@@ -491,17 +491,19 @@
             return librosCache;
         }
 
-        // Normalizar y comparar títulos (9 primeras palabras)
+        // Normalizar texto para comparar títulos
         function normalizarTexto(texto) {
             if (!texto) return "";
             return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
                 .replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
         }
 
+        // Extraer las primeras N palabras de un título
         function extraerPrimerasPalabras(texto, numero = 9) {
             return normalizarTexto(texto).split(" ").filter(p => p.length > 0).slice(0, numero).join(" ");
         }
 
+        // Buscar en biblioteca eliminando duplicados (signatura + título deben ser únicos)
         async function buscarEnBiblioteca(tituloObra) {
             const libros = await cargarTodosLosLibros();
             const tituloLimpio = tituloObra.replace(/<[^>]*>?/gm, '');
@@ -509,11 +511,29 @@
             if (libros.length === 0) return [];
             
             const obrasCoincidentes = [];
+            const clavesVistas = new Set(); // Para evitar duplicados
+            
             for (const libro of libros) {
                 if (extraerPrimerasPalabras(libro.titulo) === extraerPrimerasPalabras(tituloLimpio)) {
-                    obrasCoincidentes.push({ signatura: libro.signatura, titulo: libro.titulo });
+                    // Crear clave única combinando signatura y título
+                    const claveUnica = `${libro.signatura}|${libro.titulo}`;
+                    
+                    // Si ya vimos esta combinación, saltarla
+                    if (clavesVistas.has(claveUnica)) {
+                        continue;
+                    }
+                    
+                    clavesVistas.add(claveUnica);
+                    obrasCoincidentes.push({ 
+                        signatura: libro.signatura, 
+                        titulo: libro.titulo 
+                    });
                 }
             }
+            
+            console.log(`Total libros en caché: ${libros.length}`);
+            console.log(`Coicidencias únicas encontradas: ${obrasCoincidentes.length}`);
+            
             return obrasCoincidentes;
         }
 
@@ -548,7 +568,7 @@
                 
                 contenedor.innerHTML = `
                     <div style="padding-bottom: 15px; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
-                        <span style="color: #1976d2; font-weight: bold;">✅ ${coincidencias.length} coincidencia${coincidencias.length !== 1 ? 's' : ''}</span>
+                        <span style="color: #1976d2; font-weight: bold;">✅ ${coincidencias.length} coincidencia${coincidencias.length !== 1 ? 's' : ''} única${coincidencias.length !== 1 ? 's' : ''}</span>
                     </div>
                     ${html}
                 `;
@@ -816,7 +836,7 @@
             }
         }
 
-        // Mostrar ventana de opciones para elegir el catálogo de búsqueda (MODIFICADA)
+        // Mostrar ventana de opciones para elegir el catálogo de búsqueda
         function mostrarOpcionesBusqueda(tituloObra, urlBase) {
             const modal = document.getElementById("modalOpcionesBusqueda");
             const txtTitulo = document.getElementById("opcionesBusquedaTitulo");
