@@ -302,6 +302,19 @@
             transform: scale(1.03);
         }
 
+        .ejemplares-count {
+            display: inline-flex;
+            align-items: center;
+            background-color: #fef3c7;
+            color: #92400e;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.9em;
+            border: 1px solid #f59e0b;
+            margin-left: 8px;
+        }
+
         /* --- BOTONES DE LA MODAL DE BÚSQUEDA EN CATÁLOGO --- */
         .btn-opac-option {
             display: flex;
@@ -503,33 +516,37 @@
             return normalizarTexto(texto).split(" ").filter(p => p.length > 0).slice(0, numero).join(" ");
         }
 
-        // Buscar en biblioteca eliminando duplicados (signatura + título deben ser únicos)
+        // Buscar en biblioteca contando ejemplares por título+signatura
         async function buscarEnBiblioteca(tituloObra) {
             const libros = await cargarTodosLosLibros();
             const tituloLimpio = tituloObra.replace(/<[^>]*>?/gm, '');
             
             if (libros.length === 0) return [];
             
-            const obrasCoincidentes = [];
-            const clavesVistas = new Set(); // Para evitar duplicados
+            // Mapa para agrupar por clave única y contar ejemplares
+            const mapaEjemplares = new Map();
             
             for (const libro of libros) {
                 if (extraerPrimerasPalabras(libro.titulo) === extraerPrimerasPalabras(tituloLimpio)) {
                     // Crear clave única combinando signatura y título
                     const claveUnica = `${libro.signatura}|${libro.titulo}`;
                     
-                    // Si ya vimos esta combinación, saltarla
-                    if (clavesVistas.has(claveUnica)) {
-                        continue;
+                    // Si ya existe, incrementamos contador
+                    if (mapaEjemplares.has(claveUnica)) {
+                        mapaEjemplares.set(claveUnica, mapaEjemplares.get(claveUnica) + 1);
+                    } else {
+                        // Nueva entrada con primer ejemplar
+                        mapaEjemplares.set(claveUnica, {
+                            signatura: libro.signatura,
+                            titulo: libro.titulo,
+                            ejemplares: 1
+                        });
                     }
-                    
-                    clavesVistas.add(claveUnica);
-                    obrasCoincidentes.push({ 
-                        signatura: libro.signatura, 
-                        titulo: libro.titulo 
-                    });
                 }
             }
+            
+            // Convertir Map a Array de resultados
+            const obrasCoincidentes = Array.from(mapaEjemplares.values());
             
             console.log(`Total libros en caché: ${libros.length}`);
             console.log(`Coicidencias únicas encontradas: ${obrasCoincidentes.length}`);
@@ -557,18 +574,31 @@
             } else {
                 const html = coincidencias.map((item, i) => `
                     <div class="bib-item" style="border-left: 4px solid #1976d2;">
-                        <strong style="color: #1976d2; display: block; margin-bottom: 8px;">
-                            ${i + 1}. ${item.titulo}
-                        </strong>
-                        <span class="sig-badge" onclick="localizarLibroDirecto('${item.signatura}')">
-                            📍 Signatura: ${item.signatura}
-                        </span>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+                            <strong style="color: #1976d2; flex: 1; min-width: 200px;">
+                                ${i + 1}. ${item.titulo}
+                            </strong>
+                            <span class="ejemplares-count" title="Número de ejemplares disponibles">
+                                📖 ${item.ejemplares} ${item.ejemplares === 1 ? 'ejemplar' : 'ejemplares'}
+                            </span>
+                        </div>
+                        <div style="margin-top: 8px;">
+                            <span class="sig-badge" onclick="localizarLibroDirecto('${item.signatura}')">
+                                📍 Signatura: ${item.signatura}
+                            </span>
+                        </div>
                     </div>
                 `).join("");
                 
+                // Calcular total de ejemplares
+                const totalEjemplares = coincidencias.reduce((sum, item) => sum + item.ejemplares, 0);
+                
                 contenedor.innerHTML = `
                     <div style="padding-bottom: 15px; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
-                        <span style="color: #1976d2; font-weight: bold;">✅ ${coincidencias.length} coincidencia${coincidencias.length !== 1 ? 's' : ''} única${coincidencias.length !== 1 ? 's' : ''}</span>
+                        <span style="color: #1976d2; font-weight: bold;">✅ ${coincidencias.length} registro(s) único(s)</span>
+                        <span class="ejemplares-count" style="margin-left: 15px;">
+                            📚 Total: ${totalEjemplares} ${totalEjemplares === 1 ? 'ejemplar' : 'ejemplares'}
+                        </span>
                     </div>
                     ${html}
                 `;
