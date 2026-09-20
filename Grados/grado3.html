@@ -505,7 +505,6 @@
             // 2. Minúsculas y quitar acentos (normalización NFD)
             limpio = limpio.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             // 3. Reemplazar cualquier carácter que NO sea letra (a-z) o número (0-9) por un espacio
-            // Esto elimina comas, puntos, paréntesis, guiones, barras, etc.
             limpio = limpio.replace(/[^a-z0-9\s]/g, " ");
             // 4. Separar por espacios y descartar elementos vacíos
             return limpio.split(" ").filter(p => p.trim().length > 0);
@@ -516,28 +515,26 @@
             const libros = await cargarTodosLosLibros();
             if (libros.length === 0) return [];
             
-            // Obtenemos las palabras del título de la guía (grado3.json) limpias (sin caracteres especiales)
+            // Obtenemos las palabras del título de la guía (grado3.json) limpias
             const palabrasObra = normalizarParaComparacion(tituloObra);
             if (palabrasObra.length === 0) return [];
 
             const mapaEjemplares = new Map();
+            
+            // NÚMERO DE PALABRAS A COMPARAR (máximo 9 para no hacer comparaciones estrictas en obras largas)
+            const numPalabrasObra = Math.min(palabrasObra.length, 9);
+            const patronObra = palabrasObra.slice(0, numPalabrasObra).join(" ");
             
             for (const libro of libros) {
                 // Obtenemos las palabras del título del archivo JSON del catálogo limpias
                 const palabrasLibro = normalizarParaComparacion(libro.titulo);
                 let coincide = false;
                 
-                if (palabrasObra.length > 9) {
-                    // Si el título base es mayor a 9 palabras, comparamos exactamente las 9 primeras
-                    const primeras9Obra = palabrasObra.slice(0, 9).join(" ");
-                    const primeras9Libro = palabrasLibro.slice(0, 9).join(" ");
-                    
-                    if (primeras9Obra === primeras9Libro) {
-                        coincide = true;
-                    }
-                } else {
-                    // Si es de 9 palabras o menos, debe ser coincidencia exacta (no puede contener más texto en libros_ json)
-                    if (palabrasObra.length === palabrasLibro.length && palabrasObra.join(" ") === palabrasLibro.join(" ")) {
+                // Comprobamos si las primeras palabras coinciden, 
+                // permitiendo que el catálogo tenga subtítulos más largos.
+                if (palabrasLibro.length >= numPalabrasObra) {
+                    const patronLibro = palabrasLibro.slice(0, numPalabrasObra).join(" ");
+                    if (patronObra === patronLibro) {
                         coincide = true;
                     }
                 }
