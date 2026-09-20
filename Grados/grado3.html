@@ -533,7 +533,7 @@
                     
                     // Si ya existe, incrementamos contador
                     if (mapaEjemplares.has(claveUnica)) {
-                        mapaEjemplares.set(claveUnica, mapaEjemplares.get(claveUnica) + 1);
+                        mapaEjemplares.get(claveUnica).ejemplares++;
                     } else {
                         // Nueva entrada con primer ejemplar
                         mapaEjemplares.set(claveUnica, {
