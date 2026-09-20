@@ -470,7 +470,7 @@
             try {
                 while (seguirBuscando) {
                     // Carga secuencial de ficheros libros_1.json, libros_2.json...
-                    let respuesta = await fetch(`libros_${archivoIndice}.json`);
+                    let respuesta = await fetch(`Grados/libros_${archivoIndice}.json`);
                     
                     if (!respuesta.ok) {
                         seguirBuscando = false; // Detiene el bucle si no encuentra el siguiente fichero
