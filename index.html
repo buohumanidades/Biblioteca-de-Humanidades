@@ -198,7 +198,7 @@
         }
 
         /* =========================================
-           BOTONES PRINCIPALES DE BÚSQUEDA (TAMAÑOS EQUIVALENTES)
+           BOTONES PRINCIPALES DE BÚSQUEDA (SIGNATURA / TÍTULO)
            ========================================= */
         .action-buttons-container {
             display: flex;
@@ -208,40 +208,29 @@
             margin: 1.2vh auto;
             flex-wrap: wrap;
             width: 100%;
-            max-width: 820px;
         }
 
         .signature-btn {
-            flex: 1 1 0;
-            min-width: 280px;
-            max-width: 390px;
-            box-sizing: border-box;
             display: inline-flex;
             align-items: center;
-            padding: 10px 20px 10px 10px; 
+            justify-content: flex-start;
+            width: 390px; /* Ancho fijo idéntico para ambos botones */
+            max-width: 100%;
+            box-sizing: border-box;
+            padding: 10px 24px 10px 10px; 
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #0f2027 100%); 
             border: 2px solid rgba(255, 255, 255, 0.4);
             border-radius: 60px; 
             text-decoration: none;
             color: #ffffff;
             font-weight: 700;
+            font-size: 1.12em; /* Tamaño equilibrado para que quepa todo el texto */
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 12px 30px rgba(30, 60, 114, 0.4), 0 4px 6px rgba(0, 0, 0, 0.1);
             margin: 0; 
-            gap: 12px; 
+            gap: 14px; 
             position: relative;
             z-index: 10;
-        }
-
-        .signature-btn span {
-            font-size: 1.15em;
-            white-space: nowrap;
-        }
-
-        /* Ajuste específico para adaptar el texto más largo dentro del mismo tamaño de botón */
-        .signature-btn.title-btn span {
-            font-size: 0.85em;
-            white-space: nowrap;
         }
 
         .signature-btn:hover {
@@ -255,8 +244,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 52px;
-            height: 52px;
+            width: 50px;
+            height: 50px;
             background-color: #ffffff; 
             border-radius: 50%; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
@@ -447,15 +436,10 @@
             .links-container a { padding: 1vh 2vw; }
             .action-buttons-container { gap: 10px; margin: 0.5vh auto; }
             .signature-btn {
-                padding: 8px 16px 8px 8px !important;
-                margin: 0 !important;
-                max-width: 100% !important;
-            }
-            .signature-btn span {
+                width: 100% !important;
                 font-size: 1em !important;
-            }
-            .signature-btn.title-btn span {
-                font-size: 0.78em !important;
+                padding: 8px 16px 8px 10px !important;
+                margin: 0 !important;
             }
             .modal-content { padding: 1.5rem; }
             #modalSemestre .modal-content { padding: 1rem 0.5rem; width: 95%; }
@@ -514,11 +498,11 @@
 
             </div>
 
-            <!-- BOTONES PRINCIPALES DE BÚSQUEDA (SIGNATURA Y TÍTULO DE IGUAL TAMAÑO) -->
+            <!-- BOTONES PRINCIPALES DE BÚSQUEDA (SIGNATURA Y TÍTULO ALINEADOS) -->
             <div class="action-buttons-container">
                 <a href="Signatura.html" class="signature-btn">
                     <div class="signature-icon-circle">
-                        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 20.5C12 20.5 8.5 19 4 19C3.44772 19 3 18.5523 3 18V6C3 5.44772 3.44772 5 4 5C8.5 5 12 7.5 12 7.5" fill="#E2E8F0" stroke="#334155" stroke-width="1.2" stroke-linejoin="round"/>
                             <path d="M12 20.5C12 20.5 15.5 19 20 19C20.5523 19 21 18.5523 21 18V6C21 5.44772 20.5523 5 20 5C15.5 5 12 7.5 12 7.5" fill="#E2E8F0" stroke="#334155" stroke-width="1.2" stroke-linejoin="round"/>
                             <path d="M3 18C3 18.5523 3.44772 19 4 19C8.5 19 12 20.5 12 20.5V7.5C12 7.5 8.5 5 4 5" fill="#4ECDC4"/>
@@ -534,7 +518,7 @@
                     <span>Sé la SIGNATURA</span>
                 </a>
 
-                <a href="BuscarTitulo.html" class="signature-btn title-btn">
+                <a href="BuscarTitulo.html" class="signature-btn">
                     <div class="signature-icon-circle">
                         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="#1e3c72" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
