@@ -241,50 +241,58 @@
             border-color: #bbdefb;
         }
 
-        .opac-link {
-            display: block;
-            color: #334155;
-            text-decoration: none;
+        .bib-title {
             font-size: 1.05em;
             line-height: 1.5;
-            cursor: pointer;
-            transition: color 0.2s ease;
+            color: #334155;
+            margin-bottom: 10px;
         }
 
-        .opac-link strong {
+        .bib-title strong {
             color: #1976d2;
-            font-size: 1.05em;
-            transition: color 0.2s ease;
         }
 
-        .opac-link:hover strong {
-            color: #0d47a1;
-            text-decoration: underline;
+        /* --- RESULTADOS DINÁMICOS Y AGRUPACIÓN (NUEVO) --- */
+        .status-box {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-size: 0.95em;
+        }
+        .status-available {
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+        }
+        .status-warning {
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+        }
+        .status-unavailable {
+            background-color: #f8fafc;
+            border-left: 4px solid #94a3b8;
+        }
+        .status-header {
+            margin-bottom: 8px;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        /* --- BOTONES DE SIGNATURAS DENTRO DE LA TARJETA --- */
+        /* --- BOTONES DE SIGNATURAS Y OPAC --- */
         .sig-container {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
             align-items: center;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px dashed #e2e8f0;
-        }
-        
-        .sig-label {
-            font-size: 0.85em;
-            color: #64748b;
-            font-weight: bold;
-            text-transform: uppercase;
         }
 
         .sig-badge {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
             background-color: #e3f2fd; 
             color: #0d47a1; 
-            padding: 4px 10px;
+            padding: 6px 12px;
             border-radius: 6px;
             text-decoration: none;
             font-family: monospace;
@@ -302,39 +310,37 @@
             transform: scale(1.03);
         }
 
-        .ejemplares-count {
+        .ejemplares-tag {
+            background: #ffffff; 
+            color: #0d47a1; 
+            border-radius: 8px; 
+            padding: 2px 6px; 
+            font-size: 0.85em; 
+            margin-left: 8px; 
+            font-weight: bold; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .opac-btn {
             display: inline-flex;
             align-items: center;
-            background-color: #fef3c7;
-            color: #92400e;
-            padding: 4px 10px;
+            gap: 6px;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            padding: 8px 12px;
             border-radius: 6px;
-            font-weight: bold;
+            text-decoration: none;
+            font-weight: 500;
             font-size: 0.9em;
-            border: 1px solid #f59e0b;
-            margin-left: 8px;
+            transition: all 0.2s;
+            border: 1px solid #cbd5e1;
+            margin-top: 10px;
         }
 
-        /* --- BOTONES DE LA MODAL DE BÚSQUEDA EN CATÁLOGO --- */
-        .btn-opac-option {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            padding: 12px 18px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.95em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-        }
-
-        .btn-opac-option:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        .opac-btn:hover {
+            background-color: #e2e8f0;
+            color: #1976d2;
+            border-color: #94a3b8;
         }
 
         @media (max-width: 600px) {
@@ -387,7 +393,7 @@
     
     <div class="instructions-box">
         <p>🎯 <strong>Clic</strong> en la <strong>ASIGNATURA</strong> para ver la GUÍA DOCENTE</p>
-        <p>📚 <strong>Clic</strong> en la <strong>BIBLIOGRAFÍA</strong> de la asignatura para ver los textos recomendados</p>
+        <p>📚 <strong>Clic</strong> en la <strong>BIBLIOGRAFÍA</strong> para ver los textos recomendados y su disponibilidad real.</p>
     </div>
 
     <!-- Tabla principal de asignaturas -->
@@ -411,28 +417,11 @@
             <span class="close-btn" onclick="cerrarModal('modalBibliografia')">&times;</span>
             <div class="modal-header">
                 <h2 id="modalTitulo">📚 Bibliografía</h2>
-                <p class="modal-subtitle">Haz clic en el título de la obra para buscar su disponibilidad en el catálogo OPAC.</p>
+                <p class="modal-subtitle">Textos recomendados y su disponibilidad actual en la Biblioteca de Humanidades.</p>
             </div>
             
             <div id="modalListaCuerpo" class="bib-list">
-                <!-- Las tarjetas de bibliografía se cargan dinámicamente desde grado3.json -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de Selección de Ámbito de Búsqueda OPAC -->
-    <div id="modalOpcionesBusqueda" class="modal-overlay" style="z-index: 1002;">
-        <div class="modal-content" style="text-align: center; margin: 12% auto; max-width: 460px; padding: 25px; border-radius: 12px;">
-            <span class="close-btn" onclick="cerrarModal('modalOpcionesBusqueda')">&times;</span>
-            <h3 style="margin-top: 0; color: #1976d2; font-size: 1.3em;">🔍 ¿Dónde quieres buscar?</h3>
-            <p id="opcionesBusquedaTitulo" style="color: #475569; font-size: 0.95em; margin-bottom: 22px; line-height: 1.4; font-weight: 500;"></p>
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-                <button id="btnTodasBibliotecas" class="btn-opac-option" style="background-color: #1976d2; color: #ffffff;">
-                    🌐 Buscar en TODAS LAS BIBLIOTECAS
-                </button>
-                <button id="btnBibliotecaHumanidades" class="btn-opac-option" style="background-color: #d32f2f; color: #ffffff;">
-                    🏛️ Buscar en LA BIBLIOTECA DE HUMANIDADES
-                </button>
+                <!-- Las tarjetas de bibliografía se cargan dinámicamente aquí -->
             </div>
         </div>
     </div>
@@ -442,19 +431,6 @@
         <div class="modal-content" style="text-align: center; margin: 20% auto; max-width: 350px;">
             <p id="modalMessageText" style="white-space: pre-wrap; font-size: 1em; font-weight: 500; color: #1c1c1e; margin-bottom: 20px; line-height: 1.4;"></p>
             <button onclick="cerrarModalMensajes()" style="background: #007AFF; color: #fff; border: none; padding: 12px 25px; border-radius: 10px; font-size: 1.05em; cursor: pointer; width: 100%; font-weight: 600;">Aceptar</button>
-        </div>
-    </div>
-
-    <!-- Modal de Resultados de Búsqueda en Biblioteca -->
-    <div id="modalResultadosBusqueda" class="modal-overlay" style="z-index: 1004;">
-        <div class="modal-content">
-            <span class="close-btn" onclick="cerrarModal('modalResultadosBusqueda')">&times;</span>
-            <div class="modal-header">
-                <h2 id="resultadosTitulo">📚 Resultados de Búsqueda</h2>
-            </div>
-            <div id="resultadosContenido" class="bib-list">
-                <!-- Los resultados se cargan dinámicamente -->
-            </div>
         </div>
     </div>
 
@@ -486,7 +462,7 @@
             return count;
         }
 
-        // Cargar todos los archivos JSON de libros
+        // Cargar todos los archivos JSON de libros en caché
         async function cargarTodosLosLibros() {
             if (librosCache !== null) return librosCache;
             
@@ -523,19 +499,15 @@
             
             if (libros.length === 0) return [];
             
-            // Mapa para agrupar por clave única y contar ejemplares
             const mapaEjemplares = new Map();
             
             for (const libro of libros) {
                 if (extraerPrimerasPalabras(libro.titulo) === extraerPrimerasPalabras(tituloLimpio)) {
-                    // Crear clave única combinando signatura y título
                     const claveUnica = `${libro.signatura}|${libro.titulo}`;
                     
-                    // Si ya existe, incrementamos contador
                     if (mapaEjemplares.has(claveUnica)) {
                         mapaEjemplares.get(claveUnica).ejemplares++;
                     } else {
-                        // Nueva entrada con primer ejemplar
                         mapaEjemplares.set(claveUnica, {
                             signatura: libro.signatura,
                             titulo: libro.titulo,
@@ -544,66 +516,7 @@
                     }
                 }
             }
-            
-            // Convertir Map a Array de resultados
-            const obrasCoincidentes = Array.from(mapaEjemplares.values());
-            
-            console.log(`Total libros en caché: ${libros.length}`);
-            console.log(`Coicidencias únicas encontradas: ${obrasCoincidentes.length}`);
-            
-            return obrasCoincidentes;
-        }
-
-        // Mostrar resultados (coincidencias o mensaje informativo)
-        function mostrarResultados(coincidencias, tituloOriginal) {
-            const contenedor = document.getElementById("resultadosContenido");
-            
-            if (coincidencias.length === 0) {
-                contenedor.innerHTML = `
-                    <div style="text-align: center; padding: 40px 20px; color: #64748b;">
-                        <div style="font-size: 3em; margin-bottom: 20px;">📭</div>
-                        <h3 style="margin: 0 0 10px 0; color: #334155;">No encontrado en la biblioteca</h3>
-                        <p style="margin: 0; font-size: 1em; line-height: 1.5;">
-                            No hemos encontrado ningún libro con un título coincidente en nuestro catálogo.
-                        </p>
-                        <p style="margin: 15px 0 0 0; font-size: 0.9em; color: #94a3b8;">
-                            Pregunta en el mostrador de biblioteca por si el libro está en préstamo o en proceso de catalogación.
-                        </p>
-                    </div>
-                `;
-            } else {
-                const html = coincidencias.map((item, i) => `
-                    <div class="bib-item" style="border-left: 4px solid #1976d2;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
-                            <strong style="color: #1976d2; flex: 1; min-width: 200px;">
-                                ${i + 1}. ${item.titulo}
-                            </strong>
-                            <span class="ejemplares-count" title="Número de ejemplares disponibles">
-                                📖 ${item.ejemplares} ${item.ejemplares === 1 ? 'ejemplar' : 'ejemplares'}
-                            </span>
-                        </div>
-                        <div style="margin-top: 8px;">
-                            <span class="sig-badge" onclick="localizarLibroDirecto('${item.signatura}')">
-                                📍 Signatura: ${item.signatura}
-                            </span>
-                        </div>
-                    </div>
-                `).join("");
-                
-                // Calcular total de ejemplares
-                const totalEjemplares = coincidencias.reduce((sum, item) => sum + item.ejemplares, 0);
-                
-                contenedor.innerHTML = `
-                    <div style="padding-bottom: 15px; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
-                        <span style="color: #1976d2; font-weight: bold;">✅ ${coincidencias.length} registro(s) único(s)</span>
-                        <span class="ejemplares-count" style="margin-left: 15px;">
-                            📚 Total: ${totalEjemplares} ${totalEjemplares === 1 ? 'ejemplar' : 'ejemplares'}
-                        </span>
-                    </div>
-                    ${html}
-                `;
-            }
-            document.getElementById("modalResultadosBusqueda").style.display = "block";
+            return Array.from(mapaEjemplares.values());
         }
 
         // Localizar directamente desde signatura
@@ -651,44 +564,29 @@
             return datosGuias;
         }
         
-        // Función para cambiar de curso
         function cambiarCurso(numCurso) {
             cursoActual = numCurso;
             document.querySelectorAll('.btn-curso').forEach(btn => {
-                if (parseInt(btn.getAttribute('data-curso')) === numCurso) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
+                if (parseInt(btn.getAttribute('data-curso')) === numCurso) btn.classList.add('active');
+                else btn.classList.remove('active');
             });
             actualizarAsignaturas();
         }
 
-        // Función para cambiar de trimestre
         function cambiarTrimestre(numTrimestre) {
             trimestreActual = numTrimestre;
             document.querySelectorAll('.btn-trimestre').forEach(btn => {
-                if (parseInt(btn.getAttribute('data-trimestre')) === numTrimestre) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
+                if (parseInt(btn.getAttribute('data-trimestre')) === numTrimestre) btn.classList.add('active');
+                else btn.classList.remove('active');
             });
             actualizarAsignaturas();
         }
         
-        // Función auxiliar para normalizar los nombres
         const normalizarNombre = (texto) => {
             if (!texto) return "";
-            return texto
-                .normalize("NFD")                 
-                .replace(/[\u0300-\u036f]/g, "")  
-                .toLowerCase()                    
-                .replace(/\s+/g, ' ')             
-                .trim();                          
+            return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, ' ').trim();
         };
 
-        // Actualizar la vista de las asignaturas
         async function actualizarAsignaturas() {
             const tbody = document.getElementById("tablaAsignaturasCuerpo");
             tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px;">Cargando asignaturas...</td></tr>';
@@ -730,7 +628,6 @@
                     tr.className = (index % 2 === 0) ? "grey-row" : "light-grey-row";
 
                     const infoGuia = guiasData.find(g => normalizarNombre(g.asignatura) === normalizarNombre(nombreAsignatura));
-                    
                     const urlGuiaDocente = (infoGuia && infoGuia.url !== "") 
                         ? infoGuia.url 
                         : "https://www.uniovi.es/estudia/grados/humanidades/filosofia";
@@ -776,7 +673,7 @@
             }
         }
 
-        // Mostrar modal con la bibliografía de la asignatura seleccionada
+        // Muestra el modal y ejecuta la búsqueda dinámica por cada libro para mostrar resultados agrupados
         async function abrirModalBibliografia(nombreAsignatura, codigoGrado) {
             const modal = document.getElementById("modalBibliografia");
             const tituloModal = document.getElementById("modalTitulo");
@@ -814,97 +711,86 @@
                         textoCompleto = textoCompleto.replace(titulo, '<strong>' + titulo + '</strong>');
                     }
 
-                    let urlBusqueda = item["URL de búsqueda OPAC"];
-                    if (!urlBusqueda) {
-                        urlBusqueda = `https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH&xsqf01=${encodeURIComponent(autor + ' ' + titulo)}`;
-                    }
+                    let urlBusqueda = item["URL de búsqueda OPAC"] || `https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH&xsqf01=${encodeURIComponent(autor + ' ' + titulo)}`;
                     
-                    const enlaceOpac = document.createElement("a");
-                    enlaceOpac.href = "#";
-                    enlaceOpac.className = "opac-link"; 
-                    enlaceOpac.title = "Buscar en el catálogo";
-                    enlaceOpac.innerHTML = textoCompleto;
-                    
-                    // Al hacer clic en la obra se abre la ventana de selección de biblioteca
-                    enlaceOpac.onclick = function(e) {
-                        e.preventDefault();
-                        mostrarOpcionesBusqueda(titulo || "esta obra", urlBusqueda);
-                    };
-                    
-                    divItem.appendChild(enlaceOpac);
+                    // Contenedor del título de la obra
+                    const titleDiv = document.createElement("div");
+                    titleDiv.className = "bib-title";
+                    titleDiv.innerHTML = textoCompleto;
+                    divItem.appendChild(titleDiv);
 
-                    // Contenedor de signaturas en la parte inferior de la tarjeta
-                    let rawSignaturas = item["SIGNATURAS"] || "";
-                    if (rawSignaturas.trim() !== "") {
-                        const divSigContainer = document.createElement("div");
-                        divSigContainer.className = "sig-container";
-                        
-                        const lblSig = document.createElement("span");
-                        lblSig.className = "sig-label";
-                        lblSig.innerHTML = "📍 Localización:";
-                        divSigContainer.appendChild(lblSig);
-
-                        const listaSignaturas = rawSignaturas.split(",").map(s => s.trim()).filter(s => s.length > 0);
-                        listaSignaturas.forEach(sigText => {
-                            const aBadge = document.createElement("a");
-                            aBadge.href = "#";
-                            aBadge.className = "sig-badge";
-                            aBadge.onclick = function(e) { localizarLibro(e, this); };
-                            aBadge.textContent = sigText;
-                            divSigContainer.appendChild(aBadge);
-                        });
-                        
-                        divItem.appendChild(divSigContainer);
-                    }
-
+                    // Contenedor dinámico de resultados (aquí se agrupará la información útil)
+                    const dynamicContainer = document.createElement("div");
+                    dynamicContainer.innerHTML = '<div class="status-box" style="color:#64748b; background: #f8fafc;">⏳ Buscando disponibilidad en sala...</div>';
+                    divItem.appendChild(dynamicContainer);
                     contenedorLista.appendChild(divItem);
+
+                    // Realizar búsqueda automática en Humanidades en segundo plano
+                    if (titulo) {
+                        buscarEnBiblioteca(titulo).then(coincidencias => {
+                            let html = "";
+                            
+                            if (coincidencias.length > 0) {
+                                // Agrupar resultados calculando el total de ejemplares
+                                const totalEjemplares = coincidencias.reduce((sum, c) => sum + c.ejemplares, 0);
+                                
+                                html += `<div class="status-box status-available">
+                                            <div class="status-header">
+                                                <span>✅ <strong>¡Disponible en Humanidades!</strong></span>
+                                                <span style="font-size: 0.9em; color: #15803d;">📚 ${totalEjemplares} ejemplares en total</span>
+                                            </div>
+                                            <div class="sig-container">`;
+                                            
+                                // Botones de signaturas agrupadas
+                                coincidencias.forEach(c => {
+                                    html += `<span class="sig-badge" onclick="localizarLibroDirecto('${c.signatura}')" title="Haz clic para localizar">
+                                                📍 ${c.signatura} 
+                                                <span class="ejemplares-tag">${c.ejemplares} ud.</span>
+                                             </span>`;
+                                });
+                                
+                                html += `   </div>
+                                         </div>`;
+                            } else {
+                                // Fallback a signaturas recomendadas estáticas (si existen)
+                                let rawSignaturas = item["SIGNATURAS"] || "";
+                                if (rawSignaturas.trim() !== "") {
+                                    html += `<div class="status-box status-warning">
+                                                <div class="status-header">⚠️ <strong>No localizado automáticamente, pero sugerido en estas signaturas:</strong></div>
+                                                <div class="sig-container">`;
+                                    
+                                    const listaSignaturas = rawSignaturas.split(",").map(s => s.trim()).filter(s => s.length > 0);
+                                    listaSignaturas.forEach(sigText => {
+                                        html += `<span class="sig-badge" onclick="localizarLibro(event, this)">
+                                                    📍 ${sigText}
+                                                 </span>`;
+                                    });
+                                    html += `   </div>
+                                             </div>`;
+                                } else {
+                                    html += `<div class="status-box status-unavailable">
+                                                <div class="status-header">📭 <strong>Sin ejemplares físicos confirmados en Humanidades.</strong></div>
+                                             </div>`;
+                                }
+                            }
+                            
+                            // Añadir siempre botón hacia el Catálogo OPAC
+                            html += `<a href="${urlBusqueda}" target="_blank" class="opac-btn">
+                                        🌐 Ver disponibilidad en TODAS las bibliotecas (OPAC)
+                                     </a>`;
+                                     
+                            dynamicContainer.innerHTML = html;
+                            
+                        }).catch(err => {
+                            dynamicContainer.innerHTML = `<div class="status-box status-unavailable">⚠️ Error al buscar disponibilidad.</div>`;
+                        });
+                    }
                 });
 
             } catch (error) {
                 console.error("Error al cargar la bibliografía:", error);
                 contenedorLista.innerHTML = '<div style="text-align: center; color: #d32f2f; padding: 30px;">Error al cargar la información bibliográfica.</div>';
             }
-        }
-
-        // Mostrar ventana de opciones para elegir el catálogo de búsqueda
-        function mostrarOpcionesBusqueda(tituloObra, urlBase) {
-            const modal = document.getElementById("modalOpcionesBusqueda");
-            const txtTitulo = document.getElementById("opcionesBusquedaTitulo");
-            const btnTodas = document.getElementById("btnTodasBibliotecas");
-            const btnHumanidades = document.getElementById("btnBibliotecaHumanidades");
-
-            const tituloLimpio = tituloObra.replace(/<[^>]*>?/gm, '');
-            txtTitulo.textContent = `¿Dónde deseas consultar la disponibilidad de "${tituloLimpio}"?`;
-
-            // Opción 1: Proceso original (Todas las bibliotecas) - SIN CAMBIOS
-            btnTodas.onclick = function() {
-                window.open(urlBase, "_blank");
-                cerrarModal('modalOpcionesBusqueda');
-            };
-
-            // Opción 2: Filtro por Biblioteca de Humanidades - AHORA CON BÚSQUEDA EN JSON
-            btnHumanidades.onclick = async function() {
-                cerrarModal('modalOpcionesBusqueda');
-                
-                // Mostrar indicador de carga
-                const contenedor = document.getElementById("resultadosContenido");
-                document.getElementById("modalResultadosBusqueda").style.display = "block";
-                contenedor.innerHTML = `
-                    <div style="text-align: center; padding: 50px 20px; color: #64748b;">
-                        <div style="font-size: 3em; margin-bottom: 20px;">⏳</div>
-                        <h3 style="margin: 0; color: #334155;">Buscando en el catálogo...</h3>
-                        <p style="margin: 10px 0 0 0; font-size: 0.95em;">Consultando ${libroCount || '?' } archivo(s) de libros</p>
-                    </div>
-                `;
-                
-                // Ejecutar búsqueda
-                const coincidencias = await buscarEnBiblioteca(tituloLimpio);
-                
-                // Mostrar resultados
-                mostrarResultados(coincidencias, tituloLimpio);
-            };
-
-            modal.style.display = "block";
         }
 
         // Control de Modales
@@ -927,11 +813,11 @@
             }
         }
 
-        // Función para procesar y localizar la signatura pulsada
+        // Función para procesar y localizar la signatura de los botones estáticos (fallback)
         function localizarLibro(event, elemento) {
             event.preventDefault();
             
-            let signatura = elemento.innerText.trim();
+            let signatura = elemento.innerText.replace('📍', '').trim();
 
             if (signatura === "" || signatura === "HG") {
                 mostrarModalMensajes("Por favor, selecciona una signatura válida.");
