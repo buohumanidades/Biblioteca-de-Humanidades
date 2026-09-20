@@ -516,25 +516,33 @@
             const libros = await cargarTodosLosLibros();
             if (libros.length === 0) return [];
             
-            // Obtenemos las palabras del título de la guía (grado3.json) limpias
+            // Obtenemos las palabras del título de la guía (grado3.json) limpias (sin caracteres especiales)
             const palabrasObra = normalizarParaComparacion(tituloObra);
             if (palabrasObra.length === 0) return [];
 
-            // Definimos cuántas palabras vamos a comparar. 
-            // Si tiene 9 o más, comparamos 9. Si tiene menos de 9, comparamos el total de palabras que tenga.
-            const numPalabrasAComparar = Math.min(9, palabrasObra.length);
-            const criterioObra = palabrasObra.slice(0, numPalabrasAComparar).join(" ");
-            
             const mapaEjemplares = new Map();
             
             for (const libro of libros) {
                 // Obtenemos las palabras del título del archivo JSON del catálogo limpias
                 const palabrasLibro = normalizarParaComparacion(libro.titulo);
+                let coincide = false;
                 
-                // Tomamos la misma cantidad de palabras del título del libro (catálogo) para comparar equitativamente
-                const criterioLibro = palabrasLibro.slice(0, numPalabrasAComparar).join(" ");
+                if (palabrasObra.length > 9) {
+                    // Si el título base es mayor a 9 palabras, comparamos exactamente las 9 primeras
+                    const primeras9Obra = palabrasObra.slice(0, 9).join(" ");
+                    const primeras9Libro = palabrasLibro.slice(0, 9).join(" ");
+                    
+                    if (primeras9Obra === primeras9Libro) {
+                        coincide = true;
+                    }
+                } else {
+                    // Si es de 9 palabras o menos, debe ser coincidencia exacta (no puede contener más texto en libros_ json)
+                    if (palabrasObra.length === palabrasLibro.length && palabrasObra.join(" ") === palabrasLibro.join(" ")) {
+                        coincide = true;
+                    }
+                }
                 
-                if (criterioObra === criterioLibro && criterioObra !== "") {
+                if (coincide) {
                     const claveUnica = `${libro.signatura}|${libro.titulo}`;
                     
                     if (mapaEjemplares.has(claveUnica)) {
