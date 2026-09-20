@@ -520,18 +520,19 @@
             const palabrasObra = normalizarParaComparacion(tituloObra);
             if (palabrasObra.length === 0) return [];
 
-            // Definimos cuántas palabras vamos a comparar. 
-            // Si tiene 9 o más, comparamos 9. Si tiene menos de 9, comparamos el total de palabras que tenga.
-            const numPalabrasAComparar = Math.min(9, palabrasObra.length);
-            const criterioObra = palabrasObra.slice(0, numPalabrasAComparar).join(" ");
-            
             const mapaEjemplares = new Map();
             
             for (const libro of libros) {
                 // Obtenemos las palabras del título del archivo JSON del catálogo limpias
                 const palabrasLibro = normalizarParaComparacion(libro.titulo);
+                if (palabrasLibro.length === 0) continue;
                 
-                // Tomamos la misma cantidad de palabras del título del libro (catálogo) para comparar equitativamente
+                // CORRECCIÓN CLAVE: Comparamos basándonos en la longitud del título MÁS CORTO (hasta 9 palabras).
+                // Esto soluciona el problema de que la guía docente tenga palabras extra (ej. edición)
+                // que el título del catálogo no tiene, o viceversa, asegurando que coincidan en su raíz común.
+                const numPalabrasAComparar = Math.min(9, palabrasObra.length, palabrasLibro.length);
+                
+                const criterioObra = palabrasObra.slice(0, numPalabrasAComparar).join(" ");
                 const criterioLibro = palabrasLibro.slice(0, numPalabrasAComparar).join(" ");
                 
                 if (criterioObra === criterioLibro && criterioObra !== "") {
