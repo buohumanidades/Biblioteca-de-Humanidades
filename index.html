@@ -229,7 +229,6 @@
             gap: 16px; 
             position: relative;
             z-index: 10;
-            cursor: pointer;
         }
 
         .signature-btn:hover {
@@ -362,7 +361,7 @@
             box-shadow: 0 4px 12px rgba(30, 60, 114, 0.3);
         }
 
-        /* Modal Específico para el Iframe (Tabla de asignaturas/grado/búsquedas) */
+        /* Modal Específico para el Iframe (Tabla de asignaturas/grado) */
         #modalSemestre .modal-content {
             max-width: 900px;
             height: 80vh;
@@ -509,7 +508,7 @@
 
             <!-- BOTONES PRINCIPALES DE BÚSQUEDA (SIGNATURA Y TÍTULO ALINEADOS MISMAS DIMENSIONES) -->
             <div class="action-buttons-container">
-                <a href="#" class="signature-btn" onclick="abrirPaginaEnModal(event, 'Signatura.html')">
+                <a href="Signatura.html" class="signature-btn">
                     <div class="signature-icon-circle">
                         <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 20.5C12 20.5 8.5 19 4 19C3.44772 19 3 18.5523 3 18V6C3 5.44772 3.44772 5 4 5C8.5 5 12 7.5 12 7.5" fill="#E2E8F0" stroke="#334155" stroke-width="1.2" stroke-linejoin="round"/>
@@ -527,7 +526,7 @@
                     <span>Sé la SIGNATURA</span>
                 </a>
 
-                <a href="#" class="signature-btn title-btn" onclick="abrirPaginaEnModal(event, 'BuscarTitulo.html')">
+                <a href="BuscarTitulo.html" class="signature-btn title-btn">
                     <div class="signature-icon-circle">
                         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="#1e3c72" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -570,7 +569,7 @@
         </div>
     </div>
 
-    <!-- MODAL PARA MOSTRAR EL FICHERO HTML DEL GRADO / BÚSQUEDAS (IFRAME) -->
+    <!-- MODAL PARA MOSTRAR EL FICHERO HTML DEL GRADO (IFRAME) -->
     <div class="modal-overlay" id="modalSemestre" onclick="cerrarModalSemestre(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="cerrarModalSemestre(event)">✖</button>
@@ -595,12 +594,6 @@
             if (/windows/i.test(userAgent)) body.classList.add('os-windows');
             if (/android|iphone|ipad|ipod/i.test(userAgent)) body.classList.add('is-mobile-device');
         });
-
-        /* --- Lógica para abrir páginas internas dentro de la ventana modal --- */
-        function abrirPaginaEnModal(e, urlDestino) {
-            if (e) e.preventDefault();
-            abrirModalSemestre(urlDestino);
-        }
 
         /* --- Lógica del Modal de Grados --- */
         function abrirModalGrados(e) {
@@ -631,7 +624,7 @@
             setTimeout(() => alertModal.style.display = 'none', 300);
         }
 
-        /* --- Carga directa del archivo HTML correspondiente al Grado o Búsqueda --- */
+        /* --- Carga directa del archivo HTML correspondiente al Grado --- */
         function abrirGradoDirecto(e, idGrado) {
             if (e) e.preventDefault();
             const urlDestino = `Grados/${idGrado}.html`;
