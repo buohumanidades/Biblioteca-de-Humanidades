@@ -186,6 +186,14 @@
             overflow-y: auto;
         }
 
+        /* Modificación para mantener fijo el título de la bibliografía */
+        #modalBibliografia .modal-content {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Evita que toda la ventana haga scroll */
+            padding-bottom: 10px;
+        }
+
         .close-btn {
             color: #aaa;
             position: absolute;
@@ -205,6 +213,7 @@
             border-bottom: 2px solid #e3f2fd;
             margin-bottom: 20px;
             padding-bottom: 10px;
+            flex-shrink: 0; /* Evita que el encabezado colapse con el scroll */
         }
 
         .modal-header h2 {
@@ -224,6 +233,10 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            overflow-y: auto; /* Mueve el scroll aquí */
+            padding-right: 10px; /* Evita que la barra tape el contenido */
+            padding-bottom: 15px;
+            flex: 1; /* Ocupa el resto de la ventana para habilitar el scroll interno */
         }
 
         .bib-item {
