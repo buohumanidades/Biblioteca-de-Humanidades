@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda por Título | Biblioteca</title>
+    <style>
+        /* Fuentes */
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Playfair+Display:wght@600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #1c1c1e;
+        }
+
+        body { 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #a8edea, #fed6e3, #e0c3fc, #8ec5fc);
+            background-size: 400% 400%;
+            animation: gradientBG 12s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Contenedor principal */
+        .container { 
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            width: 95vw;
+            max-width: 1300px;
+            height: 94vh; 
+            height: 94dvh; 
+            background: #ffffff; 
+            border-radius: 20px; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25); 
+            overflow: hidden;
+        }
+
+        /* Cabecera / Sección Hero */
+        .hero-section {
+            width: 100%;
+            height: 180px; 
+            position: relative; 
+            background-color: #34495e;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .shelf-photo-desktop {
+            display: block; 
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1; 
+            width: 100%;
+            height: 200%;
+            object-fit: cover; 
+            object-position: center 100%;
+            filter: brightness(0.65); 
+        }
+
+        .shelf-photo-mobile {
+            display: none; 
+        }
+
+        .library-title {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: #ffffff;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.5em; 
+            font-weight: 700;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
+            z-index: 10; 
+        }
+
+        .professional-badge {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            color: #ffffff;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3em;
+            font-weight: 700;
+            text-align: right;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
+            z-index: 10; 
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            padding: 20px 30px;
+            min-height: 0;
+            overflow-y: auto;
+            justify-content: space-between;
+        }
+
+        .search-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: auto 0;
+            width: 100%;
+        }
+
+        /* --- ESTILO iOS PARA INPUT --- */
+        .input-titulo {
+            width: 65%;
+            padding: 16px;
+            font-size: 1.2em;
+            text-align: center;
+            color: #1c1c1e;
+            background-color: #F2F2F7;
+            border: 2px solid transparent;
+            border-radius: 14px;
+            font-weight: 600;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .input-titulo::placeholder {
+            color: #8e8e93;
+            font-weight: 500;
+        }
+        .input-titulo:focus {
+            background-color: #ffffff;
+            border-color: #007AFF;
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
+        }
+
+        /* --- ESTILO iOS PARA BOTONES --- */
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 65%;
+            padding: 16px;
+            font-size: 1.15em;
+            font-weight: 600;
+            border-radius: 14px;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.15s ease, background-color 0.2s ease;
+        }
+        
+        /* BOTÓN PRINCIPAL FLOTANTE */
+        .btn-local {
+            background: linear-gradient(135deg, #007AFF, #34AADC);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 12px 25px rgba(0, 122, 255, 0.4), 0 4px 10px rgba(0, 122, 255, 0.2);
+            animation: float 3.5s ease-in-out infinite; 
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        @keyframes float {
+            0% { 
+                transform: translateY(0px); 
+                box-shadow: 0 12px 25px rgba(0, 122, 255, 0.4), 0 4px 10px rgba(0, 122, 255, 0.2); 
+            }
+            50% { 
+                transform: translateY(-6px); 
+                box-shadow: 0 18px 32px rgba(0, 122, 255, 0.5), 0 8px 15px rgba(0, 122, 255, 0.3); 
+            }
+            100% { 
+                transform: translateY(0px); 
+                box-shadow: 0 12px 25px rgba(0, 122, 255, 0.4), 0 4px 10px rgba(0, 122, 255, 0.2); 
+            }
+        }
+
+        .btn-local:active {
+            animation: none;
+            transform: scale(0.95) translateY(4px);
+            background: #005bb5;
+            box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);
+        }
+
+        /* --- TARJETA DE SEPARACIÓN iOS --- */
+        .catalog-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 65%;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #F2F2F7;
+            border-radius: 18px;
+            gap: 12px;
+        }
+        .availability-text {
+            margin: 0;
+            color: #3a3a3c;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        .btn-catalog {
+            background-color: #ffffff;
+            color: #5856D6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            width: 100%;
+        }
+        .btn-catalog:active {
+            background-color: #e5e5ea;
+            transform: scale(0.96);
+        }
+
+        .icon {
+            font-size: 1.2em;
+        }
+
+        .back-btn {
+            display: block;
+            text-align: center;
+            padding: 14px;
+            background: transparent;
+            color: #007AFF;
+            text-decoration: none;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 1em;
+            flex-shrink: 0;
+            transition: background 0.2s, transform 0.15s;
+            width: 30%;
+            margin: 0 auto;
+        }
+        .back-btn:active {
+            background: #F2F2F7;
+            transform: scale(0.96);
+        }
+
+        /* --- MODAL --- */
+        .modal-overlay {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 18px;
+            max-width: 80%;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            color: #1c1c1e;
+        }
+        .modal-content p {
+            font-size: 1.05em;
+            font-weight: 500;
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+        }
+        .modal-btn {
+            background: #007AFF;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 1.05em;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+        }
+        .modal-btn:active {
+            background: #005bb5;
+            transform: scale(0.96);
+        }
+
+        /* PANTALLAS GRANDES */
+        @media (min-width: 901px) {
+            .hero-section { height: 25vh; height: 25dvh; } 
+            .library-title {
+                font-size: 2.3em;
+                top: 25px;
+                left: 35px;
+            }
+            .professional-badge {
+                font-size: 2.2em;
+                bottom: 25px;
+                right: 35px;
+            }
+            .content-wrapper { padding: 3vh 4vw; }
+        }
+
+        /* MÓVILES */
+        @media (max-width: 900px) {
+            body {
+                align-items: flex-start; 
+            }
+            .container { 
+                height: 100vh; 
+                height: 100dvh; 
+                width: 100vw; 
+                border-radius: 0; 
+            }
+
+            .shelf-photo-desktop {
+                display: none;
+            }
+
+            .shelf-photo-mobile {
+                display: block; 
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 1;
+                width: 100%;
+                height: 100%; 
+                object-fit: cover; 
+                object-position: center 80%; 
+                filter: brightness(0.65);
+            }
+
+            .input-titulo, .action-btn {
+                width: 90%;
+            }
+            .catalog-section {
+                width: 90%;
+                padding: 18px 15px;
+            }
+            .back-btn {
+                width: 60%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero -->
+        <div class="hero-section">
+            <img src="imagenes/buobh.png" alt="Interior biblioteca" class="shelf-photo-desktop" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
+            <img src="imagenes/buobh_movil.png" alt="Interior biblioteca móvil" class="shelf-photo-mobile" onerror="this.src='https://via.placeholder.com/800x600?text=Biblioteca+Móvil'">
+            
+            <div class="library-title"></div>
+            <div class="professional-badge">Título</div>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="search-area">
+                <p style="text-align: center; color: #8e8e93; font-size: 0.90em; margin: 0 10px; font-weight: 500;">
+                    Escribe el título o parte del mismo para consultar los libros en el fondo bibliográfico de la biblioteca.
+                </p>
+                
+                <input type="text" id="campoTitulo" class="input-titulo" placeholder="<Escribe el título o parte del mismo>">
+
+                <!-- BOTÓN PRINCIPAL PARA LOCALIZAR/BUSCAR -->
+                <a href="#" class="action-btn btn-local" onclick="localizarPorTitulo(event)">
+                    <span class="icon">🔍</span> Localizar libros
+                </a>
+
+                <!-- Sección del Catálogo Separada -->
+                <div class="catalog-section">
+                    <p class="availability-text">¿Quieres consultar el catálogo general?</p>
+                    <button onclick="buscarEnCatalogo()" class="action-btn btn-catalog">
+                        <span class="icon">📚</span> Búscalo en el catálogo
+                    </button>
+                </div>
+            </div>
+            
+            <a href="index3.html" class="back-btn">⬅ Volver al inicio</a>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-content">
+            <p id="modalMessage"></p>
+            <button onclick="cerrarModal()" class="modal-btn">Aceptar</button>
+        </div>
+    </div>
+
+    <script>
+        function mostrarModal(mensaje) {
+            document.getElementById("modalMessage").innerText = mensaje;
+            document.getElementById("customModal").style.display = "flex";
+        }
+
+        function cerrarModal() {
+            document.getElementById("customModal").style.display = "none";
+        }
+
+        function localizarPorTitulo(event) {
+            event.preventDefault();
+            let titulo = document.getElementById("campoTitulo").value.trim();
+
+            if (titulo === "") {
+                mostrarModal("Por favor, introduce un título o parte de él para realizar la búsqueda.");
+                return;
+            }
+
+            // Redirección directa al buscador del catálogo con el término introducido
+            const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
+            const urlFinal = urlBase + encodeURIComponent('"' + titulo + '"') + "&START=1&FORM=1";
+            window.open(urlFinal, "_blank");
+        }
+        
+        function buscarEnCatalogo() {
+            const titulo = document.getElementById("campoTitulo").value.trim();
+
+            if (titulo === "") {
+                window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
+            } else {
+                const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
+                const urlFinal = urlBase + encodeURIComponent('"' + titulo + '"') + "&START=1&FORM=1";
+                window.open(urlFinal, "_blank");
+            }
+        }
+    </script>
+</body>
+</html>
