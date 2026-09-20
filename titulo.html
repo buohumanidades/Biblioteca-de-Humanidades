@@ -124,7 +124,6 @@
             width: 100%;
         }
 
-        /* --- ESTILO iOS PARA INPUT --- */
         .input-titulo {
             width: 65%;
             padding: 16px;
@@ -148,7 +147,6 @@
             box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
         }
 
-        /* --- ESTILO GENERAL PARA BOTONES --- */
         .action-btn {
             display: flex;
             align-items: center;
@@ -165,7 +163,6 @@
             transition: transform 0.15s ease, background-color 0.2s ease;
         }
         
-        /* --- BOTÓN PRINCIPAL: MENOS LARGO Y MÁS LLAMATIVO --- */
         .btn-local {
             width: 48%;
             min-width: 260px;
@@ -194,7 +191,6 @@
             background: linear-gradient(135deg, #0052d9, #4ed9ee);
             box-shadow: 0 12px 35px rgba(0, 97, 255, 0.6), 0 0 30px rgba(96, 239, 255, 0.6);
         }
-
         .btn-local:active {
             animation: none;
             transform: scale(0.96) translateY(2px);
@@ -202,67 +198,6 @@
             box-shadow: 0 5px 15px rgba(0, 97, 255, 0.4);
         }
 
-        /* --- RESULTADOS DE BÚSQUEDA --- */
-        .resultados-container {
-            width: 65%;
-            max-height: 250px;
-            overflow-y: auto;
-            background-color: #F2F2F7;
-            border-radius: 14px;
-            padding: 15px;
-            margin-top: 10px;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
-            display: none; 
-        }
-        
-        .resultados-container::-webkit-scrollbar {
-            width: 8px;
-        }
-        .resultados-container::-webkit-scrollbar-thumb {
-            background-color: #c7c7cc;
-            border-radius: 10px;
-        }
-
-        .libro-item {
-            background: #ffffff;
-            padding: 12px 15px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            border-left: 4px solid #007AFF;
-            cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-            text-align: left;
-        }
-        
-        .libro-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .libro-item:hover {
-            transform: scale(1.01);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .libro-titulo-res {
-            font-weight: 700;
-            font-size: 1.05em;
-            color: #1c1c1e;
-        }
-
-        .libro-signatura-res {
-            font-size: 0.9em;
-            color: #5856D6;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* --- TARJETA DE SEPARACIÓN iOS --- */
         .catalog-section {
             display: flex;
             flex-direction: column;
@@ -316,32 +251,155 @@
             transform: scale(0.96);
         }
 
-        /* --- MODAL --- */
+        /* --- MODALES GENERALES --- */
         .modal-overlay {
             display: none; 
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
-        .modal-content {
+
+        /* Modal de Alertas (Errores / Límite) */
+        .modal-alert-content {
             background: #ffffff;
             padding: 25px;
             border-radius: 18px;
             max-width: 80%;
             width: 320px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             color: #1c1c1e;
         }
-        .modal-content p {
-            font-size: 1.05em;
-            font-weight: 500;
-            margin-bottom: 20px;
-            white-space: pre-wrap;
+
+        /* --- NUEVO: VENTANA MODAL DE RESULTADOS --- */
+        .modal-resultados-content {
+            background: #f9f9fb;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.35);
+            overflow: hidden;
+            animation: slideUp 0.3s ease-out;
         }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-resultados-header {
+            background: #ffffff;
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e5ea;
+        }
+        
+        .modal-resultados-header h3 {
+            margin: 0;
+            font-size: 1.3em;
+            color: #1c1c1e;
+        }
+
+        .btn-cerrar-modal {
+            background: #F2F2F7;
+            border: none;
+            color: #FF3B30;
+            font-weight: 700;
+            font-size: 1em;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-cerrar-modal:active {
+            background: #e5e5ea;
+            transform: scale(0.95);
+        }
+
+        .modal-resultados-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .modal-resultados-body::-webkit-scrollbar { width: 8px; }
+        .modal-resultados-body::-webkit-scrollbar-thumb { background-color: #c7c7cc; border-radius: 10px; }
+
+        /* Estilo de los libros dentro de la ventana de resultados */
+        .libro-item {
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border-left: 5px solid #007AFF;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            text-align: left;
+            position: relative;
+        }
+
+        .libro-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+        
+        .libro-item::after {
+            content: "Ir a OPAC ↗";
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 0.8em;
+            font-weight: 700;
+            color: #007AFF;
+            opacity: 0.7;
+        }
+
+        .libro-titulo-res {
+            font-weight: 700;
+            font-size: 1.15em;
+            color: #1c1c1e;
+            padding-right: 70px; /* Para no pisar el texto de OPAC */
+        }
+
+        .libro-autor-res {
+            font-size: 0.95em;
+            color: #48484a;
+            font-weight: 500;
+        }
+
+        .libro-signatura-res {
+            font-size: 0.95em;
+            color: #5856D6;
+            font-weight: 700;
+            display: inline-block;
+            background: #f0f0fb;
+            padding: 4px 8px;
+            border-radius: 6px;
+            align-self: flex-start;
+        }
+
+        .libro-localizacion-res {
+            font-size: 0.9em;
+            color: #34C759;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
         .modal-btn {
             background: #007AFF;
             color: #fff;
@@ -377,11 +435,12 @@
                 height: 100%; object-fit: cover; object-position: center 80%; 
                 filter: brightness(0.65);
             }
-            .input-titulo, .resultados-container { width: 90%; }
+            .input-titulo { width: 90%; }
             .action-btn:not(.btn-local) { width: 90%; }
             .btn-local { width: 75%; min-width: unset; }
             .catalog-section { width: 90%; padding: 18px 15px; }
             .back-btn { width: 60%; }
+            .modal-resultados-content { width: 95%; max-height: 90vh; }
         }
     </style>
 </head>
@@ -393,7 +452,7 @@
             <img src="imagenes/buobh_movil.png" alt="Interior biblioteca móvil" class="shelf-photo-mobile" onerror="this.src='https://via.placeholder.com/800x600?text=Biblioteca+Móvil'">
             
             <div class="library-title"></div>
-            <div class="professional-badge">Título</div>
+            <div class="professional-badge">Título y Autor</div>
         </div>
 
         <div class="content-wrapper">
@@ -404,15 +463,10 @@
                 
                 <input type="text" id="campoTitulo" class="input-titulo" placeholder="<Escribe el título o parte del mismo>">
 
-                <!-- BOTÓN PRINCIPAL PARA LOCALIZAR/BUSCAR -->
                 <button class="action-btn btn-local" onclick="localizarPorTitulo(event)">
                     <span class="icon">🔍</span> Localizar libros
                 </button>
 
-                <!-- Contenedor dinámico de resultados -->
-                <div id="resultadosBusqueda" class="resultados-container"></div>
-
-                <!-- Sección del Catálogo Separada -->
                 <div class="catalog-section">
                     <p class="availability-text">¿Quieres consultar el catálogo general?</p>
                     <button onclick="buscarEnCatalogo()" class="action-btn btn-catalog">
@@ -425,22 +479,39 @@
         </div>
     </div>
 
-    <!-- Modal -->
-    <div id="customModal" class="modal-overlay">
-        <div class="modal-content">
-            <p id="modalMessage"></p>
-            <button onclick="cerrarModal()" class="modal-btn">Aceptar</button>
+    <!-- Modal de Alertas (Mensajes) -->
+    <div id="modalAlerta" class="modal-overlay">
+        <div class="modal-alert-content">
+            <p id="mensajeAlerta" style="font-size: 1.05em; font-weight: 500; margin-bottom: 20px; white-space: pre-wrap;"></p>
+            <button onclick="cerrarAlerta()" class="modal-btn">Aceptar</button>
+        </div>
+    </div>
+
+    <!-- NUEVO: Ventana Modal de Resultados -->
+    <div id="ventanaResultados" class="modal-overlay">
+        <div class="modal-resultados-content">
+            <div class="modal-resultados-header">
+                <h3 id="tituloVentanaResultados">Libros Localizados</h3>
+                <button onclick="cerrarVentanaResultados()" class="btn-cerrar-modal">Cerrar ✕</button>
+            </div>
+            <div id="listaResultados" class="modal-resultados-body">
+                <!-- Los libros se inyectarán aquí -->
+            </div>
         </div>
     </div>
 
     <script>
-        function mostrarModal(mensaje) {
-            document.getElementById("modalMessage").innerText = mensaje;
-            document.getElementById("customModal").style.display = "flex";
+        function mostrarAlerta(mensaje) {
+            document.getElementById("mensajeAlerta").innerText = mensaje;
+            document.getElementById("modalAlerta").style.display = "flex";
         }
 
-        function cerrarModal() {
-            document.getElementById("customModal").style.display = "none";
+        function cerrarAlerta() {
+            document.getElementById("modalAlerta").style.display = "none";
+        }
+
+        function cerrarVentanaResultados() {
+            document.getElementById("ventanaResultados").style.display = "none";
         }
 
         // Función para quitar acentos y pasar a minúsculas
@@ -451,14 +522,9 @@
         async function localizarPorTitulo(event) {
             event.preventDefault();
             const tituloInput = document.getElementById("campoTitulo").value.trim();
-            const contenedorResultados = document.getElementById("resultadosBusqueda");
-
-            // Ocultar resultados previos al iniciar nueva búsqueda
-            contenedorResultados.style.display = "none";
-            contenedorResultados.innerHTML = ""; 
-
+            
             if (tituloInput === "") {
-                mostrarModal("Por favor, introduce un título o parte de él para realizar la búsqueda.");
+                mostrarAlerta("Por favor, introduce un título o parte de él para realizar la búsqueda.");
                 return;
             }
 
@@ -469,11 +535,10 @@
 
             try {
                 while (seguirBuscando) {
-                    // Carga secuencial de ficheros libros_1.json, libros_2.json...
                     let respuesta = await fetch(`Grados/libros_${archivoIndice}.json`);
                     
                     if (!respuesta.ok) {
-                        seguirBuscando = false; // Detiene el bucle si no encuentra el siguiente fichero
+                        seguirBuscando = false; 
                         break;
                     }
                     
@@ -483,14 +548,12 @@
                         if (libro.titulo) {
                             const tituloLibroNormalizado = normalizarTexto(libro.titulo);
                             
-                            // Comprueba si el string completo del input está contenido en el título
                             if (tituloLibroNormalizado.includes(queryNormalizada)) {
                                 librosEncontrados.push(libro);
                                 
-                                // Restricción estricta de no superar los 20 resultados
                                 if (librosEncontrados.length > 20) {
-                                    mostrarModal("Se han encontrado demasiados resultados (más de 20). Por favor, refina el título para realizar una búsqueda más concreta.");
-                                    return; // Cancela el renderizado de resultados y finaliza la función
+                                    mostrarAlerta("Se han encontrado demasiados resultados (más de 20). Por favor, refina el título para realizar una búsqueda más concreta.");
+                                    return; 
                                 }
                             }
                         }
@@ -499,50 +562,76 @@
                 }
 
                 if (librosEncontrados.length === 0) {
-                    mostrarModal("No se ha encontrado ningún libro que contenga ese texto en el título.");
+                    mostrarAlerta("No se ha encontrado ningún libro que contenga ese texto en el título.");
                 } else {
-                    renderizarResultados(librosEncontrados);
+                    renderizarResultadosEnVentana(librosEncontrados);
                 }
 
             } catch (error) {
                 console.error("Error al buscar en los archivos JSON:", error);
-                mostrarModal("Se ha producido un error al intentar localizar los libros. Verifica que los archivos .json estén accesibles.");
+                mostrarAlerta("Se ha producido un error al intentar localizar los libros. Verifica que los archivos .json estén accesibles.");
             }
         }
 
-        function renderizarResultados(resultados) {
-            const contenedorResultados = document.getElementById("resultadosBusqueda");
+        function renderizarResultadosEnVentana(resultados) {
+            const contenedorLista = document.getElementById("listaResultados");
+            contenedorLista.innerHTML = ""; // Limpiar resultados anteriores
             
-            const cabecera = document.createElement("h4");
-            cabecera.innerText = `Libros Localizados (${resultados.length})`;
-            cabecera.style.margin = "0 0 12px 0";
-            cabecera.style.color = "#3a3a3c";
-            cabecera.style.fontWeight = "700";
-            contenedorResultados.appendChild(cabecera);
+            document.getElementById("tituloVentanaResultados").innerText = `Resultados: ${resultados.length} libro(s)`;
 
             resultados.forEach(libro => {
                 const divLibro = document.createElement("div");
                 divLibro.className = "libro-item";
-                // Acción al hacer clic: Redirige al catálogo con el título exacto
+                
+                // Acción al hacer clic: Redirige al catálogo con título (xsqf01) y autor (xsqf04)
                 divLibro.onclick = () => {
-                    const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
-                    window.open(urlBase + encodeURIComponent('"' + libro.titulo + '"') + "&START=1&FORM=1", "_blank");
+                    const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&START=1&FORM=1";
+                    
+                    let queryParams = "";
+                    if (libro.titulo) {
+                        queryParams += "&xsqf01=" + encodeURIComponent('"' + libro.titulo + '"');
+                    }
+                    if (libro.autor) {
+                        queryParams += "&xsqf04=" + encodeURIComponent('"' + libro.autor + '"');
+                    }
+                    
+                    window.open(urlBase + queryParams, "_blank");
                 };
                 
+                // Título
                 const divTitulo = document.createElement("div");
                 divTitulo.className = "libro-titulo-res";
-                divTitulo.innerText = libro.titulo;
+                divTitulo.innerText = libro.titulo || "Título no disponible";
                 
+                // Autor
+                const divAutor = document.createElement("div");
+                divAutor.className = "libro-autor-res";
+                const textoAutor = libro.autor ? libro.autor : "Autor no especificado";
+                divAutor.innerHTML = `<span>👤</span> ${textoAutor}`;
+                
+                // Signatura
                 const divSignatura = document.createElement("div");
                 divSignatura.className = "libro-signatura-res";
-                divSignatura.innerHTML = `<span>🔖</span> Signatura: ${libro.signatura}`;
+                const textoSignatura = libro.signatura ? libro.signatura : "No disponible";
+                divSignatura.innerHTML = `<span>🔖</span> ${textoSignatura}`;
+
+                // Localización (Basado en grado3.html)
+                const divLocalizacion = document.createElement("div");
+                divLocalizacion.className = "libro-localizacion-res";
+                const textoLocalizacion = libro.localizacion ? libro.localizacion : "Consultar ubicación en sala";
+                divLocalizacion.innerHTML = `<span>📍</span> Localización: ${textoLocalizacion}`;
                 
+                // Agregar todo a la tarjeta
                 divLibro.appendChild(divTitulo);
+                divLibro.appendChild(divAutor);
                 divLibro.appendChild(divSignatura);
-                contenedorResultados.appendChild(divLibro);
+                divLibro.appendChild(divLocalizacion);
+                
+                contenedorLista.appendChild(divLibro);
             });
 
-            contenedorResultados.style.display = "block";
+            // Mostrar la ventana modal
+            document.getElementById("ventanaResultados").style.display = "flex";
         }
         
         function buscarEnCatalogo() {
