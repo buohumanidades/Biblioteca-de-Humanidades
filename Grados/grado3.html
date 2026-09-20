@@ -481,7 +481,7 @@
         }
 
         // ---------------------------------------------------------
-        // NUEVA LÓGICA DE NORMALIZACIÓN Y COMPROBACIÓN DE PALABRAS
+        // LÓGICA DE NORMALIZACIÓN Y COMPROBACIÓN DE PALABRAS
         // ---------------------------------------------------------
         
         // Convertir texto en array de palabras sin caracteres especiales ni acentos
@@ -538,15 +538,69 @@
             return Array.from(mapaEjemplares.values());
         }
 
-        // Localizar directamente desde signatura
+        // Localizar directamente desde signatura (resultados dinámicos)
         function localizarLibroDirecto(signatura) {
-            let sig = signatura.trim().replace(/\/AST$/i, "").replace(/\/COMIC$/i, "");
+            let sigOriginal = signatura.trim();
+
+            // Comprobación: si no empieza por HG, mostramos el aviso y detenemos la ejecución
+            if (!sigOriginal.startsWith("HG")) {
+                mostrarModalMensajes(`Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: ${sigOriginal} es correcta, te ayudaremos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.`);
+                return;
+            }
+
+            // Si es HG, procedemos con el procesado normal para el mapa
+            let sig = sigOriginal.replace(/\/AST$/i, "").replace(/\/COMIC$/i, "");
             if (!sig.endsWith("/4")) sig = sig.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
+            
             const ultimoBarra = sig.lastIndexOf("/");
             const sigFinal = ultimoBarra !== -1 
                 ? (sig.substring(ultimoBarra + 1) === "4" ? "HG/4" : sig.substring(0, ultimoBarra)) 
                 : sig;
-            window.open("../localizador.html?sig=" + encodeURIComponent(sigFinal) + "&orig=" + encodeURIComponent(signatura), "_blank");
+                
+            window.open("../localizador.html?sig=" + encodeURIComponent(sigFinal) + "&orig=" + encodeURIComponent(sigOriginal), "_blank");
+        }
+
+        // Función para procesar y localizar la signatura de los botones estáticos (fallback)
+        function localizarLibro(event, elemento) {
+            event.preventDefault();
+            
+            let signatura = elemento.innerText.replace('📍', '').trim();
+
+            if (signatura === "" || signatura === "HG") {
+                mostrarModalMensajes("Por favor, selecciona una signatura válida.");
+                return;
+            }
+
+            // Comprobación: si no empieza por HG, mostramos el aviso
+            if (!signatura.startsWith("HG")) {
+                mostrarModalMensajes(`Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: ${signatura} es correcta, te ayudaremos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.`);
+                return; 
+            }
+
+            let fichero = signatura;
+            fichero = fichero.replace(/\/AST$/i, "");
+            fichero = fichero.replace(/\/COMIC$/i, "");
+
+            if (!fichero.endsWith("/4")) {
+                fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
+            }
+
+            let sig = "";
+            let ultimoIndiceBarra = fichero.lastIndexOf("/");
+
+            if (ultimoIndiceBarra !== -1) {
+                let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
+
+                if (parteDerecha === "4") {
+                    sig = "HG/4";
+                } else {
+                    sig = fichero.substring(0, ultimoIndiceBarra);
+                }
+            } else {
+                sig = fichero;
+            }
+
+            window.open("../localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura), "_blank");
         }
 
         // Carga inicial y almacenamiento del JSON grado3.json
@@ -835,48 +889,6 @@
             if (event.target.classList.contains('modal-overlay')) {
                 event.target.style.display = "none";
             }
-        }
-
-        // Función para procesar y localizar la signatura de los botones estáticos (fallback)
-        function localizarLibro(event, elemento) {
-            event.preventDefault();
-            
-            let signatura = elemento.innerText.replace('📍', '').trim();
-
-            if (signatura === "" || signatura === "HG") {
-                mostrarModalMensajes("Por favor, selecciona una signatura válida.");
-                return;
-            }
-
-            if (!signatura.startsWith("HG")) {
-                mostrarModalMensajes("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudaremos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
-                return; 
-            }
-
-            let fichero = signatura;
-            fichero = fichero.replace(/\/AST$/i, "");
-            fichero = fichero.replace(/\/COMIC$/i, "");
-
-            if (!fichero.endsWith("/4")) {
-                fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
-            }
-
-            let sig = "";
-            let ultimoIndiceBarra = fichero.lastIndexOf("/");
-
-            if (ultimoIndiceBarra !== -1) {
-                let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
-
-                if (parteDerecha === "4") {
-                    sig = "HG/4";
-                } else {
-                    sig = fichero.substring(0, ultimoIndiceBarra);
-                }
-            } else {
-                sig = fichero;
-            }
-
-            window.open("../localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura), "_blank");
         }
 
         // Inicialización al cargar la página
