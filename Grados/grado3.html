@@ -252,7 +252,7 @@
             color: #1976d2;
         }
 
-        /* --- RESULTADOS DINÁMICOS Y AGRUPACIÓN (NUEVO) --- */
+        /* --- RESULTADOS DINÁMICOS Y AGRUPACIÓN --- */
         .status-box {
             padding: 12px 15px;
             border-radius: 8px;
@@ -480,29 +480,48 @@
             return librosCache;
         }
 
-        // Normalizar texto para comparar títulos
-        function normalizarTexto(texto) {
-            if (!texto) return "";
-            return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                .replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
-        }
-
-        // Extraer las primeras N palabras de un título
-        function extraerPrimerasPalabras(texto, numero = 9) {
-            return normalizarTexto(texto).split(" ").filter(p => p.length > 0).slice(0, numero).join(" ");
+        // ---------------------------------------------------------
+        // NUEVA LÓGICA DE NORMALIZACIÓN Y COMPROBACIÓN DE PALABRAS
+        // ---------------------------------------------------------
+        
+        // Convertir texto en array de palabras sin caracteres especiales ni acentos
+        function normalizarParaComparacion(texto) {
+            if (!texto) return [];
+            // 1. Eliminar etiquetas HTML
+            let limpio = texto.replace(/<[^>]*>?/gm, '');
+            // 2. Minúsculas y quitar acentos (normalización NFD)
+            limpio = limpio.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            // 3. Reemplazar cualquier carácter que NO sea letra (a-z) o número (0-9) por un espacio
+            // Esto elimina comas, puntos, paréntesis, guiones, barras, etc.
+            limpio = limpio.replace(/[^a-z0-9\s]/g, " ");
+            // 4. Separar por espacios y descartar elementos vacíos
+            return limpio.split(" ").filter(p => p.trim().length > 0);
         }
 
         // Buscar en biblioteca contando ejemplares por título+signatura
         async function buscarEnBiblioteca(tituloObra) {
             const libros = await cargarTodosLosLibros();
-            const tituloLimpio = tituloObra.replace(/<[^>]*>?/gm, '');
-            
             if (libros.length === 0) return [];
+            
+            // Obtenemos las palabras del título de la guía (grado3.json) limpias
+            const palabrasObra = normalizarParaComparacion(tituloObra);
+            if (palabrasObra.length === 0) return [];
+
+            // Definimos cuántas palabras vamos a comparar. 
+            // Si tiene 9 o más, comparamos 9. Si tiene menos de 9, comparamos el total de palabras que tenga.
+            const numPalabrasAComparar = Math.min(9, palabrasObra.length);
+            const criterioObra = palabrasObra.slice(0, numPalabrasAComparar).join(" ");
             
             const mapaEjemplares = new Map();
             
             for (const libro of libros) {
-                if (extraerPrimerasPalabras(libro.titulo) === extraerPrimerasPalabras(tituloLimpio)) {
+                // Obtenemos las palabras del título del archivo JSON del catálogo limpias
+                const palabrasLibro = normalizarParaComparacion(libro.titulo);
+                
+                // Tomamos la misma cantidad de palabras del título del libro (catálogo) para comparar equitativamente
+                const criterioLibro = palabrasLibro.slice(0, numPalabrasAComparar).join(" ");
+                
+                if (criterioObra === criterioLibro && criterioObra !== "") {
                     const claveUnica = `${libro.signatura}|${libro.titulo}`;
                     
                     if (mapaEjemplares.has(claveUnica)) {
@@ -719,7 +738,7 @@
                     titleDiv.innerHTML = textoCompleto;
                     divItem.appendChild(titleDiv);
 
-                    // Contenedor dinámico de resultados (aquí se agrupará la información útil)
+                    // Contenedor dinámico de resultados
                     const dynamicContainer = document.createElement("div");
                     dynamicContainer.innerHTML = '<div class="status-box" style="color:#64748b; background: #f8fafc;">⏳ Buscando disponibilidad en sala...</div>';
                     divItem.appendChild(dynamicContainer);
@@ -752,19 +771,24 @@
                                 html += `   </div>
                                          </div>`;
                             } else {
-                                // Fallback a signaturas recomendadas estáticas (si existen)
+                                // Fallback a signaturas recomendadas estáticas si la dinámica no la pilla
                                 let rawSignaturas = item["SIGNATURAS"] || "";
                                 if (rawSignaturas.trim() !== "") {
-                                    html += `<div class="status-box status-warning">
-                                                <div class="status-header">⚠️ <strong>No localizado automáticamente, pero sugerido en estas signaturas:</strong></div>
+                                    const listaSignaturas = rawSignaturas.split(",").map(s => s.trim()).filter(s => s.length > 0);
+                                    
+                                    html += `<div class="status-box status-available">
+                                                <div class="status-header">
+                                                    <span>✅ <strong>¡Disponible en Humanidades!</strong></span>
+                                                    <span style="font-size: 0.9em; color: #15803d;">📚 En bibliografía recomendada</span>
+                                                </div>
                                                 <div class="sig-container">`;
                                     
-                                    const listaSignaturas = rawSignaturas.split(",").map(s => s.trim()).filter(s => s.length > 0);
                                     listaSignaturas.forEach(sigText => {
-                                        html += `<span class="sig-badge" onclick="localizarLibro(event, this)">
+                                        html += `<span class="sig-badge" onclick="localizarLibro(event, this)" title="Haz clic para localizar">
                                                     📍 ${sigText}
                                                  </span>`;
                                     });
+                                    
                                     html += `   </div>
                                              </div>`;
                                 } else {
