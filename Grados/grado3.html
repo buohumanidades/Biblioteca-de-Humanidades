@@ -458,7 +458,7 @@
         // FUNCIONES PARA BÚSQUEDA EN LIBROS JSON
         // ============================================
         
-        let librosCache = null;
+        let promesaCargaLibros = null;
         let libroCount = 0;
 
         // Detectar archivos libros_*.json
@@ -475,22 +475,33 @@
             return count;
         }
 
-        // Cargar todos los archivos JSON de libros en caché
-        async function cargarTodosLosLibros() {
-            if (librosCache !== null) return librosCache;
-            
-            librosCache = [];
-            libroCount = await detectarArchivosLibros();
-            
-            for (let i = 1; i <= libroCount; i++) {
-                try {
-                    const data = await fetch(`libros_${i}.json`).then(r => r.json());
-                    librosCache = librosCache.concat(data);
-                } catch (error) {
-                    console.error(`Error cargando libros_${i}.json:`, error);
-                }
+        // Cargar todos los archivos JSON de libros usando una Promesa para evitar condiciones de carrera
+        function cargarTodosLosLibros() {
+            // Si ya existe una promesa de carga (en curso o terminada), devolvemos esa misma promesa
+            if (promesaCargaLibros !== null) {
+                return promesaCargaLibros;
             }
-            return librosCache;
+            
+            // Si no, iniciamos la carga por primera vez y guardamos su promesa globalmente
+            promesaCargaLibros = (async () => {
+                let librosTemp = [];
+                libroCount = await detectarArchivosLibros();
+                
+                for (let i = 1; i <= libroCount; i++) {
+                    try {
+                        const response = await fetch(`libros_${i}.json`);
+                        if (response.ok) {
+                            const data = await response.json();
+                            librosTemp = librosTemp.concat(data);
+                        }
+                    } catch (error) {
+                        console.error(`Error cargando libros_${i}.json:`, error);
+                    }
+                }
+                return librosTemp;
+            })();
+
+            return promesaCargaLibros;
         }
 
         // ---------------------------------------------------------
