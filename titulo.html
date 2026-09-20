@@ -148,7 +148,7 @@
             box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
         }
 
-        /* --- ESTILO iOS PARA BOTONES --- */
+        /* --- ESTILO GENERAL PARA BOTONES --- */
         .action-btn {
             display: flex;
             align-items: center;
@@ -165,37 +165,50 @@
             transition: transform 0.15s ease, background-color 0.2s ease;
         }
         
-        /* BOTÓN PRINCIPAL FLOTANTE */
+        /* --- BOTÓN PRINCIPAL: MENOS LARGO Y MÁS LLAMATIVO --- */
         .btn-local {
-            background: linear-gradient(135deg, #007AFF, #34AADC);
+            width: 48%;
+            min-width: 260px;
+            max-width: 400px;
+            padding: 16px 24px;
+            font-size: 1.2em;
+            font-weight: 700;
+            border-radius: 30px; /* Estilo píldora destacado */
+            background: linear-gradient(135deg, #0061ff, #60efff);
             color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 12px 25px rgba(0, 122, 255, 0.4), 0 4px 10px rgba(0, 122, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 30px rgba(0, 97, 255, 0.45), 0 0 20px rgba(96, 239, 255, 0.4);
             animation: float 3.5s ease-in-out infinite; 
             margin-top: 10px;
             margin-bottom: 5px;
+            letter-spacing: 0.3px;
         }
 
         @keyframes float {
             0% { 
                 transform: translateY(0px); 
-                box-shadow: 0 12px 25px rgba(0, 122, 255, 0.4), 0 4px 10px rgba(0, 122, 255, 0.2); 
+                box-shadow: 0 10px 30px rgba(0, 97, 255, 0.45), 0 0 20px rgba(96, 239, 255, 0.4); 
             }
             50% { 
                 transform: translateY(-6px); 
-                box-shadow: 0 18px 32px rgba(0, 122, 255, 0.5), 0 8px 15px rgba(0, 122, 255, 0.3); 
+                box-shadow: 0 16px 36px rgba(0, 97, 255, 0.55), 0 0 26px rgba(96, 239, 255, 0.6); 
             }
             100% { 
                 transform: translateY(0px); 
-                box-shadow: 0 12px 25px rgba(0, 122, 255, 0.4), 0 4px 10px rgba(0, 122, 255, 0.2); 
+                box-shadow: 0 10px 30px rgba(0, 97, 255, 0.45), 0 0 20px rgba(96, 239, 255, 0.4); 
             }
+        }
+
+        .btn-local:hover {
+            background: linear-gradient(135deg, #0052d9, #4ed9ee);
+            box-shadow: 0 12px 35px rgba(0, 97, 255, 0.6), 0 0 30px rgba(96, 239, 255, 0.6);
         }
 
         .btn-local:active {
             animation: none;
-            transform: scale(0.95) translateY(4px);
-            background: #005bb5;
-            box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);
+            transform: scale(0.96) translateY(2px);
+            background: #0040b0;
+            box-shadow: 0 5px 15px rgba(0, 97, 255, 0.4);
         }
 
         /* --- TARJETA DE SEPARACIÓN iOS --- */
@@ -340,8 +353,15 @@
                 filter: brightness(0.65);
             }
 
-            .input-titulo, .action-btn {
+            .input-titulo {
                 width: 90%;
+            }
+            .action-btn:not(.btn-local) {
+                width: 90%;
+            }
+            .btn-local {
+                width: 75%; /* Menos largo también en móvil para resaltar */
+                min-width: unset;
             }
             .catalog-section {
                 width: 90%;
