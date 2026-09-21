@@ -511,13 +511,22 @@
     </div>
 
     <script>
-        function mostrarAlerta(mensaje) {
+        // Variable para guardar una acción al cerrar la alerta
+        let accionAlCerrarAlerta = null;
+
+        function mostrarAlerta(mensaje, accionOpcional = null) {
             document.getElementById("mensajeAlerta").innerText = mensaje;
             document.getElementById("modalAlerta").style.display = "flex";
+            accionAlCerrarAlerta = accionOpcional;
         }
 
         function cerrarAlerta() {
             document.getElementById("modalAlerta").style.display = "none";
+            // Ejecutar la acción configurada si la hay
+            if (accionAlCerrarAlerta) {
+                accionAlCerrarAlerta();
+                accionAlCerrarAlerta = null; // Reiniciarla
+            }
         }
 
         function cerrarVentanaResultados() {
@@ -605,7 +614,11 @@
                                 librosEncontrados.push(libro);
                                 
                                 if (librosEncontrados.length > 20) {
-                                    mostrarAlerta("Se han encontrado demasiados resultados (más de 20). Por favor, refina el título para realizar una búsqueda más concreta.");
+                                    // Se le pasa la función buscarEnCatalogo para que se ejecute al pulsar "Aceptar"
+                                    mostrarAlerta(
+                                        "Se han encontrado demasiados resultados (más de 20). Por favor, refina el título para realizar una búsqueda más concreta.",
+                                        buscarEnCatalogo
+                                    );
                                     return; 
                                 }
                             }
