@@ -376,12 +376,6 @@
             padding-right: 70px; /* Para no pisar el texto de OPAC */
         }
 
-        .libro-autor-res {
-            font-size: 0.95em;
-            color: #48484a;
-            font-weight: 500;
-        }
-
         .libro-signatura-res {
             font-size: 0.95em;
             color: #5856D6;
@@ -393,11 +387,27 @@
             align-self: flex-start;
         }
 
+        /* Botón de localización dentro de la tarjeta */
         .libro-localizacion-res {
             font-size: 0.9em;
             color: #34C759;
             font-weight: 600;
-            margin-top: 2px;
+            margin-top: 6px;
+            display: inline-block;
+            background: #eaffea;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid #c3f3c3;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            align-self: flex-start;
+        }
+        .libro-localizacion-res:hover {
+            background: #d4f8d4;
+            transform: translateY(-1px);
+        }
+        .libro-localizacion-res:active {
+            transform: translateY(1px);
         }
 
         .modal-btn {
@@ -452,7 +462,7 @@
             <img src="imagenes/buobh_movil.png" alt="Interior biblioteca móvil" class="shelf-photo-mobile" onerror="this.src='https://via.placeholder.com/800x600?text=Biblioteca+Móvil'">
             
             <div class="library-title"></div>
-            <div class="professional-badge">Título y Autor</div>
+            <div class="professional-badge">Título</div>
         </div>
 
         <div class="content-wrapper">
@@ -519,6 +529,49 @@
             return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         }
 
+        // Función reutilizada de Signatura.html para procesar el click en "Ubicación en sala"
+        function procesarLocalizacion(event, signaturaStr) {
+            event.stopPropagation(); // Prevenir que el clic se propague y abra el OPAC
+            
+            let signatura = signaturaStr ? signaturaStr.trim() : "";
+
+            if (signatura === "" || signatura === "HG") {
+                mostrarAlerta("No se ha encontrado una signatura válida para este libro.");
+                return;
+            }
+
+            if (!signatura.startsWith("HG")) {
+                mostrarAlerta("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudaremos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
+                return; 
+            }
+
+            let fichero = signatura;
+
+            fichero = fichero.replace(/\/AST$/i, "");
+            fichero = fichero.replace(/\/COMIC$/i, "");
+
+            if (!fichero.endsWith("/4")) {
+                fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
+            }
+
+            let sig = "";
+            let ultimoIndiceBarra = fichero.lastIndexOf("/");
+
+            if (ultimoIndiceBarra !== -1) {
+                let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
+
+                if (parteDerecha === "4") {
+                    sig = "HG/4";
+                } else {
+                    sig = fichero.substring(0, ultimoIndiceBarra);
+                }
+            } else {
+                sig = fichero;
+            }
+
+            window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
+        }
+
         async function localizarPorTitulo(event) {
             event.preventDefault();
             const tituloInput = document.getElementById("campoTitulo").value.trim();
@@ -583,18 +636,13 @@
                 const divLibro = document.createElement("div");
                 divLibro.className = "libro-item";
                 
-                // Acción al hacer clic: Redirige al catálogo con título (xsqf01) y autor (xsqf04)
+                // Acción al hacer clic en la tarjeta (abre OPAC solo por título)
                 divLibro.onclick = () => {
                     const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&START=1&FORM=1";
-                    
                     let queryParams = "";
                     if (libro.titulo) {
                         queryParams += "&xsqf01=" + encodeURIComponent('"' + libro.titulo + '"');
                     }
-                    if (libro.autor) {
-                        queryParams += "&xsqf04=" + encodeURIComponent('"' + libro.autor + '"');
-                    }
-                    
                     window.open(urlBase + queryParams, "_blank");
                 };
                 
@@ -603,27 +651,21 @@
                 divTitulo.className = "libro-titulo-res";
                 divTitulo.innerText = libro.titulo || "Título no disponible";
                 
-                // Autor
-                const divAutor = document.createElement("div");
-                divAutor.className = "libro-autor-res";
-                const textoAutor = libro.autor ? libro.autor : "Autor no especificado";
-                divAutor.innerHTML = `<span>👤</span> ${textoAutor}`;
-                
                 // Signatura
                 const divSignatura = document.createElement("div");
                 divSignatura.className = "libro-signatura-res";
                 const textoSignatura = libro.signatura ? libro.signatura : "No disponible";
                 divSignatura.innerHTML = `<span>🔖</span> ${textoSignatura}`;
 
-                // Localización (Basado en grado3.html)
+                // Localización convertida en botón de redirección
                 const divLocalizacion = document.createElement("div");
                 divLocalizacion.className = "libro-localizacion-res";
                 const textoLocalizacion = libro.localizacion ? libro.localizacion : "Consultar ubicación en sala";
-                divLocalizacion.innerHTML = `<span>📍</span> Localización: ${textoLocalizacion}`;
+                divLocalizacion.innerHTML = `<span>📍</span> ${textoLocalizacion}`;
+                divLocalizacion.onclick = (e) => procesarLocalizacion(e, libro.signatura);
                 
-                // Agregar todo a la tarjeta
+                // Agregar todo a la tarjeta (el autor ha sido omitido)
                 divLibro.appendChild(divTitulo);
-                divLibro.appendChild(divAutor);
                 divLibro.appendChild(divSignatura);
                 divLibro.appendChild(divLocalizacion);
                 
