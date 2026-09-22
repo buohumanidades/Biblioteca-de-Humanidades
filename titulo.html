@@ -7,7 +7,7 @@
     <style>
         /* Fuentes */
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Playfair+Display:wght@600;700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
         * {
             box-sizing: border-box;
@@ -21,13 +21,15 @@
             color: #1c1c1e;
         }
 
+        /* FONDO MÁS COLORIDO */
         body { 
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(45deg, #a8edea, #fed6e3, #e0c3fc, #8ec5fc);
-            background-size: 400% 400%;
-            animation: gradientBG 12s ease infinite;
+            /* Gradiente más vivo y saturado */
+            background: linear-gradient(45deg, #ff7eb3, #ff758c, #c2e9fb, #8ec5fc, #fbc2eb, #e0c3fc);
+            background-size: 600% 600%;
+            animation: gradientBG 16s ease infinite;
         }
 
         @keyframes gradientBG {
@@ -36,7 +38,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Contenedor principal */
+        /* Contenedor principal con Glassmorphism para reflejar el color */
         .container { 
             position: relative;
             z-index: 10;
@@ -46,13 +48,16 @@
             max-width: 1300px;
             height: 94vh; 
             height: 94dvh; 
-            background: #ffffff; 
-            border-radius: 20px; 
-            box-shadow: 0 15px 40px rgba(0,0,0,0.25); 
+            background: rgba(255, 255, 255, 0.88); /* Ligeramente translúcido */
+            backdrop-filter: blur(12px); /* Efecto cristal */
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 24px; 
+            box-shadow: 0 20px 60px rgba(112, 128, 175, 0.25); 
             overflow: hidden;
         }
 
-        /* Cabecera / Sección Hero */
+        /* Cabecera / Sección Hero (INTACTA) */
         .hero-section {
             width: 100%;
             height: 180px; 
@@ -60,6 +65,7 @@
             background-color: #34495e;
             overflow: hidden;
             flex-shrink: 0;
+            z-index: 10;
         }
 
         .shelf-photo-desktop {
@@ -105,7 +111,26 @@
             z-index: 10; 
         }
 
+        /* NUEVA IMAGEN DEL MOSTRADOR (DECORATIVA Y POCO DESTACADA) */
+        .footer-decor-img {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 35vh; 
+            object-fit: cover;
+            object-position: bottom;
+            opacity: 0.50; /* Muy baja opacidad para no competir con la cabecera */
+            z-index: 1; /* Detrás del contenido */
+            pointer-events: none; /* Que no interfiera con los clics */
+            /* Difumina la imagen hacia arriba para fusionarla con el fondo */
+            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+            mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+        }
+
         .content-wrapper {
+            position: relative;
+            z-index: 5; /* Por encima de la imagen del mostrador */
             display: flex;
             flex-direction: column;
             flex-grow: 1;
@@ -115,139 +140,201 @@
             justify-content: space-between;
         }
 
+        /* --- ÁREA DE BÚSQUEDA REDISEÑADA PARA UNIVERSITARIOS --- */
         .search-area {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
+            gap: 18px;
             margin: auto 0;
             width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .search-instruction {
+            text-align: center; 
+            color: #4a4a4a; 
+            font-size: 0.98em; 
+            margin: 0 10px; 
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
         }
 
         .input-titulo {
-            width: 65%;
-            padding: 16px;
-            font-size: 1.2em;
+            width: 70%;
+            padding: 18px 22px;
+            font-size: 1.18em;
             text-align: center;
             color: #1c1c1e;
-            background-color: #F2F2F7;
-            border: 2px solid transparent;
-            border-radius: 14px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border: 2px solid #e5e5ea;
+            border-radius: 20px;
             font-weight: 600;
             outline: none;
-            transition: all 0.2s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
         .input-titulo::placeholder {
-            color: #8e8e93;
+            color: #a0a0a5;
             font-weight: 500;
         }
         .input-titulo:focus {
             background-color: #ffffff;
             border-color: #007AFF;
-            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 122, 255, 0.25);
+            transform: translateY(-2px);
         }
 
         .action-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            width: 65%;
+            gap: 10px;
+            width: 70%;
             padding: 16px;
             font-size: 1.15em;
-            font-weight: 600;
-            border-radius: 14px;
+            font-weight: 700;
+            border-radius: 16px;
             text-decoration: none;
             cursor: pointer;
             border: none;
-            transition: transform 0.15s ease, background-color 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
         }
         
+        /* Botón Principal "Localizar libros" */
         .btn-local {
-            width: 48%;
-            min-width: 260px;
-            max-width: 400px;
-            padding: 16px 24px;
-            font-size: 1.2em;
-            font-weight: 700;
-            border-radius: 30px; 
-            background: linear-gradient(135deg, #0061ff, #60efff);
+            width: 52%;
+            min-width: 270px;
+            max-width: 420px;
+            padding: 18px 28px;
+            font-size: 1.25em;
+            font-weight: 800;
+            border-radius: 50px; 
+            background: linear-gradient(135deg, #0061ff 0%, #60efff 100%);
             color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 10px 30px rgba(0, 97, 255, 0.45), 0 0 20px rgba(96, 239, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 12px 32px rgba(0, 97, 255, 0.45), 0 0 25px rgba(96, 239, 255, 0.4);
             animation: float 3.5s ease-in-out infinite; 
-            margin-top: 10px;
+            margin-top: 5px;
             margin-bottom: 5px;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-local::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-local:hover::before {
+            left: 100%;
+            transition: 0.7s ease-in-out;
         }
 
         @keyframes float {
             0% { transform: translateY(0px); box-shadow: 0 10px 30px rgba(0, 97, 255, 0.45), 0 0 20px rgba(96, 239, 255, 0.4); }
-            50% { transform: translateY(-6px); box-shadow: 0 16px 36px rgba(0, 97, 255, 0.55), 0 0 26px rgba(96, 239, 255, 0.6); }
+            50% { transform: translateY(-6px); box-shadow: 0 16px 38px rgba(0, 97, 255, 0.55), 0 0 28px rgba(96, 239, 255, 0.6); }
             100% { transform: translateY(0px); box-shadow: 0 10px 30px rgba(0, 97, 255, 0.45), 0 0 20px rgba(96, 239, 255, 0.4); }
         }
 
         .btn-local:hover {
-            background: linear-gradient(135deg, #0052d9, #4ed9ee);
-            box-shadow: 0 12px 35px rgba(0, 97, 255, 0.6), 0 0 30px rgba(96, 239, 255, 0.6);
+            background: linear-gradient(135deg, #0052d9 0%, #4ed9ee 100%);
+            box-shadow: 0 14px 40px rgba(0, 97, 255, 0.6), 0 0 35px rgba(96, 239, 255, 0.7);
+            transform: translateY(-3px) scale(1.02);
         }
         .btn-local:active {
             animation: none;
-            transform: scale(0.96) translateY(2px);
-            background: #0040b0;
-            box-shadow: 0 5px 15px rgba(0, 97, 255, 0.4);
+            transform: scale(0.97) translateY(1px);
+            box-shadow: 0 6px 20px rgba(0, 97, 255, 0.4);
         }
 
+        /* Tarjeta del Catálogo General con Glassmorphism */
         .catalog-section {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 65%;
+            width: 70%;
             margin-top: 10px;
-            padding: 20px;
-            background-color: #F2F2F7;
-            border-radius: 18px;
-            gap: 12px;
+            padding: 22px;
+            background: rgba(242, 242, 247, 0.65);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 22px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            gap: 14px;
+            transition: all 0.3s ease;
         }
+
+        .catalog-section:hover {
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
         .availability-text {
             margin: 0;
-            color: #3a3a3c;
-            font-weight: 600;
-            font-size: 0.95em;
+            color: #2c2c2e;
+            font-weight: 700;
+            font-size: 1em;
+            letter-spacing: -0.2px;
         }
         
         .btn-catalog {
-            background-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.95);
             color: #5856D6;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1.5px solid #e5e5ea;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
             width: 100%;
+            font-weight: 700;
+            border-radius: 16px;
+        }
+        .btn-catalog:hover {
+            border-color: #5856D6;
+            background-color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(88, 86, 214, 0.18);
         }
         .btn-catalog:active {
-            background-color: #e5e5ea;
-            transform: scale(0.96);
+            background-color: #f2f2f7;
+            transform: scale(0.97);
         }
 
         .icon {
-            font-size: 1.2em;
+            font-size: 1.25em;
         }
 
         .back-btn {
-            display: block;
-            text-align: center;
-            padding: 14px;
-            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.7);
             color: #007AFF;
             text-decoration: none;
-            border-radius: 14px;
-            font-weight: 600;
-            font-size: 1em;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.98em;
             flex-shrink: 0;
-            transition: background 0.2s, transform 0.15s;
-            width: 30%;
+            transition: all 0.2s ease;
             margin: 0 auto;
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+        .back-btn:hover {
+            background: #ffffff;
+            transform: translateY(-1px);
         }
         .back-btn:active {
-            background: #F2F2F7;
             transform: scale(0.96);
         }
 
@@ -263,7 +350,6 @@
             align-items: center;
         }
 
-        /* Modal de Alertas (Errores / Límite) con z-index superior para verse por encima */
         #modalAlerta {
             z-index: 1100;
         }
@@ -341,7 +427,6 @@
         .modal-resultados-body::-webkit-scrollbar { width: 8px; }
         .modal-resultados-body::-webkit-scrollbar-thumb { background-color: #c7c7cc; border-radius: 10px; }
 
-        /* Estilo de los libros dentro de la ventana de resultados */
         .libro-item {
             background: #ffffff;
             padding: 16px;
@@ -377,7 +462,7 @@
             font-weight: 700;
             font-size: 1.15em;
             color: #1c1c1e;
-            padding-right: 70px; /* Para no pisar el texto de OPAC */
+            padding-right: 70px;
         }
 
         .libro-signatura-res {
@@ -391,7 +476,6 @@
             align-self: flex-start;
         }
 
-        /* Botón de localización dentro de la tarjeta */
         .libro-localizacion-res {
             font-size: 0.9em;
             color: #34C759;
@@ -449,18 +533,18 @@
                 height: 100%; object-fit: cover; object-position: center 80%; 
                 filter: brightness(0.65);
             }
-            .input-titulo { width: 90%; }
-            .action-btn:not(.btn-local) { width: 90%; }
-            .btn-local { width: 75%; min-width: unset; }
-            .catalog-section { width: 90%; padding: 18px 15px; }
-            .back-btn { width: 60%; }
+            .input-titulo { width: 92%; }
+            .action-btn:not(.btn-local) { width: 100%; }
+            .btn-local { width: 85%; min-width: unset; }
+            .catalog-section { width: 92%; padding: 18px 15px; }
+            .back-btn { width: auto; padding: 10px 20px; }
             .modal-resultados-content { width: 95%; max-height: 90vh; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Hero -->
+        <!-- Hero (INTACTO) -->
         <div class="hero-section">
             <img src="imagenes/buobh.png" alt="Interior biblioteca" class="shelf-photo-desktop" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
             <img src="imagenes/buobh_movil.png" alt="Interior biblioteca móvil" class="shelf-photo-mobile" onerror="this.src='https://via.placeholder.com/800x600?text=Biblioteca+Móvil'">
@@ -469,9 +553,12 @@
             <div class="professional-badge">Título</div>
         </div>
 
+        <!-- Nueva imagen del Mostrador (Marca de agua decorativa al fondo) -->
+        <img src="imagenes/Mostrador.png" class="footer-decor-img" alt="Mostrador de biblioteca" onerror="this.style.display='none'">
+
         <div class="content-wrapper">
             <div class="search-area">
-                <p style="text-align: center; color: #8e8e93; font-size: 0.90em; margin: 0 10px; font-weight: 500;">
+                <p class="search-instruction">
                     Escribe el título o parte del mismo para consultar los libros en el fondo bibliográfico de la biblioteca.
                 </p>
                 
@@ -515,7 +602,6 @@
     </div>
 
     <script>
-        // Variable para guardar una acción al cerrar la alerta
         let accionAlCerrarAlerta = null;
 
         function mostrarAlerta(mensaje, accionOpcional = null) {
@@ -526,10 +612,9 @@
 
         function cerrarAlerta() {
             document.getElementById("modalAlerta").style.display = "none";
-            // Ejecutar la acción configurada si la hay
             if (accionAlCerrarAlerta) {
                 accionAlCerrarAlerta();
-                accionAlCerrarAlerta = null; // Reiniciarla
+                accionAlCerrarAlerta = null;
             }
         }
 
@@ -537,14 +622,12 @@
             document.getElementById("ventanaResultados").style.display = "none";
         }
 
-        // Función para quitar acentos y pasar a minúsculas
         function normalizarTexto(texto) {
             return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         }
 
-        // Función para procesar el click en "Ubicación en sala"
         function procesarLocalizacion(event, signaturaStr) {
-            event.stopPropagation(); // Prevenir que el clic se propague y abra el OPAC
+            event.stopPropagation();
             
             let signatura = signaturaStr ? signaturaStr.trim() : "";
 
@@ -582,7 +665,6 @@
                 sig = fichero;
             }
 
-            // MODIFICACIÓN: Abre localizador en una nueva ventana/pestaña
             window.open("localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura), "_blank");
         }
 
@@ -619,7 +701,6 @@
                                 librosEncontrados.push(libro);
                                 
                                 if (librosEncontrados.length > 20) {
-                                    // Se le pasa la función buscarEnCatalogo para que se ejecute al pulsar "Aceptar"
                                     mostrarAlerta(
                                         "Se han encontrado demasiados resultados, Por favor, refina el título para realizar una búsqueda más concreta.\n\nTe reenvío al catálogo para que valores los resultados encontrados.",
                                         buscarEnCatalogo
@@ -646,7 +727,7 @@
 
         function renderizarResultadosEnVentana(resultados) {
             const contenedorLista = document.getElementById("listaResultados");
-            contenedorLista.innerHTML = ""; // Limpiar resultados anteriores
+            contenedorLista.innerHTML = "";
             
             document.getElementById("tituloVentanaResultados").innerText = `Resultados: ${resultados.length} libro(s)`;
 
@@ -654,7 +735,6 @@
                 const divLibro = document.createElement("div");
                 divLibro.className = "libro-item";
                 
-                // Acción al hacer clic en la tarjeta (abre OPAC solo por título)
                 divLibro.onclick = () => {
                     const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&START=1&FORM=1";
                     let queryParams = "";
@@ -664,25 +744,21 @@
                     window.open(urlBase + queryParams, "_blank");
                 };
                 
-                // Título
                 const divTitulo = document.createElement("div");
                 divTitulo.className = "libro-titulo-res";
                 divTitulo.innerText = libro.titulo || "Título no disponible";
                 
-                // Signatura
                 const divSignatura = document.createElement("div");
                 divSignatura.className = "libro-signatura-res";
                 const textoSignatura = libro.signatura ? libro.signatura : "No disponible";
                 divSignatura.innerHTML = `<span>🔖</span> ${textoSignatura}`;
 
-                // Localización convertida en botón de redirección
                 const divLocalizacion = document.createElement("div");
                 divLocalizacion.className = "libro-localizacion-res";
                 const textoLocalizacion = libro.localizacion ? libro.localizacion : "Consultar ubicación en sala";
                 divLocalizacion.innerHTML = `<span>📍</span> ${textoLocalizacion}`;
                 divLocalizacion.onclick = (e) => procesarLocalizacion(e, libro.signatura);
                 
-                // Agregar todo a la tarjeta
                 divLibro.appendChild(divTitulo);
                 divLibro.appendChild(divSignatura);
                 divLibro.appendChild(divLocalizacion);
@@ -690,7 +766,6 @@
                 contenedorLista.appendChild(divLibro);
             });
 
-            // Mostrar la ventana modal
             document.getElementById("ventanaResultados").style.display = "flex";
         }
         
