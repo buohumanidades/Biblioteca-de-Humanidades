@@ -157,6 +157,7 @@
             color: #ffffff;
             transition: all 0.2s ease;
             box-sizing: border-box;
+            cursor: pointer;
         }
         
         .btn-new-search {
@@ -296,8 +297,9 @@
             <a id="btnCamera" href="#" class="btn-action btn-camera">
                 <i class="fa-solid fa-camera"></i> Buscar con la cámara
             </a>
-            <a href="index.html" class="btn-action btn-new-search">
-                <span class="icon">🔄</span> Volver al inicio
+            <!-- MODIFICACIÓN: Cierra la ventana del navegador al hacer clic -->
+            <a href="#" onclick="event.preventDefault(); window.close();" class="btn-action btn-new-search">
+                <span class="icon">✖</span> Cerrar ventana
             </a>
         </div>
     </div>
