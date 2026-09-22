@@ -263,7 +263,11 @@
             align-items: center;
         }
 
-        /* Modal de Alertas (Errores / Límite) */
+        /* Modal de Alertas (Errores / Límite) con z-index superior para verse por encima */
+        #modalAlerta {
+            z-index: 1100;
+        }
+
         .modal-alert-content {
             background: #ffffff;
             padding: 25px;
@@ -275,7 +279,7 @@
             color: #1c1c1e;
         }
 
-        /* --- NUEVO: VENTANA MODAL DE RESULTADOS --- */
+        /* --- VENTANA MODAL DE RESULTADOS --- */
         .modal-resultados-content {
             background: #f9f9fb;
             border-radius: 20px;
@@ -497,7 +501,7 @@
         </div>
     </div>
 
-    <!-- NUEVO: Ventana Modal de Resultados -->
+    <!-- Ventana Modal de Resultados -->
     <div id="ventanaResultados" class="modal-overlay">
         <div class="modal-resultados-content">
             <div class="modal-resultados-header">
@@ -677,7 +681,7 @@
                 divLocalizacion.innerHTML = `<span>📍</span> ${textoLocalizacion}`;
                 divLocalizacion.onclick = (e) => procesarLocalizacion(e, libro.signatura);
                 
-                // Agregar todo a la tarjeta (el autor ha sido omitido)
+                // Agregar todo a la tarjeta
                 divLibro.appendChild(divTitulo);
                 divLibro.appendChild(divSignatura);
                 divLibro.appendChild(divLocalizacion);
