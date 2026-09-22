@@ -157,7 +157,8 @@
                 <div class="icono-aviso">ℹ️</div>
                 <h2>Aviso de ubicación</h2>
                 <p>La signatura <strong>${datos.signaturas}</strong>${descripcionTexto}, no se encuentra en las SALAS. Acuda al personal de la biblioteca para solicitar el libro.</p>
-                <button class="btn-volver" onclick="window.history.back()">Volver al buscador</button>
+                <!-- MODIFICACIÓN: Se cambia window.history.back() por window.close() -->
+                <button class="btn-volver" onclick="window.close()">Cerrar y volver al buscador</button>
             `;
         }
 
@@ -169,7 +170,8 @@
                 <p>La signatura no existe o es incorrecta. Puedes realizar la comprobación en el catálogo.</p>
                 <p><strong>Signatura buscada:</strong> ${sig || "Ninguna"}</p>
                 ${mensajeExtra ? `<p style="color:red; font-size: 0.8em;">${mensajeExtra}</p>` : ""}
-                <button class="btn-volver" onclick="window.history.back()">Volver al buscador</button>
+                <!-- MODIFICACIÓN: Se cambia window.history.back() por window.close() -->
+                <button class="btn-volver" onclick="window.close()">Cerrar y volver al buscador</button>
             `;
         }
     </script>
