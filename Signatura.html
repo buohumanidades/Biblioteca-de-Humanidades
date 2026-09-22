@@ -3,470 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Búsqueda por Signatura | Biblioteca</title>
+    <title>Procesando Signatura...</title>
     <style>
-        /* Fuentes */
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Playfair+Display:wght@600;700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            color: #1c1c1e;
-        }
-
         body { 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(45deg, #a8edea, #fed6e3, #e0c3fc, #8ec5fc);
-            background-size: 400% 400%;
-            animation: gradientBG 12s ease infinite;
+            font-family: Arial, sans-serif; 
+            background-color: #f4f6f7; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            color: #2c3e50;
         }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Contenedor principal visibilidad asegurada */
-        .container { 
-            position: relative;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            width: 95vw;
-            max-width: 1300px;
-            height: 94vh; 
-            height: 94dvh; 
-            background: #ffffff; 
-            border-radius: 20px; 
-            box-shadow: 0 15px 40px rgba(0,0,0,0.25); 
-            overflow: hidden;
-        }
-
-        /* Cabecera / Sección Hero */
-        .hero-section {
-            width: 100%;
-            height: 180px; 
-            position: relative; 
-            background-color: #34495e;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .shelf-photo-desktop {
-            display: block; 
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1; 
-            width: 100%;
-            height: 200%;
-            object-fit: cover; 
-            object-position: center 100%;
-            filter: brightness(0.65); 
-        }
-
-        .shelf-photo-mobile {
-            display: none; 
-        }
-
-        .library-title {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            color: #ffffff;
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 1.5em; 
-            font-weight: 700;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
-            z-index: 10; 
-        }
-
-        .professional-badge {
-            position: absolute;
-            bottom: 15px;
-            right: 15px;
-            color: #ffffff;
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3em;
-            font-weight: 700;
-            text-align: right;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
-            z-index: 10; 
-        }
-
-        .content-wrapper {
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            padding: 20px 30px;
-            min-height: 0;
-            overflow-y: auto;
-            justify-content: space-between;
-        }
-
-        .search-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            margin: auto 0;
-            width: 100%;
-        }
-
-        /* --- ESTILO iOS PARA INPUT --- */
-        .input-signatura {
-            width: 65%;
-            padding: 16px;
-            font-size: 1.2em;
+        .loader-container {
             text-align: center;
-            color: #1c1c1e;
-            background-color: #F2F2F7;
-            border: 2px solid transparent;
-            border-radius: 14px;
-            font-weight: 600;
-            outline: none;
-            transition: all 0.2s ease;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            max-width: 400px;
+            width: 90%;
         }
-        .input-signatura::placeholder {
-            color: #8e8e93;
-            font-weight: 500;
+        .spinner {
+            border: 5px solid #ecf0f1;
+            border-top: 5px solid #2980b9; 
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
         }
-        .input-signatura:focus {
-            background-color: #ffffff;
-            border-color: #007AFF;
-            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-
-        /* --- ESTILO iOS PARA BOTONES --- */
-        .action-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 65%;
-            padding: 16px;
-            font-size: 1.15em;
-            font-weight: 600;
-            border-radius: 14px;
-            text-decoration: none;
-            cursor: pointer;
-            border: none;
-            transition: transform 0.15s ease, background-color 0.2s ease;
+        h2 {
+            font-family: 'Romana Moderna', Georgia, serif;
+            color: #1a252f;
+            margin-bottom: 10px;
+            font-size: 1.5em;
         }
-        
-        /* BOTÓN PRINCIPAL FLOTANTE */
-        .btn-local {
-            background: linear-gradient(135deg, #007AFF, #34AADC); /* Degradado sutil */
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.3); /* Brillo en el borde */
-            /* Sombras multicapa para efecto elevado */
-            box-shadow: 0 12px 25px rgba(0, 122, 255, 0.4), 0 4px 10px rgba(0, 122, 255, 0.2);
-            /* Animación constante */
-            animation: float 3.5s ease-in-out infinite; 
-            margin-top: 10px; /* Un poco de margen para que respire la sombra */
-            margin-bottom: 5px;
-        }
-
-        @keyframes float {
-            0% { 
-                transform: translateY(0px); 
-                box-shadow: 0 12px 25px rgba(0, 122, 255, 0.4), 0 4px 10px rgba(0, 122, 255, 0.2); 
-            }
-            50% { 
-                transform: translateY(-6px); /* Sube un poco */
-                box-shadow: 0 18px 32px rgba(0, 122, 255, 0.5), 0 8px 15px rgba(0, 122, 255, 0.3); /* La sombra se expande */
-            }
-            100% { 
-                transform: translateY(0px); 
-                box-shadow: 0 12px 25px rgba(0, 122, 255, 0.4), 0 4px 10px rgba(0, 122, 255, 0.2); 
-            }
-        }
-
-        .btn-local:active {
-            animation: none; /* Quitamos la animación flotante al pulsar */
-            transform: scale(0.95) translateY(4px); /* Se hunde hacia abajo */
-            background: #005bb5;
-            box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);
-        }
-
-        /* --- TARJETA DE SEPARACIÓN iOS --- */
-        .catalog-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 65%;
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #F2F2F7;
-            border-radius: 18px;
-            gap: 12px;
-        }
-        .availability-text {
-            margin: 0;
-            color: #3a3a3c;
-            font-weight: 600;
+        p {
+            color: #7f8c8d;
             font-size: 0.95em;
+            line-height: 1.4;
         }
-        
-        .btn-catalog {
-            background-color: #ffffff;
-            color: #5856D6;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            width: 100%;
-        }
-        .btn-catalog:active {
-            background-color: #e5e5ea;
-            transform: scale(0.96);
-        }
-
-        .icon {
-            font-size: 1.2em;
-        }
-
-        .back-btn {
-            display: block;
-            text-align: center;
-            padding: 14px;
-            background: transparent;
-            color: #007AFF;
-            text-decoration: none;
-            border-radius: 14px;
-            font-weight: 600;
-            font-size: 1em;
-            flex-shrink: 0;
-            transition: background 0.2s, transform 0.15s;
-            width: 30%;
-            margin: 0 auto;
-        }
-        .back-btn:active {
-            background: #F2F2F7;
-            transform: scale(0.96);
-        }
-
-        /* --- MODAL --- */
-        .modal-overlay {
-            display: none; 
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 18px;
-            max-width: 80%;
-            width: 320px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-            color: #1c1c1e;
-        }
-        .modal-content p {
-            font-size: 1.05em;
-            font-weight: 500;
-            margin-bottom: 20px;
-            white-space: pre-wrap;
-        }
-        .modal-btn {
-            background: #007AFF;
-            color: #fff;
+        .btn-volver {
+            background-color: #e67e22; 
+            color: white;
             border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
-            font-size: 1.05em;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 1em;
             cursor: pointer;
-            font-weight: 600;
-            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
-        .modal-btn:active {
-            background: #005bb5;
-            transform: scale(0.96);
+        .btn-volver:hover {
+            background-color: #d35400;
         }
-
-        /* PANTALLAS GRANDES */
-        @media (min-width: 901px) {
-            .hero-section { height: 25vh; height: 25dvh; } 
-            .library-title {
-                font-size: 2.3em;
-                top: 25px;
-                left: 35px;
-            }
-            .professional-badge {
-                font-size: 2.2em;
-                bottom: 25px;
-                right: 35px;
-            }
-            .content-wrapper { padding: 3vh 4vw; }
-        }
-
-        /* MÓVILES */
-        @media (max-width: 900px) {
-            body {
-                align-items: flex-start; 
-            }
-            .container { 
-                height: 100vh; 
-                height: 100dvh; 
-                width: 100vw; 
-                border-radius: 0; 
-            }
-
-            .shelf-photo-desktop {
-                display: none;
-            }
-
-            .shelf-photo-mobile {
-                display: block; 
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                z-index: 1;
-                width: 100%;
-                height: 100%; 
-                object-fit: cover; 
-                object-position: center 80%; 
-                filter: brightness(0.65);
-            }
-
-            .input-signatura, .action-btn {
-                width: 90%;
-            }
-            .catalog-section {
-                width: 90%;
-                padding: 18px 15px;
-            }
-            .back-btn {
-                width: 60%;
-            }
+        .icono-aviso {
+            font-size: 3em;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Hero -->
-        <div class="hero-section">
-            <img src="imagenes/buobh.png" alt="Interior biblioteca" class="shelf-photo-desktop" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
-            <img src="imagenes/buobh_movil.png" alt="Interior biblioteca móvil" class="shelf-photo-mobile" onerror="this.src='https://via.placeholder.com/800x600?text=Biblioteca+Móvil'">
-            
-            <div class="library-title"></div>
-            <div class="professional-badge">Signatura</div>
-        </div>
-
-        <div class="content-wrapper">
-            <div class="search-area">
-                <p style="text-align: center; color: #8e8e93; font-size: 0.90em; margin: 0 10px; font-weight: 500;">
-                    Recuerda que los libros que se encuentran en las salas son de acceso libre y sus signaturas comienzan por HG.
-                </p>
-                
-                <input type="text" id="campoSignatura" class="input-signatura" placeholder="<Escribe la signatura>" 
-                       onfocus="if(this.value.trim() === '') { this.value = 'HG'; setTimeout(() => this.setSelectionRange(2, 2), 0); }" 
-                       oninput="this.value = this.value.toUpperCase();">
-
-                <!-- BOTÓN FLOTANTE MODIFICADO -->
-                <a href="#" class="action-btn btn-local" onclick="localizarLibro(event)">
-                    <span class="icon">📍</span> Localizar en la estantería
-                </a>
-
-                <!-- Sección del Catálogo Separada -->
-                <div class="catalog-section">
-                    <p class="availability-text">¿Quieres ver si está disponible?</p>
-                    <button onclick="buscarEnCatalogo()" class="action-btn btn-catalog">
-                        <span class="icon">📚</span> Búscalo en el catálogo
-                    </button>
-                </div>
-            </div>
-            
-            <a href="index.html" class="back-btn">⬅ Volver al inicio</a>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div id="customModal" class="modal-overlay">
-        <div class="modal-content">
-            <p id="modalMessage"></p>
-            <button onclick="cerrarModal()" class="modal-btn">Aceptar</button>
-        </div>
+    <div class="loader-container" id="contenedor-principal">
+        <div class="spinner"></div>
+        <h2>Buscando ubicación...</h2>
+        <p>Comprobando la signatura en la base de datos de la biblioteca.</p>
     </div>
 
     <script>
-        function mostrarModal(mensaje) {
-            document.getElementById("modalMessage").innerText = mensaje;
-            document.getElementById("customModal").style.display = "flex";
+        const params = new URLSearchParams(window.location.search);
+        let sigBuscada = params.get('sig');
+        const sigOriginal = params.get('orig'); // Se captura la original
+
+        // Normalización preventiva si la URL llega con texto intermedio antes de números con '='
+        if (sigBuscada) {
+            sigBuscada = sigBuscada.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+(?=\d+=)/gi, "/");
         }
 
-        function cerrarModal() {
-            document.getElementById("customModal").style.display = "none";
-        }
+        // Hacemos una petición para leer el archivo externo signaturas.json
+        fetch('signaturas.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("No se pudo cargar el archivo de datos");
+                }
+                return response.json(); // Convertimos la respuesta a un objeto Javascript
+            })
+            .then(baseDatos => {
+                setTimeout(() => {
+                    if (sigBuscada && baseDatos[sigBuscada]) {
+                        const datos = baseDatos[sigBuscada];
+                        
+                        const paramsUrl = new URLSearchParams({
+                            sig: sigBuscada,
+                            orig: sigOriginal || sigBuscada, // Se traspasa la original
+                            planta: datos.planta,
+                            sala: datos.sala,
+                            ubicacion: datos.ubicacion,
+                            estanteria: datos.estanteria
+                        });
 
-        function localizarLibro(event) {
-            event.preventDefault();
-            let signatura = document.getElementById("campoSignatura").value.trim();
+                        const urlDestino = datos.html + "?" + paramsUrl.toString();
+                        
+                        // MODIFICACIÓN: En lugar de redirigir la misma ventana, 
+                        // mostramos un botón amigable para abrir en una pestaña nueva
+                        const contenedor = document.getElementById('contenedor-principal');
+                        contenedor.innerHTML = `
+                            <div class="icono-aviso">✅</div>
+                            <h2>Ubicación encontrada</h2>
+                            <p>Haz clic en el botón para abrir la localización del libro en una ventana nueva.</p>
+                            <a href="${urlDestino}" target="_blank" class="btn-volver">Abrir ubicación</a>
+                        `;
+                    } else {
+                        // Si no está en el primer archivo, buscamos en el repositorio general
+                        buscarEnTodasSignaturas(sigBuscada);
+                    }
+                }, 600);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                mostrarError(sigBuscada, "Error al cargar el archivo signaturas.json.");
+            });
 
-            if (signatura === "" || signatura === "HG") {
-                mostrarModal("Por favor, escribe una signatura válida.");
+        function buscarEnTodasSignaturas(sig) {
+            if (!sig) {
+                mostrarError(sig);
                 return;
             }
 
-            if (!signatura.startsWith("HG")) {
-                mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudaremos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
-                return; 
-            }
+            fetch('todassignaturas.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("No se pudo cargar el archivo todassignaturas.json");
+                    }
+                    return response.json();
+                })
+                .then(todas => {
+                    // Busca el objeto dentro del array donde la propiedad "signaturas" coincida con la buscada
+                    const encontrada = todas.find(item => item.signaturas === sig);
 
-            let fichero = signatura;
-
-            fichero = fichero.replace(/\/AST$/i, "");
-            fichero = fichero.replace(/\/COMIC$/i, "");
-
-            if (!fichero.endsWith("/4")) {
-                fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
-            }
-
-            let sig = "";
-            let ultimoIndiceBarra = fichero.lastIndexOf("/");
-
-            if (ultimoIndiceBarra !== -1) {
-                let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
-
-                if (parteDerecha === "4") {
-                    sig = "HG/4";
-                } else {
-                    sig = fichero.substring(0, ultimoIndiceBarra);
-                }
-            } else {
-                sig = fichero;
-            }
-
-            window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
+                    if (encontrada) {
+                        mostrarAvisoPersonal(encontrada);
+                    } else {
+                        mostrarError(sig);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    mostrarError(sig, "Error al cargar la base de datos secundaria.");
+                });
         }
-        
-function buscarEnCatalogo() {
 
-            const signatura = document.getElementById("campoSignatura").value.trim();
+        function mostrarAvisoPersonal(datos) {
+            const contenedor = document.getElementById('contenedor-principal');
+            // Formatea el campo descripción (si está vacío, no muestra el guion)
+            const descripcionTexto = datos.descripcion ? ` ${datos.descripcion}` : '';
+            
+            contenedor.innerHTML = `
+                <div class="icono-aviso">ℹ️</div>
+                <h2>Aviso de ubicación</h2>
+                <p>La signatura <strong>${datos.signaturas}</strong>${descripcionTexto}, no se encuentra en las SALAS. Acuda al personal de la biblioteca para solicitar el libro.</p>
+                <button class="btn-volver" onclick="window.history.back()">Volver al buscador</button>
+            `;
+        }
 
-            if (signatura === "" || signatura === "HG") {
-                window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
-            } else {
-                const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
-                const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "&START=1&FORM=1";
-                window.open(urlFinal, "_blank");
-
-            }
-
+        function mostrarError(sig, mensajeExtra = "") {
+            const contenedor = document.getElementById('contenedor-principal');
+            contenedor.innerHTML = `
+                <div class="icono-aviso">⚠️</div>
+                <h2>Signatura no encontrada</h2>
+                <p>La signatura no existe o es incorrecta. Puedes realizar la comprobación en el catálogo.</p>
+                <p><strong>Signatura buscada:</strong> ${sig || "Ninguna"}</p>
+                ${mensajeExtra ? `<p style="color:red; font-size: 0.8em;">${mensajeExtra}</p>` : ""}
+                <button class="btn-volver" onclick="window.history.back()">Volver al buscador</button>
+            `;
         }
     </script>
 </body>
 </html>
+```[cite: 1]
