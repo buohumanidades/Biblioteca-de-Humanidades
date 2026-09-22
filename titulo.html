@@ -542,7 +542,7 @@
             return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         }
 
-        // Función reutilizada de Signatura.html para procesar el click en "Ubicación en sala"
+        // Función para procesar el click en "Ubicación en sala"
         function procesarLocalizacion(event, signaturaStr) {
             event.stopPropagation(); // Prevenir que el clic se propague y abra el OPAC
             
@@ -582,7 +582,8 @@
                 sig = fichero;
             }
 
-            window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
+            // MODIFICACIÓN: Abre localizador en una nueva ventana/pestaña
+            window.open("localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura), "_blank");
         }
 
         async function localizarPorTitulo(event) {
