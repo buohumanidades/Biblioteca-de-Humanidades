@@ -477,12 +477,10 @@
 
         // Cargar todos los archivos JSON de libros usando una Promesa para evitar condiciones de carrera
         function cargarTodosLosLibros() {
-            // Si ya existe una promesa de carga (en curso o terminada), devolvemos esa misma promesa
             if (promesaCargaLibros !== null) {
                 return promesaCargaLibros;
             }
             
-            // Si no, iniciamos la carga por primera vez y guardamos su promesa globalmente
             promesaCargaLibros = (async () => {
                 let librosTemp = [];
                 libroCount = await detectarArchivosLibros();
@@ -508,38 +506,28 @@
         // LÓGICA DE NORMALIZACIÓN Y COMPROBACIÓN DE PALABRAS
         // ---------------------------------------------------------
         
-        // Convertir texto en array de palabras sin caracteres especiales ni acentos
         function normalizarParaComparacion(texto) {
             if (!texto) return [];
-            // 1. Eliminar etiquetas HTML
             let limpio = texto.replace(/<[^>]*>?/gm, '');
-            // 2. Minúsculas y quitar acentos (normalización NFD)
             limpio = limpio.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            // 3. Reemplazar cualquier carácter que NO sea letra (a-z) o número (0-9) por un espacio
-            // Esto elimina comas, puntos, paréntesis, guiones, barras, etc.
             limpio = limpio.replace(/[^a-z0-9\s]/g, " ");
-            // 4. Separar por espacios y descartar elementos vacíos
             return limpio.split(" ").filter(p => p.trim().length > 0);
         }
 
-        // Buscar en biblioteca contando ejemplares por título+signatura
         async function buscarEnBiblioteca(tituloObra) {
             const libros = await cargarTodosLosLibros();
             if (libros.length === 0) return [];
             
-            // Obtenemos las palabras del título de la guía (grado3.json) limpias (sin caracteres especiales)
             const palabrasObra = normalizarParaComparacion(tituloObra);
             if (palabrasObra.length === 0) return [];
 
             const mapaEjemplares = new Map();
             
             for (const libro of libros) {
-                // Obtenemos las palabras del título del archivo JSON del catálogo limpias
                 const palabrasLibro = normalizarParaComparacion(libro.titulo);
                 let coincide = false;
                 
                 if (palabrasObra.length > 9) {
-                    // Si el título base es mayor a 9 palabras, comparamos exactamente las 9 primeras
                     const primeras9Obra = palabrasObra.slice(0, 9).join(" ");
                     const primeras9Libro = palabrasLibro.slice(0, 9).join(" ");
                     
@@ -547,7 +535,6 @@
                         coincide = true;
                     }
                 } else {
-                    // Si es de 9 palabras o menos, debe ser coincidencia exacta (no puede contener más texto en libros_ json)
                     if (palabrasObra.length === palabrasLibro.length && palabrasObra.join(" ") === palabrasLibro.join(" ")) {
                         coincide = true;
                     }
@@ -570,17 +557,14 @@
             return Array.from(mapaEjemplares.values());
         }
 
-        // Localizar directamente desde signatura (resultados dinámicos)
         function localizarLibroDirecto(signatura) {
             let sigOriginal = signatura.trim();
 
-            // Comprobación: si no empieza por HG, mostramos el aviso y detenemos la ejecución
             if (!sigOriginal.startsWith("HG")) {
                 mostrarModalMensajes(`Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSignatura: ${sigOriginal}.\n\nTe ayudamos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.`);
                 return;
             }
 
-            // Si es HG, procedemos con el procesado normal para el mapa
             let sig = sigOriginal.replace(/\/AST$/i, "").replace(/\/COMIC$/i, "");
             if (!sig.endsWith("/4")) sig = sig.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
             
@@ -592,7 +576,6 @@
             window.open("../localizador.html?sig=" + encodeURIComponent(sigFinal) + "&orig=" + encodeURIComponent(sigOriginal), "_blank");
         }
 
-        // Función para procesar y localizar la signatura de los botones estáticos (fallback)
         function localizarLibro(event, elemento) {
             event.preventDefault();
             
@@ -603,10 +586,8 @@
                 return;
             }
 
-            // Comprobación: si no empieza por HG, mostramos el aviso
             if (!signatura.startsWith("HG")) {
-                mostrarModalMensajes(`Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSignatura: ${sigOriginal}.\n\nTe ayudamos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.`);
-
+                mostrarModalMensajes(`Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSignatura: ${signatura}.\n\nTe ayudamos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.`);
                 return; 
             }
 
@@ -636,7 +617,6 @@
             window.open("../localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura), "_blank");
         }
 
-        // Carga inicial y almacenamiento del JSON grado3.json
         async function cargarDatos() {
             if (!datosGrado) {
                 const response = await fetch('grado3.json');
@@ -648,7 +628,6 @@
             return datosGrado;
         }
 
-        // Carga y procesamiento del archivo JSON con las URLs de las guías docentes
         async function cargarGuias() {
             if (!datosGuias) {
                 try {
@@ -779,7 +758,104 @@
             }
         }
 
-        // Muestra el modal y ejecuta la búsqueda dinámica por cada libro para mostrar resultados agrupados
+        // Función auxiliar que previene fugas de "scope" al generar elementos asíncronos para cada libro
+        function procesarFilaBibliografia(item, contenedorLista) {
+            const divItem = document.createElement("div");
+            divItem.className = "bib-item";
+
+            let textoCompleto = item["Texto completo de la obra donde se extrae la información"] || "";
+            let titulo = item["Obra/Título"] || "";
+            let autor = item["AUTOR"] || "";
+
+            if (titulo && textoCompleto.includes(titulo)) {
+                textoCompleto = textoCompleto.replace(titulo, '<strong>' + titulo + '</strong>');
+            }
+
+            // Normalización del término de búsqueda (evita espacios residuales)
+            let terminoBusqueda = `${autor} ${titulo}`.trim();
+            let urlBusqueda = item["URL de búsqueda OPAC"] || `https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH&xsqf01=${encodeURIComponent(terminoBusqueda)}`;
+            
+            const titleDiv = document.createElement("div");
+            titleDiv.className = "bib-title";
+            titleDiv.innerHTML = textoCompleto;
+            divItem.appendChild(titleDiv);
+
+            const dynamicContainer = document.createElement("div");
+            dynamicContainer.innerHTML = '<div class="status-box" style="color:#64748b; background: #f8fafc;">⏳ Buscando disponibilidad en sala...</div>';
+            divItem.appendChild(dynamicContainer);
+            contenedorLista.appendChild(divItem);
+
+            if (titulo) {
+                buscarEnBiblioteca(titulo).then(coincidencias => {
+                    let html = "";
+                    
+                    if (coincidencias.length > 0) {
+                        const totalEjemplares = coincidencias.reduce((sum, c) => sum + c.ejemplares, 0);
+                        
+                        html += `<div class="status-box status-available">
+                                    <div class="status-header">
+                                        <span>✅ <strong>En la Biblioteca de Humanidades</strong></span>
+                                        <span style="font-size: 0.9em; color: #15803d;">📚 ${totalEjemplares} ejemplares en total</span>
+                                    </div>
+                                    <div class="sig-container">`;
+                                    
+                        coincidencias.forEach(c => {
+                            html += `<span class="sig-badge" onclick="localizarLibroDirecto('${c.signatura}')" title="Haz clic para localizar">
+                                        📍 ${c.signatura} 
+                                        <span class="ejemplares-tag">${c.ejemplares} ud.</span>
+                                     </span>`;
+                        });
+                        
+                        html += `   </div>
+                                 </div>`;
+                    } else {
+                        let rawSignaturas = item["SIGNATURAS"] || "";
+                        if (rawSignaturas.trim() !== "") {
+                            const listaSignaturas = rawSignaturas.split(",").map(s => s.trim()).filter(s => s.length > 0);
+                            
+                            html += `<div class="status-box status-available">
+                                        <div class="status-header">
+                                            <span>✅ <strong>¡Disponible en Humanidades!</strong></span>
+                                            <span style="font-size: 0.9em; color: #15803d;">📚 En bibliografía recomendada</span>
+                                        </div>
+                                        <div class="sig-container">`;
+                            
+                            listaSignaturas.forEach(sigText => {
+                                html += `<span class="sig-badge" onclick="localizarLibro(event, this)" title="Haz clic para localizar">
+                                            📍 ${sigText}
+                                         </span>`;
+                            });
+                            
+                            html += `   </div>
+                                     </div>`;
+                        } else {
+                            html += `<div class="status-box status-unavailable">
+                                        <div class="status-header">📭 <strong>Sin ejemplares físicos confirmados en Humanidades.</strong></div>
+                                     </div>`;
+                        }
+                    }
+                    
+                    html += `<a href="${urlBusqueda}" target="_blank" class="opac-btn">
+                                🌐 Ver disponibilidad (OPAC)
+                             </a>`;
+                             
+                    dynamicContainer.innerHTML = html;
+                    
+                }).catch(err => {
+                    dynamicContainer.innerHTML = `<div class="status-box status-unavailable">⚠️ Error al buscar disponibilidad.</div>`;
+                });
+            } else {
+                // Alternativa por si el libro carece de título pero queremos mostrar el botón igualmente
+                let html = `<div class="status-box status-unavailable">
+                                <div class="status-header">📭 <strong>Faltan datos para realizar la búsqueda automática.</strong></div>
+                             </div>
+                             <a href="${urlBusqueda}" target="_blank" class="opac-btn">
+                                🌐 Ver disponibilidad (OPAC)
+                             </a>`;
+                dynamicContainer.innerHTML = html;
+            }
+        }
+
         async function abrirModalBibliografia(nombreAsignatura, codigoGrado) {
             const modal = document.getElementById("modalBibliografia");
             const tituloModal = document.getElementById("modalTitulo");
@@ -805,97 +881,9 @@
                     return;
                 }
 
+                // Generación segura utilizando la función externa
                 items.forEach(item => {
-                    const divItem = document.createElement("div");
-                    divItem.className = "bib-item";
-
-                    let textoCompleto = item["Texto completo de la obra donde se extrae la información"] || "";
-                    let titulo = item["Obra/Título"] || "";
-                    let autor = item["AUTOR"] || "";
-
-                    if (titulo && textoCompleto.includes(titulo)) {
-                        textoCompleto = textoCompleto.replace(titulo, '<strong>' + titulo + '</strong>');
-                    }
-
-                    let urlBusqueda = item["URL de búsqueda OPAC"] || `https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH&xsqf01=${encodeURIComponent(autor + ' ' + titulo)}`;
-                    
-                    // Contenedor del título de la obra
-                    const titleDiv = document.createElement("div");
-                    titleDiv.className = "bib-title";
-                    titleDiv.innerHTML = textoCompleto;
-                    divItem.appendChild(titleDiv);
-
-                    // Contenedor dinámico de resultados
-                    const dynamicContainer = document.createElement("div");
-                    dynamicContainer.innerHTML = '<div class="status-box" style="color:#64748b; background: #f8fafc;">⏳ Buscando disponibilidad en sala...</div>';
-                    divItem.appendChild(dynamicContainer);
-                    contenedorLista.appendChild(divItem);
-
-                    // Realizar búsqueda automática en Humanidades en segundo plano
-                    if (titulo) {
-                        buscarEnBiblioteca(titulo).then(coincidencias => {
-                            let html = "";
-                            
-                            if (coincidencias.length > 0) {
-                                // Agrupar resultados calculando el total de ejemplares
-                                const totalEjemplares = coincidencias.reduce((sum, c) => sum + c.ejemplares, 0);
-                                
-                                html += `<div class="status-box status-available">
-                                            <div class="status-header">
-                                                <span>✅ <strong>En la Biblioteca de Humanidades</strong></span>
-                                                <span style="font-size: 0.9em; color: #15803d;">📚 ${totalEjemplares} ejemplares en total</span>
-                                            </div>
-                                            <div class="sig-container">`;
-                                            
-                                // Botones de signaturas agrupadas
-                                coincidencias.forEach(c => {
-                                    html += `<span class="sig-badge" onclick="localizarLibroDirecto('${c.signatura}')" title="Haz clic para localizar">
-                                                📍 ${c.signatura} 
-                                                <span class="ejemplares-tag">${c.ejemplares} ud.</span>
-                                             </span>`;
-                                });
-                                
-                                html += `   </div>
-                                         </div>`;
-                            } else {
-                                // Fallback a signaturas recomendadas estáticas si la dinámica no la pilla
-                                let rawSignaturas = item["SIGNATURAS"] || "";
-                                if (rawSignaturas.trim() !== "") {
-                                    const listaSignaturas = rawSignaturas.split(",").map(s => s.trim()).filter(s => s.length > 0);
-                                    
-                                    html += `<div class="status-box status-available">
-                                                <div class="status-header">
-                                                    <span>✅ <strong>¡Disponible en Humanidades!</strong></span>
-                                                    <span style="font-size: 0.9em; color: #15803d;">📚 En bibliografía recomendada</span>
-                                                </div>
-                                                <div class="sig-container">`;
-                                    
-                                    listaSignaturas.forEach(sigText => {
-                                        html += `<span class="sig-badge" onclick="localizarLibro(event, this)" title="Haz clic para localizar">
-                                                    📍 ${sigText}
-                                                 </span>`;
-                                    });
-                                    
-                                    html += `   </div>
-                                             </div>`;
-                                } else {
-                                    html += `<div class="status-box status-unavailable">
-                                                <div class="status-header">📭 <strong>Sin ejemplares físicos confirmados en Humanidades.</strong></div>
-                                             </div>`;
-                                }
-                            }
-                            
-                            // Añadir siempre botón hacia el Catálogo OPAC
-                            html += `<a href="${urlBusqueda}" target="_blank" class="opac-btn">
-                                        🌐 Ver disponibilidad (OPAC)
-                                     </a>`;
-                                     
-                            dynamicContainer.innerHTML = html;
-                            
-                        }).catch(err => {
-                            dynamicContainer.innerHTML = `<div class="status-box status-unavailable">⚠️ Error al buscar disponibilidad.</div>`;
-                        });
-                    }
+                    procesarFilaBibliografia(item, contenedorLista);
                 });
 
             } catch (error) {
