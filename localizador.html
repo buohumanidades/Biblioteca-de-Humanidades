@@ -58,8 +58,6 @@
             cursor: pointer;
             margin-top: 20px;
             transition: background-color 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
         }
         .btn-volver:hover {
             background-color: #d35400;
@@ -109,17 +107,7 @@
                             estanteria: datos.estanteria
                         });
 
-                        const urlDestino = datos.html + "?" + paramsUrl.toString();
-                        
-                        // MODIFICACIÓN: En lugar de redirigir la misma ventana, 
-                        // mostramos un botón amigable para abrir en una pestaña nueva
-                        const contenedor = document.getElementById('contenedor-principal');
-                        contenedor.innerHTML = `
-                            <div class="icono-aviso">✅</div>
-                            <h2>Ubicación encontrada</h2>
-                            <p>Haz clic en el botón para abrir la localización del libro en una ventana nueva.</p>
-                            <a href="${urlDestino}" target="_blank" class="btn-volver">Abrir ubicación</a>
-                        `;
+                        window.location.href = datos.html + "?" + paramsUrl.toString();
                     } else {
                         // Si no está en el primer archivo, buscamos en el repositorio general
                         buscarEnTodasSignaturas(sigBuscada);
@@ -187,4 +175,3 @@
     </script>
 </body>
 </html>
-```[cite: 1]
