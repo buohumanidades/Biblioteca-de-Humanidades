@@ -10,6 +10,7 @@
         :root {
             --alto-de-la-imagen: 23vh;  
             --ancho-de-la-imagen: 100%; 
+            --image-opacity: 0.85; /* Modifica este valor (0.0 a 1.0) para dar más o menos opacidad a la imagen sala.png */
             --primary-grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             --accent-grad: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
         }
@@ -70,8 +71,9 @@
             height: 100%;
             object-fit: cover; 
             object-position: center 55%;
+            opacity: var(--image-opacity); /* Aplica la opacidad configurable */
             filter: brightness(0.8) saturate(1.1);
-            transition: transform 0.6s ease;
+            transition: transform 0.6s ease, opacity 0.3s ease;
         }
 
         .hero-section:hover .shelf-photo-panoramic {
@@ -82,24 +84,6 @@
             position: absolute;
             inset: 0;
             background: linear-gradient(180deg, rgba(15,23,42,0.1) 0%, rgba(15,23,42,0.75) 100%);
-        }
-
-        .professional-badge {
-            position: absolute;
-            bottom: 20px;
-            right: 35px;
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(8px);
-            color: #f8fafc;
-            font-family: 'Playfair Display', serif;
-            font-size: 1.6em;
-            font-weight: 700;
-            font-style: italic;
-            letter-spacing: 0.5px;
-            padding: 8px 24px;
-            border-radius: 50px;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
         /* CONTENIDO PRINCIPAL */
@@ -250,13 +234,39 @@
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
 
+        /* CONTENEDOR CENTRADO PARA EL BADGE Y LOS BOTONES DE BÚSQUEDA */
+        .search-wrapper-centered {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin: 0.5vh auto;
+        }
+
+        .search-helper-badge {
+            display: inline-block;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            color: #f8fafc;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25em;
+            font-weight: 700;
+            font-style: italic;
+            letter-spacing: 0.5px;
+            padding: 6px 22px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
         /* BOTONES PRINCIPALES DE BÚSQUEDA (SIGNATURA / TÍTULO) */
         .action-buttons-container {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 24px;
-            margin: 1vh auto;
             flex-wrap: wrap;
             width: 100%;
         }
@@ -485,7 +495,7 @@
         @media (max-width: 900px) {
             .container { height: 98vh; width: 98vw; }
             .hero-section { flex: 0 0 18vh; }
-            .professional-badge { font-size: 1.1em; bottom: 10px; right: 15px; padding: 6px 16px; }
+            .search-helper-badge { font-size: 1.05em; padding: 5px 16px; margin-bottom: 8px; }
             .main-content { padding: 1vh 3vw; justify-content: space-between; }
             h1 { font-size: 1.4em; }
             .subtitle-campus { font-size: 0.8em; }
@@ -514,9 +524,6 @@
         <div class="hero-section">
             <img src="sala.png" alt="Biblioteca de Humanidades" class="shelf-photo-panoramic" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
             <div class="hero-overlay-gradient"></div>
-            <div class="professional-badge">
-                💡 Necesito encontrar un libro
-            </div>
         </div>
 
         <!-- CONTENIDO PRINCIPAL -->
@@ -565,36 +572,41 @@
 
             </div>
 
-            <!-- BOTONES PRINCIPALES DE BÚSQUEDA RÁPIDA -->
-            <div class="action-buttons-container">
-                <a href="Signatura.html" class="signature-btn">
-                    <div class="signature-icon-circle">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 20.5C12 20.5 8.5 19 4 19C3.44772 19 3 18.5523 3 18V6C3 5.44772 3.44772 5 4 5C8.5 5 12 7.5 12 7.5" fill="#E2E8F0" stroke="#334155" stroke-width="1.2" stroke-linejoin="round"/>
-                            <path d="M12 20.5C12 20.5 15.5 19 20 19C20.5523 19 21 18.5523 21 18V6C21 5.44772 20.5523 5 20 5C15.5 5 12 7.5 12 7.5" fill="#E2E8F0" stroke="#334155" stroke-width="1.2" stroke-linejoin="round"/>
-                            <path d="M3 18C3 18.5523 3.44772 19 4 19C8.5 19 12 20.5 12 20.5V7.5C12 7.5 8.5 5 4 5" fill="#10B981"/>
-                            <path d="M21 18C21 18.5523 20.5523 19 20 19C15.5 19 12 20.5 12 20.5V7.5C12 7.5 15.5 5 20 5" fill="#F43F5E"/>
-                            <path d="M5.5 9.5H10" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
-                            <path d="M5.5 12.5H8.5" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
-                            <path d="M14 9.5H18.5" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
-                            <path d="M14 12.5H17" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
-                            <path d="M12 7.5V17L13.5 15.5L15 17V7.5" fill="#FBBF24"/>
-                            <path d="M12 20.5V7.5" stroke="#334155" stroke-width="1.2" stroke-linecap="round"/>
-                        </svg>
-                    </div>
-                    <span>Sé la SIGNATURA</span>
-                </a>
+            <!-- BADGE Y BOTONES PRINCIPALES DE BÚSQUEDA RÁPIDA (CENTRADOS) -->
+            <div class="search-wrapper-centered">
+                <div class="search-helper-badge">
+                    💡 Necesito encontrar un libro
+                </div>
+                <div class="action-buttons-container">
+                    <a href="Signatura.html" class="signature-btn">
+                        <div class="signature-icon-circle">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 20.5C12 20.5 8.5 19 4 19C3.44772 19 3 18.5523 3 18V6C3 5.44772 3.44772 5 4 5C8.5 5 12 7.5 12 7.5" fill="#E2E8F0" stroke="#334155" stroke-width="1.2" stroke-linejoin="round"/>
+                                <path d="M12 20.5C12 20.5 15.5 19 20 19C20.5523 19 21 18.5523 21 18V6C21 5.44772 20.5523 5 20 5C15.5 5 12 7.5 12 7.5" fill="#E2E8F0" stroke="#334155" stroke-width="1.2" stroke-linejoin="round"/>
+                                <path d="M3 18C3 18.5523 3.44772 19 4 19C8.5 19 12 20.5 12 20.5V7.5C12 7.5 8.5 5 4 5" fill="#10B981"/>
+                                <path d="M21 18C21 18.5523 20.5523 19 20 19C15.5 19 12 20.5 12 20.5V7.5C12 7.5 15.5 5 20 5" fill="#F43F5E"/>
+                                <path d="M5.5 9.5H10" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                                <path d="M5.5 12.5H8.5" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                                <path d="M14 9.5H18.5" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                                <path d="M14 12.5H17" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                                <path d="M12 7.5V17L13.5 15.5L15 17V7.5" fill="#FBBF24"/>
+                                <path d="M12 20.5V7.5" stroke="#334155" stroke-width="1.2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <span>Sé la SIGNATURA</span>
+                    </a>
 
-                <a href="titulo.html" class="signature-btn title-btn">
-                    <div class="signature-icon-circle">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M21 21L16.65 16.65" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M8 11H14" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </div>
-                    <span>Sé el título o parte del mismo</span>
-                </a>
+                    <a href="titulo.html" class="signature-btn title-btn">
+                        <div class="signature-icon-circle">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M21 21L16.65 16.65" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M8 11H14" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <span>Sé el título o parte del mismo</span>
+                    </a>
+                </div>
             </div>
 
             <!-- SERVICIOS ADICIONALES -->
@@ -650,11 +662,9 @@
         // Lógica del contador basada en la estructura JSON solicitada
         async function gestionarContadorVisitas() {
             const nombreFichero = "index.html";
-            // Obtener fecha del sistema en formato YYYY-MM-DD
             const fechaHoy = new Date().toISOString().split('T')[0];
 
             try {
-                // Intenta cargar contador.json (ideal si se ejecuta mediante un servidor local python)
                 let respuesta = await fetch('contador.json');
                 let registros = [];
                 if (respuesta.ok) {
@@ -663,7 +673,6 @@
                     registros = JSON.parse(localStorage.getItem('contador_json') || '[]');
                 }
 
-                // Buscar coincidencia de fichero y fecha
                 let registroEncontrado = registros.find(r => r.fichero === nombreFichero && r.fecha === fechaHoy);
 
                 if (registroEncontrado) {
@@ -676,12 +685,8 @@
                     });
                 }
 
-                // Guardar en localStorage para persistencia en entorno local estático
                 localStorage.setItem('contador_json', JSON.stringify(registros, null, 2));
-                console.log("Registro de contador actualizado:", registros);
-
             } catch (error) {
-                // Fallback robusto usando localStorage si se abre directamente por protocolo file://
                 let registros = JSON.parse(localStorage.getItem('contador_json') || '[]');
                 let registroEncontrado = registros.find(r => r.fichero === nombreFichero && r.fecha === fechaHoy);
 
@@ -695,7 +700,6 @@
                     });
                 }
                 localStorage.setItem('contador_json', JSON.stringify(registros, null, 2));
-                console.log("Registro de contador (Local):", registros);
             }
         }
 
@@ -705,7 +709,6 @@
             if (/windows/i.test(userAgent)) body.classList.add('os-windows');
             if (/android|iphone|ipad|ipod/i.test(userAgent)) body.classList.add('is-mobile-device');
             
-            // Llamar a la función del contador cada vez que cargue index.html
             gestionarContadorVisitas();
         });
 
