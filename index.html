@@ -244,7 +244,9 @@
         }
 
         .search-helper-badge {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(8px);
             color: #f8fafc;
@@ -575,7 +577,11 @@
             <!-- BADGE Y BOTONES PRINCIPALES DE BÚSQUEDA RÁPIDA (CENTRADOS) -->
             <div class="search-wrapper-centered">
                 <div class="search-helper-badge">
-                    💡 Necesito encontrar un libro
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="7" r="4"/>
+                        <path d="M12 14c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z"/>
+                    </svg>
+                    Necesito encontrar un libro
                 </div>
                 <div class="action-buttons-container">
                     <a href="Signatura.html" class="signature-btn">
@@ -659,7 +665,6 @@
 
     <!-- SCRIPTS FUNCIONALES -->
     <script>
-        // Lógica del contador basada en la estructura JSON solicitada
         async function gestionarContadorVisitas() {
             const nombreFichero = "index.html";
             const fechaHoy = new Date().toISOString().split('T')[0];
