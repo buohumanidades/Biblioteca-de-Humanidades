@@ -10,7 +10,7 @@
         :root {
             --alto-de-la-imagen: 23vh;  
             --ancho-de-la-imagen: 100%; 
-            --image-opacity: 1.5; /* Modifica este valor (0.0 a 1.0) para dar más o menos opacidad a la imagen sala.png */
+            --image-opacity: 1.0; /* Opacidad al máximo (100%) */
             --primary-grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             --accent-grad: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
         }
@@ -57,12 +57,12 @@
             overflow: hidden; 
         }
         
-        /* SECCIÓN HERO CON IMAGEN PANORÁMICA */
+        /* SECCIÓN HERO CON IMAGEN PANORÁMICA CLARA */
         .hero-section {
             width: var(--ancho-de-la-imagen);
             flex: 0 0 var(--alto-de-la-imagen); 
             position: relative;
-            background: #0f172a;
+            background: #ffffff;
             overflow: hidden;
         }
 
@@ -71,19 +71,13 @@
             height: 100%;
             object-fit: cover; 
             object-position: center 55%;
-            opacity: var(--image-opacity); /* Aplica la opacidad configurable */
-            filter: brightness(0.8) saturate(1.1);
-            transition: transform 0.6s ease, opacity 0.3s ease;
+            opacity: var(--image-opacity); 
+            filter: none; /* Sin filtros oscuros para mantener máxima claridad */
+            transition: transform 0.6s ease;
         }
 
         .hero-section:hover .shelf-photo-panoramic {
             transform: scale(1.03);
-        }
-
-        .hero-overlay-gradient {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, rgba(15,23,42,0.1) 0%, rgba(15,23,42,0.75) 100%);
         }
 
         /* CONTENIDO PRINCIPAL */
@@ -247,8 +241,8 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: transparent; /* Sin fondo oscuro */
-            color: #1e293b; /* Texto en tono oscuro elegante y legible */
+            background: transparent;
+            color: #1e293b; 
             font-family: 'Playfair Display', serif;
             font-size: 1.35em;
             font-weight: 700;
@@ -523,7 +517,6 @@
         <!-- SECCIÓN HERO PANORÁMICA -->
         <div class="hero-section">
             <img src="sala.png" alt="Biblioteca de Humanidades" class="shelf-photo-panoramic" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
-            <div class="hero-overlay-gradient"></div>
         </div>
 
         <!-- CONTENIDO PRINCIPAL -->
