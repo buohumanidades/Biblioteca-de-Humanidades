@@ -647,11 +647,66 @@
 
     <!-- SCRIPTS FUNCIONALES -->
     <script>
+        // Lógica del contador basada en la estructura JSON solicitada
+        async function gestionarContadorVisitas() {
+            const nombreFichero = "index.html";
+            // Obtener fecha del sistema en formato YYYY-MM-DD
+            const fechaHoy = new Date().toISOString().split('T')[0];
+
+            try {
+                // Intenta cargar contador.json (ideal si se ejecuta mediante un servidor local python)
+                let respuesta = await fetch('contador.json');
+                let registros = [];
+                if (respuesta.ok) {
+                    registros = await respuesta.json();
+                } else {
+                    registros = JSON.parse(localStorage.getItem('contador_json') || '[]');
+                }
+
+                // Buscar coincidencia de fichero y fecha
+                let registroEncontrado = registros.find(r => r.fichero === nombreFichero && r.fecha === fechaHoy);
+
+                if (registroEncontrado) {
+                    registroEncontrado.contador += 1;
+                } else {
+                    registros.push({
+                        fichero: nombreFichero,
+                        fecha: fechaHoy,
+                        contador: 1
+                    });
+                }
+
+                // Guardar en localStorage para persistencia en entorno local estático
+                localStorage.setItem('contador_json', JSON.stringify(registros, null, 2));
+                console.log("Registro de contador actualizado:", registros);
+
+            } catch (error) {
+                // Fallback robusto usando localStorage si se abre directamente por protocolo file://
+                let registros = JSON.parse(localStorage.getItem('contador_json') || '[]');
+                let registroEncontrado = registros.find(r => r.fichero === nombreFichero && r.fecha === fechaHoy);
+
+                if (registroEncontrado) {
+                    registroEncontrado.contador += 1;
+                } else {
+                    registros.push({
+                        fichero: nombreFichero,
+                        fecha: fechaHoy,
+                        contador: 1
+                    });
+                }
+                localStorage.setItem('contador_json', JSON.stringify(registros, null, 2));
+                console.log("Registro de contador (Local):", registros);
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
             const body = document.body;
             if (/windows/i.test(userAgent)) body.classList.add('os-windows');
             if (/android|iphone|ipad|ipod/i.test(userAgent)) body.classList.add('is-mobile-device');
+            
+            // Llamar a la función del contador cada vez que cargue index.html
+            gestionarContadorVisitas();
         });
 
         function abrirModalGrados(e) {
