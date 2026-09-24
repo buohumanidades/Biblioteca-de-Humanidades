@@ -49,15 +49,31 @@
             top: 15px;
             right: 15px;
             z-index: 9999;
+            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+            color: #ffffff;
             border-radius: 6px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
             display: flex;
+            align-items: center;
+            font-size: 0.82em;
+            font-weight: 700;
             cursor: pointer;
             user-select: none;
+            overflow: hidden;
             transition: transform 0.2s ease;
         }
         .contador-diario:hover { transform: scale(1.05); }
-        .contador-diario img { display: block; height: 26px; border-radius: 6px; }
+        .contador-diario .badge-label-visitas {
+            background: rgba(15, 23, 42, 0.85);
+            padding: 6px 11px;
+            color: #e2e8f0;
+            letter-spacing: 0.5px;
+        }
+        .contador-diario .badge-val-visitas {
+            padding: 6px 12px;
+            color: #ffffff;
+            font-size: 1.05em;
+        }
 
         /* Contador global encontrado.html (inferior derecho) */
         .contador-inferior {
@@ -230,8 +246,11 @@
     </style>
 </head>
 <body>
-    <!-- Contador Superior (index.html, local) -->
-    <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Doble clic para resetear visitas de inicio" ondblclick="resetearContadorIndex()"></div>
+    <!-- Contador Superior (index.html, universal y reseteable) -->
+    <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Doble clic para resetear visitas de inicio" ondblclick="resetearContadorIndex()">
+        <span class="badge-label-visitas">Visitas</span>
+        <span id="numVisitas" class="badge-val-visitas">...</span>
+    </div>
 
     <!-- Contador Inferior Global (encontrado.html) -->
     <div id="contadorEncontrado" class="contador-inferior" style="display: none;">
@@ -371,27 +390,48 @@
     </div>
 
     <script>
-        // --- 1. CONTADOR SUPERIOR DERECHO (Visitas de index.html, local) ---
+        // --- 1. CONTADOR SUPERIOR DERECHO (Visitas de index.html, universal y por sesión) ---
         function mostrarContadorVisualDiario() {
             const divContador = document.getElementById('contadorVisitas');
-            if (!divContador) return; 
+            const numVisitas = document.getElementById('numVisitas');
+            if (!divContador || !numVisitas) return; 
 
-            const fecha = new Date();
-            const dia = String(fecha.getDate()).padStart(2, '0');
-            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-            const anio = fecha.getFullYear();
-            
+            // Se utiliza la versión local para permitir reseteos
             const resetVer = localStorage.getItem('reset_index_ver') || '1';
-            const rutaUnica = `uniovi_bib_humanidades/visitas_index_${anio}${mes}${dia}_v${resetVer}`;
-            const urlImagenBadge = `https://hits.sh/uniovi.es/${rutaUnica}.svg?label=%20&color=4f46e5&labelColor=1e293b`;
+            const claveUniversal = `visitas_index_global_v${resetVer}`;
             
-            divContador.innerHTML = `<img src="${urlImagenBadge}" alt="Contador de visitas de hoy">`;
-            divContador.style.display = 'flex';
+            // sessionStorage se borra al cerrar el navegador/pestaña, por lo que 
+            // esto garantiza que solo cuente una vez cada vez que "arranca" el programa.
+            const yaContado = sessionStorage.getItem('visita_index_registrada') === 'true';
+            
+            let url = `https://api.counterapi.dev/v1/bib_humanidades/${claveUniversal}`;
+            
+            // Si es la primera vez que se carga en esta sesión, añadimos /up a la URL para incrementar
+            if (!yaContado) {
+                url += '/up';
+            }
+
+            fetch(url)
+                .then(respuesta => respuesta.json())
+                .then(datos => {
+                    numVisitas.textContent = (datos.count !== undefined) ? datos.count : '0';
+                    divContador.style.display = 'flex';
+                    
+                    if (!yaContado) {
+                        sessionStorage.setItem('visita_index_registrada', 'true');
+                    }
+                })
+                .catch(error => {
+                    console.error("Error consultando el contador de visitas:", error);
+                    if (numVisitas.textContent === '...') numVisitas.textContent = '0';
+                    divContador.style.display = 'flex';
+                });
         }
 
         function resetearContadorIndex() {
             let ver = parseInt(localStorage.getItem('reset_index_ver') || '1', 10);
             localStorage.setItem('reset_index_ver', ver + 1);
+            sessionStorage.removeItem('visita_index_registrada'); // Para que vuelva a sumar 1 en la nueva cuenta
             mostrarContadorVisualDiario();
         }
 
