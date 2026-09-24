@@ -93,16 +93,16 @@
             font-size: 1.05em;
         }
 
-        /* Contador inferior global (Encontrado A2) */
+        /* Contador Encontrados (Ubicado debajo de la imagen de sala a la derecha) */
         .contador-inferior {
-            position: fixed;
-            bottom: 15px;
-            right: 15px;
-            z-index: 9999;
+            position: absolute;
+            top: 15px;
+            right: 3.5vw;
+            z-index: 20;
             background: linear-gradient(135deg, #059669 0%, #10b981 100%);
             color: #ffffff;
             border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             display: flex;
             align-items: center;
             font-size: 0.82em;
@@ -297,6 +297,7 @@
         @media (max-width: 900px) {
             .container { height: 98vh; width: 98vw; }
             .hero-section { flex: 0 0 18vh; }
+            .contador-inferior { top: 10px; right: 3vw; font-size: 0.75em; }
             .search-helper-badge { padding: 6px 18px; margin-bottom: 8px; }
             .search-helper-badge .badge-text { font-size: 1.15em; }
             .main-content { padding: 1vh 3vw; justify-content: space-between; }
@@ -312,16 +313,10 @@
 </head>
 <body>
 
-    <!-- Contador Inferior Global (encontrado.html -> Celda A2) -->
-    <div id="contadorEncontrado" class="contador-inferior" style="display: none;">
-        <span class="badge-label">Encontrados</span>
-        <span id="numEncontrado" class="badge-val">...</span>
-    </div>
-
     <div class="container">
         
         <div class="hero-section">
-            <!-- Contador Visitas movido dentro de la imagen de sala (parte superior derecha) -->
+            <!-- Contador Visitas dentro de la imagen de sala (parte superior derecha) -->
             <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Contador de visitas globales">
                 <span class="badge-label-visitas">Visitas</span>
                 <span id="numVisitas" class="badge-val-visitas">...</span>
@@ -334,6 +329,12 @@
 
         <div class="main-content">
             
+            <!-- Contador Encontrados (Ubicado justo debajo de la imagen de sala a la derecha) -->
+            <div id="contadorEncontrado" class="contador-inferior" style="display: none;">
+                <span class="badge-label">Búsquedas</span>
+                <span id="numEncontrado" class="badge-val">...</span>
+            </div>
+
             <div class="header-title-wrapper">
                 <h1>Biblioteca de Humanidades</h1>
                 <div class="subtitle-campus">Campus de El Milán · Universidad de Oviedo</div>
