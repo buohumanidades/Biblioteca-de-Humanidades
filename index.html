@@ -13,8 +13,10 @@
             --image-opacity: 1.0; 
             --primary-grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             --accent-grad: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-            /* Variable para cambiar fácilmente el tamaño del texto "¿Necesitas encontrar un libro?" */
-            --titulo-busqueda-size: 2.55em; 
+            /* Variable para cambiar el tamaño del texto "¿Necesitas encontrar un libro?" */
+            --titulo-busqueda-size: 2em; 
+            /* Variable para cambiar el tamaño del texto "Sé el título o parte del mismo" */
+            --titulo-btn-text-size: 1.00em;
         }
 
         @keyframes vibrantBackground {
@@ -194,14 +196,14 @@
         .search-header-title {
             display: inline-flex; 
             align-items: center; 
-            gap: 10px; 
+            gap: 12px; 
             margin-bottom: 10px; 
             text-align: center;
             user-select: none;
         }
         .search-title-text {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: var(--titulo-busqueda-size); /* Se puede ajustar modificando esta propiedad o --titulo-busqueda-size en :root */
+            font-size: var(--titulo-busqueda-size);
             font-weight: 800;
             letter-spacing: -0.4px;
             color: #1e293b;
@@ -212,6 +214,8 @@
         }
 
         .active-book-icon {
+            width: 38px;
+            height: 38px;
             overflow: visible;
             flex-shrink: 0;
         }
@@ -243,7 +247,7 @@
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%); transform: translateY(-5px) scale(1.02); 
             box-shadow: 0 15px 35px rgba(79, 70, 229, 0.35); border-color: #818cf8;
         }
-        .signature-btn.title-btn span { font-size: 0.82em; line-height: 1.2; }
+        .signature-btn.title-btn span { font-size: var(--titulo-btn-text-size); line-height: 1.2; }
         .signature-icon-circle {
             display: flex; align-items: center; justify-content: center; width: 50px; height: 50px;
             background: linear-gradient(135deg, #ffffff, #f1f5f9); border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15); flex-shrink: 0;
@@ -288,7 +292,8 @@
             .container { height: 98vh; width: 98vw; }
             .hero-section { flex: 0 0 18vh; }
             .contador-inferior { bottom: 10px; right: 10px; font-size: 0.75em; }
-            .search-title-text { font-size: 1.15em; }
+            .search-title-text { font-size: 1.25em; }
+            .active-book-icon { width: 28px; height: 28px; }
             .main-content { padding: 1vh 3vw; justify-content: space-between; }
             h1 { font-size: 1.4em; } .subtitle-campus { font-size: 0.8em; }
             .middle-section-wrapper { flex-direction: column; gap: 1vh; margin: 0; }
@@ -364,7 +369,7 @@
             <div class="search-wrapper-centered">
                 <!-- Encabezado integrado encima de los botones -->
                 <div class="search-header-title">
-                    <svg class="active-book-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg class="active-book-icon" width="38" height="38" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 21V5" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round"/>
                         <path class="page-left" d="M12 21C12 21 8.5 19.5 4 19.5V5C8.5 5 12 6.5 12 6.5" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(79, 70, 229, 0.12)"/>
                         <path class="page-right" d="M12 21C12 21 15.5 19.5 20 19.5V5C15.5 5 12 6.5 12 6.5" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(124, 58, 237, 0.12)"/>
