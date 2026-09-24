@@ -677,6 +677,15 @@
                 return;
             }
 
+            // --- 1. INICIO DE LA ESPERA: Modificar el botón ---
+            const botonLocalizar = event.currentTarget;
+            const contenidoOriginalBoton = botonLocalizar.innerHTML;
+            
+            botonLocalizar.innerHTML = '<span class="icon">⏳</span> Buscando...';
+            botonLocalizar.style.pointerEvents = 'none'; // Evita múltiples clics
+            botonLocalizar.style.opacity = '0.7';
+            // --------------------------------------------------
+
             const queryNormalizada = normalizarTexto(tituloInput);
             let librosEncontrados = [];
             let archivoIndice = 1;
@@ -701,6 +710,11 @@
                                 librosEncontrados.push(libro);
                                 
                                 if (librosEncontrados.length > 20) {
+                                    // --- 2. RESTAURAR BOTÓN (Salida por exceso de resultados) ---
+                                    botonLocalizar.innerHTML = contenidoOriginalBoton;
+                                    botonLocalizar.style.pointerEvents = 'auto';
+                                    botonLocalizar.style.opacity = '1';
+                                    
                                     mostrarAlerta(
                                         "Se han encontrado demasiados resultados, Por favor, refina el título para realizar una búsqueda más concreta.\n\nTe reenvío al catálogo para que valores los resultados encontrados.",
                                         buscarEnCatalogo
@@ -713,6 +727,11 @@
                     archivoIndice++;
                 }
 
+                // --- 3. RESTAURAR BOTÓN (Fin normal de la búsqueda) ---
+                botonLocalizar.innerHTML = contenidoOriginalBoton;
+                botonLocalizar.style.pointerEvents = 'auto';
+                botonLocalizar.style.opacity = '1';
+
                 if (librosEncontrados.length === 0) {
                     mostrarAlerta("No se ha encontrado ningún libro que contenga ese texto en el título.");
                 } else {
@@ -720,6 +739,11 @@
                 }
 
             } catch (error) {
+                // --- 4. RESTAURAR BOTÓN (Salida por error) ---
+                botonLocalizar.innerHTML = contenidoOriginalBoton;
+                botonLocalizar.style.pointerEvents = 'auto';
+                botonLocalizar.style.opacity = '1';
+                
                 console.error("Error al buscar en los archivos JSON:", error);
                 mostrarAlerta("Se ha producido un error al intentar localizar los libros. Verifica que los archivos .json estén accesibles.");
             }
