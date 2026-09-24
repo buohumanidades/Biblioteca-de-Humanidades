@@ -285,13 +285,17 @@
         }
     </script>
 
-    <!-- INCREMENTO EN SEGUNDO PLANO EN GOOGLE SHEETS (CELDA A2) AL CARGAR ESTE HTML -->
+    <!-- CONTROL DE VISITAS Y CAMBIO DE DÍA -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
 
-            // Se fuerza el envío explícito de tipo=encontrados y accion=sumar para actualizar la celda A2
-            fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&accion=sumar`, {
+            // Obtenemos la fecha local en formato YYYY-MM-DD
+            const hoy = new Date();
+            const fechaString = hoy.getFullYear() + "-" + String(hoy.getMonth() + 1).padStart(2, '0') + "-" + String(hoy.getDate()).padStart(2, '0');
+
+            // Se envía a Google Sheets la acción de sumar junto con la fecha de hoy
+            fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&accion=sumar_con_fecha&fecha=${fechaString}`, {
                 method: 'GET',
                 redirect: 'follow'
             })
@@ -301,7 +305,6 @@
                     const nuevoTotal = datos.visitas;
                     localStorage.setItem('ultimo_encontrados_global', nuevoTotal);
                     
-                    // Notifica en tiempo real a index_2.html si está abierto
                     try {
                         const canal = new BroadcastChannel('canal_contador_encontrados');
                         canal.postMessage({ nuevoConteo: nuevoTotal });
