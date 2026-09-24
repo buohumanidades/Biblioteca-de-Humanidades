@@ -365,19 +365,23 @@
         mostrarContadorVisualDiario();
     </script>
 
-    <!-- INCREMENTO GLOBAL AL CARGAR LA PÁGINA DE LIBRO ENCONTRADO -->
+    <!-- INCREMENTO EN GOOGLE SHEETS (CELDA A2) AL CARGAR LA PÁGINA DE LIBRO ENCONTRADO -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Llama a la API externa para sumar +1 al contador global de libros encontrados
-            fetch('https://api.counterapi.dev/v1/bib_humanidades/encontrados_global/up')
+            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
+
+            // Llama a Google Apps Script para sumar +1 a la celda A2 (encontrados)
+            fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados`, {
+                method: 'GET',
+                redirect: 'follow'
+            })
                 .then(respuesta => respuesta.json())
                 .then(datos => {
-                    if (datos && datos.count !== undefined) {
-                        const nuevoTotal = datos.count;
-                        // Guardar en almacenamiento local como caché de respaldo
+                    if (datos && datos.visitas !== undefined) {
+                        const nuevoTotal = datos.visitas;
                         localStorage.setItem('ultimo_encontrados_global', nuevoTotal);
                         
-                        // Emitir señal en tiempo real a index_2.html si está abierto
+                        // Notifica a index_2.html si está abierto en la misma ventana/pestana
                         try {
                             const canal = new BroadcastChannel('canal_contador_encontrados');
                             canal.postMessage({ nuevoConteo: nuevoTotal });
@@ -387,7 +391,7 @@
                         }
                     }
                 })
-                .catch(error => console.error("Error al conectar con la API del contador global:", error));
+                .catch(error => console.error("Error al conectar con Google Sheets para celda A2:", error));
         });
     </script>
 </body>
