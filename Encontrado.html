@@ -33,7 +33,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- Estilo del contador diario global optimizado para imagen --- */
         .contador-diario {
             position: fixed;
             top: 15px;
@@ -49,7 +48,7 @@
         .contador-diario img {
             display: block;
             height: 26px;
-            pointer-events: none; /* Evita que la imagen intercepte los clics o intente arrastrarse */
+            pointer-events: none;
         }
 
         .container { 
@@ -223,7 +222,6 @@
     </style>
 </head>
 <body>
-    <!-- Contenedor del contador visual (Badge) -->
     <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Haz doble clic o pulsa F2 para resetear las visitas"></div>
 
     <div class="container">
@@ -294,7 +292,7 @@
 
         if (sigOriginal) {
             const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
-            const urlFinal = urlBase + encodeURIComponent('"'+ sigOriginal+ '"') + "&START=1&FORM=1";
+            const urlFinal = urlBase + encodeURIComponent('"' + sigOriginal + '"') + "&START=1&FORM=1";
             iframe.src = urlFinal;
         } else {
             iframe.srcdoc = `
@@ -305,7 +303,7 @@
             `;
         }
 
-        // --- LÓGICA DEL CONTADOR Y RESETEO MANUAL ---
+        // --- LÓGICA DEL CONTADOR DE VISITAS DÍA (Hits.sh) ---
         function obtenerClaveReset() {
             const fecha = new Date();
             const dia = String(fecha.getDate()).padStart(2, '0');
@@ -343,7 +341,6 @@
             }
         }
 
-        // 1. Escuchar la tecla F2 para resetear
         document.addEventListener('keydown', function(event) {
             if (event.key === 'F2') {
                 event.preventDefault();
@@ -351,7 +348,6 @@
             }
         });
 
-        // 2. Control de doble clic o doble toque universal (PC y móviles)
         let ultimoClic = 0;
         document.getElementById('contadorVisitas').addEventListener('click', function(e) {
             e.preventDefault();
@@ -366,31 +362,33 @@
             }
         });
 
-        // Ejecutar al cargar la página
         mostrarContadorVisualDiario();
     </script>
-    <script>
-    // Suma +1 al contador global de libros encontrados y notifica instantáneamente a index_2.html
-    document.addEventListener("DOMContentLoaded", function() {
-        fetch('https://api.counterapi.dev/v1/bib_humanidades/encontrados_global/up')
-            .then(respuesta => respuesta.json())
-            .then(datos => {
-                if (datos && datos.count !== undefined) {
-                    // 1. Emisión por BroadcastChannel
-                    try {
-                        const canal = new BroadcastChannel('canal_contador_encontrados');
-                        canal.postMessage({ nuevoConteo: datos.count });
-                        canal.close();
-                    } catch (e) {
-                        console.log("Error al transmitir vía BroadcastChannel", e);
-                    }
 
-                    // 2. Emisión de respaldo por localStorage
-                    localStorage.setItem('contador_encontrados_val', datos.count);
-                }
-            })
-            .catch(error => console.error("Error de conexión con el contador:", error));
-    });
-</script>
+    <!-- INCREMENTO GLOBAL AL CARGAR LA PÁGINA DE LIBRO ENCONTRADO -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Llama a la API externa para sumar +1 al contador global de libros encontrados
+            fetch('https://api.counterapi.dev/v1/bib_humanidades/encontrados_global/up')
+                .then(respuesta => respuesta.json())
+                .then(datos => {
+                    if (datos && datos.count !== undefined) {
+                        const nuevoTotal = datos.count;
+                        // Guardar en almacenamiento local como caché de respaldo
+                        localStorage.setItem('ultimo_encontrados_global', nuevoTotal);
+                        
+                        // Emitir señal en tiempo real a index_2.html si está abierto
+                        try {
+                            const canal = new BroadcastChannel('canal_contador_encontrados');
+                            canal.postMessage({ nuevoConteo: nuevoTotal });
+                            canal.close();
+                        } catch (e) {
+                            console.log("Error al transmitir vía BroadcastChannel", e);
+                        }
+                    }
+                })
+                .catch(error => console.error("Error al conectar con la API del contador global:", error));
+        });
+    </script>
 </body>
 </html>
