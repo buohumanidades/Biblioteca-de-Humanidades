@@ -230,10 +230,10 @@
     </style>
 </head>
 <body>
-    <!-- Contador Superior Global de Visitas -->
-    <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Visitas globales hoy" ondblclick="resetearContadorIndex()"></div>
+    <!-- Contador Superior (index.html, local) -->
+    <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Doble clic para resetear visitas de inicio" ondblclick="resetearContadorIndex()"></div>
 
-    <!-- Contador Inferior Global de Libros Encontrados -->
+    <!-- Contador Inferior Global (encontrado.html) -->
     <div id="contadorEncontrado" class="contador-inferior" style="display: none;">
         <span class="badge-label">Encontrados</span>
         <span id="numEncontrado" class="badge-val">...</span>
@@ -371,7 +371,7 @@
     </div>
 
     <script>
-        // --- 1. CONTADOR SUPERIOR DERECHO (Visitas del día, Hits.sh) ---
+        // --- 1. CONTADOR SUPERIOR DERECHO (Visitas de index.html, local) ---
         function mostrarContadorVisualDiario() {
             const divContador = document.getElementById('contadorVisitas');
             if (!divContador) return; 
@@ -395,7 +395,7 @@
             mostrarContadorVisualDiario();
         }
 
-        // --- 2. CONTADOR INFERIOR DERECHO (Global, CounterAPI) ---
+        // --- 2. CONTADOR INFERIOR DERECHO (encontrado.html, GLOBAL Y EN TIEMPO REAL) ---
         function actualizarPantallaEncontrado(valor) {
             const divEncontrado = document.getElementById('contadorEncontrado');
             const numEncontrado = document.getElementById('numEncontrado');
@@ -406,51 +406,43 @@
         }
 
         function obtenerContadorEncontradoGlobal() {
+            const divEncontrado = document.getElementById('contadorEncontrado');
             const numEncontrado = document.getElementById('numEncontrado');
-            
-            // Consultar el valor global en el servidor
-            fetch('https://api.counterapi.dev/v1/bib_humanidades/encontrados_global')
+            if (!divEncontrado || !numEncontrado) return;
+
+            fetch('https://api.counterapi.dev/v1/bib_humanidades/encontrados_global/')
                 .then(respuesta => respuesta.json())
                 .then(datos => {
-                    if (datos && datos.count !== undefined) {
-                        const valorServidor = datos.count;
-                        localStorage.setItem('ultimo_encontrados_global', valorServidor);
-                        actualizarPantallaEncontrado(valorServidor);
-                    }
+                    const nuevoValor = (datos.count !== undefined) ? datos.count : '0';
+                    actualizarPantallaEncontrado(nuevoValor);
                 })
                 .catch(error => {
-                    console.warn("Error consultando el servidor global:", error);
-                    // Si falla la red, mantenemos el último valor global guardado en memoria en lugar de poner 0
-                    const valorGuardado = localStorage.getItem('ultimo_encontrados_global');
-                    if (valorGuardado !== null) {
-                        actualizarPantallaEncontrado(valorGuardado);
-                    } else if (numEncontrado && numEncontrado.textContent === '...') {
-                        actualizarPantallaEncontrado('0');
-                    }
+                    console.error("Error consultando el servidor:", error);
+                    if (numEncontrado.textContent === '...') numEncontrado.textContent = '0';
+                    divEncontrado.style.display = 'flex';
                 });
         }
 
-        // Sincronización instantánea entre pestañas vía BroadcastChannel
+        // --- ESCUCHAR CAMBIOS EN TIEMPO REAL DESDE Encontrado_2.html ---
         try {
             const canalContador = new BroadcastChannel('canal_contador_encontrados');
             canalContador.onmessage = function(evento) {
                 if (evento.data && evento.data.nuevoConteo !== undefined) {
-                    localStorage.setItem('ultimo_encontrados_global', evento.data.nuevoConteo);
                     actualizarPantallaEncontrado(evento.data.nuevoConteo);
                 }
             };
         } catch (e) {
-            console.log("BroadcastChannel no soportado");
+            console.log("BroadcastChannel no soportado o deshabilitado");
         }
 
-        // Respaldo de sincronización mediante evento storage
+        // Respaldo mediante evento localStorage
         window.addEventListener('storage', function(e) {
-            if (e.key === 'ultimo_encontrados_global' && e.newValue) {
+            if (e.key === 'contador_encontrados_val' && e.newValue) {
                 actualizarPantallaEncontrado(e.newValue);
             }
         });
 
-        // Inicialización y ciclo de actualización cada 60 segundos
+        // Inicializar al cargar y programar actualización cada 60 segundos
         document.addEventListener("DOMContentLoaded", function() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
             const body = document.body;
@@ -460,14 +452,15 @@
             mostrarContadorVisualDiario();
             obtenerContadorEncontradoGlobal();
 
-            // Refrescar automáticamente la cifra global cada 60 segundos (60000 ms)
+            // Refresca automáticamente el contador en pantalla cada 60 segundos
             setInterval(obtenerContadorEncontradoGlobal, 60000);
         });
 
+        // Actualizar cifras automáticamente al reenfocar la ventana
         window.addEventListener("focus", obtenerContadorEncontradoGlobal);
         window.addEventListener("pageshow", obtenerContadorEncontradoGlobal);
 
-        // --- FUNCIONES DE MODALES ---
+        // --- FUNCIONES MODALES ---
         function abrirModalGrados(e) {
             if (e) e.preventDefault();
             const modal = document.getElementById('modalGrados');
@@ -504,6 +497,7 @@
         async function abrirModalSemestre(urlDestino) {
             try {
                 let respuesta = await fetch(urlDestino, { method: 'HEAD' });
+                
                 if (respuesta.ok) {
                     cerrarModalGrados();
                     document.getElementById('iframeSemestre').src = urlDestino;
