@@ -465,8 +465,15 @@
             const divContador = document.getElementById('contadorVisitas');
             if (!numVisitas || !divContador) return;
 
+            // NUEVO: Obtenemos la fecha actual y creamos el timestamp y la fechaTexto
+            const hoy = new Date();
+            const fechaString = hoy.getFullYear() + "-" + String(hoy.getMonth() + 1).padStart(2, '0') + "-" + String(hoy.getDate()).padStart(2, '0');
+            const fechaTexto = "TEXTO_" + fechaString; 
+            const timestamp = hoy.getTime(); 
+
             try {
-                const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas`, {
+                // MODIFICADO: Agregados parámetros de fechaTexto y timestamp a la URL
+                const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas&accion=sumar_con_fecha&fecha=${fechaTexto}&t=${timestamp}`, {
                     method: 'GET',
                     redirect: 'follow'
                 });
@@ -491,9 +498,12 @@
             const divEncontrado = document.getElementById('contadorEncontrado');
             const numEncontrado = document.getElementById('numEncontrado');
             if (!divEncontrado || !numEncontrado) return;
+            
+            const timestamp = new Date().getTime(); // NUEVO: timestamp para evitar caché al leer
 
             try {
-                const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&accion=leer`, {
+                // MODIFICADO: Agregado parámetro timestamp a la URL
+                const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&accion=leer&t=${timestamp}`, {
                     method: 'GET',
                     redirect: 'follow'
                 });
