@@ -57,7 +57,6 @@
             align-items: center;
             font-size: 0.82em;
             font-weight: 700;
-            cursor: pointer;
             user-select: none;
             overflow: hidden;
             transition: transform 0.2s ease;
@@ -246,13 +245,13 @@
     </style>
 </head>
 <body>
-    <!-- Contador Superior (index.html, universal y reseteable en doble clic) -->
-    <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Doble clic para resetear contador de visitas" ondblclick="resetearContadorIndex()">
+    <!-- Contador Superior (index.html, conectado a Google Sheets) -->
+    <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Contador de visitas globales">
         <span class="badge-label-visitas">Visitas</span>
         <span id="numVisitas" class="badge-val-visitas">...</span>
     </div>
 
-    <!-- Contador Inferior Global (encontrado.html) -->
+    <!-- Contador Inferior Global (encontrado.html) - Lo mantenemos como estaba -->
     <div id="contadorEncontrado" class="contador-inferior" style="display: none;">
         <span class="badge-label">Encontrados</span>
         <span id="numEncontrado" class="badge-val">...</span>
@@ -390,63 +389,37 @@
     </div>
 
     <script>
-        // --- 1. CONTADOR SUPERIOR DERECHO (Visitas universal al arranque) ---
+        // --- 1. CONTADOR SUPERIOR DERECHO (Conectado a Google Sheets) ---
         async function gestionarContadorVisitasIndex() {
-            const divContador = document.getElementById('contadorVisitas');
             const numVisitas = document.getElementById('numVisitas');
-            if (!divContador || !numVisitas) return;
+            const divContador = document.getElementById('contadorVisitas');
+            if (!numVisitas || !divContador) return;
 
-            // Clave de versión para poder resetear a 0
-            const versionReset = localStorage.getItem('index_visitas_version') || '1';
-            const workspace = 'uniovi_bib_humanidades';
-            const key = `visitas_index_v${versionReset}`;
-
-            // Comprueba si la sesión del navegador ya ha sido registrada
-            const yaContadoEnSesion = sessionStorage.getItem('index_visitado_sesion') === 'true';
-
-            // Si es arranque de sesión suma 1 (/up), si es recarga solo lee el total
-            const endpoint = yaContadoEnSesion 
-                ? `https://api.counterapi.dev/v1/${workspace}/${key}`
-                : `https://api.counterapi.dev/v1/${workspace}/${key}/up`;
+            // ⚠️ IMPORTANTE: SUSTITUYE ESTA URL POR LA TUYA GENERADA EN GOOGLE APPS SCRIPT
+            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
 
             try {
-                const respuesta = await fetch(endpoint);
-                if (!respuesta.ok) throw new Error("Error en servidor remoto");
+                const respuesta = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
+                
                 const datos = await respuesta.json();
-
-                if (datos && typeof datos.count !== 'undefined') {
-                    numVisitas.textContent = datos.count;
-                    sessionStorage.setItem('index_visitado_sesion', 'true');
+                
+                if (datos && typeof datos.visitas !== 'undefined') {
+                    numVisitas.textContent = datos.visitas;
                 } else {
-                    throw new Error("Formato de datos no válido");
+                    numVisitas.textContent = "--";
                 }
             } catch (error) {
-                console.warn("Usando contador local de respaldo por error de red o bloqueo:", error);
-                
-                // Respaldo local por si GitHub Pages o el navegador bloquean la API externa
-                let localCount = parseInt(localStorage.getItem(`local_${key}`) || '0', 10);
-                if (!yaContadoEnSesion) {
-                    localCount += 1;
-                    localStorage.setItem(`local_${key}`, localCount);
-                    sessionStorage.setItem('index_visitado_sesion', 'true');
-                }
-                numVisitas.textContent = localCount;
+                console.error("Error al conectar con Google Sheets:", error);
+                numVisitas.textContent = "Offline";
             } finally {
                 divContador.style.display = 'flex';
             }
         }
 
-        // Reseteo a 0 ejecutado al hacer doble clic en el número
-        function resetearContadorIndex() {
-            if (confirm("¿Quieres reiniciar el contador de visitas universales a 0?")) {
-                let versionActual = parseInt(localStorage.getItem('index_visitas_version') || '1', 10);
-                localStorage.setItem('index_visitas_version', versionActual + 1);
-                sessionStorage.removeItem('index_visitado_sesion');
-                gestionarContadorVisitasIndex();
-            }
-        }
-
-        // --- 2. CONTADOR INFERIOR DERECHO (encontrado.html, 100% GLOBAL) ---
+        // --- 2. CONTADOR INFERIOR DERECHO (encontrado.html - APIs anteriores) ---
         async function obtenerContadorEncontradoGlobal() {
             const divEncontrado = document.getElementById('contadorEncontrado');
             const numEncontrado = document.getElementById('numEncontrado');
