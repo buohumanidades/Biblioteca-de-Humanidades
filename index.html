@@ -43,7 +43,7 @@
             overflow: hidden; 
         }
         
-        /* --- Estilo del contador diario global superior derecho --- */
+        /* --- Estilo del contador diario global (superior derecho) --- */
         .contador-diario {
             position: fixed;
             top: 15px;
@@ -65,7 +65,7 @@
             border-radius: 6px;
         }
 
-        /* --- Estilo del contador inferior derecho (encontrado.html) --- */
+        /* --- Estilo del contador global de encontrado.html (inferior derecho) --- */
         .contador-inferior {
             position: fixed;
             bottom: 15px;
@@ -90,13 +90,14 @@
         }
         .contador-inferior .badge-label {
             background: rgba(15, 23, 42, 0.85);
-            padding: 5px 10px;
+            padding: 6px 11px;
             color: #e2e8f0;
             letter-spacing: 0.5px;
         }
         .contador-inferior .badge-val {
-            padding: 5px 10px;
+            padding: 6px 12px;
             color: #ffffff;
+            font-size: 1.05em;
         }
 
         .container { 
@@ -573,13 +574,13 @@
     </style>
 </head>
 <body>
-    <!-- Contador Superior Derecho: Visitas de index.html (Doble clic para resetear) -->
-    <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Doble clic para resetear contador de visitas" ondblclick="resetearContadorIndex()"></div>
+    <!-- Contador Superior Derecho: Visitas diarias globales de index.html (Doble clic para resetear) -->
+    <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Doble clic para resetear contador de visitas de index" ondblclick="resetearContadorIndex()"></div>
 
-    <!-- Contador Inferior Derecho: Veces que se llama a encontrado.html (Doble clic para resetear) -->
-    <div id="contadorEncontrado" class="contador-inferior" style="display: none;" title="Doble clic para resetear contador de Encontrado" ondblclick="resetearContadorEncontrado()">
+    <!-- Contador Inferior Derecho: Total de llamadas globales a encontrado.html por TODOS los usuarios (Doble clic para resetear) -->
+    <div id="contadorEncontrado" class="contador-inferior" style="display: none;" title="Doble clic para resetear contador global de Encontrado" ondblclick="resetearContadorEncontrado()">
         <span class="badge-label">Encontrado</span>
-        <span id="numEncontrado" class="badge-val">0</span>
+        <span id="numEncontrado" class="badge-val">...</span>
     </div>
 
     <div class="container">
@@ -716,7 +717,10 @@
     </div>
 
     <script>
-        // --- 1. LÓGICA CONTADOR SUPERIOR DERECHO (index.html con reset) ---
+        // Configuración de los servicios externos de contador global
+        const NAMESPACE_GLOBAL = 'uniovi_bib_humanidades';
+
+        // --- 1. CONTADOR SUPERIOR DERECHO (Visitas de index.html) ---
         function mostrarContadorVisualDiario() {
             const divContador = document.getElementById('contadorVisitas');
             if (!divContador) return; 
@@ -726,10 +730,8 @@
             const mes = String(fecha.getMonth() + 1).padStart(2, '0');
             const anio = fecha.getFullYear();
             
-            // Versión de reset guardada en localStorage
-            const resetVer = localStorage.getItem('reset_index_ver') || '0';
-            
-            const rutaUnica = `biblioteca_humanidades/visitas_index_${anio}${mes}${dia}_r${resetVer}`;
+            const resetVer = localStorage.getItem('reset_index_ver') || '1';
+            const rutaUnica = `${NAMESPACE_GLOBAL}/visitas_index_${anio}${mes}${dia}_v${resetVer}`;
             const urlImagenBadge = `https://hits.sh/uniovi.es/${rutaUnica}.svg?label=%20&color=4f46e5&labelColor=1e293b`;
             
             divContador.innerHTML = `<img src="${urlImagenBadge}" alt="Contador de visitas de hoy">`;
@@ -737,27 +739,43 @@
         }
 
         function resetearContadorIndex() {
-            let ver = parseInt(localStorage.getItem('reset_index_ver') || '0', 10);
+            let ver = parseInt(localStorage.getItem('reset_index_ver') || '1', 10);
             localStorage.setItem('reset_index_ver', ver + 1);
             mostrarContadorVisualDiario();
         }
 
-        // --- 2. LÓGICA CONTADOR INFERIOR DERECHO (encontrado.html con reset) ---
-        function mostrarContadorEncontrado() {
+        // --- 2. CONTADOR GLOBAL INFERIOR DERECHO (encontrado.html para TODOS los usuarios) ---
+        async function obtenerContadorEncontradoGlobal() {
             const divEncontrado = document.getElementById('contadorEncontrado');
             const numEncontrado = document.getElementById('numEncontrado');
             if (!divEncontrado || !numEncontrado) return;
 
-            const cantidad = localStorage.getItem('contador_encontrado') || '0';
-            numEncontrado.textContent = cantidad;
+            const ver = localStorage.getItem('reset_encontrado_ver') || '1';
+            const key = `encontrado_v${ver}`;
+
+            try {
+                // Solo CONSULTAMOS el total global sin incrementarlo en la vista principal
+                const respuesta = await fetch(`https://api.counterapi.dev/v1/${NAMESPACE_GLOBAL}/${key}/`);
+                if (respuesta.ok) {
+                    const datos = await respuesta.json();
+                    numEncontrado.textContent = datos.count !== undefined ? datos.count : '0';
+                } else {
+                    numEncontrado.textContent = '0';
+                }
+            } catch (error) {
+                console.error("Error consultando contador global de encontrado:", error);
+                numEncontrado.textContent = '0';
+            }
             divEncontrado.style.display = 'flex';
         }
 
         function resetearContadorEncontrado() {
-            localStorage.setItem('contador_encontrado', '0');
-            mostrarContadorEncontrado();
+            let ver = parseInt(localStorage.getItem('reset_encontrado_ver') || '1', 10);
+            localStorage.setItem('reset_encontrado_ver', ver + 1);
+            obtenerContadorEncontradoGlobal();
         }
 
+        // Carga de la aplicación y actualización dinámica
         document.addEventListener("DOMContentLoaded", function() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
             const body = document.body;
@@ -765,9 +783,14 @@
             if (/android|iphone|ipad|ipod/i.test(userAgent)) body.classList.add('is-mobile-device');
             
             mostrarContadorVisualDiario();
-            mostrarContadorEncontrado();
+            obtenerContadorEncontradoGlobal();
         });
 
+        // Actualizar cifras globales automáticamente al reenfocar la ventana
+        window.addEventListener("focus", obtenerContadorEncontradoGlobal);
+        window.addEventListener("pageshow", obtenerContadorEncontradoGlobal);
+
+        // --- MODALES ---
         function abrirModalGrados(e) {
             if (e) e.preventDefault();
             const modal = document.getElementById('modalGrados');
