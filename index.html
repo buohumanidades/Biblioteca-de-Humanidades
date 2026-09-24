@@ -43,7 +43,7 @@
             overflow: hidden; 
         }
         
-        /* --- Estilo del contador diario global (superior derecho) --- */
+        /* Contador diario index (superior derecho) */
         .contador-diario {
             position: fixed;
             top: 15px;
@@ -56,16 +56,10 @@
             user-select: none;
             transition: transform 0.2s ease;
         }
-        .contador-diario:hover {
-            transform: scale(1.05);
-        }
-        .contador-diario img {
-            display: block;
-            height: 26px;
-            border-radius: 6px;
-        }
+        .contador-diario:hover { transform: scale(1.05); }
+        .contador-diario img { display: block; height: 26px; border-radius: 6px; }
 
-        /* --- Estilo del contador global de encontrado.html (inferior derecho) --- */
+        /* Contador global encontrado.html (inferior derecho) */
         .contador-inferior {
             position: fixed;
             bottom: 15px;
@@ -79,14 +73,8 @@
             align-items: center;
             font-size: 0.82em;
             font-weight: 700;
-            cursor: pointer;
             user-select: none;
             overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .contador-inferior:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
         }
         .contador-inferior .badge-label {
             background: rgba(15, 23, 42, 0.85);
@@ -101,168 +89,56 @@
         }
 
         .container { 
-            width: 96vw; 
-            max-width: 1350px; 
-            height: 96vh; 
+            width: 96vw; max-width: 1350px; height: 96vh; 
             background: rgba(255, 255, 255, 0.94); 
-            backdrop-filter: blur(16px); 
-            border-radius: 20px; 
+            backdrop-filter: blur(16px); border-radius: 20px; 
             box-shadow: 0 20px 50px rgba(30, 41, 59, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.8) inset; 
-            display: flex;
-            flex-direction: column;
-            overflow: hidden; 
-            position: relative;
+            display: flex; flex-direction: column; overflow: hidden; position: relative;
         }
         
-        .hero-section {
-            width: var(--ancho-de-la-imagen);
-            flex: 0 0 var(--alto-de-la-imagen); 
-            position: relative;
-            background: #ffffff;
-            overflow: hidden;
-        }
-
-        .shelf-photo-panoramic {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; 
-            object-position: center 55%;
-            opacity: var(--image-opacity); 
-            filter: none; 
-            transition: transform 0.6s ease;
-        }
-
-        .hero-section:hover .shelf-photo-panoramic {
-            transform: scale(1.03);
-        }
+        .hero-section { width: var(--ancho-de-la-imagen); flex: 0 0 var(--alto-de-la-imagen); position: relative; background: #ffffff; overflow: hidden; }
+        .shelf-photo-panoramic { width: 100%; height: 100%; object-fit: cover; object-position: center 55%; opacity: var(--image-opacity); transition: transform 0.6s ease; }
+        .hero-section:hover .shelf-photo-panoramic { transform: scale(1.03); }
 
         .footer-decor-img {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 35vh; 
-            object-fit: cover;
-            object-position: bottom;
-            opacity: 0.50; 
-            z-index: 1; 
-            pointer-events: none; 
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 35vh; 
+            object-fit: cover; object-position: bottom; opacity: 0.50; z-index: 1; pointer-events: none; 
             -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
             mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
         }
 
-        .main-content {
-            flex: 1; 
-            padding: 2vh 3.5vw;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between; 
-            position: relative;
-            z-index: 5;
-        }
+        .main-content { flex: 1; padding: 2vh 3.5vw; display: flex; flex-direction: column; justify-content: space-between; position: relative; z-index: 5; }
 
-        .header-title-wrapper {
-            text-align: center;
-            position: relative;
-            margin-bottom: 0.5vh;
-        }
+        .header-title-wrapper { text-align: center; position: relative; margin-bottom: 0.5vh; }
+        h1 { font-family: 'Playfair Display', serif; color: #0f172a; font-size: 2.3em; margin: 0; font-weight: 700; letter-spacing: -0.5px; }
+        .subtitle-campus { font-size: 0.95em; text-transform: uppercase; letter-spacing: 2px; color: #64748b; font-weight: 600; margin-top: 2px; }
 
-        h1 { 
-            font-family: 'Playfair Display', serif; 
-            color: #0f172a; 
-            font-size: 2.3em; 
-            margin: 0;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .subtitle-campus {
-            font-size: 0.95em;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #64748b;
-            font-weight: 600;
-            margin-top: 2px;
-        }
-
-        .middle-section-wrapper {
-            display: flex;
-            gap: 2vw;
-            align-items: stretch;
-        }
-
-        .subjects-fieldset {
-            flex: 1; 
-            border: 1px solid #e2e8f0; 
-            border-radius: 14px;
-            padding: 1.5vh 1.8vw;
-            margin: 0;
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .subjects-legend {
-            font-weight: 700;
-            color: #4f46e5; 
-            font-size: 0.95em;
-            padding: 2px 14px;
-            margin-left: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            background: #ffffff; 
-            border: 1px solid #e2e8f0;
-            border-radius: 20px;
-        }
-
-        .subjects-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.2vh 1vw; 
-        }
+        .middle-section-wrapper { display: flex; gap: 2vw; align-items: stretch; }
         
-        .bibliography-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
+        .subjects-fieldset {
+            flex: 1; border: 1px solid #e2e8f0; border-radius: 14px; padding: 1.5vh 1.8vw; margin: 0;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: center;
         }
+        .subjects-legend {
+            font-weight: 700; color: #4f46e5; font-size: 0.95em; padding: 2px 14px; margin-left: 10px;
+            text-transform: uppercase; letter-spacing: 1.2px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px;
+        }
+        .subjects-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2vh 1vw; }
+        .bibliography-container { display: flex; align-items: center; justify-content: center; height: 100%; }
 
         .subject-btn {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1.2vh 1.2vw;
-            border-radius: 10px;
-            text-decoration: none;
-            color: #ffffff;
-            font-weight: 600;
-            font-size: 0.98em; 
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            display: flex; align-items: center; justify-content: space-between; padding: 1.2vh 1.2vw;
+            border-radius: 10px; text-decoration: none; color: #ffffff; font-weight: 600; font-size: 0.98em; 
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            cursor: pointer; position: relative; overflow: hidden;
         }
-
         .subject-btn::after {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s;
         }
-
-        .subject-btn:hover::after {
-            left: 100%;
-        }
-
-        .subject-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
+        .subject-btn:hover::after { left: 100%; }
+        .subject-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
 
         .sub-ling { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
         .sub-geo  { background: linear-gradient(135deg, #10b981, #047857); }
@@ -270,316 +146,96 @@
         .sub-fil  { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
 
         .degree-btn {
-            width: 100%;
-            padding: 2.2vh 1.5vw;
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            font-size: 1.1em;
-            justify-content: center;
-            text-align: center;
-            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
-            animation: pulseGlow 4s infinite;
+            width: 100%; padding: 2.2vh 1.5vw; background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            font-size: 1.1em; justify-content: center; text-align: center;
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3); animation: pulseGlow 4s infinite;
         }
+        .degree-btn:hover { background: linear-gradient(135deg, #4338ca, #6d28d9); }
+        .btn-content { display: flex; align-items: center; gap: 12px; }
+        .btn-icon { font-size: 1.3em; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
 
-        .degree-btn:hover {
-            background: linear-gradient(135deg, #4338ca, #6d28d9);
-        }
-
-        .btn-content {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .btn-icon {
-            font-size: 1.3em;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-        }
-
-        .search-wrapper-centered {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            margin: 0.5vh auto;
-        }
-
+        .search-wrapper-centered { display: flex; flex-direction: column; align-items: center; width: 100%; margin: 0.5vh auto; }
         .search-helper-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: transparent;
-            color: #1e293b; 
-            font-family: 'Playfair Display', serif;
-            font-size: 1.35em;
-            font-weight: 700;
-            font-style: italic;
-            letter-spacing: 0.5px;
-            padding: 4px 10px;
-            border: none;
-            box-shadow: none;
-            margin-bottom: 10px;
-            text-align: center;
+            display: inline-flex; align-items: center; gap: 8px; background: transparent; color: #1e293b; 
+            font-family: 'Playfair Display', serif; font-size: 1.35em; font-weight: 700; font-style: italic;
+            letter-spacing: 0.5px; padding: 4px 10px; border: none; margin-bottom: 10px; text-align: center;
         }
-
-        .action-buttons-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 24px;
-            flex-wrap: wrap;
-            width: 100%;
-        }
+        .action-buttons-container { display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap; width: 100%; }
 
         .signature-btn {
-            display: inline-flex;
-            align-items: center;
-            width: 360px;
-            box-sizing: border-box;
-            padding: 10px 25px 10px 10px; 
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 60px; 
-            text-decoration: none;
-            color: #ffffff;
-            font-weight: 700;
-            font-size: 1.15em; 
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
-            gap: 16px; 
-            position: relative;
-            z-index: 10;
+            display: inline-flex; align-items: center; width: 360px; box-sizing: border-box; padding: 10px 25px 10px 10px; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 60px; text-decoration: none; color: #ffffff; font-weight: 700; font-size: 1.15em; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
+            gap: 16px; position: relative; z-index: 10;
         }
-
         .signature-btn:hover {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%); 
-            transform: translateY(-5px) scale(1.02); 
-            box-shadow: 0 15px 35px rgba(79, 70, 229, 0.35);
-            border-color: #818cf8;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%); transform: translateY(-5px) scale(1.02); 
+            box-shadow: 0 15px 35px rgba(79, 70, 229, 0.35); border-color: #818cf8;
         }
-
-        .signature-btn.title-btn span {
-            font-size: 0.82em;
-            line-height: 1.2;
-        }
-
+        .signature-btn.title-btn span { font-size: 0.82em; line-height: 1.2; }
         .signature-icon-circle {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #ffffff, #f1f5f9); 
-            border-radius: 50%; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; width: 50px; height: 50px;
+            background: linear-gradient(135deg, #ffffff, #f1f5f9); border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15); flex-shrink: 0;
         }
 
-        .services-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8vh;
-        }
-
-        h2.section-title { 
-            color: #64748b; 
-            font-size: 0.85em; 
-            margin: 0; 
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: 700;
-        }
-
-        .links-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5vw;
-        }
-
+        .services-wrapper { display: flex; flex-direction: column; gap: 0.8vh; }
+        h2.section-title { color: #64748b; font-size: 0.85em; margin: 0; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+        .links-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5vw; }
         .links-container a { 
-            display: block; 
-            padding: 1.2vh 1vw; 
-            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); 
-            text-decoration: none; 
-            color: #334155; 
-            border-radius: 10px; 
-            text-align: center; 
-            font-weight: 600; 
-            border: 1px solid #e2e8f0; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03); 
-            transition: all 0.25s ease;
-            font-size: 0.92em;
+            display: block; padding: 1.2vh 1vw; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); 
+            text-decoration: none; color: #334155; border-radius: 10px; text-align: center; font-weight: 600; 
+            border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: all 0.25s ease; font-size: 0.92em;
         }
-        
         .links-container a:hover { 
-            background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%); 
-            color: #4f46e5;
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.1); 
-            border-color: #cbd5e1;
+            background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%); color: #4f46e5;
+            transform: translateY(-2px); box-shadow: 0 6px 15px rgba(79, 70, 229, 0.1); border-color: #cbd5e1;
         }
 
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(15, 23, 42, 0.6);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            backdrop-filter: blur(6px);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-        .modal-content {
-            background: #ffffff;
-            padding: 2.5rem;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 580px;
-            max-height: 85vh;
-            overflow-y: auto;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
-            position: relative;
-            transform: translateY(20px);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        /* MODALES */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.6); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(6px); opacity: 0; transition: opacity 0.3s ease; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-content { background: #ffffff; padding: 2.5rem; border-radius: 20px; width: 90%; max-width: 580px; max-height: 85vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.25); position: relative; transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .close-btn { position: absolute; top: 18px; right: 22px; background: #f1f5f9; border: none; width: 38px; height: 38px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10; }
+        .close-btn:hover { background: #fee2e2; color: #ef4444; transform: rotate(90deg); }
+        .modal-title { margin-top: 0; font-family: 'Playfair Display', serif; color: #0f172a; font-size: 1.8em; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px; }
+        .grados-list { list-style: none; padding: 0; margin: 0; }
+        .grados-list li { margin-bottom: 8px; border-bottom: 1px solid #f1f5f9; }
+        .grados-list a { display: flex; align-items: center; padding: 13px 12px; color: #334155; text-decoration: none; border-radius: 8px; transition: all 0.2s; font-weight: 500; }
+        .grados-list a:hover { background: #eef2ff; color: #4f46e5; padding-left: 18px; }
+        .grados-list a::before { content: '📚'; margin-right: 12px; font-size: 1.1em; }
         
-        .modal-alert {
-            max-width: 420px;
-            text-align: center;
-            padding: 2.2rem;
-        }
-        .modal-alert p {
-            font-size: 1.15em;
-            color: #334155;
-            margin: 1.2rem 0 1.8rem 0;
-            font-weight: 500;
-        }
-        .btn-entendido {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            color: white;
-            border: none;
-            padding: 12px 32px;
-            border-radius: 30px;
-            font-size: 1.05em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
-        }
-        .btn-entendido:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6);
-        }
+        .modal-alert { max-width: 420px; text-align: center; padding: 2.2rem; }
+        .modal-alert p { font-size: 1.15em; color: #334155; margin: 1.2rem 0 1.8rem 0; font-weight: 500; }
+        .btn-entendido { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; border: none; padding: 12px 32px; border-radius: 30px; font-size: 1.05em; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); }
+        .btn-entendido:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6); }
 
-        #modalSemestre .modal-content {
-            max-width: 950px;
-            height: 82vh;
-            padding: 1.2rem;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        #iframeSemestre {
-            width: 100%;
-            flex: 1;
-            border: none;
-            border-radius: 12px;
-            margin-top: 25px;
-            background: #f8fafc;
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: translateY(0);
-        }
-        .close-btn {
-            position: absolute;
-            top: 18px; right: 22px;
-            background: #f1f5f9; border: none;
-            width: 38px; height: 38px; border-radius: 50%;
-            font-size: 1.2rem; cursor: pointer; color: #64748b;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
-            z-index: 10;
-        }
-        .close-btn:hover {
-            background: #fee2e2;
-            color: #ef4444;
-            transform: rotate(90deg);
-        }
-        .modal-title {
-            margin-top: 0;
-            font-family: 'Playfair Display', serif;
-            color: #0f172a;
-            font-size: 1.8em;
-            border-bottom: 2px solid #e2e8f0; 
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-        }
-        .grados-list {
-            list-style: none; padding: 0; margin: 0;
-        }
-        .grados-list li {
-            margin-bottom: 8px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-        .grados-list a {
-            display: flex;
-            align-items: center;
-            padding: 13px 12px;
-            color: #334155;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.2s;
-            font-weight: 500;
-        }
-        .grados-list a:hover {
-            background: #eef2ff;
-            color: #4f46e5;
-            padding-left: 18px;
-        }
-        .grados-list a::before {
-            content: '📚';
-            margin-right: 12px;
-            font-size: 1.1em;
-        }
+        #modalSemestre .modal-content { max-width: 950px; height: 82vh; padding: 1.2rem; display: flex; flex-direction: column; overflow: hidden; }
+        #iframeSemestre { width: 100%; flex: 1; border: none; border-radius: 12px; margin-top: 25px; background: #f8fafc; }
 
         @media (max-width: 900px) {
             .container { height: 98vh; width: 98vw; }
             .hero-section { flex: 0 0 18vh; }
             .search-helper-badge { font-size: 1.15em; padding: 2px 8px; margin-bottom: 8px; }
             .main-content { padding: 1vh 3vw; justify-content: space-between; }
-            h1 { font-size: 1.4em; }
-            .subtitle-campus { font-size: 0.8em; }
+            h1 { font-size: 1.4em; } .subtitle-campus { font-size: 0.8em; }
             .middle-section-wrapper { flex-direction: column; gap: 1vh; margin: 0; }
-            .subjects-fieldset { padding: 1vh 3vw; }
-            .subjects-container { grid-template-columns: 1fr; gap: 0.8vh; }
-            .degree-btn { padding: 1.2vh 3vw; }
-            .services-wrapper { gap: 0.5vh; }
-            .links-container { grid-template-columns: 1fr; gap: 0.8vh; }
-            .links-container a { padding: 1vh 2vw; }
+            .subjects-fieldset { padding: 1vh 3vw; } .subjects-container { grid-template-columns: 1fr; gap: 0.8vh; }
+            .degree-btn { padding: 1.2vh 3vw; } .services-wrapper { gap: 0.5vh; }
+            .links-container { grid-template-columns: 1fr; gap: 0.8vh; } .links-container a { padding: 1vh 2vw; }
             .action-buttons-container { gap: 10px; margin: 0.5vh auto; }
-            .signature-btn {
-                font-size: 1.05em !important;
-                padding: 8px 20px 8px 10px !important;
-                width: 100% !important;
-                max-width: 340px !important;
-            }
-            .modal-content { padding: 1.5rem; }
+            .signature-btn { font-size: 1.05em !important; padding: 8px 20px 8px 10px !important; width: 100% !important; max-width: 340px !important; }
         }
     </style>
 </head>
 <body>
-    <!-- Contador Superior Derecho: Visitas diarias globales de index.html (Doble clic para resetear) -->
-    <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Doble clic para resetear contador de visitas de index" ondblclick="resetearContadorIndex()"></div>
+    <!-- Contador Superior (index.html, local) -->
+    <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Doble clic para resetear visitas de inicio" ondblclick="resetearContadorIndex()"></div>
 
-    <!-- Contador Inferior Derecho: Total de llamadas globales a encontrado.html por TODOS los usuarios (Doble clic para resetear) -->
-    <div id="contadorEncontrado" class="contador-inferior" style="display: none;" title="Doble clic para resetear contador global de Encontrado" ondblclick="resetearContadorEncontrado()">
-        <span class="badge-label">Encontrado</span>
+    <!-- Contador Inferior Global (encontrado.html) -->
+    <div id="contadorEncontrado" class="contador-inferior" style="display: none;">
+        <span class="badge-label">Encontrados</span>
         <span id="numEncontrado" class="badge-val">...</span>
     </div>
 
@@ -599,7 +255,6 @@
             </div>
 
             <div class="middle-section-wrapper">
-                
                 <fieldset class="subjects-fieldset">
                     <legend class="subjects-legend">Bibliografía recomendada</legend>
                     <div class="bibliography-container">
@@ -629,7 +284,6 @@
                         </a>
                     </div>
                 </fieldset>
-
             </div>
 
             <div class="search-wrapper-centered">
@@ -658,7 +312,6 @@
                         </div>
                         <span>Sé la SIGNATURA</span>
                     </a>
-
                     <a href="titulo.html" class="signature-btn title-btn">
                         <div class="signature-icon-circle">
                             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -683,6 +336,7 @@
         </div>
     </div>
 
+    <!-- Modales -->
     <div class="modal-overlay" id="modalGrados" onclick="cerrarModalGrados(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="cerrarModalGrados(event)">✕</button>
@@ -717,10 +371,7 @@
     </div>
 
     <script>
-        // Configuración de los servicios externos de contador global
-        const NAMESPACE_GLOBAL = 'uniovi_bib_humanidades';
-
-        // --- 1. CONTADOR SUPERIOR DERECHO (Visitas de index.html) ---
+        // --- 1. CONTADOR SUPERIOR DERECHO (Visitas de index.html, local) ---
         function mostrarContadorVisualDiario() {
             const divContador = document.getElementById('contadorVisitas');
             if (!divContador) return; 
@@ -731,7 +382,7 @@
             const anio = fecha.getFullYear();
             
             const resetVer = localStorage.getItem('reset_index_ver') || '1';
-            const rutaUnica = `${NAMESPACE_GLOBAL}/visitas_index_${anio}${mes}${dia}_v${resetVer}`;
+            const rutaUnica = `uniovi_bib_humanidades/visitas_index_${anio}${mes}${dia}_v${resetVer}`;
             const urlImagenBadge = `https://hits.sh/uniovi.es/${rutaUnica}.svg?label=%20&color=4f46e5&labelColor=1e293b`;
             
             divContador.innerHTML = `<img src="${urlImagenBadge}" alt="Contador de visitas de hoy">`;
@@ -744,38 +395,26 @@
             mostrarContadorVisualDiario();
         }
 
-        // --- 2. CONTADOR GLOBAL INFERIOR DERECHO (encontrado.html para TODOS los usuarios) ---
-        async function obtenerContadorEncontradoGlobal() {
+        // --- 2. CONTADOR INFERIOR DERECHO (encontrado.html, 100% GLOBAL) ---
+        function obtenerContadorEncontradoGlobal() {
             const divEncontrado = document.getElementById('contadorEncontrado');
             const numEncontrado = document.getElementById('numEncontrado');
             if (!divEncontrado || !numEncontrado) return;
 
-            const ver = localStorage.getItem('reset_encontrado_ver') || '1';
-            const key = `encontrado_v${ver}`;
-
-            try {
-                // Solo CONSULTAMOS el total global sin incrementarlo en la vista principal
-                const respuesta = await fetch(`https://api.counterapi.dev/v1/${NAMESPACE_GLOBAL}/${key}/`);
-                if (respuesta.ok) {
-                    const datos = await respuesta.json();
-                    numEncontrado.textContent = datos.count !== undefined ? datos.count : '0';
-                } else {
-                    numEncontrado.textContent = '0';
-                }
-            } catch (error) {
-                console.error("Error consultando contador global de encontrado:", error);
-                numEncontrado.textContent = '0';
-            }
-            divEncontrado.style.display = 'flex';
+            fetch('https://api.counterapi.dev/v1/bib_humanidades/encontrados_global/')
+                .then(respuesta => respuesta.json())
+                .then(datos => {
+                    numEncontrado.textContent = (datos.count !== undefined) ? datos.count : '0';
+                    divEncontrado.style.display = 'flex';
+                })
+                .catch(error => {
+                    console.error("Error consultando el servidor:", error);
+                    if (numEncontrado.textContent === '...') numEncontrado.textContent = '0';
+                    divEncontrado.style.display = 'flex';
+                });
         }
 
-        function resetearContadorEncontrado() {
-            let ver = parseInt(localStorage.getItem('reset_encontrado_ver') || '1', 10);
-            localStorage.setItem('reset_encontrado_ver', ver + 1);
-            obtenerContadorEncontradoGlobal();
-        }
-
-        // Carga de la aplicación y actualización dinámica
+        // Inicializar al cargar
         document.addEventListener("DOMContentLoaded", function() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
             const body = document.body;
@@ -786,11 +425,11 @@
             obtenerContadorEncontradoGlobal();
         });
 
-        // Actualizar cifras globales automáticamente al reenfocar la ventana
+        // Actualizar cifras automáticamente al reenfocar la ventana
         window.addEventListener("focus", obtenerContadorEncontradoGlobal);
         window.addEventListener("pageshow", obtenerContadorEncontradoGlobal);
 
-        // --- MODALES ---
+        // --- FUNCIONES MODALES ---
         function abrirModalGrados(e) {
             if (e) e.preventDefault();
             const modal = document.getElementById('modalGrados');

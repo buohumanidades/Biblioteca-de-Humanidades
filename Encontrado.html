@@ -369,5 +369,13 @@
         // Ejecutar al cargar la página
         mostrarContadorVisualDiario();
     </script>
+    <script>
+    // Suma +1 al contador global de libros encontrados de la Biblioteca de Humanidades
+    document.addEventListener("DOMContentLoaded", function() {
+        fetch('https://api.counterapi.dev/v1/bib_humanidades/encontrados_global/up')
+            .then(respuesta => respuesta.json())
+            .catch(error => console.error("Error de conexión con el contador:", error));
+    });
+</script>
 </body>
 </html>
