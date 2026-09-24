@@ -370,10 +370,25 @@
         mostrarContadorVisualDiario();
     </script>
     <script>
-    // Suma +1 al contador global de libros encontrados de la Biblioteca de Humanidades
+    // Suma +1 al contador global de libros encontrados y notifica instantáneamente a index_2.html
     document.addEventListener("DOMContentLoaded", function() {
         fetch('https://api.counterapi.dev/v1/bib_humanidades/encontrados_global/up')
             .then(respuesta => respuesta.json())
+            .then(datos => {
+                if (datos && datos.count !== undefined) {
+                    // 1. Emisión por BroadcastChannel
+                    try {
+                        const canal = new BroadcastChannel('canal_contador_encontrados');
+                        canal.postMessage({ nuevoConteo: datos.count });
+                        canal.close();
+                    } catch (e) {
+                        console.log("Error al transmitir vía BroadcastChannel", e);
+                    }
+
+                    // 2. Emisión de respaldo por localStorage
+                    localStorage.setItem('contador_encontrados_val', datos.count);
+                }
+            })
             .catch(error => console.error("Error de conexión con el contador:", error));
     });
 </script>
