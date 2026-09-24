@@ -33,24 +33,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        .contador-diario {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            z-index: 9999;
-            border-radius: 6px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            display: flex;
-            cursor: pointer;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        .contador-diario img {
-            display: block;
-            height: 26px;
-            pointer-events: none;
-        }
-
         .container { 
             display: flex;
             flex-direction: column;
@@ -222,7 +204,6 @@
     </style>
 </head>
 <body>
-    <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Haz doble clic o pulsa F2 para resetear las visitas"></div>
 
     <div class="container">
         <h1>Biblioteca de Humanidades</h1>
@@ -302,96 +283,35 @@
                 </div>
             `;
         }
-
-        // --- LÓGICA DEL CONTADOR DE VISITAS DÍA (Hits.sh) ---
-        function obtenerClaveReset() {
-            const fecha = new Date();
-            const dia = String(fecha.getDate()).padStart(2, '0');
-            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-            const anio = fecha.getFullYear();
-            return `reset_${anio}${mes}${dia}`;
-        }
-
-        function mostrarContadorVisualDiario() {
-            const divContador = document.getElementById('contadorVisitas');
-            if (!divContador) return; 
-
-            const fecha = new Date();
-            const dia = String(fecha.getDate()).padStart(2, '0');
-            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-            const anio = fecha.getFullYear();
-            
-            const clave = obtenerClaveReset();
-            const vReset = localStorage.getItem(clave) || '0';
-            
-            const rutaUnica = `biblioteca_humanidades/visitas_${anio}${mes}${dia}_v${vReset}`;
-            const urlImagenBadge = `https://hits.sh/uniovi.es/${rutaUnica}.svg?label=%20&color=2980b9&labelColor=1a252f&nocache=${Date.now()}`;
-            
-            divContador.innerHTML = `<img src="${urlImagenBadge}" alt="Contador de visitas de hoy">`;
-            divContador.style.display = 'flex';
-        }
-
-        function resetearContadorManual() {
-            if (confirm("¿Quieres poner a cero el contador de visitas para la sesión actual de hoy?")) {
-                const clave = obtenerClaveReset();
-                let vReset = parseInt(localStorage.getItem(clave) || '0', 10);
-                vReset++;
-                localStorage.setItem(clave, vReset);
-                mostrarContadorVisualDiario();
-            }
-        }
-
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'F2') {
-                event.preventDefault();
-                resetearContadorManual();
-            }
-        });
-
-        let ultimoClic = 0;
-        document.getElementById('contadorVisitas').addEventListener('click', function(e) {
-            e.preventDefault();
-            const tiempoActual = new Date().getTime();
-            const diferencia = tiempoActual - ultimoClic;
-
-            if (diferencia < 400 && diferencia > 0) {
-                resetearContadorManual();
-                ultimoClic = 0;
-            } else {
-                ultimoClic = tiempoActual;
-            }
-        });
-
-        mostrarContadorVisualDiario();
     </script>
 
-    <!-- INCREMENTO EN GOOGLE SHEETS (CELDA A2) AL CARGAR LA PÁGINA DE LIBRO ENCONTRADO -->
+    <!-- INCREMENTO EN SEGUNDO PLANO EN GOOGLE SHEETS (CELDA A2) AL CARGAR ESTE HTML -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
 
-            // Llama a Google Apps Script para sumar +1 a la celda A2 (encontrados)
-            fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados`, {
+            // Se fuerza el envío explícito de tipo=encontrados y accion=sumar para actualizar la celda A2
+            fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&accion=sumar`, {
                 method: 'GET',
                 redirect: 'follow'
             })
-                .then(respuesta => respuesta.json())
-                .then(datos => {
-                    if (datos && datos.visitas !== undefined) {
-                        const nuevoTotal = datos.visitas;
-                        localStorage.setItem('ultimo_encontrados_global', nuevoTotal);
-                        
-                        // Notifica a index_2.html si está abierto en la misma ventana/pestana
-                        try {
-                            const canal = new BroadcastChannel('canal_contador_encontrados');
-                            canal.postMessage({ nuevoConteo: nuevoTotal });
-                            canal.close();
-                        } catch (e) {
-                            console.log("Error al transmitir vía BroadcastChannel", e);
-                        }
+            .then(respuesta => respuesta.json())
+            .then(datos => {
+                if (datos && datos.visitas !== undefined) {
+                    const nuevoTotal = datos.visitas;
+                    localStorage.setItem('ultimo_encontrados_global', nuevoTotal);
+                    
+                    // Notifica en tiempo real a index_2.html si está abierto
+                    try {
+                        const canal = new BroadcastChannel('canal_contador_encontrados');
+                        canal.postMessage({ nuevoConteo: nuevoTotal });
+                        canal.close();
+                    } catch (e) {
+                        console.log("Error al transmitir vía BroadcastChannel", e);
                     }
-                })
-                .catch(error => console.error("Error al conectar con Google Sheets para celda A2:", error));
+                }
+            })
+            .catch(error => console.error("Error al conectar con Google Sheets para celda A2:", error));
         });
     </script>
 </body>
