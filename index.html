@@ -503,7 +503,7 @@
 
             try {
                 // MODIFICADO: Agregado parámetro timestamp a la URL
-                const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&accion=leer&t=${timestamp}`, {
+                const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&accion=sumar_con_fecha&fecha=${fechaTexto}&t=${timestamp}`, {
                     method: 'GET',
                     redirect: 'follow'
                 });
