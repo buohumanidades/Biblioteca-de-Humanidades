@@ -395,16 +395,7 @@
             mostrarContadorVisualDiario();
         }
 
-        // --- 2. CONTADOR INFERIOR DERECHO (encontrado.html, GLOBAL Y EN TIEMPO REAL) ---
-        function actualizarPantallaEncontrado(valor) {
-            const divEncontrado = document.getElementById('contadorEncontrado');
-            const numEncontrado = document.getElementById('numEncontrado');
-            if (numEncontrado && divEncontrado) {
-                numEncontrado.textContent = valor;
-                divEncontrado.style.display = 'flex';
-            }
-        }
-
+        // --- 2. CONTADOR INFERIOR DERECHO (encontrado.html, 100% GLOBAL) ---
         function obtenerContadorEncontradoGlobal() {
             const divEncontrado = document.getElementById('contadorEncontrado');
             const numEncontrado = document.getElementById('numEncontrado');
@@ -413,8 +404,8 @@
             fetch('https://api.counterapi.dev/v1/bib_humanidades/encontrados_global/')
                 .then(respuesta => respuesta.json())
                 .then(datos => {
-                    const nuevoValor = (datos.count !== undefined) ? datos.count : '0';
-                    actualizarPantallaEncontrado(nuevoValor);
+                    numEncontrado.textContent = (datos.count !== undefined) ? datos.count : '0';
+                    divEncontrado.style.display = 'flex';
                 })
                 .catch(error => {
                     console.error("Error consultando el servidor:", error);
@@ -422,25 +413,6 @@
                     divEncontrado.style.display = 'flex';
                 });
         }
-
-        // --- ESCUCHAR CAMBIOS EN TIEMPO REAL DESDE Encontrado_2.html ---
-        try {
-            const canalContador = new BroadcastChannel('canal_contador_encontrados');
-            canalContador.onmessage = function(evento) {
-                if (evento.data && evento.data.nuevoConteo !== undefined) {
-                    actualizarPantallaEncontrado(evento.data.nuevoConteo);
-                }
-            };
-        } catch (e) {
-            console.log("BroadcastChannel no soportado o deshabilitado");
-        }
-
-        // Respaldo mediante evento localStorage
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'contador_encontrados_val' && e.newValue) {
-                actualizarPantallaEncontrado(e.newValue);
-            }
-        });
 
         // Inicializar al cargar y programar actualización cada 60 segundos
         document.addEventListener("DOMContentLoaded", function() {
@@ -452,7 +424,7 @@
             mostrarContadorVisualDiario();
             obtenerContadorEncontradoGlobal();
 
-            // Refresca automáticamente el contador en pantalla cada 60 segundos
+            // Refresca automáticamente el contador en pantalla cada 60.000 ms (60 segundos)
             setInterval(obtenerContadorEncontradoGlobal, 60000);
         });
 
