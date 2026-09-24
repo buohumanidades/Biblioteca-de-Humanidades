@@ -69,6 +69,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden; 
+            position: relative; /* Posicionamiento relativo para la imagen de fondo */
         }
         
         .hero-section {
@@ -93,12 +94,30 @@
             transform: scale(1.03);
         }
 
+        /* --- IMAGEN DECORATIVA DEL MOSTRADOR AL FONDO --- */
+        .footer-decor-img {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 35vh; 
+            object-fit: cover;
+            object-position: bottom;
+            opacity: 0.50; 
+            z-index: 1; 
+            pointer-events: none; 
+            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+            mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+        }
+
         .main-content {
             flex: 1; 
             padding: 2vh 3.5vw;
             display: flex;
             flex-direction: column;
             justify-content: space-between; 
+            position: relative;
+            z-index: 5; /* Asegura que el contenido quede por encima de la imagen del mostrador */
         }
 
         .header-title-wrapper {
@@ -523,6 +542,9 @@
             <img src="sala.png" alt="Biblioteca de Humanidades" class="shelf-photo-panoramic" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
         </div>
 
+        <!-- Imagen del Mostrador decorativa en el fondo del contenedor -->
+        <img src="imagenes/Mostrador.png" class="footer-decor-img" alt="Mostrador de biblioteca" onerror="this.src='mostrador.png'; this.onerror=null;">
+
         <div class="main-content">
             
             <div class="header-title-wrapper">
@@ -664,10 +686,9 @@
             const rutaUnica = `biblioteca_humanidades/visitas_index_${anio}${mes}${dia}`;
             
             // Construimos el enlace a la API visual adaptado a los colores de index.html
-            // Color base: #4f46e5 (índigo de la UI) | Label color: #1e293b (gris oscuro de la UI)
-            const urlImagenBadge = `https://hits.sh/uniovi.es/${rutaUnica}.svg?label=Visitas%20hoy&color=4f46e5&labelColor=1e293b`;
+            const urlImagenBadge = `https://hits.sh/uniovi.es/${rutaUnica}.svg?label=%20&color=4f46e5&labelColor=1e293b`;
             
-            // Insertamos la imagen (al cargar el src, suma 1 visita automáticamente en su servidor)
+            // Insertamos la imagen (al cargar el src, suma 1 visita automáticamente)
             divContador.innerHTML = `<img src="${urlImagenBadge}" alt="Contador de visitas de hoy">`;
             divContador.style.display = 'flex';
         }
@@ -678,7 +699,6 @@
             if (/windows/i.test(userAgent)) body.classList.add('os-windows');
             if (/android|iphone|ipad|ipod/i.test(userAgent)) body.classList.add('is-mobile-device');
             
-            // Ejecutar la inserción de la imagen al cargar la página
             mostrarContadorVisualDiario();
         });
 
