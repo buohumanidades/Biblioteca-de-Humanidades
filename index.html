@@ -43,7 +43,7 @@
             overflow: hidden; 
         }
         
-        /* Contador diario index (superior derecho) */
+        /* Contador superior index (visitas al arranque) */
         .contador-diario {
             position: fixed;
             top: 15px;
@@ -52,7 +52,7 @@
             background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
             color: #ffffff;
             border-radius: 6px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
             font-size: 0.82em;
@@ -75,7 +75,7 @@
             font-size: 1.05em;
         }
 
-        /* Contador global encontrado.html (inferior derecho) */
+        /* Contador inferior global (encontrado.html) */
         .contador-inferior {
             position: fixed;
             bottom: 15px;
@@ -246,8 +246,8 @@
     </style>
 </head>
 <body>
-    <!-- Contador Superior (index.html, universal y reseteable) -->
-    <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Doble clic para resetear visitas de inicio" ondblclick="resetearContadorIndex()">
+    <!-- Contador Superior (index.html, universal y reseteable en doble clic) -->
+    <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Doble clic para resetear contador de visitas" ondblclick="resetearContadorIndex()">
         <span class="badge-label-visitas">Visitas</span>
         <span id="numVisitas" class="badge-val-visitas">...</span>
     </div>
@@ -390,68 +390,82 @@
     </div>
 
     <script>
-        // --- 1. CONTADOR SUPERIOR DERECHO (Visitas de index.html, universal y por sesión) ---
-        function mostrarContadorVisualDiario() {
+        // --- 1. CONTADOR SUPERIOR DERECHO (Visitas universal al arranque) ---
+        async function gestionarContadorVisitasIndex() {
             const divContador = document.getElementById('contadorVisitas');
             const numVisitas = document.getElementById('numVisitas');
-            if (!divContador || !numVisitas) return; 
+            if (!divContador || !numVisitas) return;
 
-            // Se utiliza la versión local para permitir reseteos
-            const resetVer = localStorage.getItem('reset_index_ver') || '1';
-            const claveUniversal = `visitas_index_global_v${resetVer}`;
-            
-            // sessionStorage se borra al cerrar el navegador/pestaña, por lo que 
-            // esto garantiza que solo cuente una vez cada vez que "arranca" el programa.
-            const yaContado = sessionStorage.getItem('visita_index_registrada') === 'true';
-            
-            let url = `https://api.counterapi.dev/v1/bib_humanidades/${claveUniversal}`;
-            
-            // Si es la primera vez que se carga en esta sesión, añadimos /up a la URL para incrementar
-            if (!yaContado) {
-                url += '/up';
+            // Clave de versión para poder resetear a 0
+            const versionReset = localStorage.getItem('index_visitas_version') || '1';
+            const workspace = 'uniovi_bib_humanidades';
+            const key = `visitas_index_v${versionReset}`;
+
+            // Comprueba si la sesión del navegador ya ha sido registrada
+            const yaContadoEnSesion = sessionStorage.getItem('index_visitado_sesion') === 'true';
+
+            // Si es arranque de sesión suma 1 (/up), si es recarga solo lee el total
+            const endpoint = yaContadoEnSesion 
+                ? `https://api.counterapi.dev/v1/${workspace}/${key}`
+                : `https://api.counterapi.dev/v1/${workspace}/${key}/up`;
+
+            try {
+                const respuesta = await fetch(endpoint);
+                if (!respuesta.ok) throw new Error("Error en servidor remoto");
+                const datos = await respuesta.json();
+
+                if (datos && typeof datos.count !== 'undefined') {
+                    numVisitas.textContent = datos.count;
+                    sessionStorage.setItem('index_visitado_sesion', 'true');
+                } else {
+                    throw new Error("Formato de datos no válido");
+                }
+            } catch (error) {
+                console.warn("Usando contador local de respaldo por error de red o bloqueo:", error);
+                
+                // Respaldo local por si GitHub Pages o el navegador bloquean la API externa
+                let localCount = parseInt(localStorage.getItem(`local_${key}`) || '0', 10);
+                if (!yaContadoEnSesion) {
+                    localCount += 1;
+                    localStorage.setItem(`local_${key}`, localCount);
+                    sessionStorage.setItem('index_visitado_sesion', 'true');
+                }
+                numVisitas.textContent = localCount;
+            } finally {
+                divContador.style.display = 'flex';
             }
-
-            fetch(url)
-                .then(respuesta => respuesta.json())
-                .then(datos => {
-                    numVisitas.textContent = (datos.count !== undefined) ? datos.count : '0';
-                    divContador.style.display = 'flex';
-                    
-                    if (!yaContado) {
-                        sessionStorage.setItem('visita_index_registrada', 'true');
-                    }
-                })
-                .catch(error => {
-                    console.error("Error consultando el contador de visitas:", error);
-                    if (numVisitas.textContent === '...') numVisitas.textContent = '0';
-                    divContador.style.display = 'flex';
-                });
         }
 
+        // Reseteo a 0 ejecutado al hacer doble clic en el número
         function resetearContadorIndex() {
-            let ver = parseInt(localStorage.getItem('reset_index_ver') || '1', 10);
-            localStorage.setItem('reset_index_ver', ver + 1);
-            sessionStorage.removeItem('visita_index_registrada'); // Para que vuelva a sumar 1 en la nueva cuenta
-            mostrarContadorVisualDiario();
+            if (confirm("¿Quieres reiniciar el contador de visitas universales a 0?")) {
+                let versionActual = parseInt(localStorage.getItem('index_visitas_version') || '1', 10);
+                localStorage.setItem('index_visitas_version', versionActual + 1);
+                sessionStorage.removeItem('index_visitado_sesion');
+                gestionarContadorVisitasIndex();
+            }
         }
 
         // --- 2. CONTADOR INFERIOR DERECHO (encontrado.html, 100% GLOBAL) ---
-        function obtenerContadorEncontradoGlobal() {
+        async function obtenerContadorEncontradoGlobal() {
             const divEncontrado = document.getElementById('contadorEncontrado');
             const numEncontrado = document.getElementById('numEncontrado');
             if (!divEncontrado || !numEncontrado) return;
 
-            fetch('https://api.counterapi.dev/v1/bib_humanidades/encontrados_global/')
-                .then(respuesta => respuesta.json())
-                .then(datos => {
-                    numEncontrado.textContent = (datos.count !== undefined) ? datos.count : '0';
-                    divEncontrado.style.display = 'flex';
-                })
-                .catch(error => {
-                    console.error("Error consultando el servidor:", error);
-                    if (numEncontrado.textContent === '...') numEncontrado.textContent = '0';
-                    divEncontrado.style.display = 'flex';
-                });
+            try {
+                const respuesta = await fetch('https://api.counterapi.dev/v1/uniovi_bib_humanidades/encontrados_global');
+                if (!respuesta.ok) throw new Error("Error consultando encontrados");
+                const datos = await respuesta.json();
+                
+                if (datos && typeof datos.count !== 'undefined') {
+                    numEncontrado.textContent = datos.count;
+                }
+            } catch (error) {
+                console.warn("Error leyendo el contador de encontrados:", error);
+                if (numEncontrado.textContent === '...') numEncontrado.textContent = '0';
+            } finally {
+                divEncontrado.style.display = 'flex';
+            }
         }
 
         // Inicializar al cargar y programar actualización cada 60 segundos
@@ -461,10 +475,10 @@
             if (/windows/i.test(userAgent)) body.classList.add('os-windows');
             if (/android|iphone|ipad|ipod/i.test(userAgent)) body.classList.add('is-mobile-device');
             
-            mostrarContadorVisualDiario();
+            gestionarContadorVisitasIndex();
             obtenerContadorEncontradoGlobal();
 
-            // Refresca automáticamente el contador en pantalla cada 60.000 ms (60 segundos)
+            // Refresca automáticamente el contador inferior cada 60 segundos
             setInterval(obtenerContadorEncontradoGlobal, 60000);
         });
 
