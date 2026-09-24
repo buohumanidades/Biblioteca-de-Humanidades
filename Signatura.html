@@ -21,7 +21,7 @@
             color: #1c1c1e;
         }
 
-        /* FONDO MÁS COLORIDO (Igual que en Título) */
+        /* FONDO MÁS COLORIDO */
         body { 
             display: flex;
             align-items: center;
@@ -56,7 +56,7 @@
             overflow: hidden;
         }
 
-        /* Cabecera / Sección Hero (INTACTA) */
+        /* Cabecera / Sección Hero */
         .hero-section {
             width: 100%;
             height: 180px; 
@@ -110,7 +110,7 @@
             z-index: 10; 
         }
 
-        /* NUEVA IMAGEN DEL MOSTRADOR (DECORATIVA) */
+        /* IMAGEN DEL MOSTRADOR */
         .footer-decor-img {
             position: absolute;
             bottom: 0;
@@ -128,7 +128,7 @@
 
         .content-wrapper {
             position: relative;
-            z-index: 5; /* Por encima de la imagen decorativa */
+            z-index: 5;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
@@ -181,7 +181,7 @@
             box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
         }
 
-        /* --- ESTILO iOS PARA BOTONES --- */
+        /* --- ESTILO iOS PARA OTROS BOTONES --- */
         .action-btn {
             display: flex;
             align-items: center;
@@ -197,32 +197,63 @@
             border: none;
             transition: transform 0.15s ease, background-color 0.2s ease;
         }
-        
-        /* BOTÓN PRINCIPAL FLOTANTE */
+
+        /* --- NUEVO DISEÑO COMPACTO ESTILO CÁPSULA PARA "LOCALIZAR EN LA ESTANTERÍA" --- */
         .btn-local {
-            background: linear-gradient(135deg, #007AFF, #34AADC); 
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 12px;
+            padding: 6px 24px 6px 6px;
+            width: auto;
+            max-width: 330px;
+            background: linear-gradient(135deg, #9b51e0, #7a28c8);
             color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.3); 
-            box-shadow: 0 12px 25px rgba(0, 122, 255, 0.4), 0 4px 10px rgba(0, 122, 255, 0.2);
-            animation: float 3.5s ease-in-out infinite; 
-            margin-top: 10px; 
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50px;
+            font-size: 1.05em;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 10px 22px rgba(155, 81, 224, 0.35);
+            animation: float 3.5s ease-in-out infinite;
+            margin-top: 10px;
             margin-bottom: 5px;
+            transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-local .btn-icon-circle {
+            width: 44px;
+            height: 44px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
+        }
+
+        .btn-local .btn-text {
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            padding-right: 6px;
         }
 
         @keyframes float {
-            0% { transform: translateY(0px); box-shadow: 0 12px 25px rgba(0, 122, 255, 0.4), 0 4px 10px rgba(0, 122, 255, 0.2); }
-            50% { transform: translateY(-6px); box-shadow: 0 18px 32px rgba(0, 122, 255, 0.5), 0 8px 15px rgba(0, 122, 255, 0.3); }
-            100% { transform: translateY(0px); box-shadow: 0 12px 25px rgba(0, 122, 255, 0.4), 0 4px 10px rgba(0, 122, 255, 0.2); }
+            0% { transform: translateY(0px); box-shadow: 0 10px 22px rgba(155, 81, 224, 0.35); }
+            50% { transform: translateY(-6px); box-shadow: 0 16px 28px rgba(155, 81, 224, 0.45); }
+            100% { transform: translateY(0px); box-shadow: 0 10px 22px rgba(155, 81, 224, 0.35); }
         }
 
         .btn-local:active {
             animation: none; 
             transform: scale(0.95) translateY(4px); 
-            background: #005bb5;
-            box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);
+            background: #7a28c8;
+            box-shadow: 0 4px 10px rgba(155, 81, 224, 0.3);
         }
 
-        /* --- TARJETA DE SEPARACIÓN iOS (Adaptada al Glassmorphism) --- */
+        /* --- TARJETA DE SEPARACIÓN iOS --- */
         .catalog-section {
             display: flex;
             flex-direction: column;
@@ -345,7 +376,8 @@
                 transform: translate(-50%, -50%); z-index: 1; width: 100%;
                 height: 100%; object-fit: cover; object-position: center 80%; filter: brightness(0.65);
             }
-            .input-signatura, .action-btn { width: 90%; }
+            .input-signatura { width: 90%; }
+            .btn-local { max-width: 90%; }
             .catalog-section { width: 90%; padding: 18px 15px; }
             .back-btn { width: auto; padding: 10px 24px; }
         }
@@ -353,7 +385,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- Hero (INTACTO) -->
+        <!-- Hero -->
         <div class="hero-section">
             <img src="imagenes/buobh.png" alt="Interior biblioteca" class="shelf-photo-desktop" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
             <img src="imagenes/buobh_movil.png" alt="Interior biblioteca móvil" class="shelf-photo-mobile" onerror="this.src='https://via.placeholder.com/800x600?text=Biblioteca+Móvil'">
@@ -362,7 +394,7 @@
             <div class="professional-badge">Signatura</div>
         </div>
 
-        <!-- Nueva imagen del Mostrador (Marca de agua decorativa al fondo) -->
+        <!-- Nueva imagen del Mostrador -->
         <img src="imagenes/Mostrador.png" class="footer-decor-img" alt="Mostrador de biblioteca" onerror="this.style.display='none'">
 
         <div class="content-wrapper">
@@ -375,9 +407,14 @@
                        onfocus="if(this.value.trim() === '') { this.value = 'HG'; setTimeout(() => this.setSelectionRange(2, 2), 0); }" 
                        oninput="this.value = this.value.toUpperCase();">
 
-                <!-- BOTÓN FLOTANTE MODIFICADO -->
-                <a href="#" class="action-btn btn-local" onclick="localizarLibro(event)">
-                    <span class="icon">📍</span> Localizar en la estantería
+                <!-- BOTÓN REDISEÑADO EN FORMA DE CÁPSULA -->
+                <a href="#" class="btn-local" onclick="localizarLibro(event)">
+                    <span class="btn-icon-circle">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="#9b51e0">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                    </span>
+                    <span class="btn-text">Localizar en la estantería</span>
                 </a>
 
                 <!-- Sección del Catálogo Separada -->
@@ -449,7 +486,6 @@
                 sig = fichero;
             }
 
-            // MODIFICACIÓN: Abre localizador en nueva ventana/pestaña
             window.open("localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura), "_blank");
         }
         
