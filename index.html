@@ -10,12 +10,11 @@
         :root {
             --alto-de-la-imagen: 23vh;  
             --ancho-de-la-imagen: 100%; 
-            --image-opacity: 1.0; /* Opacidad al máximo (100%) */
+            --image-opacity: 1.0; 
             --primary-grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             --accent-grad: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
         }
 
-        /* Animación de fondo viva y fluida */
         @keyframes vibrantBackground {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -57,7 +56,6 @@
             overflow: hidden; 
         }
         
-        /* SECCIÓN HERO CON IMAGEN PANORÁMICA CLARA */
         .hero-section {
             width: var(--ancho-de-la-imagen);
             flex: 0 0 var(--alto-de-la-imagen); 
@@ -72,7 +70,7 @@
             object-fit: cover; 
             object-position: center 55%;
             opacity: var(--image-opacity); 
-            filter: none; /* Sin filtros oscuros para mantener máxima claridad */
+            filter: none; 
             transition: transform 0.6s ease;
         }
 
@@ -80,7 +78,6 @@
             transform: scale(1.03);
         }
 
-        /* CONTENIDO PRINCIPAL */
         .main-content {
             flex: 1; 
             padding: 2vh 3.5vw;
@@ -89,7 +86,6 @@
             justify-content: space-between; 
         }
 
-        /* TÍTULO INSTITUCIONAL */
         .header-title-wrapper {
             text-align: center;
             position: relative;
@@ -114,7 +110,6 @@
             margin-top: 2px;
         }
 
-        /* ENVOLTORIO MEDIO: BIBLIOGRAFÍA Y MATERIAS */
         .middle-section-wrapper {
             display: flex;
             gap: 2vw;
@@ -147,7 +142,6 @@
             border-radius: 20px;
         }
 
-        /* CUADRÍCULA DE MATERIAS CON IDENTIDAD CROMÁTICA */
         .subjects-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -195,13 +189,11 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
-        /* Colores dinámicos y profesionales por cada materia */
         .sub-ling { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
         .sub-geo  { background: linear-gradient(135deg, #10b981, #047857); }
         .sub-arte { background: linear-gradient(135deg, #f59e0b, #d97706); }
         .sub-fil  { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
 
-        /* Botón maestro de Grados */
         .degree-btn {
             width: 100%;
             padding: 2.2vh 1.5vw;
@@ -228,7 +220,6 @@
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
 
-        /* CONTENEDOR CENTRADO PARA EL TEXTO Y LOS BOTONES DE BÚSQUEDA */
         .search-wrapper-centered {
             display: flex;
             flex-direction: column;
@@ -255,7 +246,6 @@
             text-align: center;
         }
 
-        /* BOTONES PRINCIPALES DE BÚSQUEDA (SIGNATURA / TÍTULO) */
         .action-buttons-container {
             display: flex;
             justify-content: center;
@@ -309,7 +299,6 @@
             flex-shrink: 0;
         }
 
-        /* SERVICIOS ADICIONALES */
         .services-wrapper {
             display: flex;
             flex-direction: column;
@@ -354,7 +343,6 @@
             border-color: #cbd5e1;
         }
 
-        /* MODALES */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -485,7 +473,6 @@
             font-size: 1.1em;
         }
 
-        /* RESPONSIVE */
         @media (max-width: 900px) {
             .container { height: 98vh; width: 98vw; }
             .hero-section { flex: 0 0 18vh; }
@@ -514,24 +501,19 @@
 <body>
     <div class="container">
         
-        <!-- SECCIÓN HERO PANORÁMICA -->
         <div class="hero-section">
             <img src="sala.png" alt="Biblioteca de Humanidades" class="shelf-photo-panoramic" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
         </div>
 
-        <!-- CONTENIDO PRINCIPAL -->
         <div class="main-content">
             
-            <!-- TÍTULO INSTITUCIONAL -->
             <div class="header-title-wrapper">
                 <h1>Biblioteca de Humanidades</h1>
                 <div class="subtitle-campus">Campus de El Milán · Universidad de Oviedo</div>
             </div>
 
-            <!-- BIBLIOGRAFÍA Y MATERIAS -->
             <div class="middle-section-wrapper">
                 
-                <!-- Bibliografía / Grados -->
                 <fieldset class="subjects-fieldset">
                     <legend class="subjects-legend">Bibliografía recomendada</legend>
                     <div class="bibliography-container">
@@ -544,7 +526,6 @@
                     </div>
                 </fieldset>
 
-                <!-- Materias con código de color dinámico -->
                 <fieldset class="subjects-fieldset">
                     <legend class="subjects-legend">Clasificación por Materias</legend>
                     <div class="subjects-container">
@@ -565,7 +546,6 @@
 
             </div>
 
-            <!-- BADGE Y BOTONES PRINCIPALES DE BÚSQUEDA RÁPIDA (CENTRADOS) -->
             <div class="search-wrapper-centered">
                 <div class="search-helper-badge">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -606,7 +586,6 @@
                 </div>
             </div>
 
-            <!-- SERVICIOS ADICIONALES -->
             <div class="services-wrapper">
                 <h2 class="section-title">Enlaces de interés y catálogo</h2>
                 <div class="links-container">
@@ -618,7 +597,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE GRADOS -->
     <div class="modal-overlay" id="modalGrados" onclick="cerrarModalGrados(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="cerrarModalGrados(event)">✕</button>
@@ -637,7 +615,6 @@
         </div>
     </div>
 
-    <!-- MODAL PARA MOSTRAR EL FICHERO HTML DEL GRADO (IFRAME) -->
     <div class="modal-overlay" id="modalSemestre" onclick="cerrarModalSemestre(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="cerrarModalSemestre(event)">✕</button>
@@ -645,7 +622,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE ALERTA PERSONALIZADA -->
     <div class="modal-overlay" id="customAlertModal" onclick="cerrarModalAlerta()">
         <div class="modal-content modal-alert" onclick="event.stopPropagation()">
             <div style="font-size: 3.2em; margin-bottom: 5px;">⏳</div>
@@ -654,49 +630,40 @@
         </div>
     </div>
 
-    <!-- SCRIPTS FUNCIONALES -->
     <script>
         async function gestionarContadorVisitas() {
             const nombreFichero = "index.html";
             const fechaHoy = new Date().toISOString().split('T')[0];
 
+            let registros = [];
+            
             try {
                 let respuesta = await fetch('contador.json');
-                let registros = [];
                 if (respuesta.ok) {
                     registros = await respuesta.json();
                 } else {
                     registros = JSON.parse(localStorage.getItem('contador_json') || '[]');
                 }
-
-                let registroEncontrado = registros.find(r => r.fichero === nombreFichero && r.fecha === fechaHoy);
-
-                if (registroEncontrado) {
-                    registroEncontrado.contador += 1;
-                } else {
-                    registros.push({
-                        fichero: nombreFichero,
-                        fecha: fechaHoy,
-                        contador: 1
-                    });
-                }
-
-                localStorage.setItem('contador_json', JSON.stringify(registros, null, 2));
             } catch (error) {
-                let registros = JSON.parse(localStorage.getItem('contador_json') || '[]');
-                let registroEncontrado = registros.find(r => r.fichero === nombreFichero && r.fecha === fechaHoy);
-
-                if (registroEncontrado) {
-                    registroEncontrado.contador += 1;
-                } else {
-                    registros.push({
-                        fichero: nombreFichero,
-                        fecha: fechaHoy,
-                        contador: 1
-                    });
-                }
-                localStorage.setItem('contador_json', JSON.stringify(registros, null, 2));
+                registros = JSON.parse(localStorage.getItem('contador_json') || '[]');
             }
+
+            // Comprueba si hay un registro de la fecha actual para este fichero
+            let indexFecha = registros.findIndex(r => r.fecha === fechaHoy && r.fichero === nombreFichero);
+
+            if (indexFecha !== -1) {
+                // Si lo encuentra, suma 1 al contador
+                registros[indexFecha].contador += 1;
+            } else {
+                // Si no lo encuentra, crea un nuevo registro
+                registros.push({
+                    fichero: nombreFichero,
+                    fecha: fechaHoy,
+                    contador: 1
+                });
+            }
+
+            localStorage.setItem('contador_json', JSON.stringify(registros, null, 2));
         }
 
         document.addEventListener("DOMContentLoaded", function() {
