@@ -36,6 +36,24 @@
             100% { background-position: 0% 50%; }
         }
 
+        /* --- NUEVO: Estilo del contador diario global --- */
+        .contador-diario {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(44, 62, 80, 0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .container { 
             display: flex;
             flex-direction: column;
@@ -267,6 +285,9 @@
     </style>
 </head>
 <body>
+    <!-- --- NUEVO: Contenedor del contador global --- -->
+    <div id="contadorVisitas" class="contador-diario" style="display: none;"></div>
+
     <div class="container">
         <h1>Biblioteca de Humanidades</h1>
 
@@ -352,6 +373,41 @@
                 </div>
             `;
         }
+
+        // --- NUEVO: Lógica del contador global diario ---
+        async function registrarVisitaGlobalDiaria() {
+            // 1. Crear un identificador único con la fecha de hoy (Ejemplo: 2026_09_24)
+            const fecha = new Date();
+            const dia = String(fecha.getDate()).padStart(2, '0');
+            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+            const anio = fecha.getFullYear();
+            const idDia = `encontrado_${anio}_${mes}_${dia}`;
+
+            // 2. Definir un espacio de nombres único para el proyecto
+            const espacioNombres = "biblioteca_humanidades_uniovi";
+
+            try {
+                // 3. Llamar a la API gratuita CounterAPI. El endpoint '/up' suma 1 automáticamente.
+                const url = `https://api.counterapi.dev/v1/${espacioNombres}/${idDia}/up`;
+                const respuesta = await fetch(url);
+                
+                if (respuesta.ok) {
+                    const datos = await respuesta.json();
+                    
+                    // 4. Mostrar el total global del día en pantalla
+                    const divContador = document.getElementById('contadorVisitas');
+                    // Usamos el icono de grupo para indicar que son usuarios totales
+                    divContador.innerHTML = `<i class="fa-solid fa-users"></i> Hoy: ${datos.count}`;
+                    divContador.style.display = 'flex';
+                }
+            } catch (error) {
+                console.error("No se pudo conectar con el servidor de conteo:", error);
+                // Si hay error de red, el contador simplemente no se mostrará para no estropear la interfaz
+            }
+        }
+
+        // Ejecutar el contador
+        registrarVisitaGlobalDiaria();
     </script>
 </body>
 </html>
