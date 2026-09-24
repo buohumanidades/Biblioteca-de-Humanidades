@@ -465,23 +465,23 @@
             const divContador = document.getElementById('contadorVisitas');
             if (!numVisitas || !divContador) return;
 
-            // NUEVO: Obtenemos la fecha actual y creamos el timestamp y la fechaTexto
             const hoy = new Date();
             const fechaString = hoy.getFullYear() + "-" + String(hoy.getMonth() + 1).padStart(2, '0') + "-" + String(hoy.getDate()).padStart(2, '0');
             const fechaTexto = "TEXTO_" + fechaString; 
             const timestamp = hoy.getTime(); 
 
             try {
-                // MODIFICADO: Agregados parámetros de fechaTexto y timestamp a la URL
-                const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas&accion=sumar_con_fecha&fecha=${fechaTexto}&t=${timestamp}`, {
+                // Forzamos la asignación a celda A1 mediante celda=A1 y tipo=visitas_index
+                const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=sumar_con_fecha&fecha=${fechaTexto}&t=${timestamp}`, {
                     method: 'GET',
                     redirect: 'follow'
                 });
                 
                 const datos = await respuesta.json();
+                const valorVisitas = datos.visitas ?? datos.valor ?? datos.A1 ?? datos.resultado ?? datos.total;
                 
-                if (datos && typeof datos.visitas !== 'undefined') {
-                    numVisitas.textContent = datos.visitas;
+                if (valorVisitas !== undefined && valorVisitas !== null) {
+                    numVisitas.textContent = valorVisitas;
                 } else {
                     numVisitas.textContent = "--";
                 }
@@ -499,19 +499,21 @@
             const numEncontrado = document.getElementById('numEncontrado');
             if (!divEncontrado || !numEncontrado) return;
             
-            const timestamp = new Date().getTime(); // NUEVO: timestamp para evitar caché al leer
+            const timestamp = new Date().getTime();
 
             try {
-                // MODIFICADO: Agregado parámetro timestamp a la URL
-                const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&accion=sumar_con_fecha&fecha=${fechaTexto}&t=${timestamp}`, {
+                // Forzamos la lectura de la Celda A2 mediante celda=A2 y tipo=encontrados
+                const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&celda=A2&accion=leer&t=${timestamp}`, {
                     method: 'GET',
                     redirect: 'follow'
                 });
                 if (!respuesta.ok) throw new Error("Error consultando encontrados");
                 const datos = await respuesta.json();
                 
-                if (datos && typeof datos.visitas !== 'undefined') {
-                    numEncontrado.textContent = datos.visitas;
+                const valorEncontrados = datos.encontrados ?? datos.visitas ?? datos.valor ?? datos.A2 ?? datos.resultado ?? datos.total;
+
+                if (valorEncontrados !== undefined && valorEncontrados !== null) {
+                    numEncontrado.textContent = valorEncontrados;
                 }
             } catch (error) {
                 console.warn("Error leyendo el contador de encontrados desde Google Sheets:", error);
