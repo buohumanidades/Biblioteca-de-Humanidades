@@ -39,14 +39,17 @@
             top: 15px;
             right: 15px;
             z-index: 9999;
-            /* Se han quitado fondos y bordes porque la imagen SVG ya trae su propio diseño */
             border-radius: 6px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             display: flex;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
         }
         .contador-diario img {
             display: block;
-            height: 26px; /* Tamaño perfecto para la etiqueta */
+            height: 26px;
+            pointer-events: none; /* Evita que la imagen intercepte los clics o intente arrastrarse */
         }
 
         .container { 
@@ -221,7 +224,7 @@
 </head>
 <body>
     <!-- Contenedor del contador visual (Badge) -->
-    <div id="contadorVisitas" class="contador-diario" style="display: none;"></div>
+    <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Haz doble clic o pulsa F2 para resetear las visitas"></div>
 
     <div class="container">
         <h1>Biblioteca de Humanidades</h1>
@@ -302,31 +305,68 @@
             `;
         }
 
-        // --- NUEVA LÓGICA: Contador basado en imagen (Badge infalible) ---
+        // --- LÓGICA DEL CONTADOR Y RESETEO MANUAL ---
+        function obtenerClaveReset() {
+            const fecha = new Date();
+            const dia = String(fecha.getDate()).padStart(2, '0');
+            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+            const anio = fecha.getFullYear();
+            return `reset_${anio}${mes}${dia}`;
+        }
+
         function mostrarContadorVisualDiario() {
             const divContador = document.getElementById('contadorVisitas');
             if (!divContador) return; 
 
-            // Extraemos la fecha del día actual
             const fecha = new Date();
             const dia = String(fecha.getDate()).padStart(2, '0');
             const mes = String(fecha.getMonth() + 1).padStart(2, '0');
             const anio = fecha.getFullYear();
             
-            // Creamos una "URL falsa" única para el día de hoy.
-            // Esto hace que el contador de 'hits.sh' se reinicie a cero cada día a medianoche.
-            const rutaUnica = `biblioteca_humanidades/visitas_${anio}${mes}${dia}`;
+            const clave = obtenerClaveReset();
+            const vReset = localStorage.getItem(clave) || '0';
             
-            // Construimos el enlace a la API visual. 
-            // 2980b9 es el color azul de tus iconos y 1a252f es el color oscuro de tus botones.
-            const urlImagenBadge = `https://hits.sh/uniovi.es/${rutaUnica}.svg?label=%20&color=2980b9&labelColor=1a252f`;
+            const rutaUnica = `biblioteca_humanidades/visitas_${anio}${mes}${dia}_v${vReset}`;
+            const urlImagenBadge = `https://hits.sh/uniovi.es/${rutaUnica}.svg?label=%20&color=2980b9&labelColor=1a252f&nocache=${Date.now()}`;
             
-            // Insertamos la imagen (al cargar el src, suma 1 visita automáticamente en su servidor)
             divContador.innerHTML = `<img src="${urlImagenBadge}" alt="Contador de visitas de hoy">`;
             divContador.style.display = 'flex';
         }
 
-        // Ejecutar la inserción de la imagen al instante
+        function resetearContadorManual() {
+            if (confirm("¿Quieres poner a cero el contador de visitas para la sesión actual de hoy?")) {
+                const clave = obtenerClaveReset();
+                let vReset = parseInt(localStorage.getItem(clave) || '0', 10);
+                vReset++;
+                localStorage.setItem(clave, vReset);
+                mostrarContadorVisualDiario();
+            }
+        }
+
+        // 1. Escuchar la tecla F2 para resetear
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'F2') {
+                event.preventDefault();
+                resetearContadorManual();
+            }
+        });
+
+        // 2. Control de doble clic o doble toque universal (PC y móviles)
+        let ultimoClic = 0;
+        document.getElementById('contadorVisitas').addEventListener('click', function(e) {
+            e.preventDefault();
+            const tiempoActual = new Date().getTime();
+            const diferencia = tiempoActual - ultimoClic;
+
+            if (diferencia < 400 && diferencia > 0) {
+                resetearContadorManual();
+                ultimoClic = 0;
+            } else {
+                ultimoClic = tiempoActual;
+            }
+        });
+
+        // Ejecutar al cargar la página
         mostrarContadorVisualDiario();
     </script>
 </body>
