@@ -383,8 +383,7 @@
             
             const resetVer = localStorage.getItem('reset_index_ver') || '1';
             const rutaUnica = `uniovi_bib_humanidades/visitas_index_${anio}${mes}${dia}_v${resetVer}`;
-            // Parámetro dinámico nocache para forzar la recarga de la imagen
-            const urlImagenBadge = `https://hits.sh/uniovi.es/${rutaUnica}.svg?label=%20&color=4f46e5&labelColor=1e293b&nocache=${Date.now()}`;
+            const urlImagenBadge = `https://hits.sh/uniovi.es/${rutaUnica}.svg?label=%20&color=4f46e5&labelColor=1e293b`;
             
             divContador.innerHTML = `<img src="${urlImagenBadge}" alt="Contador de visitas de hoy">`;
             divContador.style.display = 'flex';
@@ -409,8 +408,8 @@
         function obtenerContadorEncontradoGlobal() {
             const numEncontrado = document.getElementById('numEncontrado');
             
-            // Timestamp en la URL y { cache: 'no-store' } para evitar la caché del navegador
-            fetch(`https://api.counterapi.dev/v1/bib_humanidades/encontrados_global?t=${Date.now()}`, { cache: 'no-store' })
+            // Consultar el valor global en el servidor
+            fetch('https://api.counterapi.dev/v1/bib_humanidades/encontrados_global')
                 .then(respuesta => respuesta.json())
                 .then(datos => {
                     if (datos && datos.count !== undefined) {
@@ -421,6 +420,7 @@
                 })
                 .catch(error => {
                     console.warn("Error consultando el servidor global:", error);
+                    // Si falla la red, mantenemos el último valor global guardado en memoria en lugar de poner 0
                     const valorGuardado = localStorage.getItem('ultimo_encontrados_global');
                     if (valorGuardado !== null) {
                         actualizarPantallaEncontrado(valorGuardado);
@@ -443,13 +443,14 @@
             console.log("BroadcastChannel no soportado");
         }
 
+        // Respaldo de sincronización mediante evento storage
         window.addEventListener('storage', function(e) {
             if (e.key === 'ultimo_encontrados_global' && e.newValue) {
                 actualizarPantallaEncontrado(e.newValue);
             }
         });
 
-        // Inicialización y ciclo de actualización
+        // Inicialización y ciclo de actualización cada 60 segundos
         document.addEventListener("DOMContentLoaded", function() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
             const body = document.body;
@@ -459,22 +460,12 @@
             mostrarContadorVisualDiario();
             obtenerContadorEncontradoGlobal();
 
-            // Ambas funciones en el bucle para que tanto las visitas como los encontrados se actualicen
-            setInterval(() => {
-                obtenerContadorEncontradoGlobal();
-                mostrarContadorVisualDiario();
-            }, 60000);
+            // Refrescar automáticamente la cifra global cada 60 segundos (60000 ms)
+            setInterval(obtenerContadorEncontradoGlobal, 60000);
         });
 
-        window.addEventListener("focus", () => {
-            obtenerContadorEncontradoGlobal();
-            mostrarContadorVisualDiario();
-        });
-        
-        window.addEventListener("pageshow", () => {
-            obtenerContadorEncontradoGlobal();
-            mostrarContadorVisualDiario();
-        });
+        window.addEventListener("focus", obtenerContadorEncontradoGlobal);
+        window.addEventListener("pageshow", obtenerContadorEncontradoGlobal);
 
         // --- FUNCIONES DE MODALES ---
         function abrirModalGrados(e) {
