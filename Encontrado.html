@@ -293,9 +293,13 @@
             // Obtenemos la fecha local en formato YYYY-MM-DD
             const hoy = new Date();
             const fechaString = hoy.getFullYear() + "-" + String(hoy.getMonth() + 1).padStart(2, '0') + "-" + String(hoy.getDate()).padStart(2, '0');
+            
+            // NUEVO: Agregamos un prefijo para que Sheets lo trate como texto y un timestamp para evitar caché
+            const fechaTexto = "TEXTO_" + fechaString; 
+            const timestamp = hoy.getTime(); 
 
-            // Se envía a Google Sheets la acción de sumar junto con la fecha de hoy
-            fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&accion=sumar_con_fecha&fecha=${fechaString}`, {
+            // Se envía a Google Sheets la acción de sumar junto con la fecha en formato texto y el timestamp
+            fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&accion=sumar_con_fecha&fecha=${fechaTexto}&t=${timestamp}`, {
                 method: 'GET',
                 redirect: 'follow'
             })
