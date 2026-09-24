@@ -36,7 +36,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- NUEVO: Estilo del contador diario global --- */
+        /* --- Estilo del contador diario global --- */
         .contador-diario {
             position: fixed;
             top: 15px;
@@ -48,7 +48,7 @@
             font-size: 0.95em;
             font-weight: bold;
             box-shadow: 0 4px 10px rgba(44, 62, 80, 0.3);
-            z-index: 1000;
+            z-index: 9999;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -152,7 +152,6 @@
             display: block;
         }
         
-        /* Contenedor de botones para gestionarlos mejor */
         .action-buttons {
             display: flex;
             flex-direction: column;
@@ -200,23 +199,11 @@
             background: #219a52;
         }
 
-        /* =========================================================
-           ADAPTACIÓN PARA PANTALLAS GRANDES Y MÓVILES
-           ========================================================= */
-
-        /* 💻 PANTALLAS GRANDES / ORDENADORES */
+        /* Adaptación para pantallas grandes y móviles */
         @media (min-width: 901px) {
-            body {
-                padding: 0; 
-            }
-            .container { 
-                padding: 25px 35px; 
-            }
-            h1 {
-                font-size: 2em;
-                margin-bottom: 20px;
-                padding-bottom: 12px;
-            }
+            body { padding: 0; }
+            .container { padding: 25px 35px; }
+            h1 { font-size: 2em; margin-bottom: 20px; padding-bottom: 12px; }
             
             .location-route {
                 flex-direction: row;
@@ -230,62 +217,24 @@
                 border-radius: 10px;
             }
             
-            .step-planta {
-                width: auto;
-                padding-right: 0;
-                gap: 15px;
-            }
-            
-            .route-step.final-step {
-                margin-left: 0;
-                padding: 8px 16px;
-            }
-            
-            .iframe-container {
-                margin-bottom: 20px;
-            }
-
-            .action-buttons {
-                flex-direction: row;
-                justify-content: center;
-            }
-
-            .btn-action {
-                width: 30%; 
-                padding: 14px;
-                font-size: 1.1em;
-            }
-            .btn-new-search:hover {
-                background: #1a252f;
-            }
-            
-            /* Ocultar botón de cámara en PC */
-            .btn-camera {
-                display: none;
-            }
+            .step-planta { width: auto; padding-right: 0; gap: 15px; }
+            .route-step.final-step { margin-left: 0; padding: 8px 16px; }
+            .iframe-container { margin-bottom: 20px; }
+            .action-buttons { flex-direction: row; justify-content: center; }
+            .btn-action { width: 30%; padding: 14px; font-size: 1.1em; }
+            .btn-new-search:hover { background: #1a252f; }
+            .btn-camera { display: none; }
         }
 
-        /* 📱 PANTALLAS PEQUEÑAS / MÓVILES */
         @media (max-width: 900px) {
-            body {
-                align-items: flex-start;
-                padding: 0;
-            }
-            .container { 
-                height: 100dvh;
-                width: 100vw; 
-                border-radius: 0;
-                padding: 15px;
-            }
-            /* Asegurar que el botón de cámara sea visible en móvil */
-            .btn-camera {
-                display: flex;
-            }
+            body { align-items: flex-start; padding: 0; }
+            .container { height: 100dvh; width: 100vw; border-radius: 0; padding: 15px; }
+            .btn-camera { display: flex; }
         }
     </style>
 </head>
 <body>
-    <!-- --- NUEVO: Contenedor del contador global --- -->
+    <!-- Contenedor del contador global de visitas -->
     <div id="contadorVisitas" class="contador-diario" style="display: none;"></div>
 
     <div class="container">
@@ -318,7 +267,6 @@
             <a id="btnCamera" href="#" class="btn-action btn-camera">
                 <i class="fa-solid fa-camera"></i> Buscar con la cámara
             </a>
-            <!-- MODIFICACIÓN: Cierra la ventana del navegador al hacer clic -->
             <a href="#" onclick="event.preventDefault(); window.close();" class="btn-action btn-new-search">
                 <span class="icon">✖</span> Cerrar ventana
             </a>
@@ -328,39 +276,33 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         
-        // Obtenemos las dos versiones de la signatura y los textos
-        const sigBuscada = params.get('sig'); // La recortada
-        const sigOriginal = params.get('orig') || sigBuscada; // La completa
+        const sigBuscada = params.get('sig'); 
+        const sigOriginal = params.get('orig') || sigBuscada; 
         const valPlanta = params.get('planta');
         const valSala = params.get('sala');
         const valUbicacion = params.get('ubicacion');
         const valEstanteria = params.get('estanteria');
 
-        // Textos dinámicos
         if (valPlanta) document.getElementById('txt-planta').textContent = valPlanta;
         if (valSala) document.getElementById('txt-sala').textContent = valSala;
         if (valUbicacion) document.getElementById('txt-ubicacion').textContent = valUbicacion;
         if (valEstanteria) document.getElementById('txt-estanteria').textContent = valEstanteria;
 
-        // Mostrar la etiqueta de la signatura RECORTADA a la derecha
         if (sigBuscada) {
             const badge = document.getElementById('display-signatura');
             badge.textContent = sigBuscada;
             badge.style.display = 'inline-block';
         }
 
-        // Configurar el botón de la cámara para enviar la signatura original
         const btnCamera = document.getElementById('btnCamera');
         if (sigOriginal) {
             btnCamera.href = `escaner.html?buscar=${encodeURIComponent(sigOriginal)}`;
         } else {
-            // Si no hay signatura, ocultar el botón incluso en móvil para evitar errores
             btnCamera.style.display = 'none';
         }
 
         const iframe = document.getElementById('iframeCatalogo');
 
-        // Buscar en el catálogo usando la signatura COMPLETA original
         if (sigOriginal) {
             const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
             const urlFinal = urlBase + encodeURIComponent('"'+ sigOriginal+ '"') + "&START=1&FORM=1";
@@ -374,39 +316,40 @@
             `;
         }
 
-        // --- NUEVO: Lógica del contador global diario ---
+        // --- LÓGICA DEL CONTADOR GLOBAL DIARIO (Con gestión de errores) ---
         async function registrarVisitaGlobalDiaria() {
-            // 1. Crear un identificador único con la fecha de hoy (Ejemplo: 2026_09_24)
+            const divContador = document.getElementById('contadorVisitas');
+            if (!divContador) return; 
+            
+            // Mostrar inmediatamente en estado de carga
+            divContador.style.display = 'flex';
+            divContador.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Cargando...`;
+
             const fecha = new Date();
             const dia = String(fecha.getDate()).padStart(2, '0');
             const mes = String(fecha.getMonth() + 1).padStart(2, '0');
             const anio = fecha.getFullYear();
             const idDia = `encontrado_${anio}_${mes}_${dia}`;
-
-            // 2. Definir un espacio de nombres único para el proyecto
+            
             const espacioNombres = "biblioteca_humanidades_uniovi";
 
             try {
-                // 3. Llamar a la API gratuita CounterAPI. El endpoint '/up' suma 1 automáticamente.
                 const url = `https://api.counterapi.dev/v1/${espacioNombres}/${idDia}/up`;
                 const respuesta = await fetch(url);
                 
                 if (respuesta.ok) {
                     const datos = await respuesta.json();
-                    
-                    // 4. Mostrar el total global del día en pantalla
-                    const divContador = document.getElementById('contadorVisitas');
-                    // Usamos el icono de grupo para indicar que son usuarios totales
                     divContador.innerHTML = `<i class="fa-solid fa-users"></i> Hoy: ${datos.count}`;
-                    divContador.style.display = 'flex';
+                } else {
+                    divContador.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Error API`;
                 }
             } catch (error) {
-                console.error("No se pudo conectar con el servidor de conteo:", error);
-                // Si hay error de red, el contador simplemente no se mostrará para no estropear la interfaz
+                console.error("Error al conectar con la API:", error);
+                divContador.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Bloqueado`;
             }
         }
 
-        // Ejecutar el contador
+        // Ejecutar el contador al cargar la página
         registrarVisitaGlobalDiaria();
     </script>
 </body>
