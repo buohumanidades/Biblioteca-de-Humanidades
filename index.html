@@ -43,6 +43,21 @@
             overflow: hidden; 
         }
         
+        /* --- Estilo del contador diario global optimizado para imagen --- */
+        .contador-diario {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 9999;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            display: flex;
+        }
+        .contador-diario img {
+            display: block;
+            height: 26px;
+        }
+
         .container { 
             width: 96vw; 
             max-width: 1350px; 
@@ -499,6 +514,9 @@
     </style>
 </head>
 <body>
+    <!-- Contenedor del contador visual (Badge) -->
+    <div id="contadorVisitas" class="contador-diario" style="display: none;"></div>
+
     <div class="container">
         
         <div class="hero-section">
@@ -631,39 +649,27 @@
     </div>
 
     <script>
-        async function gestionarContadorVisitas() {
-            const nombreFichero = "index.html";
-            const fechaHoy = new Date().toISOString().split('T')[0];
+        // --- NUEVA LÓGICA: Contador basado en imagen (Badge infalible) ---
+        function mostrarContadorVisualDiario() {
+            const divContador = document.getElementById('contadorVisitas');
+            if (!divContador) return; 
 
-            let registros = [];
+            // Extraemos la fecha del día actual
+            const fecha = new Date();
+            const dia = String(fecha.getDate()).padStart(2, '0');
+            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+            const anio = fecha.getFullYear();
             
-            try {
-                let respuesta = await fetch('contador.json');
-                if (respuesta.ok) {
-                    registros = await respuesta.json();
-                } else {
-                    registros = JSON.parse(localStorage.getItem('contador_json') || '[]');
-                }
-            } catch (error) {
-                registros = JSON.parse(localStorage.getItem('contador_json') || '[]');
-            }
-
-            // Comprueba si hay un registro de la fecha actual para este fichero
-            let indexFecha = registros.findIndex(r => r.fecha === fechaHoy && r.fichero === nombreFichero);
-
-            if (indexFecha !== -1) {
-                // Si lo encuentra, suma 1 al contador
-                registros[indexFecha].contador += 1;
-            } else {
-                // Si no lo encuentra, crea un nuevo registro
-                registros.push({
-                    fichero: nombreFichero,
-                    fecha: fechaHoy,
-                    contador: 1
-                });
-            }
-
-            localStorage.setItem('contador_json', JSON.stringify(registros, null, 2));
+            // Creamos una "URL falsa" única para index.html en el día de hoy
+            const rutaUnica = `biblioteca_humanidades/visitas_index_${anio}${mes}${dia}`;
+            
+            // Construimos el enlace a la API visual adaptado a los colores de index.html
+            // Color base: #4f46e5 (índigo de la UI) | Label color: #1e293b (gris oscuro de la UI)
+            const urlImagenBadge = `https://hits.sh/uniovi.es/${rutaUnica}.svg?label=Visitas%20hoy&color=4f46e5&labelColor=1e293b`;
+            
+            // Insertamos la imagen (al cargar el src, suma 1 visita automáticamente en su servidor)
+            divContador.innerHTML = `<img src="${urlImagenBadge}" alt="Contador de visitas de hoy">`;
+            divContador.style.display = 'flex';
         }
 
         document.addEventListener("DOMContentLoaded", function() {
@@ -672,7 +678,8 @@
             if (/windows/i.test(userAgent)) body.classList.add('os-windows');
             if (/android|iphone|ipad|ipod/i.test(userAgent)) body.classList.add('is-mobile-device');
             
-            gestionarContadorVisitas();
+            // Ejecutar la inserción de la imagen al cargar la página
+            mostrarContadorVisualDiario();
         });
 
         function abrirModalGrados(e) {
