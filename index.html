@@ -13,6 +13,8 @@
             --image-opacity: 1.0; 
             --primary-grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             --accent-grad: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            /* Variable para cambiar fácilmente el tamaño del texto "¿Necesitas encontrar un libro?" */
+            --titulo-busqueda-size: 1.35em; 
         }
 
         @keyframes vibrantBackground {
@@ -33,10 +35,6 @@
         @keyframes pageOpenLeft {
             0%, 100% { transform: perspective(300px) rotateY(0deg); }
             50% { transform: perspective(300px) rotateY(55deg); }
-        }
-        @keyframes floatBadge {
-            0%, 100% { transform: translateY(0); box-shadow: 0 8px 25px rgba(79, 70, 229, 0.18); }
-            50% { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(124, 58, 237, 0.32); }
         }
         @keyframes sparkleTwinkle {
             0%, 100% { opacity: 0.2; transform: scale(0.7); }
@@ -93,23 +91,25 @@
             font-size: 1.05em;
         }
 
-        /* Contador Encontrados (Ubicado debajo de la imagen de sala a la derecha) */
+        /* Contador Búsquedas Encontradas (Ubicado dentro de la foto de sala, parte inferior derecha) */
         .contador-inferior {
             position: absolute;
-            top: 15px;
-            right: 3.5vw;
-            z-index: 20;
+            bottom: 15px;
+            right: 15px;
+            z-index: 10;
             background: linear-gradient(135deg, #059669 0%, #10b981 100%);
             color: #ffffff;
             border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
             display: flex;
             align-items: center;
             font-size: 0.82em;
             font-weight: 700;
             user-select: none;
             overflow: hidden;
+            transition: transform 0.2s ease;
         }
+        .contador-inferior:hover { transform: scale(1.05); }
         .contador-inferior .badge-label {
             background: rgba(15, 23, 42, 0.85);
             padding: 6px 11px;
@@ -190,35 +190,25 @@
 
         .search-wrapper-centered { display: flex; flex-direction: column; align-items: center; width: 100%; margin: 0.5vh auto; }
         
-        .search-helper-badge {
+        /* Título explicativo de búsqueda (asociado a los botones) */
+        .search-header-title {
             display: inline-flex; 
             align-items: center; 
-            gap: 12px; 
-            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
-            padding: 8px 26px; 
-            border-radius: 50px; 
-            border: 2px solid #e0e7ff;
-            margin-bottom: 12px; 
+            gap: 10px; 
+            margin-bottom: 10px; 
             text-align: center;
-            animation: floatBadge 3.5s ease-in-out infinite;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
             user-select: none;
         }
-        .search-helper-badge:hover {
-            transform: translateY(-3px) scale(1.03);
-            border-color: #818cf8;
-            box-shadow: 0 12px 30px rgba(79, 70, 229, 0.28) !important;
-        }
-        .search-helper-badge .badge-text {
+        .search-title-text {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1.45em;
+            font-size: var(--titulo-busqueda-size); /* Se puede ajustar modificando esta propiedad o --titulo-busqueda-size en :root */
             font-weight: 800;
             letter-spacing: -0.4px;
-            background: linear-gradient(135deg, #0f172a 0%, #4f46e5 50%, #7c3aed 100%);
+            color: #1e293b;
+            margin: 0;
+            background: linear-gradient(135deg, #0f172a 0%, #4f46e5 60%, #7c3aed 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 2px 4px rgba(79, 70, 229, 0.15));
         }
 
         .active-book-icon {
@@ -297,9 +287,8 @@
         @media (max-width: 900px) {
             .container { height: 98vh; width: 98vw; }
             .hero-section { flex: 0 0 18vh; }
-            .contador-inferior { top: 10px; right: 3vw; font-size: 0.75em; }
-            .search-helper-badge { padding: 6px 18px; margin-bottom: 8px; }
-            .search-helper-badge .badge-text { font-size: 1.15em; }
+            .contador-inferior { bottom: 10px; right: 10px; font-size: 0.75em; }
+            .search-title-text { font-size: 1.15em; }
             .main-content { padding: 1vh 3vw; justify-content: space-between; }
             h1 { font-size: 1.4em; } .subtitle-campus { font-size: 0.8em; }
             .middle-section-wrapper { flex-direction: column; gap: 1vh; margin: 0; }
@@ -322,18 +311,18 @@
                 <span id="numVisitas" class="badge-val-visitas">...</span>
             </div>
 
+            <!-- Contador Búsquedas Encontradas (parte inferior derecha de la fotografía) -->
+            <div id="contadorEncontrado" class="contador-inferior" style="display: none;" title="Contador de búsquedas">
+                <span class="badge-label">Búsquedas</span>
+                <span id="numEncontrado" class="badge-val">...</span>
+            </div>
+
             <img src="sala.png" alt="Biblioteca de Humanidades" class="shelf-photo-panoramic" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
         </div>
 
         <img src="imagenes/Mostrador.png" class="footer-decor-img" alt="Mostrador de biblioteca" onerror="this.src='mostrador.png'; this.onerror=null;">
 
         <div class="main-content">
-            
-            <!-- Contador Encontrados (Ubicado justo debajo de la imagen de sala a la derecha) -->
-            <div id="contadorEncontrado" class="contador-inferior" style="display: none;">
-                <span class="badge-label">Búsquedas</span>
-                <span id="numEncontrado" class="badge-val">...</span>
-            </div>
 
             <div class="header-title-wrapper">
                 <h1>Biblioteca de Humanidades</h1>
@@ -373,16 +362,18 @@
             </div>
 
             <div class="search-wrapper-centered">
-                <div class="search-helper-badge">
-                    <svg class="active-book-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Encabezado integrado encima de los botones -->
+                <div class="search-header-title">
+                    <svg class="active-book-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 21V5" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round"/>
                         <path class="page-left" d="M12 21C12 21 8.5 19.5 4 19.5V5C8.5 5 12 6.5 12 6.5" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(79, 70, 229, 0.12)"/>
                         <path class="page-right" d="M12 21C12 21 15.5 19.5 20 19.5V5C15.5 5 12 6.5 12 6.5" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(124, 58, 237, 0.12)"/>
                         <circle class="sparkle-1" cx="19" cy="4" r="1.5" fill="#f59e0b"/>
                         <circle class="sparkle-2" cx="5" cy="3" r="1.2" fill="#06b6d4"/>
                     </svg>
-                    <span class="badge-text">¿Necesitas encontrar un libro?</span>
+                    <h2 class="search-title-text">¿Necesitas encontrar un libro?</h2>
                 </div>
+                
                 <div class="action-buttons-container">
                     <a href="Signatura.html" class="signature-btn">
                         <div class="signature-icon-circle">
