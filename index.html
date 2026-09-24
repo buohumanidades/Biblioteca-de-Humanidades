@@ -60,16 +60,18 @@
             overflow: hidden; 
         }
         
-        /* Contador superior index (visitas A1) */
+        /* Contador superior en la imagen de sala (Visitas A1) */
         .contador-diario {
-            position: fixed;
+            position: absolute;
             top: 15px;
             right: 15px;
-            z-index: 9999;
-            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+            z-index: 10;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             color: #ffffff;
             border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
             display: flex;
             align-items: center;
             font-size: 0.82em;
@@ -80,9 +82,9 @@
         }
         .contador-diario:hover { transform: scale(1.05); }
         .contador-diario .badge-label-visitas {
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(79, 70, 229, 0.9);
             padding: 6px 11px;
-            color: #e2e8f0;
+            color: #ffffff;
             letter-spacing: 0.5px;
         }
         .contador-diario .badge-val-visitas {
@@ -91,7 +93,7 @@
             font-size: 1.05em;
         }
 
-        /* Contador inferior global (encontrado A2) */
+        /* Contador inferior global (Encontrado A2) */
         .contador-inferior {
             position: fixed;
             bottom: 15px;
@@ -309,11 +311,6 @@
     </style>
 </head>
 <body>
-    <!-- Contador Superior (index.html -> Celda A1) -->
-    <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Contador de visitas globales">
-        <span class="badge-label-visitas">Visitas</span>
-        <span id="numVisitas" class="badge-val-visitas">...</span>
-    </div>
 
     <!-- Contador Inferior Global (encontrado.html -> Celda A2) -->
     <div id="contadorEncontrado" class="contador-inferior" style="display: none;">
@@ -324,6 +321,12 @@
     <div class="container">
         
         <div class="hero-section">
+            <!-- Contador Visitas movido dentro de la imagen de sala (parte superior derecha) -->
+            <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Contador de visitas globales">
+                <span class="badge-label-visitas">Visitas</span>
+                <span id="numVisitas" class="badge-val-visitas">...</span>
+            </div>
+
             <img src="sala.png" alt="Biblioteca de Humanidades" class="shelf-photo-panoramic" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
         </div>
 
@@ -459,8 +462,8 @@
         // URL UNIFICADA DE GOOGLE APPS SCRIPT
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
 
-        // --- 1. CONTADOR SUPERIOR DERECHO (Visitas Index -> Incrementa Celda A1) ---
-        async function gestionarContadorVisitasIndex() {
+        // --- 1. SUMAR VISITA AL CARGAR (Celda A1) ---
+        async function incrementarVisitasIndex() {
             const numVisitas = document.getElementById('numVisitas');
             const divContador = document.getElementById('contadorVisitas');
             if (!numVisitas || !divContador) return;
@@ -471,7 +474,6 @@
             const timestamp = hoy.getTime(); 
 
             try {
-                // Forzamos la asignación a celda A1 mediante celda=A1 y tipo=visitas_index
                 const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=sumar_con_fecha&fecha=${fechaTexto}&t=${timestamp}`, {
                     method: 'GET',
                     redirect: 'follow'
@@ -487,39 +489,56 @@
                 }
             } catch (error) {
                 console.error("Error al conectar con Google Sheets para A1:", error);
-                numVisitas.textContent = "Offline";
+                if (numVisitas.textContent === '...') numVisitas.textContent = "Offline";
             } finally {
                 divContador.style.display = 'flex';
             }
         }
 
-        // --- 2. CONTADOR INFERIOR DERECHO (Encontrados -> Lee Celda A2 sin incrementar) ---
-        async function obtenerContadorEncontradoGlobal() {
-            const divEncontrado = document.getElementById('contadorEncontrado');
-            const numEncontrado = document.getElementById('numEncontrado');
-            if (!divEncontrado || !numEncontrado) return;
-            
+        // --- 2. ACTUALIZACIÓN PERIÓDICA DE AMBOS CONTADORES (Celda A1 y Celda A2 sin incrementar) ---
+        async function refrescarTodosLosContadores() {
             const timestamp = new Date().getTime();
 
+            // Refrescar Encontrados (A2)
             try {
-                // Forzamos la lectura de la Celda A2 mediante celda=A2 y tipo=encontrados
-                const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&celda=A2&accion=leer&t=${timestamp}`, {
+                const divEncontrado = document.getElementById('contadorEncontrado');
+                const numEncontrado = document.getElementById('numEncontrado');
+
+                const resA2 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&celda=A2&accion=leer&t=${timestamp}`, {
                     method: 'GET',
                     redirect: 'follow'
                 });
-                if (!respuesta.ok) throw new Error("Error consultando encontrados");
-                const datos = await respuesta.json();
-                
-                const valorEncontrados = datos.encontrados ?? datos.visitas ?? datos.valor ?? datos.A2 ?? datos.resultado ?? datos.total;
-
-                if (valorEncontrados !== undefined && valorEncontrados !== null) {
-                    numEncontrado.textContent = valorEncontrados;
+                if (resA2.ok) {
+                    const datosA2 = await resA2.json();
+                    const valorEncontrados = datosA2.encontrados ?? datosA2.visitas ?? datosA2.valor ?? datosA2.A2 ?? datosA2.resultado;
+                    if (valorEncontrados !== undefined && valorEncontrados !== null && numEncontrado) {
+                        numEncontrado.textContent = valorEncontrados;
+                    }
                 }
-            } catch (error) {
-                console.warn("Error leyendo el contador de encontrados desde Google Sheets:", error);
-                if (numEncontrado.textContent === '...') numEncontrado.textContent = '0';
-            } finally {
-                divEncontrado.style.display = 'flex';
+                if (divEncontrado) divEncontrado.style.display = 'flex';
+            } catch (err) {
+                console.warn("Error leyendo el contador de encontrados:", err);
+            }
+
+            // Refrescar Visitas (A1)
+            try {
+                const divVisitas = document.getElementById('contadorVisitas');
+                const numVisitas = document.getElementById('numVisitas');
+
+                const resA1 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=leer&t=${timestamp}`, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
+                if (resA1.ok) {
+                    const datosA1 = await resA1.json();
+                    const valorVisitas = datosA1.visitas ?? datosA1.valor ?? datosA1.A1 ?? datosA1.resultado;
+                    if (valorVisitas !== undefined && valorVisitas !== null && numVisitas) {
+                        numVisitas.textContent = valorVisitas;
+                    }
+                }
+                if (divVisitas) divVisitas.style.display = 'flex';
+            } catch (err) {
+                console.warn("Error leyendo el contador de visitas:", err);
             }
         }
 
@@ -543,14 +562,18 @@
             if (/windows/i.test(userAgent)) body.classList.add('os-windows');
             if (/android|iphone|ipad|ipod/i.test(userAgent)) body.classList.add('is-mobile-device');
             
-            gestionarContadorVisitasIndex();
-            obtenerContadorEncontradoGlobal();
+            // 1. Sumar la visita de la entrada del usuario
+            incrementarVisitasIndex();
 
-            setInterval(obtenerContadorEncontradoGlobal, 60000);
+            // 2. Obtener valores iniciales actualizados de ambos contadores
+            refrescarTodosLosContadores();
+
+            // 3. Programar el ciclo de refresco automático cada 60.000 ms (60 segundos)
+            setInterval(refrescarTodosLosContadores, 60000);
         });
 
-        window.addEventListener("focus", obtenerContadorEncontradoGlobal);
-        window.addEventListener("pageshow", obtenerContadorEncontradoGlobal);
+        window.addEventListener("focus", refrescarTodosLosContadores);
+        window.addEventListener("pageshow", refrescarTodosLosContadores);
 
         // --- FUNCIONES MODALES ---
         function abrirModalGrados(e) {
