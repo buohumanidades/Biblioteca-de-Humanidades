@@ -22,36 +22,31 @@
             justify-content: center;
             padding: 0; 
             box-sizing: border-box;
-            
-            /* Animación de fondo de colores */
             background: linear-gradient(45deg, #a8edea, #fed6e3, #e0c3fc, #8ec5fc);
             background-size: 400% 400%;
             animation: gradientBG 12s ease infinite;
         }
 
-        /* Keyframes para el fondo animado */
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* --- Estilo del contador diario global --- */
+        /* --- Estilo del contador diario global optimizado para imagen --- */
         .contador-diario {
             position: fixed;
             top: 15px;
             right: 15px;
-            background: linear-gradient(135deg, #2c3e50, #34495e);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 0.95em;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(44, 62, 80, 0.3);
             z-index: 9999;
+            /* Se han quitado fondos y bordes porque la imagen SVG ya trae su propio diseño */
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             display: flex;
-            align-items: center;
-            gap: 8px;
+        }
+        .contador-diario img {
+            display: block;
+            height: 26px; /* Tamaño perfecto para la etiqueta */
         }
 
         .container { 
@@ -199,24 +194,15 @@
             background: #219a52;
         }
 
-        /* Adaptación para pantallas grandes y móviles */
         @media (min-width: 901px) {
             body { padding: 0; }
             .container { padding: 25px 35px; }
             h1 { font-size: 2em; margin-bottom: 20px; padding-bottom: 12px; }
-            
             .location-route {
-                flex-direction: row;
-                flex-wrap: wrap;
-                align-items: center;
-                justify-content: center;
-                gap: 15px;
-                padding: 15px;
-                border-left: none; 
-                border-top: 4px solid #3498db;
-                border-radius: 10px;
+                flex-direction: row; flex-wrap: wrap; align-items: center;
+                justify-content: center; gap: 15px; padding: 15px;
+                border-left: none; border-top: 4px solid #3498db; border-radius: 10px;
             }
-            
             .step-planta { width: auto; padding-right: 0; gap: 15px; }
             .route-step.final-step { margin-left: 0; padding: 8px 16px; }
             .iframe-container { margin-bottom: 20px; }
@@ -234,7 +220,7 @@
     </style>
 </head>
 <body>
-    <!-- Contenedor del contador global de visitas -->
+    <!-- Contenedor del contador visual (Badge) -->
     <div id="contadorVisitas" class="contador-diario" style="display: none;"></div>
 
     <div class="container">
@@ -316,41 +302,32 @@
             `;
         }
 
-        // --- LÓGICA DEL CONTADOR GLOBAL DIARIO (Con gestión de errores) ---
-        async function registrarVisitaGlobalDiaria() {
+        // --- NUEVA LÓGICA: Contador basado en imagen (Badge infalible) ---
+        function mostrarContadorVisualDiario() {
             const divContador = document.getElementById('contadorVisitas');
             if (!divContador) return; 
-            
-            // Mostrar inmediatamente en estado de carga
-            divContador.style.display = 'flex';
-            divContador.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Cargando...`;
 
+            // Extraemos la fecha del día actual
             const fecha = new Date();
             const dia = String(fecha.getDate()).padStart(2, '0');
             const mes = String(fecha.getMonth() + 1).padStart(2, '0');
             const anio = fecha.getFullYear();
-            const idDia = `encontrado_${anio}_${mes}_${dia}`;
             
-            const espacioNombres = "biblioteca_humanidades_uniovi";
-
-            try {
-                const url = `https://api.counterapi.dev/v1/${espacioNombres}/${idDia}/up`;
-                const respuesta = await fetch(url);
-                
-                if (respuesta.ok) {
-                    const datos = await respuesta.json();
-                    divContador.innerHTML = `<i class="fa-solid fa-users"></i> Hoy: ${datos.count}`;
-                } else {
-                    divContador.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Error API`;
-                }
-            } catch (error) {
-                console.error("Error al conectar con la API:", error);
-                divContador.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Bloqueado`;
-            }
+            // Creamos una "URL falsa" única para el día de hoy.
+            // Esto hace que el contador de 'hits.sh' se reinicie a cero cada día a medianoche.
+            const rutaUnica = `biblioteca_humanidades/visitas_${anio}${mes}${dia}`;
+            
+            // Construimos el enlace a la API visual. 
+            // 2980b9 es el color azul de tus iconos y 1a252f es el color oscuro de tus botones.
+            const urlImagenBadge = `https://hits.sh/uniovi.es/${rutaUnica}.svg?label=Visitas%20hoy&color=2980b9&labelColor=1a252f`;
+            
+            // Insertamos la imagen (al cargar el src, suma 1 visita automáticamente en su servidor)
+            divContador.innerHTML = `<img src="${urlImagenBadge}" alt="Contador de visitas de hoy">`;
+            divContador.style.display = 'flex';
         }
 
-        // Ejecutar el contador al cargar la página
-        registrarVisitaGlobalDiaria();
+        // Ejecutar la inserción de la imagen al instante
+        mostrarContadorVisualDiario();
     </script>
 </body>
 </html>
