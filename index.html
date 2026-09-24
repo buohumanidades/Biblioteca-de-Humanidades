@@ -371,7 +371,6 @@
     </div>
 
     <script>
-        <script>
         // --- 1. CONTADOR SUPERIOR DERECHO (Visitas del día, Hits.sh) ---
         function mostrarContadorVisualDiario() {
             const divContador = document.getElementById('contadorVisitas');
@@ -384,7 +383,7 @@
             
             const resetVer = localStorage.getItem('reset_index_ver') || '1';
             const rutaUnica = `uniovi_bib_humanidades/visitas_index_${anio}${mes}${dia}_v${resetVer}`;
-            // AÑADIDO: Parámetro dinámico nocache para forzar la recarga de la imagen
+            // Parámetro dinámico nocache para forzar la recarga de la imagen
             const urlImagenBadge = `https://hits.sh/uniovi.es/${rutaUnica}.svg?label=%20&color=4f46e5&labelColor=1e293b&nocache=${Date.now()}`;
             
             divContador.innerHTML = `<img src="${urlImagenBadge}" alt="Contador de visitas de hoy">`;
@@ -410,7 +409,7 @@
         function obtenerContadorEncontradoGlobal() {
             const numEncontrado = document.getElementById('numEncontrado');
             
-            // AÑADIDO: timestamp en la URL y { cache: 'no-store' } para evitar la caché del navegador
+            // Timestamp en la URL y { cache: 'no-store' } para evitar la caché del navegador
             fetch(`https://api.counterapi.dev/v1/bib_humanidades/encontrados_global?t=${Date.now()}`, { cache: 'no-store' })
                 .then(respuesta => respuesta.json())
                 .then(datos => {
@@ -460,7 +459,7 @@
             mostrarContadorVisualDiario();
             obtenerContadorEncontradoGlobal();
 
-            // AÑADIDO: Ambas funciones en el bucle para que tanto las visitas como los encontrados se actualicen
+            // Ambas funciones en el bucle para que tanto las visitas como los encontrados se actualicen
             setInterval(() => {
                 obtenerContadorEncontradoGlobal();
                 mostrarContadorVisualDiario();
