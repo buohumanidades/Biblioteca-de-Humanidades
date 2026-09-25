@@ -13,9 +13,7 @@
             --image-opacity: 1.0; 
             --primary-grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             --accent-grad: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-            /* Variable para cambiar el tamaño del texto "Necesito encontrar un libro" */
             --titulo-busqueda-size: 2em; 
-            /* Variable para cambiar el tamaño del texto "Sé el título o parte del mismo" */
             --titulo-btn-text-size: 1.00em;
         }
 
@@ -60,7 +58,6 @@
             overflow: hidden; 
         }
         
-        /* Contador superior en la imagen de sala (Visitas A1) */
         .contador-diario {
             position: absolute;
             top: 15px;
@@ -96,7 +93,6 @@
             font-size: 1.05em;
         }
 
-        /* Contador Búsquedas Encontradas (Ubicado dentro de la foto de sala, parte inferior derecha) */
         .contador-inferior {
             position: absolute;
             bottom: 15px;
@@ -195,7 +191,6 @@
 
         .search-wrapper-centered { display: flex; flex-direction: column; align-items: center; width: 100%; margin: 0.5vh auto; }
         
-        /* Título explicativo de búsqueda (asociado a los botones) */
         .search-header-title {
             display: inline-flex; 
             align-items: center; 
@@ -269,7 +264,6 @@
             transform: translateY(-2px); box-shadow: 0 6px 15px rgba(79, 70, 229, 0.1); border-color: #cbd5e1;
         }
 
-        /* MODALES */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.6); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(6px); opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.active { display: flex; opacity: 1; }
         .modal-content { background: #ffffff; padding: 2.5rem; border-radius: 20px; width: 90%; max-width: 580px; max-height: 85vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.25); position: relative; transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -313,7 +307,6 @@
     <div class="container">
         
         <div class="hero-section">
-            <!-- Contador Visitas dentro de la imagen de sala (parte superior derecha) con icono vectorial SVG -->
             <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Contador de visitas globales">
                 <span class="badge-label-visitas">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -323,7 +316,7 @@
                 </span>
                 <span id="numVisitas" class="badge-val-visitas">...</span>
             </div>
-            <!-- Contador Búsquedas Encontradas (parte inferior derecha de la fotografía) -->
+            
             <div id="contadorEncontrado" class="contador-inferior" style="display: none;" title="Contador de búsquedas">            
                 <span class="btn-icon">🎓</span>
                 <span id="numEncontrado" class="badge-val">...</span>
@@ -374,7 +367,6 @@
             </div>
 
             <div class="search-wrapper-centered">
-                <!-- Encabezado integrado encima de los botones -->
                 <div class="search-header-title">
                     <svg class="active-book-icon" width="38" height="38" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 21V5" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round"/>
@@ -466,6 +458,23 @@
         // URL UNIFICADA DE GOOGLE APPS SCRIPT
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
 
+        let inicializando = true; 
+
+        // Función auxiliar para extraer el número devuelto en cualquier estructura JSON estándar
+        function extraerNumeroVisitas(datos) {
+            if (!datos) return null;
+            if (typeof datos === 'number') return datos;
+            const campos = ['visitas', 'valor', 'A1', 'A2', 'encontrados', 'total', 'resultado', 'count', 'cantidad'];
+            for (const campo of campos) {
+                if (datos[campo] !== undefined && datos[campo] !== null && datos[campo] !== '') {
+                    const num = parseInt(datos[campo], 10);
+                    if (!isNaN(num)) return num;
+                }
+            }
+            if (datos.data) return extraerNumeroVisitas(datos.data);
+            return null;
+        }
+
         // --- 1. SUMAR VISITA AL CARGAR (Celda A1) ---
         async function incrementarVisitasIndex() {
             const numVisitas = document.getElementById('numVisitas');
@@ -473,32 +482,47 @@
             if (!numVisitas || !divContador) return;
 
             const timestamp = new Date().getTime(); 
+            const peticionUrl = `${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=sumar&t=${timestamp}`;
 
             try {
-                // Se ha modificado la llamada para usar "accion=sumar" sin parámetros de fecha
-                const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=sumar&t=${timestamp}`, {
+                // Intento principal: Petición CORS con seguimiento explícito de redirecciones HTTP
+                const respuesta = await fetch(peticionUrl, {
                     method: 'GET',
-                    redirect: 'follow'
+                    mode: 'cors',
+                    redirect: 'follow',
+                    cache: 'no-cache'
                 });
                 
-                const datos = await respuesta.json();
-                const valorVisitas = datos.visitas ?? datos.valor ?? datos.A1 ?? datos.resultado ?? datos.total;
-                
-                if (valorVisitas !== undefined && valorVisitas !== null) {
-                    numVisitas.textContent = valorVisitas;
-                } else {
-                    numVisitas.textContent = "--";
+                if (respuesta.ok) {
+                    const datos = await respuesta.json();
+                    const valorVisitas = extraerNumeroVisitas(datos);
+                    
+                    if (valorVisitas !== null) {
+                        numVisitas.textContent = valorVisitas;
+                        divContador.style.display = 'flex';
+                        return;
+                    }
                 }
             } catch (error) {
-                console.error("Error al conectar con Google Sheets para A1:", error);
-                if (numVisitas.textContent === '...') numVisitas.textContent = "Offline";
+                console.warn("Llamada CORS directa no legible, ejecutando contingencia no-cors:", error);
+            }
+
+            // Contingencia (Fallback): Si CORS falla o se bloquea la lectura, aseguramos la ejecución del incremento
+            try {
+                await fetch(peticionUrl, {
+                    method: 'GET',
+                    mode: 'no-cors',
+                    cache: 'no-cache'
+                });
+            } catch (eFallback) {
+                console.error("Error en petición de contingencia a Google Sheets:", eFallback);
             } finally {
                 divContador.style.display = 'flex';
             }
         }
 
-        // --- 2. ACTUALIZACIÓN PERIÓDICA DE AMBOS CONTADORES (Celda A1 y Celda A2 sin incrementar) ---
-        async function refrescarTodosLosContadores() {
+        // --- 2. ACTUALIZACIÓN PERIÓDICA DE CONTADORES ---
+        async function refrescarTodosLosContadores(skipA1 = false) {
             const timestamp = new Date().getTime();
 
             // Refrescar Encontrados (A2)
@@ -508,12 +532,14 @@
 
                 const resA2 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&celda=A2&accion=leer&t=${timestamp}`, {
                     method: 'GET',
-                    redirect: 'follow'
+                    mode: 'cors',
+                    redirect: 'follow',
+                    cache: 'no-cache'
                 });
                 if (resA2.ok) {
                     const datosA2 = await resA2.json();
-                    const valorEncontrados = datosA2.encontrados ?? datosA2.visitas ?? datosA2.valor ?? datosA2.A2 ?? datosA2.resultado;
-                    if (valorEncontrados !== undefined && valorEncontrados !== null && numEncontrado) {
+                    const valorEncontrados = extraerNumeroVisitas(datosA2);
+                    if (valorEncontrados !== null && numEncontrado) {
                         numEncontrado.textContent = valorEncontrados;
                     }
                 }
@@ -523,28 +549,31 @@
             }
 
             // Refrescar Visitas (A1)
-            try {
-                const divVisitas = document.getElementById('contadorVisitas');
-                const numVisitas = document.getElementById('numVisitas');
+            if (!skipA1) {
+                try {
+                    const divVisitas = document.getElementById('contadorVisitas');
+                    const numVisitas = document.getElementById('numVisitas');
 
-                const resA1 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=leer&t=${timestamp}`, {
-                    method: 'GET',
-                    redirect: 'follow'
-                });
-                if (resA1.ok) {
-                    const datosA1 = await resA1.json();
-                    const valorVisitas = datosA1.visitas ?? datosA1.valor ?? datosA1.A1 ?? datosA1.resultado;
-                    if (valorVisitas !== undefined && valorVisitas !== null && numVisitas) {
-                        numVisitas.textContent = valorVisitas;
+                    const resA1 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=leer&t=${timestamp}`, {
+                        method: 'GET',
+                        mode: 'cors',
+                        redirect: 'follow',
+                        cache: 'no-cache'
+                    });
+                    if (resA1.ok) {
+                        const datosA1 = await resA1.json();
+                        const valorVisitas = extraerNumeroVisitas(datosA1);
+                        if (valorVisitas !== null && numVisitas) {
+                            numVisitas.textContent = valorVisitas;
+                        }
                     }
+                    if (divVisitas) divVisitas.style.display = 'flex';
+                } catch (err) {
+                    console.warn("Error leyendo el contador de visitas:", err);
                 }
-                if (divVisitas) divVisitas.style.display = 'flex';
-            } catch (err) {
-                console.warn("Error leyendo el contador de visitas:", err);
             }
         }
 
-        // Escucha cambios en tiempo real desde Encontrado.html
         try {
             const canal = new BroadcastChannel('canal_contador_encontrados');
             canal.onmessage = function(event) {
@@ -557,25 +586,38 @@
             console.log("BroadcastChannel no soportado");
         }
 
-        // Inicializar al cargar y programar actualización cada 60 segundos
-        document.addEventListener("DOMContentLoaded", function() {
+        // --- FLUJO DE INICIALIZACIÓN ASÍNCRONO ---
+        document.addEventListener("DOMContentLoaded", async function() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
             const body = document.body;
             if (/windows/i.test(userAgent)) body.classList.add('os-windows');
             if (/android|iphone|ipad|ipod/i.test(userAgent)) body.classList.add('is-mobile-device');
             
-            // 1. Sumar la visita de la entrada del usuario
-            incrementarVisitasIndex();
+            // 1. Mandamos SUMAR la visita a A1
+            await incrementarVisitasIndex();
 
-            // 2. Obtener valores iniciales actualizados de ambos contadores
-            refrescarTodosLosContadores();
+            // 2. Pausa breve para asegurar el procesamiento en Google Sheets
+            await new Promise(resolve => setTimeout(resolve, 300));
 
-            // 3. Programar el ciclo de refresco automático cada 60.000 ms (60 segundos)
-            setInterval(refrescarTodosLosContadores, 60000);
+            // 3. Leemos todos los contadores en pantalla
+            await refrescarTodosLosContadores(false);
+
+            // 4. Ciclo de refresco periódico cada 60 segundos
+            setInterval(() => refrescarTodosLosContadores(false), 60000);
+            
+            // 5. Finalizar inicialización
+            inicializando = false;
         });
 
-        window.addEventListener("focus", refrescarTodosLosContadores);
-        window.addEventListener("pageshow", refrescarTodosLosContadores);
+        window.addEventListener("focus", () => {
+            if (!inicializando) refrescarTodosLosContadores(false);
+        });
+        
+        window.addEventListener("pageshow", (event) => {
+            if (event.persisted && !inicializando) { 
+                refrescarTodosLosContadores(false);
+            }
+        });
 
         // --- FUNCIONES MODALES ---
         function abrirModalGrados(e) {
