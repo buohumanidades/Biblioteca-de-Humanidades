@@ -775,7 +775,15 @@
                     }
 
                     // Se construye la URL del OPAC combinando el autor y el título extraídos del JSON
-                    let urlBusqueda = `https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH&xsqf01=${encodeURIComponent(autor + ' ' + titulo)}`;
+                    // MODIFICACIÓN: Se añade el título entre comillas
+                    let terminoBusqueda = "";
+                    if (autor) {
+                        terminoBusqueda = autor.trim() + ' "' + titulo.trim() + '"';
+                    } else {
+                        terminoBusqueda = '"' + titulo.trim() + '"';
+                    }
+                    
+                    let urlBusqueda = `https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH&xsqf01=${encodeURIComponent(terminoBusqueda)}`;
                     
                     // Contenedor del título de la obra
                     const titleDiv = document.createElement("div");
