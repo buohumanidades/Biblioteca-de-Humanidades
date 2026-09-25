@@ -241,7 +241,7 @@
     "GRADO": 311,
     "ASIGNATURA": "Ética",
     "AUTOR": "Gómez",
-    "Obra/Título": "La aventura de la moralidad",
+    "Obra/Título": "La aventura de la moralidad paradigmas fronteras y probl",
     "Texto completo de la obra donde se extrae la información": "Gómez, C., y Mugerza (eds.), La aventura de la moralidad. Madrid, Alianza, 2007."
   },
   {
@@ -264,13 +264,6 @@
     "AUTOR": "Williams",
     "Obra/Título": "Introducción a la ética",
     "Texto completo de la obra donde se extrae la información": "Williams, B., Introducción a la ética. Madrid, Cátedra, 1982."
-  },
-  {
-    "GRADO": 311,
-    "ASIGNATURA": "Ética",
-    "AUTOR": "Internet",
-    "Obra/Título": "Internet Encyclopedia of Philosophy",
-    "Texto completo de la obra donde se extrae la información": "Internet Encyclopedia of Philosophy, http://www.iep.utm.edu/ (de acceso libre)"
   },
   {
     "GRADO": 311,
@@ -360,7 +353,7 @@
     "GRADO": 311,
     "ASIGNATURA": "Ética",
     "AUTOR": "Habermas",
-    "Obra/Título": "Teoría de la acción comunicativa: complementos y estudios previos",
+    "Obra/Título": "Teoría de la acción comunicativa: complementos y estudios",
     "Texto completo de la obra donde se extrae la información": "Habermas, J., Teoría de la acción comunicativa: complementos y estudios previos. Madrid, Cátedra, 1989."
   },
   {
@@ -5451,14 +5444,7 @@
     "AUTOR": "Singer",
     "Obra/Título": "Ética práctica",
     "Texto completo de la obra donde se extrae la información": "Singer, P. (ed.); Ética práctica, Akal, Madrid, 2009."
-  },
-  {
-    "GRADO": 341,
-    "ASIGNATURA": "Problemas de Ética Práctica",
-    "AUTOR": "Internet",
-    "Obra/Título": "Internet Encyclopedia of Philosophy",
-    "Texto completo de la obra donde se extrae la información": "Internet Encyclopedia of Philosophy, http://www.iep.utm.edu/ (de acceso libre)"
-  },
+  }, 
   {
     "GRADO": 341,
     "ASIGNATURA": "Problemas de Ética Práctica",
