@@ -466,6 +466,9 @@
         // URL UNIFICADA DE GOOGLE APPS SCRIPT
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
 
+        // Variable global para evitar sobreescribir peticiones durante la carga
+        let inicializando = true; 
+
         // --- 1. SUMAR VISITA AL CARGAR (Celda A1) ---
         async function incrementarVisitasIndex() {
             const numVisitas = document.getElementById('numVisitas');
@@ -475,7 +478,6 @@
             const timestamp = new Date().getTime(); 
 
             try {
-                // Se ha modificado la llamada para usar "accion=sumar" sin parámetros de fecha
                 const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=sumar&t=${timestamp}`, {
                     method: 'GET',
                     redirect: 'follow'
@@ -497,11 +499,12 @@
             }
         }
 
-        // --- 2. ACTUALIZACIÓN PERIÓDICA DE AMBOS CONTADORES (Celda A1 y Celda A2 sin incrementar) ---
-        async function refrescarTodosLosContadores() {
+        // --- 2. ACTUALIZACIÓN PERIÓDICA DE AMBOS CONTADORES (Celda A1 y Celda A2) ---
+        // Se añade el parámetro skipA1 para evitar que la lectura pise la acción de sumar
+        async function refrescarTodosLosContadores(skipA1 = false) {
             const timestamp = new Date().getTime();
 
-            // Refrescar Encontrados (A2)
+            // Refrescar Encontrados (A2) siempre
             try {
                 const divEncontrado = document.getElementById('contadorEncontrado');
                 const numEncontrado = document.getElementById('numEncontrado');
@@ -522,25 +525,27 @@
                 console.warn("Error leyendo el contador de encontrados:", err);
             }
 
-            // Refrescar Visitas (A1)
-            try {
-                const divVisitas = document.getElementById('contadorVisitas');
-                const numVisitas = document.getElementById('numVisitas');
+            // Refrescar Visitas (A1) solo si NO estamos en skipA1
+            if (!skipA1) {
+                try {
+                    const divVisitas = document.getElementById('contadorVisitas');
+                    const numVisitas = document.getElementById('numVisitas');
 
-                const resA1 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=leer&t=${timestamp}`, {
-                    method: 'GET',
-                    redirect: 'follow'
-                });
-                if (resA1.ok) {
-                    const datosA1 = await resA1.json();
-                    const valorVisitas = datosA1.visitas ?? datosA1.valor ?? datosA1.A1 ?? datosA1.resultado;
-                    if (valorVisitas !== undefined && valorVisitas !== null && numVisitas) {
-                        numVisitas.textContent = valorVisitas;
+                    const resA1 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=leer&t=${timestamp}`, {
+                        method: 'GET',
+                        redirect: 'follow'
+                    });
+                    if (resA1.ok) {
+                        const datosA1 = await resA1.json();
+                        const valorVisitas = datosA1.visitas ?? datosA1.valor ?? datosA1.A1 ?? datosA1.resultado;
+                        if (valorVisitas !== undefined && valorVisitas !== null && numVisitas) {
+                            numVisitas.textContent = valorVisitas;
+                        }
                     }
+                    if (divVisitas) divVisitas.style.display = 'flex';
+                } catch (err) {
+                    console.warn("Error leyendo el contador de visitas:", err);
                 }
-                if (divVisitas) divVisitas.style.display = 'flex';
-            } catch (err) {
-                console.warn("Error leyendo el contador de visitas:", err);
             }
         }
 
@@ -557,25 +562,37 @@
             console.log("BroadcastChannel no soportado");
         }
 
-        // Inicializar al cargar y programar actualización cada 60 segundos
+        // Inicialización optimizada
         document.addEventListener("DOMContentLoaded", function() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
             const body = document.body;
             if (/windows/i.test(userAgent)) body.classList.add('os-windows');
             if (/android|iphone|ipad|ipod/i.test(userAgent)) body.classList.add('is-mobile-device');
             
-            // 1. Sumar la visita de la entrada del usuario
+            // 1. Mandamos SUMAR la visita. Esta función ya actualiza el número sola al terminar.
             incrementarVisitasIndex();
 
-            // 2. Obtener valores iniciales actualizados de ambos contadores
-            refrescarTodosLosContadores();
+            // 2. Leemos los encontrados (A2), pero SALTAMOS la lectura de A1 (pasamos 'true') para no machacar el 'sumar'.
+            refrescarTodosLosContadores(true);
 
-            // 3. Programar el ciclo de refresco automático cada 60.000 ms (60 segundos)
-            setInterval(refrescarTodosLosContadores, 60000);
+            // 3. Programamos el ciclo de refresco para que lea ambos contadores cada minuto.
+            setInterval(() => refrescarTodosLosContadores(false), 60000);
+            
+            // 4. Liberar el flag de inicio tras 3 segundos.
+            setTimeout(() => { inicializando = false; }, 3000);
         });
 
-        window.addEventListener("focus", refrescarTodosLosContadores);
-        window.addEventListener("pageshow", refrescarTodosLosContadores);
+        // Solo permitir refrescos por foco si ya pasó la carga inicial
+        window.addEventListener("focus", () => {
+            if (!inicializando) refrescarTodosLosContadores(false);
+        });
+        
+        // Evitar el doble disparo de peticiones durante la carga de página
+        window.addEventListener("pageshow", (event) => {
+            if (event.persisted) { // Solo disparar si viene de darle al botón "Atrás" del navegador
+                refrescarTodosLosContadores(false);
+            }
+        });
 
         // --- FUNCIONES MODALES ---
         function abrirModalGrados(e) {
