@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biblioteca de Humanidades | Campus de El Milán</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@800&display=swap');
 
         :root {
             --alto-de-la-imagen: 23vh;  
@@ -13,6 +13,10 @@
             --image-opacity: 1.0; 
             --primary-grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             --accent-grad: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            /* Variable para cambiar el tamaño del texto "Necesito encontrar un libro" */
+            --titulo-busqueda-size: 2em; 
+            /* Variable para cambiar el tamaño del texto "Sé el título o parte del mismo" */
+            --titulo-btn-text-size: 1.00em;
         }
 
         @keyframes vibrantBackground {
@@ -24,6 +28,19 @@
         @keyframes pulseGlow {
             0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(124, 58, 237, 0.3); }
             50% { transform: scale(1.01); box-shadow: 0 0 25px rgba(124, 58, 237, 0.5); }
+        }
+
+        @keyframes pageOpenRight {
+            0%, 100% { transform: perspective(300px) rotateY(0deg); }
+            50% { transform: perspective(300px) rotateY(-55deg); }
+        }
+        @keyframes pageOpenLeft {
+            0%, 100% { transform: perspective(300px) rotateY(0deg); }
+            50% { transform: perspective(300px) rotateY(55deg); }
+        }
+        @keyframes sparkleTwinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.7); }
+            50% { opacity: 1; transform: scale(1.4); }
         }
 
         * { box-sizing: border-box; }
@@ -43,39 +60,61 @@
             overflow: hidden; 
         }
         
-        /* Contador diario index (superior derecho) */
+        /* Contador superior en la imagen de sala (Visitas A1) */
         .contador-diario {
-            position: fixed;
+            position: absolute;
             top: 15px;
             right: 15px;
-            z-index: 9999;
-            border-radius: 6px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            display: flex;
-            cursor: pointer;
-            user-select: none;
-            transition: transform 0.2s ease;
-        }
-        .contador-diario:hover { transform: scale(1.05); }
-        .contador-diario img { display: block; height: 26px; border-radius: 6px; }
-
-        /* Contador global encontrado.html (inferior derecho) */
-        .contador-inferior {
-            position: fixed;
-            bottom: 15px;
-            right: 15px;
-            z-index: 9999;
-            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            z-index: 10;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             color: #ffffff;
             border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
             display: flex;
             align-items: center;
             font-size: 0.82em;
             font-weight: 700;
             user-select: none;
             overflow: hidden;
+            transition: transform 0.2s ease;
         }
+        .contador-diario:hover { transform: scale(1.05); }
+        .contador-diario .badge-label-visitas {
+            background: rgba(79, 70, 229, 0.9);
+            padding: 6px 11px;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .contador-diario .badge-val-visitas {
+            padding: 6px 12px;
+            color: #ffffff;
+            font-size: 1.05em;
+        }
+
+        /* Contador Búsquedas Encontradas (Ubicado dentro de la foto de sala, parte inferior derecha) */
+        .contador-inferior {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            z-index: 10;
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: #ffffff;
+            border-radius: 6px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            font-size: 0.82em;
+            font-weight: 700;
+            user-select: none;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+        .contador-inferior:hover { transform: scale(1.05); }
         .contador-inferior .badge-label {
             background: rgba(15, 23, 42, 0.85);
             padding: 6px 11px;
@@ -155,11 +194,49 @@
         .btn-icon { font-size: 1.3em; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
 
         .search-wrapper-centered { display: flex; flex-direction: column; align-items: center; width: 100%; margin: 0.5vh auto; }
-        .search-helper-badge {
-            display: inline-flex; align-items: center; gap: 8px; background: transparent; color: #1e293b; 
-            font-family: 'Playfair Display', serif; font-size: 1.35em; font-weight: 700; font-style: italic;
-            letter-spacing: 0.5px; padding: 4px 10px; border: none; margin-bottom: 10px; text-align: center;
+        
+        /* Título explicativo de búsqueda (asociado a los botones) */
+        .search-header-title {
+            display: inline-flex; 
+            align-items: center; 
+            gap: 12px; 
+            margin-bottom: 10px; 
+            text-align: center;
+            user-select: none;
         }
+        .search-title-text {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: var(--titulo-busqueda-size);
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            color: #1e293b;
+            margin: 0;
+            background: linear-gradient(135deg, #0f172a 0%, #4f46e5 60%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .active-book-icon {
+            width: 38px;
+            height: 38px;
+            overflow: visible;
+            flex-shrink: 0;
+        }
+        .active-book-icon .page-right {
+            transform-origin: 12px center;
+            animation: pageOpenRight 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        .active-book-icon .page-left {
+            transform-origin: 12px center;
+            animation: pageOpenLeft 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        .active-book-icon .sparkle-1 {
+            animation: sparkleTwinkle 1.5s ease-in-out infinite alternate;
+        }
+        .active-book-icon .sparkle-2 {
+            animation: sparkleTwinkle 2s ease-in-out infinite alternate-reverse;
+        }
+
         .action-buttons-container { display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap; width: 100%; }
 
         .signature-btn {
@@ -173,7 +250,7 @@
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%); transform: translateY(-5px) scale(1.02); 
             box-shadow: 0 15px 35px rgba(79, 70, 229, 0.35); border-color: #818cf8;
         }
-        .signature-btn.title-btn span { font-size: 0.82em; line-height: 1.2; }
+        .signature-btn.title-btn span { font-size: var(--titulo-btn-text-size); line-height: 1.2; }
         .signature-icon-circle {
             display: flex; align-items: center; justify-content: center; width: 50px; height: 50px;
             background: linear-gradient(135deg, #ffffff, #f1f5f9); border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15); flex-shrink: 0;
@@ -217,7 +294,9 @@
         @media (max-width: 900px) {
             .container { height: 98vh; width: 98vw; }
             .hero-section { flex: 0 0 18vh; }
-            .search-helper-badge { font-size: 1.15em; padding: 2px 8px; margin-bottom: 8px; }
+            .contador-inferior { bottom: 10px; right: 10px; font-size: 0.75em; }
+            .search-title-text { font-size: 1.25em; }
+            .active-book-icon { width: 28px; height: 28px; }
             .main-content { padding: 1vh 3vw; justify-content: space-between; }
             h1 { font-size: 1.4em; } .subtitle-campus { font-size: 0.8em; }
             .middle-section-wrapper { flex-direction: column; gap: 1vh; margin: 0; }
@@ -230,25 +309,33 @@
     </style>
 </head>
 <body>
-    <!-- Contador Superior (index.html, local) -->
-    <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Doble clic para resetear visitas de inicio" ondblclick="resetearContadorIndex()"></div>
-
-    <!-- Contador Inferior Global (encontrado.html) -->
-    <div id="contadorEncontrado" class="contador-inferior" style="display: none;">
-        <span class="badge-label">Encontrados</span>
-        <span id="numEncontrado" class="badge-val">...</span>
-    </div>
 
     <div class="container">
         
         <div class="hero-section">
+            <!-- Contador Visitas dentro de la imagen de sala (parte superior derecha) con icono vectorial SVG -->
+            <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Contador de visitas globales">
+                <span class="badge-label-visitas">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </span>
+                <span id="numVisitas" class="badge-val-visitas">...</span>
+            </div>
+            <!-- Contador Búsquedas Encontradas (parte inferior derecha de la fotografía) -->
+            <div id="contadorEncontrado" class="contador-inferior" style="display: none;" title="Contador de búsquedas">            
+                <span class="btn-icon">🎓</span>
+                <span id="numEncontrado" class="badge-val">...</span>
+            </div>
+
             <img src="sala.png" alt="Biblioteca de Humanidades" class="shelf-photo-panoramic" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
         </div>
 
         <img src="imagenes/Mostrador.png" class="footer-decor-img" alt="Mostrador de biblioteca" onerror="this.src='mostrador.png'; this.onerror=null;">
 
         <div class="main-content">
-            
+
             <div class="header-title-wrapper">
                 <h1>Biblioteca de Humanidades</h1>
                 <div class="subtitle-campus">Campus de El Milán · Universidad de Oviedo</div>
@@ -287,13 +374,18 @@
             </div>
 
             <div class="search-wrapper-centered">
-                <div class="search-helper-badge">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="7" r="4"/>
-                        <path d="M12 14c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z"/>
+                <!-- Encabezado integrado encima de los botones -->
+                <div class="search-header-title">
+                    <svg class="active-book-icon" width="38" height="38" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 21V5" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round"/>
+                        <path class="page-left" d="M12 21C12 21 8.5 19.5 4 19.5V5C8.5 5 12 6.5 12 6.5" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(79, 70, 229, 0.12)"/>
+                        <path class="page-right" d="M12 21C12 21 15.5 19.5 20 19.5V5C15.5 5 12 6.5 12 6.5" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(124, 58, 237, 0.12)"/>
+                        <circle class="sparkle-1" cx="19" cy="4" r="1.5" fill="#f59e0b"/>
+                        <circle class="sparkle-2" cx="5" cy="3" r="1.2" fill="#06b6d4"/>
                     </svg>
-                    Necesito encontrar un libro
+                    <h2 class="search-title-text">Estoy buscando un libro</h2>
                 </div>
+                
                 <div class="action-buttons-container">
                     <a href="Signatura.html" class="signature-btn">
                         <div class="signature-icon-circle">
@@ -371,47 +463,98 @@
     </div>
 
     <script>
-        // --- 1. CONTADOR SUPERIOR DERECHO (Visitas de index.html, local) ---
-        function mostrarContadorVisualDiario() {
+        // URL UNIFICADA DE GOOGLE APPS SCRIPT
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
+
+        // --- 1. SUMAR VISITA AL CARGAR (Celda A1) ---
+        async function incrementarVisitasIndex() {
+            const numVisitas = document.getElementById('numVisitas');
             const divContador = document.getElementById('contadorVisitas');
-            if (!divContador) return; 
+            if (!numVisitas || !divContador) return;
 
-            const fecha = new Date();
-            const dia = String(fecha.getDate()).padStart(2, '0');
-            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-            const anio = fecha.getFullYear();
-            
-            const resetVer = localStorage.getItem('reset_index_ver') || '1';
-            const rutaUnica = `uniovi_bib_humanidades/visitas_index_${anio}${mes}${dia}_v${resetVer}`;
-            const urlImagenBadge = `https://hits.sh/uniovi.es/${rutaUnica}.svg?label=%20&color=4f46e5&labelColor=1e293b`;
-            
-            divContador.innerHTML = `<img src="${urlImagenBadge}" alt="Contador de visitas de hoy">`;
-            divContador.style.display = 'flex';
-        }
+            const timestamp = new Date().getTime(); 
 
-        function resetearContadorIndex() {
-            let ver = parseInt(localStorage.getItem('reset_index_ver') || '1', 10);
-            localStorage.setItem('reset_index_ver', ver + 1);
-            mostrarContadorVisualDiario();
-        }
-
-        // --- 2. CONTADOR INFERIOR DERECHO (encontrado.html, 100% GLOBAL) ---
-        function obtenerContadorEncontradoGlobal() {
-            const divEncontrado = document.getElementById('contadorEncontrado');
-            const numEncontrado = document.getElementById('numEncontrado');
-            if (!divEncontrado || !numEncontrado) return;
-
-            fetch('https://api.counterapi.dev/v1/bib_humanidades/encontrados_global/')
-                .then(respuesta => respuesta.json())
-                .then(datos => {
-                    numEncontrado.textContent = (datos.count !== undefined) ? datos.count : '0';
-                    divEncontrado.style.display = 'flex';
-                })
-                .catch(error => {
-                    console.error("Error consultando el servidor:", error);
-                    if (numEncontrado.textContent === '...') numEncontrado.textContent = '0';
-                    divEncontrado.style.display = 'flex';
+            try {
+                // Se ha modificado la llamada para usar "accion=sumar" sin parámetros de fecha
+                const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=sumar&t=${timestamp}`, {
+                    method: 'GET',
+                    redirect: 'follow'
                 });
+                
+                const datos = await respuesta.json();
+                const valorVisitas = datos.visitas ?? datos.valor ?? datos.A1 ?? datos.resultado ?? datos.total;
+                
+                if (valorVisitas !== undefined && valorVisitas !== null) {
+                    numVisitas.textContent = valorVisitas;
+                } else {
+                    numVisitas.textContent = "--";
+                }
+            } catch (error) {
+                console.error("Error al conectar con Google Sheets para A1:", error);
+                if (numVisitas.textContent === '...') numVisitas.textContent = "Offline";
+            } finally {
+                divContador.style.display = 'flex';
+            }
+        }
+
+        // --- 2. ACTUALIZACIÓN PERIÓDICA DE AMBOS CONTADORES (Celda A1 y Celda A2 sin incrementar) ---
+        async function refrescarTodosLosContadores() {
+            const timestamp = new Date().getTime();
+
+            // Refrescar Encontrados (A2)
+            try {
+                const divEncontrado = document.getElementById('contadorEncontrado');
+                const numEncontrado = document.getElementById('numEncontrado');
+
+                const resA2 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&celda=A2&accion=leer&t=${timestamp}`, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
+                if (resA2.ok) {
+                    const datosA2 = await resA2.json();
+                    const valorEncontrados = datosA2.encontrados ?? datosA2.visitas ?? datosA2.valor ?? datosA2.A2 ?? datosA2.resultado;
+                    if (valorEncontrados !== undefined && valorEncontrados !== null && numEncontrado) {
+                        numEncontrado.textContent = valorEncontrados;
+                    }
+                }
+                if (divEncontrado) divEncontrado.style.display = 'flex';
+            } catch (err) {
+                console.warn("Error leyendo el contador de encontrados:", err);
+            }
+
+            // Refrescar Visitas (A1)
+            try {
+                const divVisitas = document.getElementById('contadorVisitas');
+                const numVisitas = document.getElementById('numVisitas');
+
+                const resA1 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=leer&t=${timestamp}`, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
+                if (resA1.ok) {
+                    const datosA1 = await resA1.json();
+                    const valorVisitas = datosA1.visitas ?? datosA1.valor ?? datosA1.A1 ?? datosA1.resultado;
+                    if (valorVisitas !== undefined && valorVisitas !== null && numVisitas) {
+                        numVisitas.textContent = valorVisitas;
+                    }
+                }
+                if (divVisitas) divVisitas.style.display = 'flex';
+            } catch (err) {
+                console.warn("Error leyendo el contador de visitas:", err);
+            }
+        }
+
+        // Escucha cambios en tiempo real desde Encontrado.html
+        try {
+            const canal = new BroadcastChannel('canal_contador_encontrados');
+            canal.onmessage = function(event) {
+                if (event.data && event.data.nuevoConteo !== undefined) {
+                    const numEncontrado = document.getElementById('numEncontrado');
+                    if (numEncontrado) numEncontrado.textContent = event.data.nuevoConteo;
+                }
+            };
+        } catch (e) {
+            console.log("BroadcastChannel no soportado");
         }
 
         // Inicializar al cargar y programar actualización cada 60 segundos
@@ -421,16 +564,18 @@
             if (/windows/i.test(userAgent)) body.classList.add('os-windows');
             if (/android|iphone|ipad|ipod/i.test(userAgent)) body.classList.add('is-mobile-device');
             
-            mostrarContadorVisualDiario();
-            obtenerContadorEncontradoGlobal();
+            // 1. Sumar la visita de la entrada del usuario
+            incrementarVisitasIndex();
 
-            // Refresca automáticamente el contador en pantalla cada 60.000 ms (60 segundos)
-            setInterval(obtenerContadorEncontradoGlobal, 60000);
+            // 2. Obtener valores iniciales actualizados de ambos contadores
+            refrescarTodosLosContadores();
+
+            // 3. Programar el ciclo de refresco automático cada 60.000 ms (60 segundos)
+            setInterval(refrescarTodosLosContadores, 60000);
         });
 
-        // Actualizar cifras automáticamente al reenfocar la ventana
-        window.addEventListener("focus", obtenerContadorEncontradoGlobal);
-        window.addEventListener("pageshow", obtenerContadorEncontradoGlobal);
+        window.addEventListener("focus", refrescarTodosLosContadores);
+        window.addEventListener("pageshow", refrescarTodosLosContadores);
 
         // --- FUNCIONES MODALES ---
         function abrirModalGrados(e) {
