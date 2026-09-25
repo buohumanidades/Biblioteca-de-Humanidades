@@ -13,7 +13,9 @@
             --image-opacity: 1.0; 
             --primary-grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             --accent-grad: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            /* Variable para cambiar el tamaño del texto "Necesito encontrar un libro" */
             --titulo-busqueda-size: 2em; 
+            /* Variable para cambiar el tamaño del texto "Sé el título o parte del mismo" */
             --titulo-btn-text-size: 1.00em;
         }
 
@@ -58,6 +60,7 @@
             overflow: hidden; 
         }
         
+        /* Contador superior en la imagen de sala (Visitas A1) */
         .contador-diario {
             position: absolute;
             top: 15px;
@@ -93,6 +96,7 @@
             font-size: 1.05em;
         }
 
+        /* Contador Búsquedas Encontradas (Ubicado dentro de la foto de sala, parte inferior derecha) */
         .contador-inferior {
             position: absolute;
             bottom: 15px;
@@ -191,6 +195,7 @@
 
         .search-wrapper-centered { display: flex; flex-direction: column; align-items: center; width: 100%; margin: 0.5vh auto; }
         
+        /* Título explicativo de búsqueda (asociado a los botones) */
         .search-header-title {
             display: inline-flex; 
             align-items: center; 
@@ -264,6 +269,7 @@
             transform: translateY(-2px); box-shadow: 0 6px 15px rgba(79, 70, 229, 0.1); border-color: #cbd5e1;
         }
 
+        /* MODALES */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.6); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(6px); opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.active { display: flex; opacity: 1; }
         .modal-content { background: #ffffff; padding: 2.5rem; border-radius: 20px; width: 90%; max-width: 580px; max-height: 85vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.25); position: relative; transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -307,6 +313,7 @@
     <div class="container">
         
         <div class="hero-section">
+            <!-- Contador Visitas dentro de la imagen de sala (parte superior derecha) con icono vectorial SVG -->
             <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Contador de visitas globales">
                 <span class="badge-label-visitas">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -316,7 +323,7 @@
                 </span>
                 <span id="numVisitas" class="badge-val-visitas">...</span>
             </div>
-            
+            <!-- Contador Búsquedas Encontradas (parte inferior derecha de la fotografía) -->
             <div id="contadorEncontrado" class="contador-inferior" style="display: none;" title="Contador de búsquedas">            
                 <span class="btn-icon">🎓</span>
                 <span id="numEncontrado" class="badge-val">...</span>
@@ -367,6 +374,7 @@
             </div>
 
             <div class="search-wrapper-centered">
+                <!-- Encabezado integrado encima de los botones -->
                 <div class="search-header-title">
                     <svg class="active-book-icon" width="38" height="38" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 21V5" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round"/>
@@ -455,75 +463,88 @@
     </div>
 
     <script>
+        // URL UNIFICADA DE GOOGLE APPS SCRIPT
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
-        let inicializando = true; 
 
-        // Función auxiliar para extraer el número devuelto
-        function extraerNumero(datos) {
-            if (!datos) return null;
-            if (typeof datos === 'number') return datos;
-            const campos = ['visitas', 'valor', 'A1', 'A2', 'encontrados', 'total', 'resultado', 'count', 'cantidad'];
-            for (const campo of campos) {
-                if (datos[campo] !== undefined && datos[campo] !== null && datos[campo] !== '') {
-                    const num = parseInt(datos[campo], 10);
-                    if (!isNaN(num)) return num;
-                }
-            }
-            return null;
-        }
+        // --- 1. SUMAR VISITA AL CARGAR (Celda A1) ---
+        async function incrementarVisitasIndex() {
+            const numVisitas = document.getElementById('numVisitas');
+            const divContador = document.getElementById('contadorVisitas');
+            if (!numVisitas || !divContador) return;
 
-        // --- PASO 1: ENVIAR LA ORDEN DE SUMA FORZANDO QUE EL NAVEGADOR NO BLOQUEE LA ESCRITURA ---
-        async function registrarVisitaEnA1() {
             const timestamp = new Date().getTime(); 
-            const urlSumar = `${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=sumar&t=${timestamp}`;
+
             try {
-                // mode 'no-cors' hace que la petición llegue siempre al servidor, pero no nos deja leer la respuesta.
-                // Es ideal para "disparar y olvidar" acciones de escritura que fallarían por CORS.
-                await fetch(urlSumar, {
+                // Se ha modificado la llamada para usar "accion=sumar" sin parámetros de fecha
+                const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=sumar&t=${timestamp}`, {
                     method: 'GET',
-                    mode: 'no-cors',
-                    cache: 'no-store'
+                    redirect: 'follow'
                 });
-            } catch (e) {
-                console.warn("Fallo silencioso al registrar visita:", e);
+                
+                const datos = await respuesta.json();
+                const valorVisitas = datos.visitas ?? datos.valor ?? datos.A1 ?? datos.resultado ?? datos.total;
+                
+                if (valorVisitas !== undefined && valorVisitas !== null) {
+                    numVisitas.textContent = valorVisitas;
+                } else {
+                    numVisitas.textContent = "--";
+                }
+            } catch (error) {
+                console.error("Error al conectar con Google Sheets para A1:", error);
+                if (numVisitas.textContent === '...') numVisitas.textContent = "Offline";
+            } finally {
+                divContador.style.display = 'flex';
             }
         }
 
-        // --- PASO 2: LEER LOS VALORES DE AMBAS CELDAS CON LA ACCIÓN QUE SABEMOS QUE SÍ FUNCIONA ---
-        async function leerContadoresActualizados() {
+        // --- 2. ACTUALIZACIÓN PERIÓDICA DE AMBOS CONTADORES (Celda A1 y Celda A2 sin incrementar) ---
+        async function refrescarTodosLosContadores() {
             const timestamp = new Date().getTime();
 
-            // Leer Celda A1 (Visitas)
+            // Refrescar Encontrados (A2)
             try {
-                const resA1 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=leer&t=${timestamp}`, { cache: 'no-store' });
-                if (resA1.ok) {
-                    const datosA1 = await resA1.json();
-                    const valorA1 = extraerNumero(datosA1);
-                    if (valorA1 !== null) {
-                        document.getElementById('numVisitas').textContent = valorA1;
-                        document.getElementById('contadorVisitas').style.display = 'flex';
-                    }
-                }
-            } catch (err) {
-                console.warn("Error leyendo el contador A1:", err);
-            }
+                const divEncontrado = document.getElementById('contadorEncontrado');
+                const numEncontrado = document.getElementById('numEncontrado');
 
-            // Leer Celda A2 (Búsquedas - Encontrados)
-            try {
-                const resA2 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&celda=A2&accion=leer&t=${timestamp}`, { cache: 'no-store' });
+                const resA2 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&celda=A2&accion=leer&t=${timestamp}`, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
                 if (resA2.ok) {
                     const datosA2 = await resA2.json();
-                    const valorA2 = extraerNumero(datosA2);
-                    if (valorA2 !== null) {
-                        document.getElementById('numEncontrado').textContent = valorA2;
-                        document.getElementById('contadorEncontrado').style.display = 'flex';
+                    const valorEncontrados = datosA2.encontrados ?? datosA2.visitas ?? datosA2.valor ?? datosA2.A2 ?? datosA2.resultado;
+                    if (valorEncontrados !== undefined && valorEncontrados !== null && numEncontrado) {
+                        numEncontrado.textContent = valorEncontrados;
                     }
                 }
+                if (divEncontrado) divEncontrado.style.display = 'flex';
             } catch (err) {
-                console.warn("Error leyendo el contador A2:", err);
+                console.warn("Error leyendo el contador de encontrados:", err);
+            }
+
+            // Refrescar Visitas (A1)
+            try {
+                const divVisitas = document.getElementById('contadorVisitas');
+                const numVisitas = document.getElementById('numVisitas');
+
+                const resA1 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=leer&t=${timestamp}`, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
+                if (resA1.ok) {
+                    const datosA1 = await resA1.json();
+                    const valorVisitas = datosA1.visitas ?? datosA1.valor ?? datosA1.A1 ?? datosA1.resultado;
+                    if (valorVisitas !== undefined && valorVisitas !== null && numVisitas) {
+                        numVisitas.textContent = valorVisitas;
+                    }
+                }
+                if (divVisitas) divVisitas.style.display = 'flex';
+            } catch (err) {
+                console.warn("Error leyendo el contador de visitas:", err);
             }
         }
 
+        // Escucha cambios en tiempo real desde Encontrado.html
         try {
             const canal = new BroadcastChannel('canal_contador_encontrados');
             canal.onmessage = function(event) {
@@ -536,35 +557,25 @@
             console.log("BroadcastChannel no soportado");
         }
 
-        // --- FLUJO DE INICIALIZACIÓN ---
-        document.addEventListener("DOMContentLoaded", async function() {
+        // Inicializar al cargar y programar actualización cada 60 segundos
+        document.addEventListener("DOMContentLoaded", function() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
             const body = document.body;
             if (/windows/i.test(userAgent)) body.classList.add('os-windows');
             if (/android|iphone|ipad|ipod/i.test(userAgent)) body.classList.add('is-mobile-device');
             
-            // 1. Mandamos SUMAR (sin importar la respuesta CORS)
-            await registrarVisitaEnA1();
+            // 1. Sumar la visita de la entrada del usuario
+            incrementarVisitasIndex();
 
-            // 2. Esperamos 1.5 segundos para dar tiempo real a que Google Sheets lo escriba y guarde
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            // 2. Obtener valores iniciales actualizados de ambos contadores
+            refrescarTodosLosContadores();
 
-            // 3. Hacemos las peticiones de LEER (estas sí devuelven el JSON legible sin errores CORS)
-            await leerContadoresActualizados();
-
-            // 4. Ciclo de refresco para actualizar si hay cambios desde otros usuarios
-            setInterval(leerContadoresActualizados, 60000);
-            
-            inicializando = false;
+            // 3. Programar el ciclo de refresco automático cada 60.000 ms (60 segundos)
+            setInterval(refrescarTodosLosContadores, 60000);
         });
 
-        window.addEventListener("focus", () => {
-            if (!inicializando) leerContadoresActualizados();
-        });
-        
-        window.addEventListener("pageshow", (event) => {
-            if (event.persisted && !inicializando) leerContadoresActualizados();
-        });
+        window.addEventListener("focus", refrescarTodosLosContadores);
+        window.addEventListener("pageshow", refrescarTodosLosContadores);
 
         // --- FUNCIONES MODALES ---
         function abrirModalGrados(e) {
