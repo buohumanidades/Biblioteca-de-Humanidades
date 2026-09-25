@@ -13,7 +13,7 @@
             --image-opacity: 1.0; 
             --primary-grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             --accent-grad: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-            /* Variable para cambiar el tamaño del texto "¿Dónde está el libro?" */
+            /* Variable para cambiar el tamaño del texto "Necesito encontrar un libro" */
             --titulo-busqueda-size: 2em; 
             /* Variable para cambiar el tamaño del texto "Sé el título o parte del mismo" */
             --titulo-btn-text-size: 1.00em;
@@ -318,7 +318,8 @@
 
             <!-- Contador Búsquedas Encontradas (parte inferior derecha de la fotografía) -->
             <div id="contadorEncontrado" class="contador-inferior" style="display: none;" title="Contador de búsquedas">
-                <span class="badge-label">Búsquedas</span>
+ /* <span class="badge-label">Búsquedas</span> Pero lo he dejado sin texto */
+                <span class="badge-label"></span>
                 <span id="numEncontrado" class="badge-val">...</span>
             </div>
 
@@ -465,13 +466,11 @@
             const divContador = document.getElementById('contadorVisitas');
             if (!numVisitas || !divContador) return;
 
-            const hoy = new Date();
-            const fechaString = hoy.getFullYear() + "-" + String(hoy.getMonth() + 1).padStart(2, '0') + "-" + String(hoy.getDate()).padStart(2, '0');
-            const fechaTexto = "TEXTO_" + fechaString; 
-            const timestamp = hoy.getTime(); 
+            const timestamp = new Date().getTime(); 
 
             try {
-                const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=sumar_con_fecha&fecha=${fechaTexto}&t=${timestamp}`, {
+                // Se ha modificado la llamada para usar "accion=sumar" sin parámetros de fecha
+                const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=sumar&t=${timestamp}`, {
                     method: 'GET',
                     redirect: 'follow'
                 });
