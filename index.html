@@ -455,13 +455,11 @@
     </div>
 
     <script>
-        // URL UNIFICADA DE GOOGLE APPS SCRIPT
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
-
         let inicializando = true; 
 
-        // Función auxiliar para extraer el número devuelto en cualquier estructura JSON estándar
-        function extraerNumeroVisitas(datos) {
+        // Función auxiliar para extraer el número devuelto
+        function extraerNumero(datos) {
             if (!datos) return null;
             if (typeof datos === 'number') return datos;
             const campos = ['visitas', 'valor', 'A1', 'A2', 'encontrados', 'total', 'resultado', 'count', 'cantidad'];
@@ -471,106 +469,58 @@
                     if (!isNaN(num)) return num;
                 }
             }
-            if (datos.data) return extraerNumeroVisitas(datos.data);
             return null;
         }
 
-        // --- 1. SUMAR VISITA AL CARGAR (Celda A1) ---
-        async function incrementarVisitasIndex() {
-            const numVisitas = document.getElementById('numVisitas');
-            const divContador = document.getElementById('contadorVisitas');
-            if (!numVisitas || !divContador) return;
-
+        // --- PASO 1: ENVIAR LA ORDEN DE SUMA FORZANDO QUE EL NAVEGADOR NO BLOQUEE LA ESCRITURA ---
+        async function registrarVisitaEnA1() {
             const timestamp = new Date().getTime(); 
-            const peticionUrl = `${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=sumar&t=${timestamp}`;
-
+            const urlSumar = `${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=sumar&t=${timestamp}`;
             try {
-                // Intento principal: Petición CORS con seguimiento explícito de redirecciones HTTP
-                const respuesta = await fetch(peticionUrl, {
-                    method: 'GET',
-                    mode: 'cors',
-                    redirect: 'follow',
-                    cache: 'no-cache'
-                });
-                
-                if (respuesta.ok) {
-                    const datos = await respuesta.json();
-                    const valorVisitas = extraerNumeroVisitas(datos);
-                    
-                    if (valorVisitas !== null) {
-                        numVisitas.textContent = valorVisitas;
-                        divContador.style.display = 'flex';
-                        return;
-                    }
-                }
-            } catch (error) {
-                console.warn("Llamada CORS directa no legible, ejecutando contingencia no-cors:", error);
-            }
-
-            // Contingencia (Fallback): Si CORS falla o se bloquea la lectura, aseguramos la ejecución del incremento
-            try {
-                await fetch(peticionUrl, {
+                // mode 'no-cors' hace que la petición llegue siempre al servidor, pero no nos deja leer la respuesta.
+                // Es ideal para "disparar y olvidar" acciones de escritura que fallarían por CORS.
+                await fetch(urlSumar, {
                     method: 'GET',
                     mode: 'no-cors',
-                    cache: 'no-cache'
+                    cache: 'no-store'
                 });
-            } catch (eFallback) {
-                console.error("Error en petición de contingencia a Google Sheets:", eFallback);
-            } finally {
-                divContador.style.display = 'flex';
+            } catch (e) {
+                console.warn("Fallo silencioso al registrar visita:", e);
             }
         }
 
-        // --- 2. ACTUALIZACIÓN PERIÓDICA DE CONTADORES ---
-        async function refrescarTodosLosContadores(skipA1 = false) {
+        // --- PASO 2: LEER LOS VALORES DE AMBAS CELDAS CON LA ACCIÓN QUE SABEMOS QUE SÍ FUNCIONA ---
+        async function leerContadoresActualizados() {
             const timestamp = new Date().getTime();
 
-            // Refrescar Encontrados (A2)
+            // Leer Celda A1 (Visitas)
             try {
-                const divEncontrado = document.getElementById('contadorEncontrado');
-                const numEncontrado = document.getElementById('numEncontrado');
-
-                const resA2 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&celda=A2&accion=leer&t=${timestamp}`, {
-                    method: 'GET',
-                    mode: 'cors',
-                    redirect: 'follow',
-                    cache: 'no-cache'
-                });
-                if (resA2.ok) {
-                    const datosA2 = await resA2.json();
-                    const valorEncontrados = extraerNumeroVisitas(datosA2);
-                    if (valorEncontrados !== null && numEncontrado) {
-                        numEncontrado.textContent = valorEncontrados;
+                const resA1 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=leer&t=${timestamp}`, { cache: 'no-store' });
+                if (resA1.ok) {
+                    const datosA1 = await resA1.json();
+                    const valorA1 = extraerNumero(datosA1);
+                    if (valorA1 !== null) {
+                        document.getElementById('numVisitas').textContent = valorA1;
+                        document.getElementById('contadorVisitas').style.display = 'flex';
                     }
                 }
-                if (divEncontrado) divEncontrado.style.display = 'flex';
             } catch (err) {
-                console.warn("Error leyendo el contador de encontrados:", err);
+                console.warn("Error leyendo el contador A1:", err);
             }
 
-            // Refrescar Visitas (A1)
-            if (!skipA1) {
-                try {
-                    const divVisitas = document.getElementById('contadorVisitas');
-                    const numVisitas = document.getElementById('numVisitas');
-
-                    const resA1 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=leer&t=${timestamp}`, {
-                        method: 'GET',
-                        mode: 'cors',
-                        redirect: 'follow',
-                        cache: 'no-cache'
-                    });
-                    if (resA1.ok) {
-                        const datosA1 = await resA1.json();
-                        const valorVisitas = extraerNumeroVisitas(datosA1);
-                        if (valorVisitas !== null && numVisitas) {
-                            numVisitas.textContent = valorVisitas;
-                        }
+            // Leer Celda A2 (Búsquedas - Encontrados)
+            try {
+                const resA2 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&celda=A2&accion=leer&t=${timestamp}`, { cache: 'no-store' });
+                if (resA2.ok) {
+                    const datosA2 = await resA2.json();
+                    const valorA2 = extraerNumero(datosA2);
+                    if (valorA2 !== null) {
+                        document.getElementById('numEncontrado').textContent = valorA2;
+                        document.getElementById('contadorEncontrado').style.display = 'flex';
                     }
-                    if (divVisitas) divVisitas.style.display = 'flex';
-                } catch (err) {
-                    console.warn("Error leyendo el contador de visitas:", err);
                 }
+            } catch (err) {
+                console.warn("Error leyendo el contador A2:", err);
             }
         }
 
@@ -586,37 +536,34 @@
             console.log("BroadcastChannel no soportado");
         }
 
-        // --- FLUJO DE INICIALIZACIÓN ASÍNCRONO ---
+        // --- FLUJO DE INICIALIZACIÓN ---
         document.addEventListener("DOMContentLoaded", async function() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
             const body = document.body;
             if (/windows/i.test(userAgent)) body.classList.add('os-windows');
             if (/android|iphone|ipad|ipod/i.test(userAgent)) body.classList.add('is-mobile-device');
             
-            // 1. Mandamos SUMAR la visita a A1
-            await incrementarVisitasIndex();
+            // 1. Mandamos SUMAR (sin importar la respuesta CORS)
+            await registrarVisitaEnA1();
 
-            // 2. Pausa breve para asegurar el procesamiento en Google Sheets
-            await new Promise(resolve => setTimeout(resolve, 300));
+            // 2. Esperamos 1.5 segundos para dar tiempo real a que Google Sheets lo escriba y guarde
+            await new Promise(resolve => setTimeout(resolve, 1500));
 
-            // 3. Leemos todos los contadores en pantalla
-            await refrescarTodosLosContadores(false);
+            // 3. Hacemos las peticiones de LEER (estas sí devuelven el JSON legible sin errores CORS)
+            await leerContadoresActualizados();
 
-            // 4. Ciclo de refresco periódico cada 60 segundos
-            setInterval(() => refrescarTodosLosContadores(false), 60000);
+            // 4. Ciclo de refresco para actualizar si hay cambios desde otros usuarios
+            setInterval(leerContadoresActualizados, 60000);
             
-            // 5. Finalizar inicialización
             inicializando = false;
         });
 
         window.addEventListener("focus", () => {
-            if (!inicializando) refrescarTodosLosContadores(false);
+            if (!inicializando) leerContadoresActualizados();
         });
         
         window.addEventListener("pageshow", (event) => {
-            if (event.persisted && !inicializando) { 
-                refrescarTodosLosContadores(false);
-            }
+            if (event.persisted && !inicializando) leerContadoresActualizados();
         });
 
         // --- FUNCIONES MODALES ---
