@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca de Humanidades | Campus de El Milán</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@800&display=swap');
+
+        :root {
+            --alto-de-la-imagen: 23vh;  
+            --ancho-de-la-imagen: 100%; 
+            --image-opacity: 1.0; 
+            --primary-grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --accent-grad: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --titulo-busqueda-size: 2em; 
+            --titulo-btn-text-size: 1.00em;
+        }
+
+        @keyframes vibrantBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(124, 58, 237, 0.3); }
+            50% { transform: scale(1.01); box-shadow: 0 0 25px rgba(124, 58, 237, 0.5); }
+        }
+
+        @keyframes pageOpenRight {
+            0%, 100% { transform: perspective(300px) rotateY(0deg); }
+            50% { transform: perspective(300px) rotateY(-55deg); }
+        }
+        @keyframes pageOpenLeft {
+            0%, 100% { transform: perspective(300px) rotateY(0deg); }
+            50% { transform: perspective(300px) rotateY(55deg); }
+        }
+        @keyframes sparkleTwinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.7); }
+            50% { opacity: 1; transform: scale(1.4); }
+        }
+
+        * { box-sizing: border-box; }
+
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background: linear-gradient(-45deg, #EEF2FF, #F3E8FF, #ECFDF5, #FEF3C7);
+            background-size: 400% 400%;
+            animation: vibrantBackground 18s ease infinite;
+            color: #1e293b; 
+            height: 100vh; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; 
+        }
+        
+        .contador-diario {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 10;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            border-radius: 6px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            font-size: 0.82em;
+            font-weight: 700;
+            user-select: none;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+        .contador-diario:hover { transform: scale(1.05); }
+        .contador-diario .badge-label-visitas {
+            background: rgba(79, 70, 229, 0.9);
+            padding: 6px 11px;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .contador-diario .badge-val-visitas {
+            padding: 6px 12px;
+            color: #ffffff;
+            font-size: 1.05em;
+        }
+
+        .contador-inferior {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            z-index: 10;
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: #ffffff;
+            border-radius: 6px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            font-size: 0.82em;
+            font-weight: 700;
+            user-select: none;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+        .contador-inferior:hover { transform: scale(1.05); }
+        .contador-inferior .badge-label {
+            background: rgba(15, 23, 42, 0.85);
+            padding: 6px 11px;
+            color: #e2e8f0;
+            letter-spacing: 0.5px;
+        }
+        .contador-inferior .badge-val {
+            padding: 6px 12px;
+            color: #ffffff;
+            font-size: 1.05em;
+        }
+
+        .container { 
+            width: 96vw; max-width: 1350px; height: 96vh; 
+            background: rgba(255, 255, 255, 0.94); 
+            backdrop-filter: blur(16px); border-radius: 20px; 
+            box-shadow: 0 20px 50px rgba(30, 41, 59, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.8) inset; 
+            display: flex; flex-direction: column; overflow: hidden; position: relative;
+        }
+        
+        .hero-section { width: var(--ancho-de-la-imagen); flex: 0 0 var(--alto-de-la-imagen); position: relative; background: #ffffff; overflow: hidden; }
+        .shelf-photo-panoramic { width: 100%; height: 100%; object-fit: cover; object-position: center 55%; opacity: var(--image-opacity); transition: transform 0.6s ease; }
+        .hero-section:hover .shelf-photo-panoramic { transform: scale(1.03); }
+
+        .footer-decor-img {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 35vh; 
+            object-fit: cover; object-position: bottom; opacity: 0.50; z-index: 1; pointer-events: none; 
+            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+            mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .main-content { flex: 1; padding: 2vh 3.5vw; display: flex; flex-direction: column; justify-content: space-between; position: relative; z-index: 5; }
+
+        .header-title-wrapper { text-align: center; position: relative; margin-bottom: 0.5vh; }
+        h1 { font-family: 'Playfair Display', serif; color: #0f172a; font-size: 2.3em; margin: 0; font-weight: 700; letter-spacing: -0.5px; }
+        .subtitle-campus { font-size: 0.95em; text-transform: uppercase; letter-spacing: 2px; color: #64748b; font-weight: 600; margin-top: 2px; }
+
+        .middle-section-wrapper { display: flex; gap: 2vw; align-items: stretch; }
+        
+        .subjects-fieldset {
+            flex: 1; border: 1px solid #e2e8f0; border-radius: 14px; padding: 1.5vh 1.8vw; margin: 0;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: center;
+        }
+        .subjects-legend {
+            font-weight: 700; color: #4f46e5; font-size: 0.95em; padding: 2px 14px; margin-left: 10px;
+            text-transform: uppercase; letter-spacing: 1.2px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px;
+        }
+        .subjects-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2vh 1vw; }
+        .bibliography-container { display: flex; align-items: center; justify-content: center; height: 100%; }
+
+        .subject-btn {
+            display: flex; align-items: center; justify-content: space-between; padding: 1.2vh 1.2vw;
+            border-radius: 10px; text-decoration: none; color: #ffffff; font-weight: 600; font-size: 0.98em; 
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            cursor: pointer; position: relative; overflow: hidden;
+        }
+        .subject-btn::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s;
+        }
+        .subject-btn:hover::after { left: 100%; }
+        .subject-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+
+        .sub-ling { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .sub-geo  { background: linear-gradient(135deg, #10b981, #047857); }
+        .sub-arte { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .sub-fil  { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+
+        .degree-btn {
+            width: 100%; padding: 2.2vh 1.5vw; background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            font-size: 1.1em; justify-content: center; text-align: center;
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3); animation: pulseGlow 4s infinite;
+        }
+        .degree-btn:hover { background: linear-gradient(135deg, #4338ca, #6d28d9); }
+        .btn-content { display: flex; align-items: center; gap: 12px; }
+        .btn-icon { font-size: 1.3em; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+
+        .search-wrapper-centered { display: flex; flex-direction: column; align-items: center; width: 100%; margin: 0.5vh auto; }
+        
+        .search-header-title {
+            display: inline-flex; 
+            align-items: center; 
+            gap: 12px; 
+            margin-bottom: 10px; 
+            text-align: center;
+            user-select: none;
+        }
+        .search-title-text {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: var(--titulo-busqueda-size);
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            color: #1e293b;
+            margin: 0;
+            background: linear-gradient(135deg, #0f172a 0%, #4f46e5 60%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .active-book-icon {
+            width: 38px;
+            height: 38px;
+            overflow: visible;
+            flex-shrink: 0;
+        }
+        .active-book-icon .page-right {
+            transform-origin: 12px center;
+            animation: pageOpenRight 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        .active-book-icon .page-left {
+            transform-origin: 12px center;
+            animation: pageOpenLeft 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        .active-book-icon .sparkle-1 {
+            animation: sparkleTwinkle 1.5s ease-in-out infinite alternate;
+        }
+        .active-book-icon .sparkle-2 {
+            animation: sparkleTwinkle 2s ease-in-out infinite alternate-reverse;
+        }
+
+        .action-buttons-container { display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap; width: 100%; }
+
+        .signature-btn {
+            display: inline-flex; align-items: center; width: 360px; box-sizing: border-box; padding: 10px 25px 10px 10px; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 60px; text-decoration: none; color: #ffffff; font-weight: 700; font-size: 1.15em; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
+            gap: 16px; position: relative; z-index: 10;
+        }
+        .signature-btn:hover {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%); transform: translateY(-5px) scale(1.02); 
+            box-shadow: 0 15px 35px rgba(79, 70, 229, 0.35); border-color: #818cf8;
+        }
+        .signature-btn.title-btn span { font-size: var(--titulo-btn-text-size); line-height: 1.2; }
+        .signature-icon-circle {
+            display: flex; align-items: center; justify-content: center; width: 50px; height: 50px;
+            background: linear-gradient(135deg, #ffffff, #f1f5f9); border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15); flex-shrink: 0;
+        }
+
+        .services-wrapper { display: flex; flex-direction: column; gap: 0.8vh; }
+        h2.section-title { color: #64748b; font-size: 0.85em; margin: 0; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+        .links-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5vw; }
+        .links-container a { 
+            display: block; padding: 1.2vh 1vw; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); 
+            text-decoration: none; color: #334155; border-radius: 10px; text-align: center; font-weight: 600; 
+            border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: all 0.25s ease; font-size: 0.92em;
+        }
+        .links-container a:hover { 
+            background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%); color: #4f46e5;
+            transform: translateY(-2px); box-shadow: 0 6px 15px rgba(79, 70, 229, 0.1); border-color: #cbd5e1;
+        }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.6); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(6px); opacity: 0; transition: opacity 0.3s ease; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-content { background: #ffffff; padding: 2.5rem; border-radius: 20px; width: 90%; max-width: 580px; max-height: 85vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.25); position: relative; transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .close-btn { position: absolute; top: 18px; right: 22px; background: #f1f5f9; border: none; width: 38px; height: 38px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10; }
+        .close-btn:hover { background: #fee2e2; color: #ef4444; transform: rotate(90deg); }
+        .modal-title { margin-top: 0; font-family: 'Playfair Display', serif; color: #0f172a; font-size: 1.8em; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px; }
+        .grados-list { list-style: none; padding: 0; margin: 0; }
+        .grados-list li { margin-bottom: 8px; border-bottom: 1px solid #f1f5f9; }
+        .grados-list a { display: flex; align-items: center; padding: 13px 12px; color: #334155; text-decoration: none; border-radius: 8px; transition: all 0.2s; font-weight: 500; }
+        .grados-list a:hover { background: #eef2ff; color: #4f46e5; padding-left: 18px; }
+        .grados-list a::before { content: '📚'; margin-right: 12px; font-size: 1.1em; }
+        
+        .modal-alert { max-width: 420px; text-align: center; padding: 2.2rem; }
+        .modal-alert p { font-size: 1.15em; color: #334155; margin: 1.2rem 0 1.8rem 0; font-weight: 500; }
+        .btn-entendido { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; border: none; padding: 12px 32px; border-radius: 30px; font-size: 1.05em; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); }
+        .btn-entendido:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6); }
+
+        #modalSemestre .modal-content { max-width: 950px; height: 82vh; padding: 1.2rem; display: flex; flex-direction: column; overflow: hidden; }
+        #iframeSemestre { width: 100%; flex: 1; border: none; border-radius: 12px; margin-top: 25px; background: #f8fafc; }
+
+        @media (max-width: 900px) {
+            .container { height: 98vh; width: 98vw; }
+            .hero-section { flex: 0 0 18vh; }
+            .contador-inferior { bottom: 10px; right: 10px; font-size: 0.75em; }
+            .search-title-text { font-size: 1.25em; }
+            .active-book-icon { width: 28px; height: 28px; }
+            .main-content { padding: 1vh 3vw; justify-content: space-between; }
+            h1 { font-size: 1.4em; } .subtitle-campus { font-size: 0.8em; }
+            .middle-section-wrapper { flex-direction: column; gap: 1vh; margin: 0; }
+            .subjects-fieldset { padding: 1vh 3vw; } .subjects-container { grid-template-columns: 1fr; gap: 0.8vh; }
+            .degree-btn { padding: 1.2vh 3vw; } .services-wrapper { gap: 0.5vh; }
+            .links-container { grid-template-columns: 1fr; gap: 0.8vh; } .links-container a { padding: 1vh 2vw; }
+            .action-buttons-container { gap: 10px; margin: 0.5vh auto; }
+            .signature-btn { font-size: 1.05em !important; padding: 8px 20px 8px 10px !important; width: 100% !important; max-width: 340px !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="hero-section">
+            <div id="contadorVisitas" class="contador-diario" style="display: none;" title="Contador de visitas globales">
+                <span class="badge-label-visitas">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </span>
+                <span id="numVisitas" class="badge-val-visitas">...</span>
+            </div>
+            
+            <div id="contadorEncontrado" class="contador-inferior" style="display: none;" title="Contador de búsquedas">            
+                <span class="btn-icon">🎓</span>
+                <span id="numEncontrado" class="badge-val">...</span>
+            </div>
+
+            <img src="sala.png" alt="Biblioteca de Humanidades" class="shelf-photo-panoramic" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
+        </div>
+
+        <img src="imagenes/Mostrador.png" class="footer-decor-img" alt="Mostrador de biblioteca" onerror="this.src='mostrador.png'; this.onerror=null;">
+
+        <div class="main-content">
+
+            <div class="header-title-wrapper">
+                <h1>Biblioteca de Humanidades</h1>
+                <div class="subtitle-campus">Campus de El Milán · Universidad de Oviedo</div>
+            </div>
+
+            <div class="middle-section-wrapper">
+                <fieldset class="subjects-fieldset">
+                    <legend class="subjects-legend">Bibliografía recomendada</legend>
+                    <div class="bibliography-container">
+                        <a href="#" class="subject-btn degree-btn" onclick="abrirModalGrados(event)">
+                            <div class="btn-content">
+                                <span class="btn-icon">🎓</span>
+                                <span>GRADOS: Consultar Guías y Bibliografía</span>
+                            </div>                            
+                        </a>
+                    </div>
+                </fieldset>
+
+                <fieldset class="subjects-fieldset">
+                    <legend class="subjects-legend">Clasificación por Materias</legend>
+                    <div class="subjects-container">
+                        <a href="8.html" class="subject-btn sub-ling">
+                            <div class="btn-content"><span class="btn-icon">📖</span><span>Lengua, Lingüística y Literatura</span></div>                            
+                        </a>
+                        <a href="9.html" class="subject-btn sub-geo">
+                            <div class="btn-content"><span class="btn-icon">🌍</span><span>Geografía e Historia</span></div>                            
+                        </a>
+                        <a href="7.html" class="subject-btn sub-arte">
+                            <div class="btn-content"><span class="btn-icon">🎨</span><span>Arte y Arquitectura</span></div>                            
+                        </a>
+                        <a href="1.html" class="subject-btn sub-fil">
+                            <div class="btn-content"><span class="btn-icon">🧠</span><span>Filosofía y Ciencias Sociales</span></div>                            
+                        </a>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="search-wrapper-centered">
+                <div class="search-header-title">
+                    <svg class="active-book-icon" width="38" height="38" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 21V5" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round"/>
+                        <path class="page-left" d="M12 21C12 21 8.5 19.5 4 19.5V5C8.5 5 12 6.5 12 6.5" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(79, 70, 229, 0.12)"/>
+                        <path class="page-right" d="M12 21C12 21 15.5 19.5 20 19.5V5C15.5 5 12 6.5 12 6.5" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(124, 58, 237, 0.12)"/>
+                        <circle class="sparkle-1" cx="19" cy="4" r="1.5" fill="#f59e0b"/>
+                        <circle class="sparkle-2" cx="5" cy="3" r="1.2" fill="#06b6d4"/>
+                    </svg>
+                    <h2 class="search-title-text">Estoy buscando un libro</h2>
+                </div>
+                
+                <div class="action-buttons-container">
+                    <a href="Signatura.html" class="signature-btn">
+                        <div class="signature-icon-circle">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 20.5C12 20.5 8.5 19 4 19C3.44772 19 3 18.5523 3 18V6C3 5.44772 3.44772 5 4 5C8.5 5 12 7.5 12 7.5" fill="#E2E8F0" stroke="#334155" stroke-width="1.2" stroke-linejoin="round"/>
+                                <path d="M12 20.5C12 20.5 15.5 19 20 19C20.5523 19 21 18.5523 21 18V6C21 5.44772 20.5523 5 20 5C15.5 5 12 7.5 12 7.5" fill="#E2E8F0" stroke="#334155" stroke-width="1.2" stroke-linejoin="round"/>
+                                <path d="M3 18C3 18.5523 3.44772 19 4 19C8.5 19 12 20.5 12 20.5V7.5C12 7.5 8.5 5 4 5" fill="#10B981"/>
+                                <path d="M21 18C21 18.5523 20.5523 19 20 19C15.5 19 12 20.5 12 20.5V7.5C12 7.5 15.5 5 20 5" fill="#F43F5E"/>
+                                <path d="M5.5 9.5H10" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                                <path d="M5.5 12.5H8.5" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                                <path d="M14 9.5H18.5" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                                <path d="M14 12.5H17" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                                <path d="M12 7.5V17L13.5 15.5L15 17V7.5" fill="#FBBF24"/>
+                                <path d="M12 20.5V7.5" stroke="#334155" stroke-width="1.2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <span>Sé la SIGNATURA</span>
+                    </a>
+                    <a href="titulo.html" class="signature-btn title-btn">
+                        <div class="signature-icon-circle">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M21 21L16.65 16.65" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M8 11H14" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <span>Sé el título o parte del mismo</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="services-wrapper">
+                <h2 class="section-title">Enlaces de interés y catálogo</h2>
+                <div class="links-container">
+                    <a href="https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=101" target="_blank">🔍 Búsqueda general en el catálogo (AbsysNet)</a>
+                    <a href="https://buo.uniovi.es/" target="_blank">🏛️ Portal oficial de la Biblioteca (BUO)</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modales -->
+    <div class="modal-overlay" id="modalGrados" onclick="cerrarModalGrados(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="cerrarModalGrados(event)">✕</button>
+            <h2 class="modal-title">Artes y Humanidades</h2>
+            <ul class="grados-list">
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado1')">Grado en Estudios Clásicos y Románicos</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado2')">Grado en Estudios Ingleses</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado3')">Grado en Filosofía</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado4')">Grado en Geografía y Ordenación del Territorio</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado5')">Grado en Historia</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado6')">Grado en Historia del Arte</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado7')">Grado en Historia y Ciencias de la Música</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado8')">Grado en Lengua Española y sus Literaturas</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado9')">Grado en Lenguas Modernas y sus Literaturas</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalSemestre" onclick="cerrarModalSemestre(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="cerrarModalSemestre(event)">✕</button>
+            <iframe id="iframeSemestre" src=""></iframe>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="customAlertModal" onclick="cerrarModalAlerta()">
+        <div class="modal-content modal-alert" onclick="event.stopPropagation()">
+            <div style="font-size: 3.2em; margin-bottom: 5px;">⏳</div>
+            <p id="alertMessageText">Mensaje de alerta</p>
+            <button class="btn-entendido" onclick="cerrarModalAlerta()">Entendido</button>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
+        let inicializando = true; 
+
+        // Función auxiliar para extraer el número devuelto
+        function extraerNumero(datos) {
+            if (!datos) return null;
+            if (typeof datos === 'number') return datos;
+            const campos = ['visitas', 'valor', 'A1', 'A2', 'encontrados', 'total', 'resultado', 'count', 'cantidad'];
+            for (const campo of campos) {
+                if (datos[campo] !== undefined && datos[campo] !== null && datos[campo] !== '') {
+                    const num = parseInt(datos[campo], 10);
+                    if (!isNaN(num)) return num;
+                }
+            }
+            return null;
+        }
+
+        // --- PASO 1: ENVIAR LA ORDEN DE SUMA FORZANDO QUE EL NAVEGADOR NO BLOQUEE LA ESCRITURA ---
+        async function registrarVisitaEnA1() {
+            const timestamp = new Date().getTime(); 
+            const urlSumar = `${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=sumar&t=${timestamp}`;
+            try {
+                // mode 'no-cors' hace que la petición llegue siempre al servidor, pero no nos deja leer la respuesta.
+                // Es ideal para "disparar y olvidar" acciones de escritura que fallarían por CORS.
+                await fetch(urlSumar, {
+                    method: 'GET',
+                    mode: 'no-cors',
+                    cache: 'no-store'
+                });
+            } catch (e) {
+                console.warn("Fallo silencioso al registrar visita:", e);
+            }
+        }
+
+        // --- PASO 2: LEER LOS VALORES DE AMBAS CELDAS CON LA ACCIÓN QUE SABEMOS QUE SÍ FUNCIONA ---
+        async function leerContadoresActualizados() {
+            const timestamp = new Date().getTime();
+
+            // Leer Celda A1 (Visitas)
+            try {
+                const resA1 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=leer&t=${timestamp}`, { cache: 'no-store' });
+                if (resA1.ok) {
+                    const datosA1 = await resA1.json();
+                    const valorA1 = extraerNumero(datosA1);
+                    if (valorA1 !== null) {
+                        document.getElementById('numVisitas').textContent = valorA1;
+                        document.getElementById('contadorVisitas').style.display = 'flex';
+                    }
+                }
+            } catch (err) {
+                console.warn("Error leyendo el contador A1:", err);
+            }
+
+            // Leer Celda A2 (Búsquedas - Encontrados)
+            try {
+                const resA2 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&celda=A2&accion=leer&t=${timestamp}`, { cache: 'no-store' });
+                if (resA2.ok) {
+                    const datosA2 = await resA2.json();
+                    const valorA2 = extraerNumero(datosA2);
+                    if (valorA2 !== null) {
+                        document.getElementById('numEncontrado').textContent = valorA2;
+                        document.getElementById('contadorEncontrado').style.display = 'flex';
+                    }
+                }
+            } catch (err) {
+                console.warn("Error leyendo el contador A2:", err);
+            }
+        }
+
+        try {
+            const canal = new BroadcastChannel('canal_contador_encontrados');
+            canal.onmessage = function(event) {
+                if (event.data && event.data.nuevoConteo !== undefined) {
+                    const numEncontrado = document.getElementById('numEncontrado');
+                    if (numEncontrado) numEncontrado.textContent = event.data.nuevoConteo;
+                }
+            };
+        } catch (e) {
+            console.log("BroadcastChannel no soportado");
+        }
+
+        // --- FLUJO DE INICIALIZACIÓN ---
+        document.addEventListener("DOMContentLoaded", async function() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            const body = document.body;
+            if (/windows/i.test(userAgent)) body.classList.add('os-windows');
+            if (/android|iphone|ipad|ipod/i.test(userAgent)) body.classList.add('is-mobile-device');
+            
+            // 1. Mandamos SUMAR (sin importar la respuesta CORS)
+            await registrarVisitaEnA1();
+
+            // 2. Esperamos 1.5 segundos para dar tiempo real a que Google Sheets lo escriba y guarde
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // 3. Hacemos las peticiones de LEER (estas sí devuelven el JSON legible sin errores CORS)
+            await leerContadoresActualizados();
+
+            // 4. Ciclo de refresco para actualizar si hay cambios desde otros usuarios
+            setInterval(leerContadoresActualizados, 60000);
+            
+            inicializando = false;
+        });
+
+        window.addEventListener("focus", () => {
+            if (!inicializando) leerContadoresActualizados();
+        });
+        
+        window.addEventListener("pageshow", (event) => {
+            if (event.persisted && !inicializando) leerContadoresActualizados();
+        });
+
+        // --- FUNCIONES MODALES ---
+        function abrirModalGrados(e) {
+            if (e) e.preventDefault();
+            const modal = document.getElementById('modalGrados');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+
+        function cerrarModalGrados(e) {
+            if (e) e.preventDefault();
+            const modal = document.getElementById('modalGrados');
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        function mostrarModal(mensaje) {
+            document.getElementById('alertMessageText').textContent = mensaje;
+            const alertModal = document.getElementById('customAlertModal');
+            alertModal.style.display = 'flex';
+            setTimeout(() => alertModal.classList.add('active'), 10);
+        }
+
+        function cerrarModalAlerta() {
+            const alertModal = document.getElementById('customAlertModal');
+            alertModal.classList.remove('active');
+            setTimeout(() => alertModal.style.display = 'none', 300);
+        }
+
+        function abrirGradoDirecto(e, idGrado) {
+            if (e) e.preventDefault();
+            const urlDestino = `Grados/${idGrado}.html`;
+            abrirModalSemestre(urlDestino);
+        }
+
+        async function abrirModalSemestre(urlDestino) {
+            try {
+                let respuesta = await fetch(urlDestino, { method: 'HEAD' });
+                
+                if (respuesta.ok) {
+                    cerrarModalGrados();
+                    document.getElementById('iframeSemestre').src = urlDestino;
+                    const modal = document.getElementById('modalSemestre');
+                    modal.style.display = 'flex';
+                    setTimeout(() => modal.classList.add('active'), 10);
+                } else {
+                    mostrarModal("En breve tendrás disponible la bibliografía detallada para este grado.");
+                }
+            } catch (error) {
+                cerrarModalGrados();
+                document.getElementById('iframeSemestre').src = urlDestino;
+                const modal = document.getElementById('modalSemestre');
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('active'), 10);
+            }
+        }
+
+        function cerrarModalSemestre(e) {
+            if (e) e.preventDefault();
+            const modal = document.getElementById('modalSemestre');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.getElementById('iframeSemestre').src = '';
+            }, 300);
+        }
+    </script>
+</body>
+</html>
