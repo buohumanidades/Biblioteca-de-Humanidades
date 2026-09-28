@@ -1,480 +1,143 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grado de Filosofía</title>
+    <title>Grado de Filosofía · Biblioteca de Humanidades</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = { theme: { extend: { colors: { stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' }, sand: '#C5A059' }, fontFamily: { serif: ['Cormorant Garamond', 'serif'], sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+    </script>
     <style>
-        /* --- ESTILOS GENERALES Y ENCABEZADO --- */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0; 
-            background-color: #ffffff;
-        }
-
-        .header-container {
-            position: relative;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            padding: 25px 15px 10px 15px;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #000;
-            overflow: hidden;
-        }
-
-        /* Imagen de fondo extendida desde el borde superior hasta la línea negra */
-        .header-container::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url('libro.jpg');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.25; /* Opacidad para no dificultar la lectura del texto */
-            z-index: 0;
-        }
-
-        .left-titles, .title-grado {
-            position: relative;
-            z-index: 1; /* Mantiene los textos por encima de la imagen de fondo */
-        }
-
-        .left-titles {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .title-curso {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #000;
-        }
-
-        .title-semestre {
-            font-size: 1.2em;
-            color: #555; 
-        }
-
-        .title-grado {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #d32f2f; 
-            text-align: right;
-        }
-
-        /* Contenedor principal para mantener márgenes internos en el resto de la página */
-        .main-content {
-            padding: 0 10px 10px 10px;
-        }
-
-        /* --- CONTROLES DE SELECCIÓN (CURSO Y TRIMESTRE) --- */
-        .controls-box {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            background-color: #f8f9fa;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 12px 16px;
-            margin-bottom: 15px;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .control-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .control-label {
-            font-weight: bold;
-            color: #333;
-            font-size: 0.95em;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .btn-curso, .btn-trimestre {
-            background-color: #ffffff;
-            border: 1px solid #1976d2;
-            color: #1976d2;
-            padding: 6px 14px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.2s ease;
-        }
-
-        .btn-curso:hover, .btn-trimestre:hover {
-            background-color: #e3f2fd;
-        }
-
-        .btn-curso.active, .btn-trimestre.active {
-            background-color: #1976d2;
-            color: #ffffff;
-        }
-
-        .instructions-box {
-            background-color: #f4f8fc; 
-            border-left: 4px solid #1976d2; 
-            padding: 12px 16px;
-            margin-bottom: 15px;
-            border-radius: 0 4px 4px 0;
-        }
-
-        .instructions-box p {
-            margin: 6px 0;
-            font-size: 0.95em;
-            color: #333;
-        }
-
-        .instructions-box strong {
-            color: #1976d2; 
-        }
-
-        /* --- TABLA PRINCIPAL --- */
-        table.main-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 1em;
-        }
-
-        .main-table th {
-            background-color: #f1c40f; 
-            color: #000;
-            text-align: left;
-            padding: 8px 12px;
-            font-weight: normal;
-        }
-
-        .main-table td {
-            padding: 8px 12px;
-            border: 1px solid #dcdcdc; 
-            color: #000;
-        }
-
-        tr.grey-row td { background-color: #d9d9d9; }
-        tr.light-grey-row td { background-color: #e6e6e6; }
-
-        a.asignatura-link {
-            color: #1976d2; 
-            text-decoration: underline;
-        }
-
-        a.asignatura-link:hover { color: #0d47a1; }
-        .centered { text-align: center; }
-        
-        .bib-enlace {
-            color: #d32f2f;
-            font-weight: bold;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-        
-        .bib-enlace:hover {
-            color: #9a0007;
-        }
-
-        /* --- ESTILOS PARA LA VENTANA MODAL --- */
-        .modal-overlay {
-            display: none; 
-            position: fixed; 
-            z-index: 1000; 
-            left: 0;
-            top: 0;
-            width: 100%; 
-            height: 100%; 
-            background-color: rgba(0,0,0,0.5); 
-            backdrop-filter: blur(4px);
-        }
-
-        .modal-content {
-            background-color: #f8f9fa;
-            margin: 5% auto; 
-            padding: 25px;
-            border-radius: 12px;
-            width: 90%; 
-            max-width: 800px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-            position: relative;
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-
-        #modalBibliografia .modal-content {
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            padding-bottom: 10px;
-        }
-
-        .close-btn {
-            color: #aaa;
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .close-btn:hover {
-            color: #d32f2f;
-        }
-        
-        .modal-header {
-            border-bottom: 2px solid #e3f2fd;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            flex-shrink: 0;
-        }
-
-        .modal-header h2 {
-            margin: 0 0 8px 0; 
-            color: #1976d2; 
-            font-size: 1.6em;
-        }
-
-        .modal-subtitle {
-            color: #64748b;
-            font-size: 0.95em;
-            margin: 0;
-        }
-
-        /* --- LISTA DE BIBLIOGRAFÍA EN TARJETAS --- */
-        .bib-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            overflow-y: auto;
-            padding-right: 10px;
-            padding-bottom: 15px;
-            flex: 1;
-        }
-
-        .bib-item {
-            background-color: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 16px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .bib-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
-            border-color: #bbdefb;
-        }
-
-        .bib-title {
-            font-size: 1.05em;
-            line-height: 1.5;
-            color: #334155;
-            margin-bottom: 10px;
-        }
-
-        .bib-title strong {
-            color: #1976d2;
-        }
-
-        /* --- RESULTADOS DINÁMICOS Y AGRUPACIÓN --- */
-        .status-box {
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-top: 12px;
-            font-size: 0.95em;
-        }
-        .status-available {
-            background-color: #f0fdf4;
-            border-left: 4px solid #22c55e;
-        }
-        .status-warning {
-            background-color: #fffbeb;
-            border-left: 4px solid #f59e0b;
-        }
-        .status-unavailable {
-            background-color: #f8fafc;
-            border-left: 4px solid #94a3b8;
-        }
-        .status-header {
-            margin-bottom: 8px;
-            color: #334155;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        /* --- BOTONES DE SIGNATURAS Y OPAC --- */
-        .sig-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .sig-badge {
-            display: inline-flex;
-            align-items: center;
-            background-color: #e3f2fd; 
-            color: #0d47a1; 
-            padding: 6px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-family: monospace;
-            font-weight: bold;
-            border: 1px solid #90caf9;
-            transition: all 0.2s ease-in-out;
-            cursor: pointer;
-            font-size: 0.9em;
-        }
-
-        .sig-badge:hover {
-            background-color: #1976d2;
-            color: #ffffff;
-            border-color: #1976d2;
-            transform: scale(1.03);
-        }
-
-        .ejemplares-tag {
-            background: #ffffff; 
-            color: #0d47a1; 
-            border-radius: 8px; 
-            padding: 2px 6px; 
-            font-size: 0.85em; 
-            margin-left: 8px; 
-            font-weight: bold; 
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .opac-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background-color: #f1f5f9;
-            color: #0f172a;
-            padding: 8px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.9em;
-            transition: all 0.2s;
-            border: 1px solid #cbd5e1;
-            margin-top: 10px;
-        }
-
-        .opac-btn:hover {
-            background-color: #e2e8f0;
-            color: #1976d2;
-            border-color: #94a3b8;
-        }
-
-        @media (max-width: 600px) {
-            .header-container {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .title-grado {
-                text-align: left;
-                margin-top: 10px;
-            }
-            .controls-box {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .main-table { font-size: 0.9em; }
-            .modal-content { width: 95%; margin: 10% auto; padding: 15px; }
-        }
+        body { background-color: #F4F0E8; color: #1A1817; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+        .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 1.1; }
+        .grid-line-b { border-bottom: 1px solid rgba(26, 24, 23, 0.12); }
+        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #F4F0E8; } ::-webkit-scrollbar-thumb { background: #1A1817; }
+        .modal-active { opacity: 1 !important; pointer-events: auto !important; }
+        .modal-content-active { transform: translateY(0) !important; }
     </style>
 </head>
-<body>
+<body class="antialiased selection:bg-stone-800 selection:text-stone-50">
 
-    <div class="header-container">
-        <div class="left-titles">
-            <div class="title-curso" id="titleCursoText">PRIMER CURSO</div>
-            <div class="title-semestre" id="titleTrimestreText">Primer Trimestre</div>
+    <!-- HEADER SUPERIOR -->
+    <header class="sticky top-0 z-40 bg-stone-100/90 backdrop-blur-md grid-line-b">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <div>
+                <span class="block text-xs font-mono font-medium tracking-[0.3em] text-stone-800 uppercase">B . U . O</span>
+                <span class="text-[11px] text-stone-500 font-mono tracking-wider block mt-0.5">CAMPUS DE EL MILÁN</span>
+            </div>
+            <a href="javascript:history.back()" class="inline-flex items-center space-x-2 text-xs font-mono px-4 py-2 border border-stone-800 text-stone-800 hover:bg-stone-900 hover:text-stone-100 transition-all uppercase tracking-wider">
+                <i class="fa-solid fa-arrow-left text-[10px]"></i><span>Volver</span>
+            </a>
         </div>
-        <div class="title-grado">Grado de Filosofía</div>
-    </div>
+    </header>
 
-    <div class="main-content">
-        <!-- Panel de selección de Curso y Trimestre -->
-        <div class="controls-box">
-            <div class="control-group">
-                <span class="control-label"></span>
-                <div class="btn-group">
-                    <button class="btn-curso active" data-curso="1" onclick="cambiarCurso(1)">1º Curso</button>
-                    <button class="btn-curso" data-curso="2" onclick="cambiarCurso(2)">2º Curso</button>
-                    <button class="btn-curso" data-curso="3" onclick="cambiarCurso(3)">3º Curso</button>
-                    <button class="btn-curso" data-curso="4" onclick="cambiarCurso(4)">4º Curso</button>
-                </div>
+    <!-- BANNER HERO -->
+    <section class="grid-line-b bg-stone-900 text-stone-100 relative overflow-hidden">
+        <img src="libro.jpg" onerror="this.src='https://via.placeholder.com/1300x400?text=Libros'" alt="Libros" class="absolute inset-0 w-full h-full object-cover opacity-20 filter grayscale">
+        <div class="max-w-7xl mx-auto px-6 py-16 relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+            <div>
+                <span class="text-xs font-mono text-sand font-semibold uppercase tracking-widest block mb-4">[ BIBLIOGRAFÍA RECOMENDADA ]</span>
+                <h1 class="editorial-title text-5xl md:text-6xl font-light mb-2">Grado de Filosofía</h1>
+                <p class="text-stone-400 font-mono text-xs uppercase tracking-widest leading-relaxed">
+                    Consulta textos, disponibilidad física y guías docentes.
+                </p>
             </div>
-            <div class="control-group">
-                <span class="control-label"></span>
-                <div class="btn-group">
-                    <button class="btn-trimestre active" data-trimestre="1" onclick="cambiarTrimestre(1)">1º Trimestre</button>
-                    <button class="btn-trimestre" data-trimestre="2" onclick="cambiarTrimestre(2)">2º Trimestre</button>
-                </div>
+            <div class="text-left md:text-right">
+                <span id="titleCursoText" class="block font-serif text-3xl text-sand">PRIMER CURSO</span>
+                <span id="titleTrimestreText" class="block font-mono text-sm text-stone-400 uppercase tracking-widest mt-1">Primer Trimestre</span>
             </div>
         </div>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
         
-        <div class="instructions-box">
-            <p>🎯 <strong>Clic</strong> en la <strong>ASIGNATURA</strong> para ver la GUÍA DOCENTE</p>
-            <p>📚 <strong>Clic</strong> en la <strong>BIBLIOGRAFÍA</strong> para ver los textos recomendados y su disponibilidad real.</p>
+        <!-- PANELES DE CONTROL (CURSO Y TRIMESTRE) -->
+        <div class="flex flex-col lg:flex-row gap-8 justify-between items-start lg:items-center mb-12 pb-8 grid-line-b">
+            
+            <div class="flex flex-col gap-6">
+                <!-- Selector de Curso -->
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <span class="font-mono text-xs text-stone-500 uppercase tracking-widest w-20">Curso</span>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="btn-curso font-mono text-xs px-4 py-2 border border-stone-300 bg-stone-900 text-stone-100 transition-colors" data-curso="1" onclick="cambiarCurso(1)">1º</button>
+                        <button class="btn-curso font-mono text-xs px-4 py-2 border border-stone-300 text-stone-600 hover:border-stone-900 hover:text-stone-900 transition-colors" data-curso="2" onclick="cambiarCurso(2)">2º</button>
+                        <button class="btn-curso font-mono text-xs px-4 py-2 border border-stone-300 text-stone-600 hover:border-stone-900 hover:text-stone-900 transition-colors" data-curso="3" onclick="cambiarCurso(3)">3º</button>
+                        <button class="btn-curso font-mono text-xs px-4 py-2 border border-stone-300 text-stone-600 hover:border-stone-900 hover:text-stone-900 transition-colors" data-curso="4" onclick="cambiarCurso(4)">4º</button>
+                    </div>
+                </div>
+                
+                <!-- Selector de Trimestre -->
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <span class="font-mono text-xs text-stone-500 uppercase tracking-widest w-20">Semestre</span>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="btn-trimestre font-mono text-xs px-4 py-2 border border-stone-300 bg-stone-900 text-stone-100 transition-colors" data-trimestre="1" onclick="cambiarTrimestre(1)">1º Semestre</button>
+                        <button class="btn-trimestre font-mono text-xs px-4 py-2 border border-stone-300 text-stone-600 hover:border-stone-900 hover:text-stone-900 transition-colors" data-trimestre="2" onclick="cambiarTrimestre(2)">2º Semestre</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instrucciones Breves -->
+            <div class="bg-stone-200/50 p-6 border-l-2 border-sand max-w-sm w-full lg:w-auto">
+                <ul class="space-y-3 font-mono text-xs text-stone-700 leading-relaxed">
+                    <li><i class="fa-solid fa-arrow-pointer text-sand mr-2"></i> Clic en <strong>ASIGNATURA</strong> para ver la Guía Docente.</li>
+                    <li><i class="fa-solid fa-book-open text-sand mr-2"></i> Clic en <strong>BIBLIOGRAFÍA</strong> para la disponibilidad.</li>
+                </ul>
+            </div>
         </div>
 
-        <!-- Tabla principal de asignaturas -->
-        <table class="main-table">
-            <thead>
-                <tr>
-                    <th style="width: 45%;">Asignatura</th>
-                    <th style="width: 10%;">Créditos</th>
-                    <th style="width: 25%;">Carácter</th>
-                    <th style="width: 20%; background-color: transparent;"></th> 
-                </tr>
-            </thead>
-            <tbody id="tablaAsignaturasCuerpo">
-                <!-- Se carga dinámicamente según el curso y trimestre seleccionados -->
-            </tbody>
-        </table>
-    </div>
+        <!-- TABLA PRINCIPAL DE ASIGNATURAS -->
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse min-w-[600px]">
+                <thead>
+                    <tr class="border-b-2 border-stone-800 text-stone-900 font-mono text-xs uppercase tracking-widest">
+                        <th class="py-4 px-4 font-semibold w-1/2">Asignatura</th>
+                        <th class="py-4 px-4 font-semibold w-24 text-center">Créditos</th>
+                        <th class="py-4 px-4 font-semibold w-1/4">Carácter</th>
+                        <th class="py-4 px-4 font-semibold w-32 text-center">Consultas</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaAsignaturasCuerpo" class="text-base text-stone-800 font-sans">
+                    <!-- Se carga dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+    </main>
 
-    <!-- Ventana modal dinámica de Bibliografía -->
-    <div id="modalBibliografia" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-btn" onclick="cerrarModal('modalBibliografia')">&times;</span>
-            <div class="modal-header">
-                <h2 id="modalTitulo">📚 Bibliografía</h2>
-                <p class="modal-subtitle">Textos recomendados y su disponibilidad actual en la Biblioteca de Humanidades.</p>
+    <!-- MODAL BIBLIOGRAFÍA -->
+    <div id="modalBibliografia" class="fixed inset-0 z-[2000] bg-stone-900/80 backdrop-blur-sm flex justify-center items-center opacity-0 pointer-events-none transition-all duration-300" onclick="cerrarModal('modalBibliografia')">
+        <div class="bg-stone-100 w-11/12 max-w-4xl max-h-[85vh] flex flex-col relative rounded-sm shadow-2xl transform translate-y-4 transition-transform duration-300 modal-content" onclick="event.stopPropagation()">
+            
+            <button onclick="cerrarModal('modalBibliografia')" class="absolute top-6 right-6 text-stone-400 hover:text-stone-900 text-xl transition-colors z-10"><i class="fa-solid fa-xmark"></i></button>
+            
+            <div class="p-8 border-b border-stone-200 shrink-0">
+                <span class="text-[10px] font-mono uppercase tracking-widest text-sand font-bold mb-2 block">Textos recomendados</span>
+                <h2 id="modalTitulo" class="editorial-title text-3xl md:text-4xl font-light text-stone-900 pr-8">Cargando...</h2>
             </div>
             
-            <div id="modalListaCuerpo" class="bib-list">
-                <!-- Las tarjetas de bibliografía se cargan dinámicamente aquí -->
+            <div id="modalListaCuerpo" class="p-8 overflow-y-auto flex-1">
+                <!-- Tarjetas dinámicas de libros -->
             </div>
         </div>
     </div>
 
-    <!-- Modal para mensajes y advertencias -->
-    <div id="customModalMensajes" class="modal-overlay" style="z-index: 1003;">
-        <div class="modal-content" style="text-align: center; margin: 20% auto; max-width: 350px;">
-            <p id="modalMessageText" style="white-space: pre-wrap; font-size: 1em; font-weight: 500; color: #1c1c1e; margin-bottom: 20px; line-height: 1.4;"></p>
-            <button onclick="cerrarModalMensajes()" style="background: #007AFF; color: #fff; border: none; padding: 12px 25px; border-radius: 10px; font-size: 1.05em; cursor: pointer; width: 100%; font-weight: 600;">Aceptar</button>
+    <!-- MODAL ALERTAS -->
+    <div id="customModalMensajes" class="fixed inset-0 z-[3000] bg-stone-900/60 backdrop-blur-sm flex justify-center items-center opacity-0 pointer-events-none transition-all duration-300" onclick="cerrarModalMensajes()">
+        <div class="bg-stone-50 w-11/12 max-w-sm p-8 text-center border border-stone-200 transform translate-y-4 transition-transform duration-300 modal-content" onclick="event.stopPropagation()">
+            <i class="fa-solid fa-circle-exclamation text-4xl text-sand mb-4"></i>
+            <p id="modalMessageText" class="font-sans text-sm text-stone-700 mb-8 whitespace-pre-wrap leading-relaxed">Mensaje</p>
+            <button onclick="cerrarModalMensajes()" class="w-full bg-stone-900 text-stone-100 py-3 font-mono text-xs uppercase tracking-widest hover:bg-sand hover:text-stone-900 transition-colors">
+                Aceptar
+            </button>
         </div>
     </div>
 
+    <!-- ========================================== -->
+    <!-- MOTOR LÓGICO Y DE DATOS (Mantenido Intacto)-->
+    <!-- ========================================== -->
     <script>
         // Variables globales
         let cursoActual = 1;
@@ -482,10 +145,6 @@
         let datosGrado = null;
         let datosGuias = null;
 
-        // ============================================
-        // FUNCIONES PARA BÚSQUEDA EN LIBROS JSON
-        // ============================================
-        
         let promesaCargaLibros = null;
         let libroCount = 0;
 
@@ -503,16 +162,11 @@
             return count;
         }
 
-        // Cargar todos los archivos JSON de libros usando una Promesa para evitar condiciones de carrera
         function cargarTodosLosLibros() {
-            if (promesaCargaLibros !== null) {
-                return promesaCargaLibros;
-            }
-            
+            if (promesaCargaLibros !== null) { return promesaCargaLibros; }
             promesaCargaLibros = (async () => {
                 let librosTemp = [];
                 libroCount = await detectarArchivosLibros();
-                
                 for (let i = 1; i <= libroCount; i++) {
                     try {
                         const response = await fetch(`libros_${i}.json`);
@@ -520,20 +174,13 @@
                             const data = await response.json();
                             librosTemp = librosTemp.concat(data);
                         }
-                    } catch (error) {
-                        console.error(`Error cargando libros_${i}.json:`, error);
-                    }
+                    } catch (error) { console.error(`Error cargando libros_${i}.json:`, error); }
                 }
                 return librosTemp;
             })();
-
             return promesaCargaLibros;
         }
 
-        // ---------------------------------------------------------
-        // LÓGICA DE NORMALIZACIÓN Y COMPROBACIÓN DE PALABRAS
-        // ---------------------------------------------------------
-        
         function normalizarParaComparacion(texto) {
             if (!texto) return [];
             let limpio = texto.replace(/<[^>]*>?/gm, '');
@@ -545,12 +192,10 @@
         async function buscarEnBiblioteca(tituloObra) {
             const libros = await cargarTodosLosLibros();
             if (libros.length === 0) return [];
-            
             const palabrasObra = normalizarParaComparacion(tituloObra);
             if (palabrasObra.length === 0) return [];
 
             const mapaEjemplares = new Map();
-            
             for (const libro of libros) {
                 const palabrasLibro = normalizarParaComparacion(libro.titulo);
                 let coincide = false;
@@ -558,27 +203,17 @@
                 if (palabrasObra.length > 9) {
                     const primeras9Obra = palabrasObra.slice(0, 9).join(" ");
                     const primeras9Libro = palabrasLibro.slice(0, 9).join(" ");
-                    
-                    if (primeras9Obra === primeras9Libro) {
-                        coincide = true;
-                    }
+                    if (primeras9Obra === primeras9Libro) { coincide = true; }
                 } else {
-                    if (palabrasObra.length === palabrasLibro.length && palabrasObra.join(" ") === palabrasLibro.join(" ")) {
-                        coincide = true;
-                    }
+                    if (palabrasObra.length === palabrasLibro.length && palabrasObra.join(" ") === palabrasLibro.join(" ")) { coincide = true; }
                 }
                 
                 if (coincide) {
                     const claveUnica = `${libro.signatura}|${libro.titulo}`;
-                    
                     if (mapaEjemplares.has(claveUnica)) {
                         mapaEjemplares.get(claveUnica).ejemplares++;
                     } else {
-                        mapaEjemplares.set(claveUnica, {
-                            signatura: libro.signatura,
-                            titulo: libro.titulo,
-                            ejemplares: 1
-                        });
+                        mapaEjemplares.set(claveUnica, { signatura: libro.signatura, titulo: libro.titulo, ejemplares: 1 });
                     }
                 }
             }
@@ -587,12 +222,10 @@
 
         function localizarLibroDirecto(signatura) {
             let sigOriginal = signatura.trim();
-
             if (!sigOriginal.startsWith("HG")) {
                 mostrarModalMensajes(`Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSignatura: ${sigOriginal}.\n\nTe ayudamos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.`);
                 return;
             }
-
             let sig = sigOriginal.replace(/\/AST$/i, "").replace(/\/COMIC$/i, "");
             if (!sig.endsWith("/4")) sig = sig.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
             
@@ -607,9 +240,7 @@
         async function cargarDatos() {
             if (!datosGrado) {
                 const response = await fetch('grado3.json');
-                if (!response.ok) {
-                    throw new Error('No se pudo cargar el fichero grado3.json');
-                }
+                if (!response.ok) { throw new Error('No se pudo cargar el fichero grado3.json'); }
                 datosGrado = await response.json();
             }
             return datosGrado;
@@ -619,28 +250,27 @@
             if (!datosGuias) {
                 try {
                     const response = await fetch('guiadocente.json');
-                    if (!response.ok) {
-                        throw new Error('No se pudo cargar el fichero guiadocente.json');
-                    }
+                    if (!response.ok) { throw new Error('No se pudo cargar el fichero guiadocente.json'); }
                     const jsonDatos = await response.json();
-                    
-                    datosGuias = jsonDatos.map(item => ({
-                        asignatura: item.Asignatura,
-                        url: item.url
-                    }));
+                    datosGuias = jsonDatos.map(item => ({ asignatura: item.Asignatura, url: item.url }));
                 } catch (error) {
-                    console.error("Error al cargar las guías de guiadocente.json:", error);
+                    console.error("Error al cargar las guías:", error);
                     datosGuias = [];
                 }
             }
             return datosGuias;
         }
         
+        // INTERFAZ Y EVENTOS TAILWIND
+
         function cambiarCurso(numCurso) {
             cursoActual = numCurso;
             document.querySelectorAll('.btn-curso').forEach(btn => {
-                if (parseInt(btn.getAttribute('data-curso')) === numCurso) btn.classList.add('active');
-                else btn.classList.remove('active');
+                if (parseInt(btn.getAttribute('data-curso')) === numCurso) {
+                    btn.className = "btn-curso font-mono text-xs px-4 py-2 border border-stone-300 bg-stone-900 text-stone-100 transition-colors";
+                } else {
+                    btn.className = "btn-curso font-mono text-xs px-4 py-2 border border-stone-300 text-stone-600 hover:border-stone-900 hover:text-stone-900 transition-colors";
+                }
             });
             actualizarAsignaturas();
         }
@@ -648,8 +278,11 @@
         function cambiarTrimestre(numTrimestre) {
             trimestreActual = numTrimestre;
             document.querySelectorAll('.btn-trimestre').forEach(btn => {
-                if (parseInt(btn.getAttribute('data-trimestre')) === numTrimestre) btn.classList.add('active');
-                else btn.classList.remove('active');
+                if (parseInt(btn.getAttribute('data-trimestre')) === numTrimestre) {
+                    btn.className = "btn-trimestre font-mono text-xs px-4 py-2 border border-stone-300 bg-stone-900 text-stone-100 transition-colors";
+                } else {
+                    btn.className = "btn-trimestre font-mono text-xs px-4 py-2 border border-stone-300 text-stone-600 hover:border-stone-900 hover:text-stone-900 transition-colors";
+                }
             });
             actualizarAsignaturas();
         }
@@ -661,7 +294,7 @@
 
         async function actualizarAsignaturas() {
             const tbody = document.getElementById("tablaAsignaturasCuerpo");
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px;">Cargando asignaturas...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-12 text-stone-500 font-mono text-xs uppercase tracking-widest"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando asignaturas...</td></tr>';
 
             try {
                 const data = await cargarDatos();
@@ -669,17 +302,16 @@
 
                 const codigoGrado = parseInt(`3${cursoActual}${trimestreActual}`);
                 const nombresCurso = ["PRIMER CURSO", "SEGUNDO CURSO", "TERCER CURSO", "CUARTO CURSO"];
-                const nombresTrimestre = ["Primer Trimestre", "Segundo Trimestre"];
+                const nombresTrimestre = ["Primer Semestre", "Segundo Semestre"];
 
                 document.getElementById("titleCursoText").innerText = nombresCurso[cursoActual - 1] || `${cursoActual}º CURSO`;
-                document.getElementById("titleTrimestreText").innerText = nombresTrimestre[trimestreActual - 1] || `${trimestreActual}º Trimestre`;
+                document.getElementById("titleTrimestreText").innerText = nombresTrimestre[trimestreActual - 1] || `${trimestreActual}º Semestre`;
 
                 const itemsGrado = data.filter(item => Number(item.GRADO) === codigoGrado);
-
                 tbody.innerHTML = "";
 
                 if (itemsGrado.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px;">No se encontraron asignaturas registradas para este curso y trimestre.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-12 text-stone-500 font-mono text-xs uppercase tracking-widest">No hay registros para este semestre.</td></tr>';
                     return;
                 }
 
@@ -690,58 +322,54 @@
                     }
                 });
 
-                if (asignaturasUnicas.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px;">No hay asignaturas disponibles.</td></tr>';
-                    return;
-                }
-
                 asignaturasUnicas.forEach((nombreAsignatura, index) => {
                     const tr = document.createElement("tr");
-                    tr.className = (index % 2 === 0) ? "grey-row" : "light-grey-row";
+                    tr.className = "border-b border-stone-200 hover:bg-stone-100 transition-colors";
 
                     const infoGuia = guiasData.find(g => normalizarNombre(g.asignatura) === normalizarNombre(nombreAsignatura));
                     const urlGuiaDocente = (infoGuia && infoGuia.url !== "") 
                         ? infoGuia.url 
                         : "https://www.uniovi.es/estudia/grados/humanidades/filosofia";
 
+                    // ASIGNATURA
                     const tdAsig = document.createElement("td");
+                    tdAsig.className = "py-4 px-4 font-serif text-lg text-stone-800";
                     const aLink = document.createElement("a");
-                    aLink.className = "asignatura-link";
+                    aLink.className = "hover:text-sand transition-colors font-medium cursor-pointer";
                     aLink.target = "_blank"; 
                     aLink.href = urlGuiaDocente;
-                    aLink.textContent = nombreAsignatura;
+                    aLink.innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-stone-400 mr-2"></i> ${nombreAsignatura}`;
                     tdAsig.appendChild(aLink);
 
+                    // CREDITOS
                     const tdCred = document.createElement("td");
-                    tdCred.className = "centered";
+                    tdCred.className = "py-4 px-4 text-center font-mono text-sm text-stone-600";
                     tdCred.textContent = "6";
 
+                    // CARÁCTER
                     const tdCaract = document.createElement("td");
+                    tdCaract.className = "py-4 px-4 text-sm text-stone-600";
                     tdCaract.textContent = (cursoActual === 1) ? "Formación Básica" : "Obligatoria";
 
+                    // BOTÓN BIBLIOGRAFÍA
                     const tdBib = document.createElement("td");
-                    tdBib.style.cssText = "background-color: #ffffff; border: none; text-align: center;";
-
-                    const spanBib = document.createElement("span");
-                    spanBib.className = "bib-enlace";
-                    spanBib.textContent = "BIBLIOGRAFÍA";
-                    spanBib.onclick = function() {
-                        abrirModalBibliografia(nombreAsignatura, codigoGrado);
-                    };
-
+                    tdBib.className = "py-4 px-4 text-center";
+                    const spanBib = document.createElement("button");
+                    spanBib.className = "bg-stone-900 text-stone-100 px-4 py-2 font-mono text-xs uppercase tracking-widest hover:bg-sand hover:text-stone-900 transition-all";
+                    spanBib.innerHTML = '<i class="fa-solid fa-book-open mr-2"></i>Textos';
+                    spanBib.onclick = function() { abrirModalBibliografia(nombreAsignatura, codigoGrado); };
                     tdBib.appendChild(spanBib);
 
                     tr.appendChild(tdAsig);
                     tr.appendChild(tdCred);
                     tr.appendChild(tdCaract);
                     tr.appendChild(tdBib);
-
                     tbody.appendChild(tr);
                 });
 
             } catch (error) {
                 console.error("Error al cargar asignaturas:", error);
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: red; padding: 20px;">Error al cargar los datos del servidor.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-12 text-red-700 font-mono text-xs uppercase tracking-widest">Error al cargar datos del servidor.</td></tr>';
             }
         }
 
@@ -749,14 +377,16 @@
             const modal = document.getElementById("modalBibliografia");
             const tituloModal = document.getElementById("modalTitulo");
             const contenedorLista = document.getElementById("modalListaCuerpo");
+            const modalContent = modal.querySelector('.modal-content');
 
-            tituloModal.innerText = "📚 " + nombreAsignatura;
-            contenedorLista.innerHTML = '<div style="text-align: center; padding: 30px; color: #64748b;">Cargando bibliografía recomendada...</div>';
-            modal.style.display = "block";
+            tituloModal.innerText = nombreAsignatura;
+            contenedorLista.innerHTML = '<div class="text-center py-16 text-stone-500 font-mono text-xs uppercase tracking-widest"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Explorando estanterías...</div>';
+            
+            modal.classList.add('modal-active');
+            modalContent.classList.add('modal-content-active');
 
             try {
                 const data = await cargarDatos();
-
                 const items = data.filter(item => 
                     item.ASIGNATURA && 
                     item.ASIGNATURA.trim().toLowerCase() === nombreAsignatura.trim().toLowerCase() &&
@@ -766,111 +396,109 @@
                 contenedorLista.innerHTML = "";
 
                 if (items.length === 0) {
-                    contenedorLista.innerHTML = '<div style="text-align: center; padding: 30px; color: #64748b;">No se encontraron textos recomendados para esta asignatura.</div>';
+                    contenedorLista.innerHTML = '<div class="text-center py-16 text-stone-500 font-mono text-xs uppercase tracking-widest">No constan textos recomendados para esta materia.</div>';
                     return;
                 }
 
                 items.forEach(item => {
+                    // Contenedor tarjeta principal (Tailwind)
                     const divItem = document.createElement("div");
-                    divItem.className = "bib-item";
+                    divItem.className = "bg-stone-50 p-6 md:p-8 border border-stone-200 shadow-sm hover:border-stone-400 transition-colors mb-4 rounded-sm";
 
                     let textoCompleto = item["Texto completo de la obra donde se extrae la información"] || "";
                     let titulo = item["Obra/Título"] || "";
                     let autor = item["AUTOR"] || "";
 
                     if (titulo && textoCompleto.includes(titulo)) {
-                        textoCompleto = textoCompleto.replace(titulo, '<strong>' + titulo + '</strong>');
+                        textoCompleto = textoCompleto.replace(titulo, '<strong class="text-stone-900 font-semibold">' + titulo + '</strong>');
                     }
 
-                    let terminoBusqueda = "";
-                    if (autor) {
-                        terminoBusqueda = autor.trim() + ' "' + titulo.trim() + '"';
-                    } else {
-                        terminoBusqueda = '"' + titulo.trim() + '"';
-                    }
-                    
+                    let terminoBusqueda = autor ? (autor.trim() + ' "' + titulo.trim() + '"') : ('"' + titulo.trim() + '"');
                     let urlBusqueda = `https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH&xsqf01=${encodeURIComponent(terminoBusqueda)}`;
                     
+                    // Texto Bibliográfico
                     const titleDiv = document.createElement("div");
-                    titleDiv.className = "bib-title";
+                    titleDiv.className = "font-serif text-lg text-stone-600 leading-relaxed mb-5";
                     titleDiv.innerHTML = textoCompleto;
                     divItem.appendChild(titleDiv);
 
+                    // Contenedor dinámico (Disponibilidad)
                     const dynamicContainer = document.createElement("div");
-                    dynamicContainer.innerHTML = '<div class="status-box" style="color:#64748b; background: #f8fafc;">⏳ Buscando disponibilidad en sala...</div>';
+                    dynamicContainer.innerHTML = '<div class="text-stone-400 font-mono text-[10px] uppercase tracking-widest"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Comprobando sala...</div>';
                     divItem.appendChild(dynamicContainer);
                     contenedorLista.appendChild(divItem);
 
                     if (titulo) {
                         buscarEnBiblioteca(titulo).then(coincidencias => {
                             let html = "";
-                            
                             if (coincidencias.length > 0) {
                                 const totalEjemplares = coincidencias.reduce((sum, c) => sum + c.ejemplares, 0);
-                                
-                                html += `<div class="status-box status-available">
-                                            <div class="status-header">
-                                                <span>✅ <strong>En la Biblioteca de Humanidades</strong></span>
-                                                <span style="font-size: 0.9em; color: #15803d;">📚 ${totalEjemplares} ejemplares en total</span>
-                                            </div>
-                                            <div class="sig-container">`;
+                                html += `
+                                <div class="bg-emerald-50/50 border-l-2 border-emerald-500 p-4 mb-4">
+                                    <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-3 text-sm text-stone-800 gap-2">
+                                        <span class="font-medium"><i class="fa-solid fa-check text-emerald-600 mr-2"></i> Disponible en esta biblioteca</span>
+                                        <span class="font-mono text-[10px] text-emerald-700 bg-emerald-100 px-2 py-1 rounded-sm uppercase tracking-widest w-max">${totalEjemplares} ejemplares totales</span>
+                                    </div>
+                                    <div class="flex flex-wrap gap-2 mt-2">`;
                                             
                                 coincidencias.forEach(c => {
-                                    html += `<span class="sig-badge" onclick="localizarLibroDirecto('${c.signatura}')" title="Haz clic para localizar">
-                                                📍 ${c.signatura} 
-                                                <span class="ejemplares-tag">${c.ejemplares} ud.</span>
-                                             </span>`;
+                                    html += `
+                                        <button class="inline-flex items-center bg-stone-900 text-sand px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider hover:bg-sand hover:text-stone-900 transition-colors" onclick="localizarLibroDirecto('${c.signatura}')" title="Haz clic para generar ruta">
+                                            <i class="fa-solid fa-location-dot mr-2"></i> ${c.signatura} 
+                                            <span class="bg-stone-100 text-stone-900 px-1.5 py-0.5 ml-2 font-bold">${c.ejemplares}</span>
+                                        </button>`;
                                 });
-                                
-                                html += `   </div>
-                                         </div>`;
+                                html += `</div></div>`;
                             } else {
-                                html += `<div class="status-box status-unavailable">
-                                            <div class="status-header">📭 <strong>Sin ejemplares físicos en la Biblioteca de Humanidades.</strong></div>
-                                         </div>`;
+                                html += `
+                                <div class="bg-stone-100 border-l-2 border-stone-400 p-4 mb-4 text-sm text-stone-600">
+                                    <i class="fa-regular fa-folder-open mr-2"></i> Sin ejemplares físicos registrados en esta sala.
+                                </div>`;
                             }
                             
-                            html += `<a href="${urlBusqueda}" target="_blank" class="opac-btn">
-                                        🌐 Disponibilidad (otras bibliotecas) 
-                                     </a>`;
+                            html += `
+                                <a href="${urlBusqueda}" target="_blank" class="inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-stone-500 hover:text-stone-900 transition-colors border-b border-transparent hover:border-stone-900 pb-0.5 mt-2">
+                                    <i class="fa-solid fa-globe"></i> Ver disponibilidad global (Catálogo)
+                                </a>`;
                                      
                             dynamicContainer.innerHTML = html;
-                            
                         }).catch(err => {
-                            dynamicContainer.innerHTML = `<div class="status-box status-unavailable">⚠️ Error al buscar disponibilidad.</div>`;
+                            dynamicContainer.innerHTML = `<div class="text-red-700 font-mono text-[10px] uppercase tracking-widest">Error al buscar disponibilidad.</div>`;
                         });
                     }
                 });
 
             } catch (error) {
-                console.error("Error al cargar la bibliografía:", error);
-                contenedorLista.innerHTML = '<div style="text-align: center; color: #d32f2f; padding: 30px;">Error al cargar la información bibliográfica.</div>';
+                console.error("Error:", error);
+                contenedorLista.innerHTML = '<div class="text-center py-16 text-red-700 font-mono text-xs uppercase tracking-widest">Error de sistema.</div>';
             }
         }
 
         function cerrarModal(id) {
-            document.getElementById(id).style.display = "none";
+            const modal = document.getElementById(id);
+            const modalContent = modal.querySelector('.modal-content');
+            modal.classList.remove('modal-active');
+            if(modalContent) modalContent.classList.remove('modal-content-active');
         }
 
         function mostrarModalMensajes(mensaje) {
             document.getElementById("modalMessageText").innerText = mensaje;
-            document.getElementById("customModalMensajes").style.display = "block";
+            const alertModal = document.getElementById('customModalMensajes');
+            const content = alertModal.querySelector('.modal-content');
+            alertModal.classList.add('modal-active');
+            content.classList.add('modal-content-active');
         }
 
         function cerrarModalMensajes() {
-            document.getElementById("customModalMensajes").style.display = "none";
-        }
-
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal-overlay')) {
-                event.target.style.display = "none";
-            }
+            const alertModal = document.getElementById('customModalMensajes');
+            const content = alertModal.querySelector('.modal-content');
+            alertModal.classList.remove('modal-active');
+            content.classList.remove('modal-content-active');
         }
 
         document.addEventListener("DOMContentLoaded", function() {
             actualizarAsignaturas();
         });
     </script>
-
 </body>
 </html>
