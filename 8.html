@@ -1,449 +1,372 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Búsqueda por Materia | Biblioteca</title>
-    <!-- Enlace a FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <!-- Enlace a Google icons -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <title>Materias: Lenguaje, Lingüística, Literatura · Biblioteca de Humanidades</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        stone: {
+                            50: '#FAF8F5',
+                            100: '#F4F0E8',
+                            200: '#E6DFC',
+                            300: '#D5CBBF',
+                            800: '#2A2725',
+                            900: '#1A1817',
+                        },
+                        sand: '#C5A059',
+                    },
+                    fontFamily: {
+                        serif: ['Cormorant Garamond', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['Space Grotesk', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        /* Importar fuentes académicas */
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Playfair+Display:wght@600;700&display=swap');
-
-        /* Estilos generales optimizados para móviles y base de escritorio */
-        html, body {
-            height: 100%;
-            height: 100dvh;
-            margin: 0;
-            padding: 0;
-            overflow: hidden; 
-            font-family: Arial, sans-serif;
-            color: #2c3e50;
+        body {
+            background-color: #F4F0E8;
+            color: #1A1817;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
         }
-        body { 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0; 
-            box-sizing: border-box;
-            line-height: 1.4; 
-            
-            /* Animación de fondo de colores */
-            background: linear-gradient(45deg, #a8edea, #fed6e3, #e0c3fc, #8ec5fc);
-            background-size: 400% 400%;
-            animation: gradientBG 12s ease infinite;
-        }
-
-        /* Keyframes para el fondo animado */
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .container { 
-            display: flex;
-            flex-direction: column;
-            width: 95vw;
-            max-width: 1300px;
-            height: 94dvh; 
-            background: #ffffff; 
-            padding: 0; 
-            border-radius: 16px; 
-            box-sizing: border-box;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.25); 
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-        
-        /* Cabecera / Sección Hero Panorámica */
-        .hero-section {
-            width: 100%;
-            height: 180px; 
-            position: relative;
-            background-color: #34495e;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .shelf-photo-panoramic {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; 
-            object-position: center 60%;
-            filter: brightness(0.65); 
-        }
-
-        .library-title {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            color: #ffffff;
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 1.5em; 
-            font-weight: 700;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.7);
-            z-index: 10;
-        }
-
-        .professional-badge {
-            position: absolute;
-            bottom: 15px;
-            right: 15px;
-            color: #ffffff;
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3em;
-            font-weight: 700;
-            text-align: right;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.7);
-            z-index: 10;
-        }
-
-        .content-wrapper {
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            padding: 15px 20px;
-            min-height: 0;
-            overflow: hidden;
-        }
-
-        /* Lista de Materias */
-        .subject-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px; 
-            flex-grow: 1;
-            min-height: 0;
-            overflow-y: auto;
-            padding-right: 6px;
-            margin-bottom: 10px;
-        }
-
-        /* Estilo base de los botones */
-        .subject-link {
-            display: flex;
-            align-items: center;
-            gap: 12px; 
-            padding: 10px 15px; 
-            border: 1px solid #e0e6ed;
-            border-left-width: 5px;
-            border-left-style: solid;
-            border-radius: 8px; 
-            text-decoration: none;
-            color: #2c3e50;
-            font-size: 0.95em; 
-            transition: all 0.2s ease;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        /* 1. Colores para Generalidades */
-        .btn-generalidades {
-            background-color: #f4f6f7;
-            border-left-color: #34495e;
-        }
-        .btn-generalidades:hover, .btn-generalidades:active {
-            background-color: #e5e8e8;
-            border-left-color: #2c3e50;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-
-        /* 2. Colores para Lingüística y filología */
-        .btn-linguistica {
-            background-color: #e8f6f3;
-            border-left-color: #16a085;
-        }
-        .btn-linguistica:hover, .btn-linguistica:active {
-            background-color: #d1f2eb;
-            border-left-color: #117a65;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-
-        /* 2a. Colores para literatura y lengua asturiana */
-        .btn-asturias {
-            background-color: #aed6f1;
-            border-left-color: #16a085;
-        }
-        .btn-asturias:hover, .btn-asturias:active {
-            background-color: #d6eaf8;
-            border-left-color: #117a65;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-
-        /* 2b. Colores para diccionarios */
-        .btn-diccionarios {
-            background-color: #f5deb3;
-            border-left-color: #16a085;
-        }
-        .btn-diccionarios:hover, .btn-diccionarios:active {
-            background-color: #e5c494;
-            border-left-color: #117a65;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-
-        /* 3. Colores para Lenguas */
-        .btn-lenguas {
-            background-color: #ebf5fb;
-            border-left-color: #3498db;
-        }
-        .btn-lenguas:hover, .btn-lenguas:active {
-            background-color: #d6eaf8;
-            border-left-color: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-
-        /* 4. Colores para Literaturas */
-        .btn-literaturas {
-            background-color: #f5eef8;
-            border-left-color: #9b59b6;
-        }
-        .btn-literaturas:hover, .btn-literaturas:active {
-            background-color: #ebdef0;
-            border-left-color: #8e44ad;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-
-        /* Iconos de la lista */
-        .icon {
-            font-size: 1.2em;
-            flex-shrink: 0; 
-        }
-        
-        .text {
-            line-height: 1.2; 
-        }
-
-        /* Destacar palabras clave */
-        .highlight {
-            font-weight: bold;
-            color: #1b4f72;
-        }
-
-        /* Botón de volver */
-        .back-btn {
-            display: block;
-            text-align: center;
-            padding: 12px;
-            background: #ecf0f1;
-            color: #2c3e50;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1em;
-            flex-shrink: 0;
-            transition: background 0.3s, transform 0.2s;
-            margin-top: auto;
-        }
-        .back-btn:active, .back-btn:hover {
-            background: #d5dbdb;
-            transform: translateY(-2px);
-        }
-
-        /* =========================================================
-           ADAPTACIÓN PARA PANTALLAS GRANDES Y MÓVILES
-           ========================================================= */
-
-        /* 💻 PANTALLAS GRANDES / ORDENADORES */
-        @media (min-width: 901px) {
-            .hero-section { height: 25dvh; } 
-            .library-title {
-                font-size: 2.3em;
-                top: 25px;
-                left: 35px;
-            }
-            .professional-badge {
-                font-size: 2.2em;
-                bottom: 25px;
-                right: 35px;
-            }
-            .content-wrapper { padding: 3dvh 4vw; }
-            
-            .subject-list {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 12px 20px;
-                align-content: start;
-            }
-            
-            .back-btn {
-                width: 30%;
-                margin: 20px auto 0 auto;
-            }
-        }
-
-        /* 📱 PANTALLAS PEQUEÑAS / MÓVILES */
-        @media (max-width: 900px) {
-            body {
-                align-items: flex-start; 
-            }
-            .container { 
-                height: 100dvh; 
-                width: 100vw; 
-                border-radius: 0; 
-            }
-        }
+        .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 0.95; }
+        .grid-line-b { border-bottom: 1px solid rgba(26, 24, 23, 0.12); }
+        .hover-lift { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease; }
+        .hover-lift:hover { transform: translateY(-4px); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #F4F0E8; }
+        ::-webkit-scrollbar-thumb { background: #1A1817; }
     </style>
 </head>
-<body>
-    <div class="container">
-        <!-- Sección Hero Panorámica -->
-        <div class="hero-section">
-            <img src="sala.png" alt="Interior detallado de biblioteca moderna" class="shelf-photo-panoramic" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
+<body class="antialiased selection:bg-stone-800 selection:text-stone-50">
+
+    <!-- MAIN EDITORIAL HEADER -->
+    <header class="sticky top-0 z-40 bg-stone-100/90 backdrop-blur-md grid-line-b">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <div>
+                <span class="block text-xs font-mono font-medium tracking-[0.3em] text-stone-800 uppercase">
+                    B . U . O
+                </span>
+                <span class="text-[11px] text-stone-500 font-mono tracking-wider block mt-0.5">
+                    CAMPUS DE EL MILÁN
+                </span>
+            </div>
             
-            <div class="library-title">
+            <a href="index.html" class="inline-flex items-center space-x-2 text-xs font-mono px-4 py-2 border border-stone-800 text-stone-800 hover:bg-stone-900 hover:text-stone-100 transition-all uppercase tracking-wider">
+                <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                <span>Volver al inicio</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="grid-line-b bg-stone-900 text-stone-100 relative overflow-hidden">
+        <img src="sala.png" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca'" alt="Biblioteca" class="absolute inset-0 w-full h-full object-cover opacity-20 filter grayscale">
+        
+        <div class="max-w-7xl mx-auto px-6 py-16 md:py-24 relative z-10">
+            <span class="text-xs font-mono text-sand font-semibold uppercase tracking-widest block mb-4">
+                [ COLECCIÓN GENERAL ]
+            </span>
+            <h1 class="editorial-title text-5xl md:text-7xl font-light mb-6">
+                Lenguaje, Lingüística <br>
+                <span class="italic font-normal text-stone-400">&</span> Literatura.
+            </h1>
+            <p class="text-stone-400 font-mono text-xs uppercase tracking-widest max-w-xl leading-relaxed">
+                Selecciona una materia específica para consultar su ubicación exacta en la planta, sala y estantería correspondiente.
+            </p>
+        </div>
+    </section>
+
+    <!-- MATERIAS GRID -->
+    <section class="py-16 md:py-24 max-w-7xl mx-auto px-6">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            
+            <!-- TARJETA: ASTURIANA -->
+            <a href="#" onclick="abrirMateria('asturias'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lengua y Literatura</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Asturiana</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LIT ESPAÑOLA -->
+            <a href="#" onclick="abrirMateria('lit_espanola'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Española</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: GENERALIDADES -->
+            <a href="#" onclick="abrirMateria('generalidades'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Fundamentos</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Conocimientos de las lenguas</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LINGÜÍSTICA -->
+            <a href="#" onclick="abrirMateria('linguistica'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Filología</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Lingüística general</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: DICCIONARIOS -->
+            <a href="#" onclick="abrirMateria('diccionarios'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full relative overflow-hidden">
+                <div class="absolute inset-0 bg-sand/10 group-hover:bg-transparent transition-colors"></div>
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block relative z-10">Referencia</span>
+                <div class="flex justify-between items-end relative z-10">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Diccionarios</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LENGUA INGLESA -->
+            <a href="#" onclick="abrirMateria('lengua_inglesa'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Inglesa</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LENGUAS GERMÁNICAS -->
+            <a href="#" onclick="abrirMateria('lenguas_germanicas'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Germánicas</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LENGUAS ROMANCES -->
+            <a href="#" onclick="abrirMateria('lenguas_romances'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Romances</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LENGUA ITALIANA -->
+            <a href="#" onclick="abrirMateria('lengua_italiana'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Italiana</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LENGUA ESPAÑOLA -->
+            <a href="#" onclick="abrirMateria('lengua_espanola'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Española</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LENGUA PORTUGUESA -->
+            <a href="#" onclick="abrirMateria('lengua_portuguesa'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Portuguesa</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LENGUA GALLEGA -->
+            <a href="#" onclick="abrirMateria('lengua_gallega'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Gallega</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LENGUAS CLÁSICAS -->
+            <a href="#" onclick="abrirMateria('lenguas_clasicas'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Clásicas en general</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LENGUAS ESLAVAS -->
+            <a href="#" onclick="abrirMateria('lenguas_eslavas'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Eslavas y Bálticas</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LENGUAS ORIENTALES -->
+            <a href="#" onclick="abrirMateria('lenguas_orientales'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Orientales y Africanas</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LIT GENERAL -->
+            <a href="#" onclick="abrirMateria('lit_general'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">General</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LIT INGLESA -->
+            <a href="#" onclick="abrirMateria('lit_inglesa'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Inglesa</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LIT ALEMANA -->
+            <a href="#" onclick="abrirMateria('lit_alemana'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Alemana y Austriaca</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LIT HOLANDESA -->
+            <a href="#" onclick="abrirMateria('lit_holandesa'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Holandesa y Nórdica</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LIT FRANCESA -->
+            <a href="#" onclick="abrirMateria('lit_francesa'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Francesa y Provenzal</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LIT ITALIANA -->
+            <a href="#" onclick="abrirMateria('lit_italiana'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Italiana</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LIT RUMANA -->
+            <a href="#" onclick="abrirMateria('lit_rumana'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Rumana</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LIT HISPANOAMERICANA -->
+            <a href="#" onclick="abrirMateria('lit_hispanoamericana'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Hispanoamericana</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LIT PORTUGUESA -->
+            <a href="#" onclick="abrirMateria('lit_portuguesa'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Portuguesa, Brasileña y Gallega</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LIT CLÁSICAS -->
+            <a href="#" onclick="abrirMateria('lit_clasicas'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Clásicas</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: LIT POLACA -->
+            <a href="#" onclick="abrirMateria('lit_polaca'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Polaca, Búlgara, Checa y Serbia</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+            <!-- TARJETA: OTRAS LIT -->
+            <a href="#" onclick="abrirMateria('lit_otras'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
+                <div class="flex justify-between items-end">
+                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Otras Literaturas</h3>
+                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                </div>
+            </a>
+
+        </div>
+        
+    </section>
+
+    <!-- FOOTER WITH EDITORIAL SIGNATURE -->
+    <footer class="bg-stone-900 text-stone-100 pt-16 pb-12 font-mono text-xs border-t border-stone-800">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <span class="dot-spaced text-stone-400 text-sm block mb-4">
+                U . N . I . V . E . R . S . I . D . A . D .  D . E .  O . V . I . E . D . O
+            </span>
+            <h2 class="editorial-title text-4xl sm:text-6xl text-stone-100 font-light font-serif">
                 Biblioteca de Humanidades
-            </div>
-
-            <div class="professional-badge">
-                Lenguaje, Lingüística, Literatura
+            </h2>
+            <div class="flex justify-center items-center pt-8 text-stone-500 text-[11px] mt-8 border-t border-stone-800">
+                <span>© 2026 Universidad de Oviedo</span>
             </div>
         </div>
+    </footer>
 
-        <div class="content-wrapper">
-            <!-- Lista de Materias -->
-            <div class="subject-list">
-                <!-- LITERATURA Y LENGUA ASTURIANA-->
-                <a href="#" onclick="abrirMateria('asturias'); return false;" class="subject-link btn-asturias">
-                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 32px;">book_3</span>
-                    <span class="text">Literatura y lengua <span class="highlight">ASTURIANA</span></span>
-                </a>
-                <!-- LITERATURA ESPAÑOLA-->
-                <a href="#" onclick="abrirMateria('lit_espanola'); return false;" class="subject-link btn-literaturas">
-                    <i class="fa-solid fa-feather fa-bounce" style="color: #8e44ad; font-size: 28px; --fa-animation-duration: 2s;"></i>
-                    <span class="text">LITERATURA ESPAÑOLA</span>
-                </a>
-                <!-- GENERALIDADES -->
-                <a href="#" onclick="abrirMateria('generalidades'); return false;" class="subject-link btn-generalidades">
-                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book</span>
-                    <span class="text">Conocimientos de las lenguas. Dialectos, regionalismos y jergas</span>
-                </a>
-
-                <!-- LINGÜÍSTICA -->
-                <a href="#" onclick="abrirMateria('linguistica'); return false;" class="subject-link btn-linguistica">
-                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">menu_book</span>
-                    <span class="text">Lingüística y filología en general</span>
-                </a>
-
-                <!-- DICCIONARIOS-->	 
-                <a href="#" onclick="abrirMateria('diccionarios'); return false;" class="subject-link btn-diccionarios">
-                   <img src="imagenes/diccionario.png" alt="Icono" style="width: 32px; height: 32px; vertical-align: middle;">
-                    <span class="highlight">DICCIONARIOS</span>
-                </a>
-
-                <!-- LENGUAS -->
-                <a href="#" onclick="abrirMateria('lengua_inglesa'); return false;" class="subject-link btn-lenguas">
-                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
-                    <span class="text"><span class="highlight">Lengua</span> Inglesa</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lenguas_germanicas'); return false;" class="subject-link btn-lenguas">
-                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
-                    <span class="text">Lenguas germánicas</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lenguas_romances'); return false;" class="subject-link btn-lenguas">
-                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
-                    <span class="text">Lenguas romances</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lengua_italiana'); return false;" class="subject-link btn-lenguas">
-                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
-                    <span class="text">Lengua italiana</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lengua_espanola'); return false;" class="subject-link btn-lenguas">
-                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 32px;">auto_stories</span>
-                    <span class="text">LENGUA ESPAÑOLA</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lengua_portuguesa'); return false;" class="subject-link btn-lenguas">
-                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 32px;">book_5</span>
-                    <span class="text">Lengua portuguesa</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lengua_gallega'); return false;" class="subject-link btn-lenguas">
-                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 32px;">book_5</span>
-                    <span class="text">Lengua gallega</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lenguas_clasicas'); return false;" class="subject-link btn-lenguas">
-                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
-                    <span class="text">Lenguas clásicas en general</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lenguas_eslavas'); return false;" class="subject-link btn-lenguas">
-                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
-                    <span class="text">Lenguas eslavas y bálticas</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lenguas_orientales'); return false;" class="subject-link btn-lenguas">
-                    <span class="material-symbols-outlined" style="color: #2980b9; font-size: 28px;">book_5</span>
-                    <span class="text">Lenguas orientales, africanas y otras lenguas</span>
-                </a>
-                
-                <!-- LITERATURAS -->
-                <a href="#" onclick="abrirMateria('lit_general'); return false;" class="subject-link btn-literaturas">
-                    <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
-                    <span class="text"><span class="highlight">Literatura</span> en general.</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lit_inglesa'); return false;" class="subject-link btn-literaturas">
-                    <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
-                    <span class="text">Literatura inglesa.</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lit_alemana'); return false;" class="subject-link btn-literaturas">
-                    <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
-                    <span class="text">Literatura alemana y austriaca</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lit_holandesa'); return false;" class="subject-link btn-literaturas">
-                    <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
-                    <span class="text">Literatura holandesa, noruega y danesa</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lit_francesa'); return false;" class="subject-link btn-literaturas">
-                    <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
-                    <span class="text">Literatura francesa</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lit_italiana'); return false;" class="subject-link btn-literaturas">
-                    <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
-                    <span class="text">Literatura italiana</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lit_rumana'); return false;" class="subject-link btn-literaturas">
-                    <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
-                    <span class="text">Literatura rumana</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lit_hispanoamericana'); return false;" class="subject-link btn-literaturas">
-                    <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
-                    <span class="text">Literatura hispanoamericana</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lit_portuguesa'); return false;" class="subject-link btn-literaturas">
-                    <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
-                    <span class="text">Literatura portuguesa, brasileña y gallega</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lit_clasicas'); return false;" class="subject-link btn-literaturas">
-                    <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
-                    <span class="text">Literaturas clásicas</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lit_polaca'); return false;" class="subject-link btn-literaturas">
-                    <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
-                    <span class="text">Literatura polaca, búlgara, checa, serbia</span>
-                </a>
-                <a href="#" onclick="abrirMateria('lit_otras'); return false;" class="subject-link btn-literaturas">
-                    <i class="fa-solid fa-book" style="color: #8e44ad; font-size: 24px;"></i>
-                    <span class="text">Otras literaturas</span>
-                </a>
-            </div>
-
-            <!-- Botón para regresar al inicio -->
-            <a href="index.html" class="back-btn"><i class="fa-solid fa-circle-arrow-left fa-beat" style="margin-right: 8px;"></i> Volver al inicio</a>
-        </div>
-    </div>
-
+    <!-- Lógica de Enrutamiento Dinámico Exactamente Igual -->
     <script>
-        // Diccionario con los parámetros, signatura y el texto exacto de la materia
         const baseDatosMaterias = {
             "generalidades": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 16", signatura: "(HG800.7!.t852.) o (HG800.8!.t852.)", texto_materia: "Conocimientos de las lenguas" },
             "linguistica": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 16 y 17", signatura: "(HG801!.t852.) o (HG801.*!.t852.) no (HG801!03!.t852.)", texto_materia: "Lingüística y filología en general" },
-	        "asturias": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías del centro", estanteria: "Estantería 14", signatura: "(HG8*AST*.t852.) o (HG8*!4!.t852.)  o (HG8*EO*.t852.)", texto_materia: "Literatura y lengua asturiana" },
-	        "diccionarios": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías del centro", estanteria: "Estantería 15", signatura: "(HG8*!03!.t852.)", texto_materia: "Diccionarios" },
+            "asturias": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías del centro", estanteria: "Estantería 14", signatura: "(HG8*AST*.t852.) o (HG8*!4!.t852.)  o (HG8*EO*.t852.)", texto_materia: "Literatura y lengua asturiana" },
+            "diccionarios": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías del centro", estanteria: "Estantería 15", signatura: "(HG8*!03!.t852.)", texto_materia: "Diccionarios" },
             "lengua_inglesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 17", signatura: "(HG802.0*.t852.) no (HG802.0!03!.t852.)", texto_materia: "Lengua inglesa" },
             "lenguas_germanicas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 17", signatura: "(HG803*.t852.) no (HG803.0!03!.t852.)", texto_materia: "Lenguas germánicas" },
             "lenguas_romances": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 18", signatura: "(HG804*.t852.) no (HG804*!03!.t852.)", texto_materia: "Lenguas romances" },
@@ -454,7 +377,7 @@
             "lenguas_clasicas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20", signatura: "(HG807*.t852.) no (HG807*!03!.t852.)", texto_materia: "Lenguas clásicas en general" },
             "lenguas_eslavas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 20", signatura: "(HG808*.t852.) no (HG808*!03!.t852.)", texto_materia: "Lenguas eslavas y bálticas" },
             "lenguas_orientales": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 21", signatura: "(HG809*.t852.) no (HG809*!03!.t852.)", texto_materia: "Lenguas orientales / africanas" },
-	        "lit_general": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estantería de la derecha e izquierda del fondo", estanteria: "Estantería 11 y 21", signatura: "(HG82!.t852.) o (HG82.*!.t852.) no (HG82!03!.t852.)", texto_materia: "Literatura en general" },
+            "lit_general": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estantería de la derecha e izquierda del fondo", estanteria: "Estantería 11 y 21", signatura: "(HG82!.t852.) o (HG82.*!.t852.) no (HG82!03!.t852.)", texto_materia: "Literatura en general" },
             "lit_inglesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 9, 10 y 11", signatura: "(HG820*.t852.) no (HG820!03!.t852.)", texto_materia: "Literatura inglesa" },
             "lit_alemana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8", signatura: "(HG830*.t852.) no (HG830!03!.t852.)", texto_materia: "Literatura alemana y austriaca" },
             "lit_holandesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8", signatura: "(HG839!.t852.) no (HG839*!4!.t852.)", texto_materia: "Literatura holandesa, noruega y danesa" },
@@ -462,7 +385,7 @@
             "lit_italiana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5", signatura: "(HG850*.t852.) no (HG850!03!.t852.)", texto_materia: "Literatura italiana" },
             "lit_rumana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5", signatura: "(HG859*.t852.) no (HG859!03!.t852.)", texto_materia: "Literatura rumana" },
             "lit_espanola": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 2, 3, 4 y 5", signatura: "(HG860*.t852.) no (HG860!03!.t852.) no (HG860*!4*.t852.) no (HG860!7*.t852.) no (HG860!8*.t852.)", texto_materia: "Literatura española" },
- 	        "lit_hispanoamericana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1 y 12", signatura: "(HG860!7*.t852.) o (HG860!8*.t852.) no (HG860!7!03!*.t852.) no (HG860!7!4*.t852.)", texto_materia: "Literatura hispanoamericana" },
+            "lit_hispanoamericana": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1 y 12", signatura: "(HG860!7*.t852.) o (HG860!8*.t852.) no (HG860!7!03!*.t852.) no (HG860!7!4*.t852.)", texto_materia: "Literatura hispanoamericana" },
             "lit_portuguesa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías del centro", estanteria: "Estantería 12", signatura: "(HG869*.t852.) no (HG869*!03!.t852.)", texto_materia: "Literatura portuguesa, brasileña y gallega" },
             "lit_clasicas": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías del centro", estanteria: "Estantería 13", signatura: "(HG87*.t852.) no (HG87*!03!.t852.)", texto_materia: "Literaturas clásicas" },
             "lit_polaca": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías del centro", estanteria: "Estantería 13", signatura: "(HG88*.t852.) no (HG88*!03!.t852.)", texto_materia: "Literatura polaca, búlgara, checa, serbia" },
