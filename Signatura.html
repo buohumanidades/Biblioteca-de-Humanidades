@@ -1,451 +1,95 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Búsqueda por Signatura | Biblioteca</title>
+    <title>Búsqueda por Signatura · Biblioteca de Humanidades</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = { theme: { extend: { colors: { stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' }, sand: '#C5A059' }, fontFamily: { serif: ['Cormorant Garamond', 'serif'], sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+    </script>
     <style>
-        /* Fuentes */
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Playfair+Display:wght@600;700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            color: #1c1c1e;
-        }
-
-        /* FONDO MÁS COLORIDO */
-        body { 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(45deg, #ff7eb3, #ff758c, #c2e9fb, #8ec5fc, #fbc2eb, #e0c3fc);
-            background-size: 600% 600%;
-            animation: gradientBG 16s ease infinite;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Contenedor principal con Glassmorphism */
-        .container { 
-            position: relative;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            width: 95vw;
-            max-width: 1300px;
-            height: 94vh; 
-            height: 94dvh; 
-            background: rgba(255, 255, 255, 0.88); 
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: 20px; 
-            box-shadow: 0 20px 60px rgba(112, 128, 175, 0.25); 
-            overflow: hidden;
-        }
-
-        /* Cabecera / Sección Hero */
-        .hero-section {
-            width: 100%;
-            height: 180px; 
-            position: relative; 
-            background-color: #34495e;
-            overflow: hidden;
-            flex-shrink: 0;
-            z-index: 10;
-        }
-
-        .shelf-photo-desktop {
-            display: block; 
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1; 
-            width: 100%;
-            height: 200%;
-            object-fit: cover; 
-            object-position: center 100%;
-            filter: brightness(0.65); 
-        }
-
-        .shelf-photo-mobile {
-            display: none; 
-        }
-
-        .library-title {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            color: #ffffff;
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 1.5em; 
-            font-weight: 700;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
-            z-index: 10; 
-        }
-
-        .professional-badge {
-            position: absolute;
-            bottom: 15px;
-            right: 15px;
-            color: #ffffff;
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3em;
-            font-weight: 700;
-            text-align: right;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
-            z-index: 10; 
-        }
-
-        /* IMAGEN DEL MOSTRADOR */
-        .footer-decor-img {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 35vh; 
-            object-fit: cover;
-            object-position: bottom;
-            opacity: 0.50; 
-            z-index: 1; 
-            pointer-events: none; 
-            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
-            mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
-        }
-
-        .content-wrapper {
-            position: relative;
-            z-index: 5;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            padding: 20px 30px;
-            min-height: 0;
-            overflow-y: auto;
-            justify-content: space-between;
-        }
-
-        .search-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            margin: auto 0;
-            width: 100%;
-        }
-
-        .search-instruction {
-            text-align: center; 
-            color: #4a4a4a; 
-            font-size: 0.95em; 
-            margin: 0 10px; 
-            font-weight: 600;
-            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
-        }
-
-        /* --- ESTILO iOS PARA INPUT --- */
-        .input-signatura {
-            width: 65%;
-            padding: 16px;
-            font-size: 1.2em;
-            text-align: center;
-            color: #1c1c1e;
-            background-color: rgba(255, 255, 255, 0.95);
-            border: 2px solid transparent;
-            border-radius: 14px;
-            font-weight: 600;
-            outline: none;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-            transition: all 0.2s ease;
-        }
-        .input-signatura::placeholder {
-            color: #8e8e93;
-            font-weight: 500;
-        }
-        .input-signatura:focus {
-            background-color: #ffffff;
-            border-color: #007AFF;
-            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
-        }
-
-        /* --- ESTILO iOS PARA OTROS BOTONES --- */
-        .action-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 65%;
-            padding: 16px;
-            font-size: 1.15em;
-            font-weight: 600;
-            border-radius: 14px;
-            text-decoration: none;
-            cursor: pointer;
-            border: none;
-            transition: transform 0.15s ease, background-color 0.2s ease;
-        }
-
-        /* --- NUEVO DISEÑO COMPACTO ESTILO CÁPSULA PARA "LOCALIZAR EN LA ESTANTERÍA" --- */
-        .btn-local {
-            display: inline-flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 12px;
-            padding: 6px 24px 6px 6px;
-            width: auto;
-            max-width: 330px;
-            background: linear-gradient(135deg, #9b51e0, #7a28c8);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 50px;
-            font-size: 1.05em;
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-            box-shadow: 0 10px 22px rgba(155, 81, 224, 0.35);
-            animation: float 3.5s ease-in-out infinite;
-            margin-top: 10px;
-            margin-bottom: 5px;
-            transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .btn-local .btn-icon-circle {
-            width: 44px;
-            height: 44px;
-            background-color: #ffffff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-            flex-shrink: 0;
-        }
-
-        .btn-local .btn-text {
-            font-weight: 600;
-            letter-spacing: 0.2px;
-            padding-right: 6px;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); box-shadow: 0 10px 22px rgba(155, 81, 224, 0.35); }
-            50% { transform: translateY(-6px); box-shadow: 0 16px 28px rgba(155, 81, 224, 0.45); }
-            100% { transform: translateY(0px); box-shadow: 0 10px 22px rgba(155, 81, 224, 0.35); }
-        }
-
-        .btn-local:active {
-            animation: none; 
-            transform: scale(0.95) translateY(4px); 
-            background: #7a28c8;
-            box-shadow: 0 4px 10px rgba(155, 81, 224, 0.3);
-        }
-
-        /* --- TARJETA DE SEPARACIÓN iOS --- */
-        .catalog-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 65%;
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(242, 242, 247, 0.65);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            border-radius: 18px;
-            gap: 12px;
-        }
-        .availability-text {
-            margin: 0;
-            color: #3a3a3c;
-            font-weight: 600;
-            font-size: 0.95em;
-        }
-        
-        .btn-catalog {
-            background-color: rgba(255, 255, 255, 0.95);
-            color: #5856D6;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            width: 100%;
-        }
-        .btn-catalog:active {
-            background-color: #e5e5ea;
-            transform: scale(0.96);
-        }
-
-        .icon {
-            font-size: 1.2em;
-        }
-
-        .back-btn {
-            display: block;
-            text-align: center;
-            padding: 14px;
-            background: rgba(255, 255, 255, 0.7);
-            color: #007AFF;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 1em;
-            flex-shrink: 0;
-            transition: background 0.2s, transform 0.15s;
-            width: 40%;
-            margin: 0 auto;
-            border: 1px solid rgba(255,255,255,0.6);
-        }
-        .back-btn:hover {
-            background: #ffffff;
-            transform: translateY(-1px);
-        }
-        .back-btn:active {
-            background: #F2F2F7;
-            transform: scale(0.96);
-        }
-
-        /* --- MODAL --- */
-        .modal-overlay {
-            display: none; 
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 18px;
-            max-width: 80%;
-            width: 320px;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            color: #1c1c1e;
-        }
-        .modal-content p {
-            font-size: 1.05em;
-            font-weight: 500;
-            margin-bottom: 20px;
-            white-space: pre-wrap;
-        }
-        .modal-btn {
-            background: #007AFF;
-            color: #fff;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
-            font-size: 1.05em;
-            cursor: pointer;
-            font-weight: 600;
-            width: 100%;
-        }
-        .modal-btn:active {
-            background: #005bb5;
-            transform: scale(0.96);
-        }
-
-        /* PANTALLAS GRANDES */
-        @media (min-width: 901px) {
-            .hero-section { height: 25vh; height: 25dvh; } 
-            .library-title { font-size: 2.3em; top: 25px; left: 35px; }
-            .professional-badge { font-size: 2.2em; bottom: 25px; right: 35px; }
-            .content-wrapper { padding: 3vh 4vw; }
-        }
-
-        /* MÓVILES */
-        @media (max-width: 900px) {
-            body { align-items: flex-start; }
-            .container { height: 100vh; height: 100dvh; width: 100vw; border-radius: 0; }
-            .shelf-photo-desktop { display: none; }
-            .shelf-photo-mobile {
-                display: block; position: absolute; top: 50%; left: 50%;
-                transform: translate(-50%, -50%); z-index: 1; width: 100%;
-                height: 100%; object-fit: cover; object-position: center 80%; filter: brightness(0.65);
-            }
-            .input-signatura { width: 90%; }
-            .btn-local { max-width: 90%; }
-            .catalog-section { width: 90%; padding: 18px 15px; }
-            .back-btn { width: auto; padding: 10px 24px; }
-        }
+        body { background-color: #F4F0E8; color: #1A1817; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+        .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 0.95; }
+        .grid-line-b { border-bottom: 1px solid rgba(26, 24, 23, 0.12); }
+        .modal-active { opacity: 1 !important; pointer-events: auto !important; }
+        .modal-content-active { transform: translateY(0) !important; }
     </style>
 </head>
-<body>
-    <div class="container">
-        <!-- Hero -->
-        <div class="hero-section">
-            <img src="imagenes/buobh.png" alt="Interior biblioteca" class="shelf-photo-desktop" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
-            <img src="imagenes/buobh_movil.png" alt="Interior biblioteca móvil" class="shelf-photo-mobile" onerror="this.src='https://via.placeholder.com/800x600?text=Biblioteca+Móvil'">
-            
-            <div class="library-title"></div>
-            <div class="professional-badge">Signatura</div>
-        </div>
+<body class="antialiased selection:bg-stone-800 selection:text-stone-50 flex flex-col min-h-screen">
 
-        <!-- Nueva imagen del Mostrador -->
-        <img src="imagenes/Mostrador.png" class="footer-decor-img" alt="Mostrador de biblioteca" onerror="this.style.display='none'">
-
-        <div class="content-wrapper">
-            <div class="search-area">
-                <p class="search-instruction">
-                    Recuerda que los libros que se encuentran en las salas son de acceso libre y sus signaturas comienzan por HG.
-                </p>
-                
-                <input type="text" id="campoSignatura" class="input-signatura" placeholder="<Escribe la signatura>" 
-                       onfocus="if(this.value.trim() === '') { this.value = 'HG'; setTimeout(() => this.setSelectionRange(2, 2), 0); }" 
-                       oninput="this.value = this.value.toUpperCase();">
-
-                <!-- BOTÓN REDISEÑADO EN FORMA DE CÁPSULA -->
-                <a href="#" class="btn-local" onclick="localizarLibro(event)">
-                    <span class="btn-icon-circle">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="#9b51e0">
-                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                        </svg>
-                    </span>
-                    <span class="btn-text">Localizar en la estantería</span>
-                </a>
-
-                <!-- Sección del Catálogo Separada -->
-                <div class="catalog-section">
-                    <p class="availability-text">¿Quieres ver si está disponible?</p>
-                    <button onclick="buscarEnCatalogo()" class="action-btn btn-catalog">
-                        <span class="icon">📚</span> Búscalo en el catálogo
-                    </button>
-                </div>
+    <header class="sticky top-0 z-40 bg-stone-100/90 backdrop-blur-md grid-line-b">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <div>
+                <span class="block text-xs font-mono font-medium tracking-[0.3em] text-stone-800 uppercase">B . U . O</span>
+                <span class="text-[11px] text-stone-500 font-mono tracking-wider block mt-0.5">CAMPUS DE EL MILÁN</span>
             </div>
-            
-            <a href="index.html" class="back-btn">⬅ Volver al inicio</a>
+            <a href="index.html" class="inline-flex items-center space-x-2 text-xs font-mono px-4 py-2 border border-stone-800 text-stone-800 hover:bg-stone-900 hover:text-stone-100 transition-all uppercase tracking-wider">
+                <i class="fa-solid fa-arrow-left text-[10px]"></i><span>Volver al inicio</span>
+            </a>
         </div>
-    </div>
+    </header>
 
-    <!-- Modal -->
-    <div id="customModal" class="modal-overlay">
-        <div class="modal-content">
-            <p id="modalMessage"></p>
-            <button onclick="cerrarModal()" class="modal-btn">Aceptar</button>
+    <section class="grid-line-b bg-stone-900 text-stone-100 relative overflow-hidden">
+        <img src="imagenes/buobh.png" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca'" alt="Biblioteca" class="absolute inset-0 w-full h-full object-cover opacity-20 filter grayscale">
+        <div class="max-w-7xl mx-auto px-6 py-16 md:py-24 relative z-10 text-center">
+            <span class="text-xs font-mono text-sand font-semibold uppercase tracking-widest block mb-4">[ BÚSQUEDA DIRECTA ]</span>
+            <h1 class="editorial-title text-4xl md:text-6xl font-light mb-6">Búsqueda por Signatura.</h1>
+        </div>
+    </section>
+
+    <main class="max-w-3xl mx-auto px-6 py-16 flex flex-col items-center gap-8 flex-1">
+        
+        <p class="font-mono text-sm text-stone-600 text-center leading-relaxed">
+            Recuerda que los libros que se encuentran en las salas son de acceso libre y sus signaturas comienzan por HG.
+        </p>
+        
+        <div class="w-full flex flex-col items-center gap-4">
+            <input type="text" id="campoSignatura" class="w-full md:w-3/4 px-6 py-4 text-center font-mono text-xl border-2 border-stone-300 bg-stone-50 text-stone-900 focus:outline-none focus:border-stone-900 focus:bg-white transition-all uppercase placeholder:text-stone-400" 
+                   placeholder="HG..." 
+                   onfocus="if(this.value.trim() === '') { this.value = 'HG'; setTimeout(() => this.setSelectionRange(2, 2), 0); }" 
+                   oninput="this.value = this.value.toUpperCase();">
+            
+            <button onclick="localizarLibro(event)" class="w-full md:w-3/4 bg-stone-900 text-sand hover:bg-sand hover:text-stone-900 py-4 px-8 font-mono text-sm uppercase tracking-widest font-bold transition-all flex items-center justify-center gap-3">
+                <i class="fa-solid fa-location-dot"></i> Localizar en la estantería
+            </button>
+        </div>
+
+        <div class="w-full md:w-3/4 bg-stone-100 border border-stone-200 p-8 flex flex-col items-center gap-4 mt-8">
+            <span class="font-serif text-xl text-stone-800">¿Quieres ver si está disponible?</span>
+            <button onclick="buscarEnCatalogo()" class="w-full border border-stone-800 bg-transparent text-stone-800 hover:bg-stone-900 hover:text-stone-100 py-3 font-mono text-xs uppercase tracking-widest transition-all">
+                <i class="fa-solid fa-book-open mr-2"></i> Búscalo en el catálogo
+            </button>
+        </div>
+    </main>
+
+    <!-- Modal Alerta -->
+    <div id="customModal" class="fixed inset-0 z-[3000] bg-stone-900/60 backdrop-blur-sm flex justify-center items-center opacity-0 pointer-events-none transition-all duration-300" onclick="cerrarModal()">
+        <div class="bg-stone-50 w-11/12 max-w-sm p-8 text-center border border-stone-200 transform translate-y-4 transition-transform duration-300 modal-content" onclick="event.stopPropagation()">
+            <i class="fa-solid fa-circle-exclamation text-4xl text-sand mb-4"></i>
+            <p id="modalMessage" class="font-sans text-sm text-stone-700 mb-8 whitespace-pre-wrap leading-relaxed">Mensaje</p>
+            <button onclick="cerrarModal()" class="w-full bg-stone-900 text-stone-100 py-3 font-mono text-xs uppercase tracking-widest hover:bg-sand hover:text-stone-900 transition-colors">
+                Aceptar
+            </button>
         </div>
     </div>
 
     <script>
         function mostrarModal(mensaje) {
             document.getElementById("modalMessage").innerText = mensaje;
-            document.getElementById("customModal").style.display = "flex";
+            const modal = document.getElementById("customModal");
+            const content = modal.querySelector('.modal-content');
+            modal.classList.add("modal-active");
+            content.classList.add("modal-content-active");
         }
 
         function cerrarModal() {
-            document.getElementById("customModal").style.display = "none";
+            const modal = document.getElementById("customModal");
+            const content = modal.querySelector('.modal-content');
+            modal.classList.remove("modal-active");
+            content.classList.remove("modal-content-active");
         }
 
         function localizarLibro(event) {
@@ -456,17 +100,12 @@
                 mostrarModal("Por favor, escribe una signatura válida.");
                 return;
             }
-
             if (!signatura.startsWith("HG")) {
                 mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudaremos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
                 return; 
             }
 
-            let fichero = signatura;
-
-            fichero = fichero.replace(/\/AST$/i, "");
-            fichero = fichero.replace(/\/COMIC$/i, "");
-
+            let fichero = signatura.replace(/\/AST$/i, "").replace(/\/COMIC$/i, "");
             if (!fichero.endsWith("/4")) {
                 fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
             }
@@ -476,12 +115,8 @@
 
             if (ultimoIndiceBarra !== -1) {
                 let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
-
-                if (parteDerecha === "4") {
-                    sig = "HG/4";
-                } else {
-                    sig = fichero.substring(0, ultimoIndiceBarra);
-                }
+                if (parteDerecha === "4") sig = "HG/4";
+                else sig = fichero.substring(0, ultimoIndiceBarra);
             } else {
                 sig = fichero;
             }
@@ -491,7 +126,6 @@
         
         function buscarEnCatalogo() {
             const signatura = document.getElementById("campoSignatura").value.trim();
-
             if (signatura === "" || signatura === "HG") {
                 window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
             } else {

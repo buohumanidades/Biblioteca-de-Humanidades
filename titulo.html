@@ -1,602 +1,91 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Búsqueda por Título | Biblioteca</title>
+    <title>Búsqueda por Título · Biblioteca de Humanidades</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = { theme: { extend: { colors: { stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' }, sand: '#C5A059' }, fontFamily: { serif: ['Cormorant Garamond', 'serif'], sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+    </script>
     <style>
-        /* Fuentes */
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Playfair+Display:wght@600;700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            color: #1c1c1e;
-        }
-
-        /* FONDO MÁS COLORIDO */
-        body { 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            /* Gradiente más vivo y saturado */
-            background: linear-gradient(45deg, #ff7eb3, #ff758c, #c2e9fb, #8ec5fc, #fbc2eb, #e0c3fc);
-            background-size: 600% 600%;
-            animation: gradientBG 16s ease infinite;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Contenedor principal con Glassmorphism para reflejar el color */
-        .container { 
-            position: relative;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            width: 95vw;
-            max-width: 1300px;
-            height: 94vh; 
-            height: 94dvh; 
-            background: rgba(255, 255, 255, 0.88); /* Ligeramente translúcido */
-            backdrop-filter: blur(12px); /* Efecto cristal */
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: 24px; 
-            box-shadow: 0 20px 60px rgba(112, 128, 175, 0.25); 
-            overflow: hidden;
-        }
-
-        /* Cabecera / Sección Hero (INTACTA) */
-        .hero-section {
-            width: 100%;
-            height: 180px; 
-            position: relative; 
-            background-color: #34495e;
-            overflow: hidden;
-            flex-shrink: 0;
-            z-index: 10;
-        }
-
-        .shelf-photo-desktop {
-            display: block; 
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1; 
-            width: 100%;
-            height: 200%;
-            object-fit: cover; 
-            object-position: center 100%;
-            filter: brightness(0.65); 
-        }
-
-        .shelf-photo-mobile {
-            display: none; 
-        }
-
-        .library-title {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            color: #ffffff;
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 1.5em; 
-            font-weight: 700;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
-            z-index: 10; 
-        }
-
-        .professional-badge {
-            position: absolute;
-            bottom: 15px;
-            right: 15px;
-            color: #ffffff;
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3em;
-            font-weight: 700;
-            text-align: right;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
-            z-index: 10; 
-        }
-
-        /* NUEVA IMAGEN DEL MOSTRADOR (DECORATIVA Y POCO DESTACADA) */
-        .footer-decor-img {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 35vh; 
-            object-fit: cover;
-            object-position: bottom;
-            opacity: 0.50; /* Muy baja opacidad para no competir con la cabecera */
-            z-index: 1; /* Detrás del contenido */
-            pointer-events: none; /* Que no interfiera con los clics */
-            /* Difumina la imagen hacia arriba para fusionarla con el fondo */
-            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
-            mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
-        }
-
-        .content-wrapper {
-            position: relative;
-            z-index: 5; /* Por encima de la imagen del mostrador */
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            padding: 20px 30px;
-            min-height: 0;
-            overflow-y: auto;
-            justify-content: space-between;
-        }
-
-        /* --- ÁREA DE BÚSQUEDA REDISEÑADA PARA UNIVERSITARIOS --- */
-        .search-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 18px;
-            margin: auto 0;
-            width: 100%;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .search-instruction {
-            text-align: center; 
-            color: #4a4a4a; 
-            font-size: 0.98em; 
-            margin: 0 10px; 
-            font-weight: 600;
-            letter-spacing: -0.2px;
-            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
-        }
-
-        .input-titulo {
-            width: 70%;
-            padding: 18px 22px;
-            font-size: 1.18em;
-            text-align: center;
-            color: #1c1c1e;
-            background-color: rgba(255, 255, 255, 0.95);
-            border: 2px solid #e5e5ea;
-            border-radius: 20px;
-            font-weight: 600;
-            outline: none;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-        .input-titulo::placeholder {
-            color: #a0a0a5;
-            font-weight: 500;
-        }
-        .input-titulo:focus {
-            background-color: #ffffff;
-            border-color: #007AFF;
-            box-shadow: 0 10px 30px rgba(0, 122, 255, 0.25);
-            transform: translateY(-2px);
-        }
-
-        .action-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 70%;
-            padding: 16px;
-            font-size: 1.15em;
-            font-weight: 700;
-            border-radius: 16px;
-            text-decoration: none;
-            cursor: pointer;
-            border: none;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-        }
-        
-        /* Botón Principal "Localizar libros" */
-        .btn-local {
-            width: 52%;
-            min-width: 270px;
-            max-width: 420px;
-            padding: 18px 28px;
-            font-size: 1.25em;
-            font-weight: 800;
-            border-radius: 50px; 
-            background: linear-gradient(135deg, #0061ff 0%, #60efff 100%);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            box-shadow: 0 12px 32px rgba(0, 97, 255, 0.45), 0 0 25px rgba(96, 239, 255, 0.4);
-            animation: float 3.5s ease-in-out infinite; 
-            margin-top: 5px;
-            margin-bottom: 5px;
-            letter-spacing: 0.4px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-local::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
-            transition: 0.5s;
-        }
-
-        .btn-local:hover::before {
-            left: 100%;
-            transition: 0.7s ease-in-out;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); box-shadow: 0 10px 30px rgba(0, 97, 255, 0.45), 0 0 20px rgba(96, 239, 255, 0.4); }
-            50% { transform: translateY(-6px); box-shadow: 0 16px 38px rgba(0, 97, 255, 0.55), 0 0 28px rgba(96, 239, 255, 0.6); }
-            100% { transform: translateY(0px); box-shadow: 0 10px 30px rgba(0, 97, 255, 0.45), 0 0 20px rgba(96, 239, 255, 0.4); }
-        }
-
-        .btn-local:hover {
-            background: linear-gradient(135deg, #0052d9 0%, #4ed9ee 100%);
-            box-shadow: 0 14px 40px rgba(0, 97, 255, 0.6), 0 0 35px rgba(96, 239, 255, 0.7);
-            transform: translateY(-3px) scale(1.02);
-        }
-        .btn-local:active {
-            animation: none;
-            transform: scale(0.97) translateY(1px);
-            box-shadow: 0 6px 20px rgba(0, 97, 255, 0.4);
-        }
-
-        /* Tarjeta del Catálogo General con Glassmorphism */
-        .catalog-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 70%;
-            margin-top: 10px;
-            padding: 22px;
-            background: rgba(242, 242, 247, 0.65);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            border-radius: 22px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            gap: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .catalog-section:hover {
-            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
-            transform: translateY(-2px);
-        }
-
-        .availability-text {
-            margin: 0;
-            color: #2c2c2e;
-            font-weight: 700;
-            font-size: 1em;
-            letter-spacing: -0.2px;
-        }
-        
-        .btn-catalog {
-            background-color: rgba(255, 255, 255, 0.95);
-            color: #5856D6;
-            border: 1.5px solid #e5e5ea;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-            width: 100%;
-            font-weight: 700;
-            border-radius: 16px;
-        }
-        .btn-catalog:hover {
-            border-color: #5856D6;
-            background-color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(88, 86, 214, 0.18);
-        }
-        .btn-catalog:active {
-            background-color: #f2f2f7;
-            transform: scale(0.97);
-        }
-
-        .icon {
-            font-size: 1.25em;
-        }
-
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 12px 24px;
-            background: rgba(255, 255, 255, 0.7);
-            color: #007AFF;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 0.98em;
-            flex-shrink: 0;
-            transition: all 0.2s ease;
-            margin: 0 auto;
-            border: 1px solid rgba(255,255,255,0.6);
-        }
-        .back-btn:hover {
-            background: #ffffff;
-            transform: translateY(-1px);
-        }
-        .back-btn:active {
-            transform: scale(0.96);
-        }
-
-        /* --- MODALES GENERALES --- */
-        .modal-overlay {
-            display: none; 
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #modalAlerta {
-            z-index: 1100;
-        }
-
-        .modal-alert-content {
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 18px;
-            max-width: 80%;
-            width: 320px;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            color: #1c1c1e;
-        }
-
-        /* --- VENTANA MODAL DE RESULTADOS --- */
-        .modal-resultados-content {
-            background: #f9f9fb;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 700px;
-            max-height: 85vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.35);
-            overflow: hidden;
-            animation: slideUp 0.3s ease-out;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .modal-resultados-header {
-            background: #ffffff;
-            padding: 20px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #e5e5ea;
-        }
-        
-        .modal-resultados-header h3 {
-            margin: 0;
-            font-size: 1.3em;
-            color: #1c1c1e;
-        }
-
-        .btn-cerrar-modal {
-            background: #F2F2F7;
-            border: none;
-            color: #FF3B30;
-            font-weight: 700;
-            font-size: 1em;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .btn-cerrar-modal:active {
-            background: #e5e5ea;
-            transform: scale(0.95);
-        }
-
-        .modal-resultados-body {
-            padding: 20px;
-            overflow-y: auto;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .modal-resultados-body::-webkit-scrollbar { width: 8px; }
-        .modal-resultados-body::-webkit-scrollbar-thumb { background-color: #c7c7cc; border-radius: 10px; }
-
-        .libro-item {
-            background: #ffffff;
-            padding: 16px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            border-left: 5px solid #007AFF;
-            cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-            text-align: left;
-            position: relative;
-        }
-
-        .libro-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-        }
-        
-        .libro-item::after {
-            content: "Ir a OPAC ↗";
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            font-size: 0.8em;
-            font-weight: 700;
-            color: #007AFF;
-            opacity: 0.7;
-        }
-
-        .libro-titulo-res {
-            font-weight: 700;
-            font-size: 1.15em;
-            color: #1c1c1e;
-            padding-right: 70px;
-        }
-
-        .libro-signatura-res {
-            font-size: 0.95em;
-            color: #5856D6;
-            font-weight: 700;
-            display: inline-block;
-            background: #f0f0fb;
-            padding: 4px 8px;
-            border-radius: 6px;
-            align-self: flex-start;
-        }
-
-        .libro-localizacion-res {
-            font-size: 0.9em;
-            color: #34C759;
-            font-weight: 600;
-            margin-top: 6px;
-            display: inline-block;
-            background: #eaffea;
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: 1px solid #c3f3c3;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            align-self: flex-start;
-        }
-        .libro-localizacion-res:hover {
-            background: #d4f8d4;
-            transform: translateY(-1px);
-        }
-        .libro-localizacion-res:active {
-            transform: translateY(1px);
-        }
-
-        .modal-btn {
-            background: #007AFF;
-            color: #fff;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
-            font-size: 1.05em;
-            cursor: pointer;
-            font-weight: 600;
-            width: 100%;
-        }
-        .modal-btn:active {
-            background: #005bb5;
-            transform: scale(0.96);
-        }
-
-        /* PANTALLAS GRANDES */
-        @media (min-width: 901px) {
-            .hero-section { height: 25vh; height: 25dvh; } 
-            .library-title { font-size: 2.3em; top: 25px; left: 35px; }
-            .professional-badge { font-size: 2.2em; bottom: 25px; right: 35px; }
-            .content-wrapper { padding: 3vh 4vw; }
-        }
-
-        /* MÓVILES */
-        @media (max-width: 900px) {
-            body { align-items: flex-start; }
-            .container { height: 100vh; height: 100dvh; width: 100vw; border-radius: 0; }
-            .shelf-photo-desktop { display: none; }
-            .shelf-photo-mobile {
-                display: block; position: absolute; top: 50%; left: 50%;
-                transform: translate(-50%, -50%); z-index: 1; width: 100%;
-                height: 100%; object-fit: cover; object-position: center 80%; 
-                filter: brightness(0.65);
-            }
-            .input-titulo { width: 92%; }
-            .action-btn:not(.btn-local) { width: 100%; }
-            .btn-local { width: 85%; min-width: unset; }
-            .catalog-section { width: 92%; padding: 18px 15px; }
-            .back-btn { width: auto; padding: 10px 20px; }
-            .modal-resultados-content { width: 95%; max-height: 90vh; }
-        }
+        body { background-color: #F4F0E8; color: #1A1817; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+        .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 0.95; }
+        .grid-line-b { border-bottom: 1px solid rgba(26, 24, 23, 0.12); }
+        .modal-active { opacity: 1 !important; pointer-events: auto !important; }
+        .modal-content-active { transform: translateY(0) !important; }
+        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #F4F0E8; } ::-webkit-scrollbar-thumb { background: #1A1817; }
     </style>
 </head>
-<body>
-    <div class="container">
-        <!-- Hero (INTACTO) -->
-        <div class="hero-section">
-            <img src="imagenes/buobh.png" alt="Interior biblioteca" class="shelf-photo-desktop" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca+de+Humanidades'">
-            <img src="imagenes/buobh_movil.png" alt="Interior biblioteca móvil" class="shelf-photo-mobile" onerror="this.src='https://via.placeholder.com/800x600?text=Biblioteca+Móvil'">
+<body class="antialiased selection:bg-stone-800 selection:text-stone-50 flex flex-col min-h-screen">
+
+    <header class="sticky top-0 z-40 bg-stone-100/90 backdrop-blur-md grid-line-b">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <div>
+                <span class="block text-xs font-mono font-medium tracking-[0.3em] text-stone-800 uppercase">B . U . O</span>
+                <span class="text-[11px] text-stone-500 font-mono tracking-wider block mt-0.5">CAMPUS DE EL MILÁN</span>
+            </div>
+            <a href="index.html" class="inline-flex items-center space-x-2 text-xs font-mono px-4 py-2 border border-stone-800 text-stone-800 hover:bg-stone-900 hover:text-stone-100 transition-all uppercase tracking-wider">
+                <i class="fa-solid fa-arrow-left text-[10px]"></i><span>Volver al inicio</span>
+            </a>
+        </div>
+    </header>
+
+    <section class="grid-line-b bg-stone-900 text-stone-100 relative overflow-hidden">
+        <img src="imagenes/buobh.png" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca'" alt="Biblioteca" class="absolute inset-0 w-full h-full object-cover opacity-20 filter grayscale">
+        <div class="max-w-7xl mx-auto px-6 py-16 md:py-24 relative z-10 text-center">
+            <span class="text-xs font-mono text-sand font-semibold uppercase tracking-widest block mb-4">[ BÚSQUEDA DIRECTA ]</span>
+            <h1 class="editorial-title text-4xl md:text-6xl font-light mb-6">Búsqueda por Título.</h1>
+        </div>
+    </section>
+
+    <main class="max-w-3xl mx-auto px-6 py-16 flex flex-col items-center gap-8 flex-1">
+        
+        <p class="font-mono text-sm text-stone-600 text-center leading-relaxed">
+            Escribe el título o parte del mismo para consultar los libros registrados en el fondo de las salas de lectura.
+        </p>
+        
+        <div class="w-full flex flex-col items-center gap-4">
+            <input type="text" id="campoTitulo" class="w-full md:w-3/4 px-6 py-4 text-center font-mono text-xl border-2 border-stone-300 bg-stone-50 text-stone-900 focus:outline-none focus:border-stone-900 focus:bg-white transition-all placeholder:text-stone-400" 
+                   placeholder="Título de la obra...">
             
-            <div class="library-title"></div>
-            <div class="professional-badge">Título</div>
+            <button onclick="localizarPorTitulo(event)" class="w-full md:w-3/4 bg-stone-900 text-sand hover:bg-sand hover:text-stone-900 py-4 px-8 font-mono text-sm uppercase tracking-widest font-bold transition-all flex items-center justify-center gap-3">
+                <i class="fa-solid fa-magnifying-glass"></i> Localizar libros
+            </button>
         </div>
 
-        <!-- Nueva imagen del Mostrador (Marca de agua decorativa al fondo) -->
-        <img src="imagenes/Mostrador.png" class="footer-decor-img" alt="Mostrador de biblioteca" onerror="this.style.display='none'">
+        <div class="w-full md:w-3/4 bg-stone-100 border border-stone-200 p-8 flex flex-col items-center gap-4 mt-8">
+            <span class="font-serif text-xl text-stone-800 text-center">¿No lo encuentras aquí o quieres ver el catálogo general?</span>
+            <button onclick="buscarEnCatalogo()" class="w-full border border-stone-800 bg-transparent text-stone-800 hover:bg-stone-900 hover:text-stone-100 py-3 font-mono text-xs uppercase tracking-widest transition-all">
+                <i class="fa-solid fa-book-open mr-2"></i> Búscalo en el catálogo
+            </button>
+        </div>
+    </main>
 
-        <div class="content-wrapper">
-            <div class="search-area">
-                <p class="search-instruction">
-                    Escribe el título o parte del mismo para consultar los libros en el fondo bibliográfico de la biblioteca.
-                </p>
-                
-                <input type="text" id="campoTitulo" class="input-titulo" placeholder="<Escribe el título o parte del mismo>">
-
-                <button class="action-btn btn-local" onclick="localizarPorTitulo(event)">
-                    <span class="icon">🔍</span> Localizar libros
-                </button>
-
-                <div class="catalog-section">
-                    <p class="availability-text">¿Quieres consultar el catálogo general?</p>
-                    <button onclick="buscarEnCatalogo()" class="action-btn btn-catalog">
-                        <span class="icon">📚</span> Búscalo en el catálogo
-                    </button>
-                </div>
-            </div>
-            
-            <a href="index.html" class="back-btn">⬅ Volver al inicio</a>
+    <!-- Modal Alertas -->
+    <div id="modalAlerta" class="fixed inset-0 z-[3000] bg-stone-900/60 backdrop-blur-sm flex justify-center items-center opacity-0 pointer-events-none transition-all duration-300" onclick="cerrarAlerta()">
+        <div class="bg-stone-50 w-11/12 max-w-sm p-8 text-center border border-stone-200 transform translate-y-4 transition-transform duration-300 modal-content" onclick="event.stopPropagation()">
+            <i class="fa-solid fa-circle-info text-4xl text-sand mb-4"></i>
+            <p id="mensajeAlerta" class="font-sans text-sm text-stone-700 mb-8 whitespace-pre-wrap leading-relaxed">Mensaje</p>
+            <button onclick="cerrarAlerta()" class="w-full bg-stone-900 text-stone-100 py-3 font-mono text-xs uppercase tracking-widest hover:bg-sand hover:text-stone-900 transition-colors">
+                Aceptar
+            </button>
         </div>
     </div>
 
-    <!-- Modal de Alertas (Mensajes) -->
-    <div id="modalAlerta" class="modal-overlay">
-        <div class="modal-alert-content">
-            <p id="mensajeAlerta" style="font-size: 1.05em; font-weight: 500; margin-bottom: 20px; white-space: pre-wrap;"></p>
-            <button onclick="cerrarAlerta()" class="modal-btn">Aceptar</button>
-        </div>
-    </div>
-
-    <!-- Ventana Modal de Resultados -->
-    <div id="ventanaResultados" class="modal-overlay">
-        <div class="modal-resultados-content">
-            <div class="modal-resultados-header">
-                <h3 id="tituloVentanaResultados">Libros Localizados</h3>
-                <button onclick="cerrarVentanaResultados()" class="btn-cerrar-modal">✕</button>
+    <!-- Modal Resultados -->
+    <div id="ventanaResultados" class="fixed inset-0 z-[2000] bg-stone-900/80 backdrop-blur-sm flex justify-center items-center opacity-0 pointer-events-none transition-all duration-300" onclick="cerrarVentanaResultados()">
+        <div class="bg-stone-50 w-11/12 max-w-3xl max-h-[85vh] flex flex-col relative rounded-sm shadow-2xl transform translate-y-4 transition-transform duration-300 modal-content" onclick="event.stopPropagation()">
+            
+            <div class="flex justify-between items-center p-6 md:p-8 border-b border-stone-200 shrink-0">
+                <h3 id="tituloVentanaResultados" class="editorial-title text-2xl md:text-3xl font-light text-stone-900">Libros Localizados</h3>
+                <button onclick="cerrarVentanaResultados()" class="text-stone-400 hover:text-stone-900 transition-colors text-xl"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div id="listaResultados" class="modal-resultados-body">
-                <!-- Los libros se inyectarán aquí -->
+            
+            <div id="listaResultados" class="p-6 md:p-8 overflow-y-auto flex-1 flex flex-col gap-4 font-sans">
+                <!-- Se inyectan las tarjetas aquí -->
             </div>
         </div>
     </div>
@@ -606,12 +95,18 @@
 
         function mostrarAlerta(mensaje, accionOpcional = null) {
             document.getElementById("mensajeAlerta").innerText = mensaje;
-            document.getElementById("modalAlerta").style.display = "flex";
+            const modal = document.getElementById("modalAlerta");
+            const content = modal.querySelector('.modal-content');
+            modal.classList.add("modal-active");
+            content.classList.add("modal-content-active");
             accionAlCerrarAlerta = accionOpcional;
         }
 
         function cerrarAlerta() {
-            document.getElementById("modalAlerta").style.display = "none";
+            const modal = document.getElementById("modalAlerta");
+            const content = modal.querySelector('.modal-content');
+            modal.classList.remove("modal-active");
+            content.classList.remove("modal-content-active");
             if (accionAlCerrarAlerta) {
                 accionAlCerrarAlerta();
                 accionAlCerrarAlerta = null;
@@ -619,7 +114,10 @@
         }
 
         function cerrarVentanaResultados() {
-            document.getElementById("ventanaResultados").style.display = "none";
+            const modal = document.getElementById("ventanaResultados");
+            const content = modal.querySelector('.modal-content');
+            modal.classList.remove("modal-active");
+            content.classList.remove("modal-content-active");
         }
 
         function normalizarTexto(texto) {
@@ -628,39 +126,27 @@
 
         function procesarLocalizacion(event, signaturaStr) {
             event.stopPropagation();
-            
             let signatura = signaturaStr ? signaturaStr.trim() : "";
 
             if (signatura === "" || signatura === "HG") {
                 mostrarAlerta("No se ha encontrado una signatura válida para este libro.");
                 return;
             }
-
             if (!signatura.startsWith("HG")) {
                 mostrarAlerta("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudaremos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
                 return; 
             }
 
-            let fichero = signatura;
-
-            fichero = fichero.replace(/\/AST$/i, "");
-            fichero = fichero.replace(/\/COMIC$/i, "");
-
-            if (!fichero.endsWith("/4")) {
-                fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
-            }
+            let fichero = signatura.replace(/\/AST$/i, "").replace(/\/COMIC$/i, "");
+            if (!fichero.endsWith("/4")) fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
 
             let sig = "";
             let ultimoIndiceBarra = fichero.lastIndexOf("/");
 
             if (ultimoIndiceBarra !== -1) {
                 let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
-
-                if (parteDerecha === "4") {
-                    sig = "HG/4";
-                } else {
-                    sig = fichero.substring(0, ultimoIndiceBarra);
-                }
+                if (parteDerecha === "4") sig = "HG/4";
+                else sig = fichero.substring(0, ultimoIndiceBarra);
             } else {
                 sig = fichero;
             }
@@ -677,14 +163,12 @@
                 return;
             }
 
-            // --- 1. INICIO DE LA ESPERA: Modificar el botón ---
             const botonLocalizar = event.currentTarget;
             const contenidoOriginalBoton = botonLocalizar.innerHTML;
             
-            botonLocalizar.innerHTML = '<span class="icon">⏳</span> Buscando...';
-            botonLocalizar.style.pointerEvents = 'none'; // Evita múltiples clics
+            botonLocalizar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Buscando...';
+            botonLocalizar.style.pointerEvents = 'none';
             botonLocalizar.style.opacity = '0.7';
-            // --------------------------------------------------
 
             const queryNormalizada = normalizarTexto(tituloInput);
             let librosEncontrados = [];
@@ -695,28 +179,21 @@
                 while (seguirBuscando) {
                     let respuesta = await fetch(`Grados/libros_${archivoIndice}.json`);
                     
-                    if (!respuesta.ok) {
-                        seguirBuscando = false; 
-                        break;
-                    }
+                    if (!respuesta.ok) { seguirBuscando = false; break; }
                     
                     let libros = await respuesta.json();
-                    
                     for (let libro of libros) {
                         if (libro.titulo) {
                             const tituloLibroNormalizado = normalizarTexto(libro.titulo);
-                            
                             if (tituloLibroNormalizado.includes(queryNormalizada)) {
                                 librosEncontrados.push(libro);
-                                
                                 if (librosEncontrados.length > 20) {
-                                    // --- 2. RESTAURAR BOTÓN (Salida por exceso de resultados) ---
                                     botonLocalizar.innerHTML = contenidoOriginalBoton;
                                     botonLocalizar.style.pointerEvents = 'auto';
                                     botonLocalizar.style.opacity = '1';
                                     
                                     mostrarAlerta(
-                                        "Se han encontrado demasiados resultados, Por favor, refina el título para realizar una búsqueda más concreta.\n\nTe reenvío al catálogo para que valores los resultados encontrados.",
+                                        "Se han encontrado demasiados resultados. Por favor, refina el título para realizar una búsqueda más concreta.\n\nTe reenvío al catálogo general para que valores los resultados.",
                                         buscarEnCatalogo
                                     );
                                     return; 
@@ -727,7 +204,6 @@
                     archivoIndice++;
                 }
 
-                // --- 3. RESTAURAR BOTÓN (Fin normal de la búsqueda) ---
                 botonLocalizar.innerHTML = contenidoOriginalBoton;
                 botonLocalizar.style.pointerEvents = 'auto';
                 botonLocalizar.style.opacity = '1';
@@ -737,50 +213,52 @@
                 } else {
                     renderizarResultadosEnVentana(librosEncontrados);
                 }
-
             } catch (error) {
-                // --- 4. RESTAURAR BOTÓN (Salida por error) ---
                 botonLocalizar.innerHTML = contenidoOriginalBoton;
                 botonLocalizar.style.pointerEvents = 'auto';
                 botonLocalizar.style.opacity = '1';
-                
-                console.error("Error al buscar en los archivos JSON:", error);
-                mostrarAlerta("Se ha producido un error al intentar localizar los libros. Verifica que los archivos .json estén accesibles.");
+                console.error("Error:", error);
+                mostrarAlerta("Error al intentar localizar los libros. Verifica que los datos estén accesibles.");
             }
         }
 
         function renderizarResultadosEnVentana(resultados) {
             const contenedorLista = document.getElementById("listaResultados");
             contenedorLista.innerHTML = "";
-            
             document.getElementById("tituloVentanaResultados").innerText = `Resultados: ${resultados.length} libro(s)`;
 
             resultados.forEach(libro => {
                 const divLibro = document.createElement("div");
-                divLibro.className = "libro-item";
+                divLibro.className = "bg-white border border-stone-200 p-6 flex flex-col gap-3 border-l-4 border-l-sand hover:shadow-md transition-all cursor-pointer relative group rounded-sm";
                 
                 divLibro.onclick = () => {
                     const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&START=1&FORM=1";
-                    let queryParams = "";
-                    if (libro.titulo) {
-                        queryParams += "&xsqf01=" + encodeURIComponent('"' + libro.titulo + '"');
-                    }
+                    let queryParams = libro.titulo ? "&xsqf01=" + encodeURIComponent('"' + libro.titulo + '"') : "";
                     window.open(urlBase + queryParams, "_blank");
                 };
                 
+                // Texto superior derecha
+                const textoCat = document.createElement("span");
+                textoCat.className = "absolute top-6 right-6 text-[10px] font-mono uppercase tracking-widest text-stone-400 group-hover:text-stone-900 transition-colors hidden sm:block";
+                textoCat.innerText = "Catálogo ↗";
+                divLibro.appendChild(textoCat);
+
+                // Titulo
                 const divTitulo = document.createElement("div");
-                divTitulo.className = "libro-titulo-res";
+                divTitulo.className = "font-serif text-xl text-stone-900 sm:pr-20";
                 divTitulo.innerText = libro.titulo || "Título no disponible";
                 
+                // Signatura
                 const divSignatura = document.createElement("div");
-                divSignatura.className = "libro-signatura-res";
+                divSignatura.className = "inline-flex items-center gap-2 bg-stone-100 text-stone-600 px-3 py-1 font-mono text-xs font-bold w-max rounded-sm";
                 const textoSignatura = libro.signatura ? libro.signatura : "No disponible";
-                divSignatura.innerHTML = `<span>🔖</span> ${textoSignatura}`;
+                divSignatura.innerHTML = `<i class="fa-solid fa-bookmark text-sand"></i> ${textoSignatura}`;
 
+                // Localizacion
                 const divLocalizacion = document.createElement("div");
-                divLocalizacion.className = "libro-localizacion-res";
+                divLocalizacion.className = "inline-flex items-center gap-2 bg-stone-900 text-stone-100 px-4 py-2 font-mono text-xs uppercase tracking-widest w-max rounded-sm hover:bg-sand hover:text-stone-900 transition-colors mt-2";
                 const textoLocalizacion = libro.localizacion ? libro.localizacion : "Consultar ubicación en sala";
-                divLocalizacion.innerHTML = `<span>📍</span> ${textoLocalizacion}`;
+                divLocalizacion.innerHTML = `<i class="fa-solid fa-location-dot"></i> Ubicar Estantería`;
                 divLocalizacion.onclick = (e) => procesarLocalizacion(e, libro.signatura);
                 
                 divLibro.appendChild(divTitulo);
@@ -790,12 +268,14 @@
                 contenedorLista.appendChild(divLibro);
             });
 
-            document.getElementById("ventanaResultados").style.display = "flex";
+            const modal = document.getElementById("ventanaResultados");
+            const content = modal.querySelector('.modal-content');
+            modal.classList.add("modal-active");
+            content.classList.add("modal-content-active");
         }
         
         function buscarEnCatalogo() {
             const titulo = document.getElementById("campoTitulo").value.trim();
-
             if (titulo === "") {
                 window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
             } else {

@@ -1,245 +1,94 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ubicación del Libro | Biblioteca</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-
+    <title>Ubicación del Libro · Biblioteca de Humanidades</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = { theme: { extend: { colors: { stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' }, sand: '#C5A059' }, fontFamily: { serif: ['Cormorant Garamond', 'serif'], sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+    </script>
     <style>
-        html, body {
-            height: 100%;
-            height: 100dvh; 
-            margin: 0;
-            padding: 0;
-            overflow: hidden; 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0; 
-            box-sizing: border-box;
-            background: linear-gradient(45deg, #a8edea, #fed6e3, #e0c3fc, #8ec5fc);
-            background-size: 400% 400%;
-            animation: gradientBG 12s ease infinite;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .container { 
-            display: flex;
-            flex-direction: column;
-            width: 95vw;
-            max-width: 1300px;
-            height: 94dvh; 
-            background: #fff; 
-            padding: 15px; 
-            border-radius: 12px; 
-            box-sizing: border-box;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
-            transition: all 0.3s ease;
-        }
-        h1 { 
-            font-family: 'Romana Moderna', Georgia, serif; 
-            color: #1a252f; 
-            text-align: center; 
-            border-bottom: 2px solid #ecf0f1; 
-            padding-bottom: 8px; 
-            font-size: 1.4em; 
-            margin: 0 0 12px 0;
-            flex-shrink: 0; 
-        }
-        .location-route {
-            background-color: #f8f9fa;
-            border-left: 4px solid #3498db;
-            padding: 10px 10px 10px 15px;
-            border-radius: 0 10px 10px 0;
-            margin-bottom: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px; 
-            flex-shrink: 0;
-            transition: all 0.3s ease;
-        }
-        .route-step {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.95em; 
-            color: #34495e;
-            font-weight: 600;
-        }
-        .step-planta {
-            justify-content: space-between;
-            width: 100%;
-            padding-right: 5px; 
-            box-sizing: border-box;
-        }
-        .planta-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .signatura-badge {
-            font-size: 0.85em;
-            color: #d35400; 
-            background-color: #fdf2e9;
-            padding: 4px 10px;
-            border-radius: 6px;
-            border: 1px solid #e67e22;
-            font-weight: bold;
-            box-shadow: 0 2px 4px rgba(230, 126, 34, 0.1);
-        }
-        .route-step.final-step {
-            color: #2980b9;
-            font-size: 1.1em;
-            font-weight: 800;
-            background: #ebf5fb;
-            padding: 6px 12px;
-            border-radius: 6px;
-            margin-left: -10px; 
-            box-shadow: 0 2px 4px rgba(41, 128, 185, 0.15);
-            border: 1px solid #d6eaf8;
-            transition: all 0.3s ease;
-        }
-        .icon {
-            font-size: 1.1em;
-        }
-        .iframe-container {
-            flex-grow: 1; 
-            min-height: 0; 
-            width: 100%;
-            margin-bottom: 12px;
-            border-radius: 8px;
-            overflow: hidden; 
-            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
-            border: 1px solid #ecf0f1;
-            background-color: #ffffff;
-            display: flex; 
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
-        }
-        
-        .action-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            flex-shrink: 0;
-            width: 100%;
-        }
-
-        .btn-action {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 12px;
-            font-size: 1.05em;
-            font-weight: bold;
-            border-radius: 8px;
-            text-decoration: none;
-            color: #ffffff;
-            transition: all 0.2s ease;
-            box-sizing: border-box;
-            cursor: pointer;
-        }
-        
-        .btn-new-search {
-            background: linear-gradient(135deg, #2c3e50, #34495e);
-            box-shadow: 0 4px 10px rgba(44, 62, 80, 0.3);
-        }
-        
-        .btn-new-search:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 5px rgba(44, 62, 80, 0.3);
-            background: #1a252f;
-        }
-
-        .btn-camera {
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
-        }
-
-        .btn-camera:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 5px rgba(39, 174, 96, 0.3);
-            background: #219a52;
-        }
-
-        @media (min-width: 901px) {
-            body { padding: 0; }
-            .container { padding: 25px 35px; }
-            h1 { font-size: 2em; margin-bottom: 20px; padding-bottom: 12px; }
-            .location-route {
-                flex-direction: row; flex-wrap: wrap; align-items: center;
-                justify-content: center; gap: 15px; padding: 15px;
-                border-left: none; border-top: 4px solid #3498db; border-radius: 10px;
-            }
-            .step-planta { width: auto; padding-right: 0; gap: 15px; }
-            .route-step.final-step { margin-left: 0; padding: 8px 16px; }
-            .iframe-container { margin-bottom: 20px; }
-            .action-buttons { flex-direction: row; justify-content: center; }
-            .btn-action { width: 30%; padding: 14px; font-size: 1.1em; }
-            .btn-new-search:hover { background: #1a252f; }
-            .btn-camera { display: none; }
-        }
-
-        @media (max-width: 900px) {
-            body { align-items: flex-start; padding: 0; }
-            .container { height: 100dvh; width: 100vw; border-radius: 0; padding: 15px; }
-            .btn-camera { display: flex; }
-        }
+        body { background-color: #F4F0E8; color: #1A1817; font-family: 'Plus Jakarta Sans', sans-serif; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; margin: 0; padding: 0; }
+        .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 0.95; }
+        .grid-line-b { border-bottom: 1px solid rgba(26, 24, 23, 0.12); }
     </style>
 </head>
-<body>
+<body class="antialiased selection:bg-stone-800 selection:text-stone-50">
 
-    <div class="container">
-        <h1>Biblioteca de Humanidades</h1>
+    <header class="bg-stone-100/90 backdrop-blur-md grid-line-b shrink-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center w-full">
+            <div>
+                <span class="block text-xs font-mono font-medium tracking-[0.3em] text-stone-800 uppercase">B . U . O</span>
+                <span class="text-[10px] md:text-[11px] text-stone-500 font-mono tracking-wider block mt-0.5">BIBLIOTECA DE HUMANIDADES</span>
+            </div>
+            
+            <a href="index.html" class="inline-flex items-center space-x-2 text-[10px] md:text-xs font-mono px-3 md:px-4 py-2 border border-stone-800 text-stone-800 hover:bg-stone-900 hover:text-stone-100 transition-all uppercase tracking-wider">
+                <i class="fa-solid fa-house"></i>
+                <span class="hidden sm:inline">Inicio</span>
+            </a>
+        </div>
+    </header>
 
-        <div class="location-route">
-            <div class="route-step step-planta">
-                <div class="planta-left">
-                   <i class="fa-solid fa-school" style="color: #3498db; font-size: 24px;"></i>
-                   <span id="txt-planta">PLANTA 2</span>
+    <main class="flex-1 flex flex-col max-w-7xl mx-auto w-full px-3 md:px-6 py-4 overflow-hidden gap-4">
+        
+        <div class="bg-stone-900 text-stone-100 border-l-4 border-sand shadow-lg shrink-0 rounded-r-sm">
+            <div class="flex flex-col md:flex-row md:items-stretch justify-between h-full">
+                
+                <div class="p-5 md:p-8 flex flex-col md:flex-row gap-4 md:gap-8 items-start md:items-center flex-1">
+                    
+                    <div class="flex items-center gap-4">
+                        <i class="fa-solid fa-map-location-dot text-2xl text-stone-500 hidden md:block"></i>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-mono text-stone-500 uppercase tracking-widest mb-1">Piso</span>
+                            <span id="txt-planta" class="font-serif text-xl md:text-2xl whitespace-nowrap">PLANTA 2</span>
+                        </div>
+                    </div>
+
+                    <i class="fa-solid fa-chevron-right text-stone-700 text-sm hidden md:block"></i>
+                    <i class="fa-solid fa-chevron-down text-stone-700 text-sm md:hidden ml-4 -my-1"></i>
+
+                    <div class="flex flex-col">
+                        <span class="text-[10px] font-mono text-stone-500 uppercase tracking-widest mb-1">Zona</span>
+                        <span id="txt-sala" class="font-serif text-xl md:text-2xl whitespace-nowrap">Sala de la derecha</span>
+                    </div>
+
+                    <i class="fa-solid fa-chevron-right text-stone-700 text-sm hidden md:block"></i>
+                    <i class="fa-solid fa-chevron-down text-stone-700 text-sm md:hidden ml-4 -my-1"></i>
+
+                    <div class="flex flex-col">
+                        <span class="text-[10px] font-mono text-stone-500 uppercase tracking-widest mb-1">Sector</span>
+                        <span id="txt-ubicacion" class="font-serif text-xl md:text-2xl">Estanterías de la derecha</span>
+                    </div>
                 </div>
-                <div id="display-signatura" class="signatura-badge" style="display: none;"></div>
-            </div>
-            <div class="route-step">
-                <span class="icon">➡️</span> <span id="txt-sala">Sala de la derecha</span>
-            </div>
-            <div class="route-step">
-                <span class="icon">➡️</span> <span id="txt-ubicacion">Estanterías de la derecha</span>
-            </div>
-            <div class="route-step final-step">
-                <span class="icon">📚</span> <span id="txt-estanteria">Estantería 3</span>
+
+                <div class="bg-sand text-stone-900 p-5 md:p-8 flex flex-col justify-center min-w-[280px]">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-[10px] font-mono uppercase tracking-widest font-bold">DESTINO EXACTO</span>
+                        <div id="display-signatura" class="bg-stone-900 text-sand text-[10px] font-mono font-bold px-2 py-1 hidden rounded-sm shadow-sm"></div>
+                    </div>
+                    <span id="txt-estanteria" class="font-serif text-3xl font-bold mb-1">Estantería 3</span>
+                </div>
             </div>
         </div>
 
-        <div class="iframe-container">
-            <iframe id="iframeCatalogo" title="Resultados en el catálogo de la biblioteca"></iframe>
+        <div class="flex-1 w-full bg-white border border-stone-200 shadow-sm relative overflow-hidden rounded-sm">
+            <iframe id="iframeCatalogo" class="absolute inset-0 w-full h-full border-none bg-stone-50" title="Resultados en el catálogo de la biblioteca"></iframe>
         </div>
 
-        <div class="action-buttons">
-            <a id="btnCamera" href="#" class="btn-action btn-camera">
-                <i class="fa-solid fa-camera"></i> Buscar con la cámara
+        <!-- BOTONERA DE ACCIÓN -->
+        <div class="shrink-0 flex flex-col sm:flex-row gap-3 w-full">
+            <a id="btnCamera" href="#" class="flex-1 bg-emerald-700 text-stone-50 font-mono text-[11px] md:text-xs uppercase tracking-widest flex items-center justify-center py-4 rounded-sm hover:bg-emerald-800 transition-colors">
+                <i class="fa-solid fa-camera mr-2"></i> Buscar con la cámara
             </a>
-            <a href="#" onclick="event.preventDefault(); window.close();" class="btn-action btn-new-search">
-                <span class="icon">✖</span> Cerrar ventana
+            <a href="#" onclick="event.preventDefault(); window.close();" class="flex-1 bg-stone-900 text-stone-100 font-mono text-[11px] md:text-xs uppercase tracking-widest flex items-center justify-center py-4 rounded-sm hover:bg-sand hover:text-stone-900 transition-colors border border-transparent">
+                <i class="fa-solid fa-xmark mr-2"></i> Cerrar ventana
             </a>
         </div>
-    </div>
+
+    </main>
 
     <script>
         const params = new URLSearchParams(window.location.search);
@@ -276,12 +125,7 @@
             const urlFinal = urlBase + encodeURIComponent('"' + sigOriginal + '"') + "&START=1&FORM=1";
             iframe.src = urlFinal;
         } else {
-            iframe.srcdoc = `
-                <div style="font-family: Arial, sans-serif; height: 100%; display: flex; 
-                            align-items: center; justify-content: center; color: #7f8c8d; text-align: center; padding: 20px;">
-                    No se ha detectado ninguna signatura en la búsqueda.
-                </div>
-            `;
+            iframe.srcdoc = `<div style="font-family: 'Plus Jakarta Sans', sans-serif; height: 100%; display: flex; align-items: center; justify-content: center; color: #7f8c8d; text-align: center; padding: 20px;"><p>No se ha detectado ninguna signatura en la búsqueda.</p></div>`;
         }
     </script>
 
@@ -289,16 +133,11 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
-
-            // Obtenemos la fecha local en formato YYYY-MM-DD
             const hoy = new Date();
             const fechaString = hoy.getFullYear() + "-" + String(hoy.getMonth() + 1).padStart(2, '0') + "-" + String(hoy.getDate()).padStart(2, '0');
-            
-            // NUEVO: Agregamos un prefijo para que Sheets lo trate como texto y un timestamp para evitar caché
             const fechaTexto = "TEXTO_" + fechaString; 
             const timestamp = hoy.getTime(); 
 
-            // Se envía a Google Sheets la acción de sumar junto con la fecha en formato texto y el timestamp
             fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&accion=sumar_con_fecha&fecha=${fechaTexto}&t=${timestamp}`, {
                 method: 'GET',
                 redirect: 'follow'
@@ -308,17 +147,13 @@
                 if (datos && datos.visitas !== undefined) {
                     const nuevoTotal = datos.visitas;
                     localStorage.setItem('ultimo_encontrados_global', nuevoTotal);
-                    
                     try {
                         const canal = new BroadcastChannel('canal_contador_encontrados');
                         canal.postMessage({ nuevoConteo: nuevoTotal });
                         canal.close();
-                    } catch (e) {
-                        console.log("Error al transmitir vía BroadcastChannel", e);
-                    }
+                    } catch (e) { }
                 }
-            })
-            .catch(error => console.error("Error al conectar con Google Sheets para celda A2:", error));
+            }).catch(error => console.error(error));
         });
     </script>
 </body>
