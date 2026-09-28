@@ -9,7 +9,7 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 10px; 
+            padding: 0; 
             background-color: #ffffff;
         }
 
@@ -18,13 +18,13 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            padding: 20px 15px 10px 15px;
+            padding: 25px 15px 10px 15px;
             margin-bottom: 15px;
             border-bottom: 2px solid #000;
             overflow: hidden;
         }
 
-        /* Imagen de fondo en la parte superior sobre la línea negra */
+        /* Imagen de fondo extendida desde el borde superior hasta la línea negra */
         .header-container::before {
             content: "";
             position: absolute;
@@ -35,13 +35,13 @@
             background-image: url('libro.jpg');
             background-size: cover;
             background-position: center;
-            opacity: 0.25; /* Opacidad para no tapar ni dificultar la lectura de los textos */
+            opacity: 0.25; /* Opacidad para no dificultar la lectura del texto */
             z-index: 0;
         }
 
         .left-titles, .title-grado {
             position: relative;
-            z-index: 1; /* Asegura que los textos queden por encima de la imagen de fondo */
+            z-index: 1; /* Mantiene los textos por encima de la imagen de fondo */
         }
 
         .left-titles {
@@ -66,6 +66,11 @@
             font-weight: bold;
             color: #d32f2f; 
             text-align: right;
+        }
+
+        /* Contenedor principal para mantener márgenes internos en el resto de la página */
+        .main-content {
+            padding: 0 10px 10px 10px;
         }
 
         /* --- CONTROLES DE SELECCIÓN (CURSO Y TRIMESTRE) --- */
@@ -208,11 +213,10 @@
             overflow-y: auto;
         }
 
-        /* Modificación para mantener fijo el título de la bibliografía */
         #modalBibliografia .modal-content {
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Evita que toda la ventana haga scroll */
+            overflow: hidden;
             padding-bottom: 10px;
         }
 
@@ -235,7 +239,7 @@
             border-bottom: 2px solid #e3f2fd;
             margin-bottom: 20px;
             padding-bottom: 10px;
-            flex-shrink: 0; /* Evita que el encabezado colapse con el scroll */
+            flex-shrink: 0;
         }
 
         .modal-header h2 {
@@ -255,10 +259,10 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            overflow-y: auto; /* Mueve el scroll aquí */
-            padding-right: 10px; /* Evita que la barra tape el contenido */
+            overflow-y: auto;
+            padding-right: 10px;
             padding-bottom: 15px;
-            flex: 1; /* Ocupa el resto de la ventana para habilitar el scroll interno */
+            flex: 1;
         }
 
         .bib-item {
@@ -406,45 +410,47 @@
         <div class="title-grado">Grado de Filosofía</div>
     </div>
 
-    <!-- Panel de selección de Curso y Trimestre -->
-    <div class="controls-box">
-        <div class="control-group">
-            <span class="control-label"></span>
-            <div class="btn-group">
-                <button class="btn-curso active" data-curso="1" onclick="cambiarCurso(1)">1º Curso</button>
-                <button class="btn-curso" data-curso="2" onclick="cambiarCurso(2)">2º Curso</button>
-                <button class="btn-curso" data-curso="3" onclick="cambiarCurso(3)">3º Curso</button>
-                <button class="btn-curso" data-curso="4" onclick="cambiarCurso(4)">4º Curso</button>
+    <div class="main-content">
+        <!-- Panel de selección de Curso y Trimestre -->
+        <div class="controls-box">
+            <div class="control-group">
+                <span class="control-label"></span>
+                <div class="btn-group">
+                    <button class="btn-curso active" data-curso="1" onclick="cambiarCurso(1)">1º Curso</button>
+                    <button class="btn-curso" data-curso="2" onclick="cambiarCurso(2)">2º Curso</button>
+                    <button class="btn-curso" data-curso="3" onclick="cambiarCurso(3)">3º Curso</button>
+                    <button class="btn-curso" data-curso="4" onclick="cambiarCurso(4)">4º Curso</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <span class="control-label"></span>
+                <div class="btn-group">
+                    <button class="btn-trimestre active" data-trimestre="1" onclick="cambiarTrimestre(1)">1º Trimestre</button>
+                    <button class="btn-trimestre" data-trimestre="2" onclick="cambiarTrimestre(2)">2º Trimestre</button>
+                </div>
             </div>
         </div>
-        <div class="control-group">
-            <span class="control-label"></span>
-            <div class="btn-group">
-                <button class="btn-trimestre active" data-trimestre="1" onclick="cambiarTrimestre(1)">1º Trimestre</button>
-                <button class="btn-trimestre" data-trimestre="2" onclick="cambiarTrimestre(2)">2º Trimestre</button>
-            </div>
+        
+        <div class="instructions-box">
+            <p>🎯 <strong>Clic</strong> en la <strong>ASIGNATURA</strong> para ver la GUÍA DOCENTE</p>
+            <p>📚 <strong>Clic</strong> en la <strong>BIBLIOGRAFÍA</strong> para ver los textos recomendados y su disponibilidad real.</p>
         </div>
-    </div>
-    
-    <div class="instructions-box">
-        <p>🎯 <strong>Clic</strong> en la <strong>ASIGNATURA</strong> para ver la GUÍA DOCENTE</p>
-        <p>📚 <strong>Clic</strong> en la <strong>BIBLIOGRAFÍA</strong> para ver los textos recomendados y su disponibilidad real.</p>
-    </div>
 
-    <!-- Tabla principal de asignaturas -->
-    <table class="main-table">
-        <thead>
-            <tr>
-                <th style="width: 45%;">Asignatura</th>
-                <th style="width: 10%;">Créditos</th>
-                <th style="width: 25%;">Carácter</th>
-                <th style="width: 20%; background-color: transparent;"></th> 
-            </tr>
-        </thead>
-        <tbody id="tablaAsignaturasCuerpo">
-            <!-- Se carga dinámicamente según el curso y trimestre seleccionados -->
-        </tbody>
-    </table>
+        <!-- Tabla principal de asignaturas -->
+        <table class="main-table">
+            <thead>
+                <tr>
+                    <th style="width: 45%;">Asignatura</th>
+                    <th style="width: 10%;">Créditos</th>
+                    <th style="width: 25%;">Carácter</th>
+                    <th style="width: 20%; background-color: transparent;"></th> 
+                </tr>
+            </thead>
+            <tbody id="tablaAsignaturasCuerpo">
+                <!-- Se carga dinámicamente según el curso y trimestre seleccionados -->
+            </tbody>
+        </table>
+    </div>
 
     <!-- Ventana modal dinámica de Bibliografía -->
     <div id="modalBibliografia" class="modal-overlay">
