@@ -136,7 +136,7 @@
         <!-- Indicador de Carga -->
         <div id="loader" class="py-20 text-center font-mono text-stone-500">
             <i class="fa-solid fa-spinner fa-spin text-3xl text-sand mb-4 block"></i>
-            <p class="text-xs uppercase tracking-widest">Consultando ficheros json del catálogo...</p>
+            <p class="text-xs uppercase tracking-widest">Consultando ficheros JSON del catálogo...</p>
         </div>
 
         <!-- Mensaje de Sin Resultados -->
@@ -174,7 +174,7 @@
         </div>
     </footer>
 
-    <!-- LOGIC DE BÚSQUEDA Y PROCESAMIENTO -->
+    <!-- LÓGICA DE BÚSQUEDA Y PROCESAMIENTO -->
     <script>
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
 
@@ -239,8 +239,8 @@
             // 1. PRIMERA BÚSQUEDA: Campo SIGNATURA
             const busquedaSigLimpia = limpiarTexto(textoLimpioBusqueda);
             const resultadosSignatura = libros.filter(libro => {
-                if (!libro.signatura) return false;
-                return limpiarTexto(libro.signatura).includes(busquedaSigLimpia);
+                const sigVal = libro.signatura || libro.Signatura || libro.SIGNATURA || '';
+                return limpiarTexto(sigVal).includes(busquedaSigLimpia);
             });
 
             if (resultadosSignatura.length > 0) {
@@ -253,7 +253,7 @@
             }
 
             // 2. SEGUNDA BÚSQUEDA: Campo TÍTULO
-            // Regla de palabras: si supera las 9 palabras (o más de 8), coge las primeras 9/palabras según la regla
+            // Si el texto supera las 8 palabras, coge las primeras 8
             const palabras = textoLimpioBusqueda.split(/\s+/);
             let textoParaTitulo = textoLimpioBusqueda;
             let fueRecortado = false;
@@ -267,8 +267,8 @@
             const busquedaTitLimpia = limpiarTexto(textoParaTitulo);
 
             const resultadosTitulo = libros.filter(libro => {
-                if (!libro.titulo) return false;
-                return limpiarTexto(libro.titulo).includes(busquedaTitLimpia);
+                const titVal = libro.titulo || libro.Titulo || libro.TITULO || '';
+                return limpiarTexto(titVal).includes(busquedaTitLimpia);
             });
 
             return {
@@ -282,7 +282,7 @@
             };
         }
 
-        // Renderizado de las tarjetas de libros
+        // Renderizado de las tarjetas de libros con NEA, SIGNATURA y TÍTULO
         function renderizarResultados(respuestaBusqueda) {
             const loader = document.getElementById('loader');
             const sinResultados = document.getElementById('sin-resultados');
@@ -308,47 +308,49 @@
             if (respuestaBusqueda.tipo === 'signatura') {
                 badgeCriterio.textContent = "BÚSQUEDA POR SIGNATURA";
                 badgeCriterio.className = "inline-block px-3 py-1 bg-amber-600 text-white font-bold tracking-widest uppercase mb-2 md:mb-0 mr-3";
-                textoExplicativo.innerHTML = `Coincidencia exacta localizada para la signatura: <strong class="text-stone-900 font-mono text-sm">"${respuestaBusqueda.terminoUsado}"</strong>`;
+                textoExplicativo.innerHTML = `Coincidencia localizada para la signatura: <strong class="text-stone-900 font-mono text-sm">"${respuestaBusqueda.terminoUsado}"</strong>`;
             } else if (respuestaBusqueda.tipo === 'titulo') {
                 badgeCriterio.textContent = "BÚSQUEDA POR TÍTULO";
                 badgeCriterio.className = "inline-block px-3 py-1 bg-stone-900 text-sand font-bold tracking-widest uppercase mb-2 md:mb-0 mr-3";
                 
                 if (respuestaBusqueda.fueRecortado) {
-                    textoExplicativo.innerHTML = `No hubo coincidencias por signatura. Se buscó en el título por las primeras 8 palabras (sin caracteres especiales): <strong class="text-stone-900">"${respuestaBusqueda.terminoUsado}"</strong>`;
+                    textoExplicativo.innerHTML = `No hubo coincidencias por signatura. Se buscó por las primeras 8 palabras del título: <strong class="text-stone-900">"${respuestaBusqueda.terminoUsado}"</strong>`;
                 } else {
-                    textoExplicativo.innerHTML = `No hubo coincidencias por signatura. Se buscó por el texto completo en el título (normalizado): <strong class="text-stone-900">"${respuestaBusqueda.terminoUsado}"</strong>`;
+                    textoExplicativo.innerHTML = `No hubo coincidencias por signatura. Se buscó en el título por: <strong class="text-stone-900">"${respuestaBusqueda.terminoUsado}"</strong>`;
                 }
             }
 
             // Crear tarjetas HTML
             respuestaBusqueda.resultados.forEach((libro, idx) => {
-                const keys = Object.keys(libro);
-                // Extraer los 3 campos dinámicamente o por sus nombres habituales
-                const signatura = libro.signatura || libro[keys[0]] || 'S/S';
-                const titulo = libro.titulo || libro[keys[1]] || 'Sin título';
-                
-                // Obtener el tercer campo del JSON (autor, ubicación, estantería, etc.)
-                let tercerCampoNombre = keys.find(k => k !== 'signatura' && k !== 'titulo') || keys[2] || 'Detalles';
-                let tercerCampoValor = libro[tercerCampoNombre] || libro.autor || libro.tercer_campo || '';
+                // Extracción robusta de los 3 campos (NEA, Signatura, Título)
+                const nea = libro.nea || libro.NEA || libro.Nea || libro[Object.keys(libro)[0]] || 'S/N';
+                const signatura = libro.signatura || libro.Signatura || libro.SIGNATURA || libro[Object.keys(libro)[1]] || 'S/S';
+                const titulo = libro.titulo || libro.Titulo || libro.TITULO || libro[Object.keys(libro)[2]] || 'Sin título';
 
                 const card = document.createElement('div');
                 card.className = "bg-stone-50 border border-stone-200 p-6 flex flex-col justify-between hover-lift relative group";
                 card.innerHTML = `
                     <div>
-                        <div class="flex justify-between items-start gap-2 mb-4 pb-3 border-b border-stone-200 font-mono text-xs">
-                            <span class="text-stone-400">#${idx + 1}</span>
-                            <span class="bg-stone-900 text-sand px-3 py-1 font-bold tracking-wider rounded-sm">${signatura}</span>
+                        <!-- Cabecera de la tarjeta con NEA y Signatura -->
+                        <div class="flex flex-wrap justify-between items-center gap-2 mb-4 pb-3 border-b border-stone-200 font-mono text-xs">
+                            <span class="text-stone-400 font-semibold">#${idx + 1}</span>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-stone-200 text-stone-800 px-2.5 py-1 font-medium rounded-sm border border-stone-300" title="Número de Entrada / Registro">
+                                    <strong class="text-stone-500 font-normal">NEA:</strong> ${nea}
+                                </span>
+                                <span class="bg-stone-900 text-sand px-3 py-1 font-bold tracking-wider rounded-sm shadow-sm" title="Signatura topográfica">
+                                    ${signatura}
+                                </span>
+                            </div>
                         </div>
-                        <h3 class="editorial-title text-2xl font-light text-stone-900 mb-4 leading-tight">
+
+                        <!-- Título del libro -->
+                        <h3 class="editorial-title text-2xl font-light text-stone-900 mb-2 leading-tight">
                             ${titulo}
                         </h3>
-                        ${tercerCampoValor ? `
-                            <p class="text-xs font-mono text-stone-600 mt-2 flex items-center gap-2">
-                                <span class="uppercase text-stone-400 font-semibold">${tercerCampoNombre}:</span>
-                                <span>${tercerCampoValor}</span>
-                            </p>
-                        ` : ''}
                     </div>
+
+                    <!-- Pie de la tarjeta -->
                     <div class="mt-6 pt-4 border-t border-stone-200/60 flex justify-between items-center text-xs font-mono text-stone-500">
                         <span>CAMPUS EL MILÁN</span>
                         <i class="fa-solid fa-book-bookmark text-sand"></i>
@@ -382,13 +384,12 @@
             }
         }
 
-        // Re-ejecutar búsqueda desde el propio buscador de la página de resultados
+        // Re-ejecutar búsqueda desde la propia barra de resultados
         function nuevaBusqueda(e) {
             if (e) e.preventDefault();
             const query = document.getElementById('input-busqueda').value.trim();
             if (!query) return;
 
-            // Actualizar URL sin recargar la página completa
             const nuevaUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?q=' + encodeURIComponent(query);
             window.history.pushState({ path: nuevaUrl }, '', nuevaUrl);
 
