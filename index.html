@@ -177,8 +177,8 @@
                 </p>
             </div>
 
-            <!-- Formulario de búsqueda con apertura en nueva página -->
-            <form onsubmit="ejecutarBusquedaEnNuevaPagina(event)" class="relative max-w-4xl">
+            <!-- Formulario de búsqueda con apertura en la misma ventana -->
+            <form onsubmit="ejecutarBusqueda(event)" class="relative max-w-4xl">
                 <div class="flex flex-col sm:flex-row gap-2">
                     <input type="text" id="input-busqueda-index" placeholder="Escribe signatura, título o palabra clave..." 
                         class="w-full bg-stone-800/80 border border-stone-700 text-stone-100 px-6 py-5 text-sm md:text-base focus:outline-none focus:border-sand font-sans transition-colors placeholder:text-stone-500" required>
@@ -314,13 +314,13 @@
     <script>
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
 
-        // Redirección de Búsqueda a nueva página (resultados.html)
-        function ejecutarBusquedaEnNuevaPagina(event) {
+        // Redirección de Búsqueda a resultados.html en la misma ventana
+        function ejecutarBusqueda(event) {
             if (event) event.preventDefault();
             const input = document.getElementById('input-busqueda-index');
             const texto = input ? input.value.trim() : '';
             if (texto) {
-                window.open(`resultados.html?q=${encodeURIComponent(texto)}`);
+                window.location.href = `resultados.html?q=${encodeURIComponent(texto)}`;
             }
         }
 
@@ -328,7 +328,7 @@
             const input = document.getElementById('input-busqueda-index');
             if (input) {
                 input.value = filtro;
-                ejecutarBusquedaEnNuevaPagina();
+                ejecutarBusqueda();
             }
         }
 
