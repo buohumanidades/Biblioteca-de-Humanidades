@@ -72,7 +72,6 @@
             <span class="hidden md:inline text-stone-400">UNIVERSIDAD DE OVIEDO</span>
         </div>
         <div class="flex items-center space-x-4 md:space-x-6 text-stone-400">
-            <!-- Contadores integrados en el Ticker -->
             <span title="Visitas globales">VISITAS: <span id="numVisitas" class="text-sand font-bold">...</span></span>
             <span class="text-stone-600">/</span>
             <span title="Búsquedas realizadas">BÚSQUEDAS: <span id="numEncontrado" class="text-emerald-400 font-bold">...</span></span>
@@ -137,7 +136,8 @@
                 </div>
             </div>
         </div>
-    <!-- Bottom Grid Meta Indicators -->
+
+        <!-- Bottom Grid Meta Indicators -->
         <div class="w-full grid grid-cols-2 md:grid-cols-4 grid-line-t font-mono text-xs">
             <div class="p-6 grid-line-r flex flex-col justify-between">
                 <span class="text-stone-500 block mb-2">01 / UBICACIÓN</span>
@@ -158,7 +158,6 @@
                 </a>
             </div>
         </div>
-
     </section>
 
     <!-- SEARCH & CATALOGUE BANNER -->
@@ -178,23 +177,24 @@
                 </p>
             </div>
 
-            <!-- Interactive Search Box -->
-            <div class="relative max-w-4xl">
+            <!-- Formulario de búsqueda con apertura en nueva página -->
+            <form onsubmit="ejecutarBusquedaEnNuevaPagina(event)" class="relative max-w-4xl">
                 <div class="flex flex-col sm:flex-row gap-2">
-                    <input type="text" placeholder="Escribe título, autor, materia o ISBN..." 
-                        class="w-full bg-stone-800/80 border border-stone-700 text-stone-100 px-6 py-5 text-sm md:text-base focus:outline-none focus:border-sand font-sans transition-colors placeholder:text-stone-500">
-                    <button class="bg-sand text-stone-900 px-8 py-5 text-xs font-mono font-semibold uppercase tracking-widest hover:bg-stone-100 transition-colors whitespace-nowrap">
-                        BUSCAR AHORA
+                    <input type="text" id="input-busqueda-index" placeholder="Escribe signatura, título o palabra clave..." 
+                        class="w-full bg-stone-800/80 border border-stone-700 text-stone-100 px-6 py-5 text-sm md:text-base focus:outline-none focus:border-sand font-sans transition-colors placeholder:text-stone-500" required>
+                    <button type="submit" class="bg-sand text-stone-900 px-8 py-5 text-xs font-mono font-semibold uppercase tracking-widest hover:bg-stone-100 transition-colors whitespace-nowrap flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                        <span>BUSCAR AHORA</span>
                     </button>
                 </div>
                 <div class="flex flex-wrap gap-4 mt-4 text-xs font-mono text-stone-400">
                     <span class="text-stone-500">FILTROS POPULARES:</span>
-                    <button class="hover:text-sand underline decoration-stone-600 underline-offset-4">Monografías</button>
-                    <button class="hover:text-sand underline decoration-stone-600 underline-offset-4">Revistas de Humanidades</button>
-                    <button class="hover:text-sand underline decoration-stone-600 underline-offset-4">Tesis Doctorales</button>
-                    <button class="hover:text-sand underline decoration-stone-600 underline-offset-4">Fondo Antiguo</button>
+                    <button type="button" onclick="aplicarFiltroPopular('Monografías')" class="hover:text-sand underline decoration-stone-600 underline-offset-4">Monografías</button>
+                    <button type="button" onclick="aplicarFiltroPopular('Historia')" class="hover:text-sand underline decoration-stone-600 underline-offset-4">Historia</button>
+                    <button type="button" onclick="aplicarFiltroPopular('Filosofía')" class="hover:text-sand underline decoration-stone-600 underline-offset-4">Filosofía</button>
+                    <button type="button" onclick="aplicarFiltroPopular('Literatura')" class="hover:text-sand underline decoration-stone-600 underline-offset-4">Literatura</button>
                 </div>
-            </div>
+            </form>
         </div>
     </section>
 
@@ -214,7 +214,6 @@
         </div>
 
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-            
             <!-- Card 1: Grados -->
             <div class="bg-stone-50 p-8 border border-stone-200 hover-lift flex flex-col justify-between group cursor-pointer" onclick="abrirModalGrados(event)">
                 <div>
@@ -289,9 +288,7 @@
         </div>
     </footer>
 
-    <!-- MODALES REDISEÑADOS CON TAILWIND -->
-    
-    <!-- Modal Grados -->
+    <!-- MODALES DE GRADOS Y ALERTAS -->
     <div id="modalGrados" class="fixed inset-0 z-[2000] bg-stone-900/80 backdrop-blur-sm flex justify-center items-center opacity-0 pointer-events-none transition-all duration-300">
         <div class="bg-stone-50 w-11/12 max-w-2xl p-8 md:p-12 border border-stone-200 transform translate-y-8 transition-transform duration-300 modal-content relative" onclick="event.stopPropagation()">
             <button onclick="cerrarModalGrados(event)" class="absolute top-6 right-6 text-stone-400 hover:text-stone-900 transition-colors text-xl">
@@ -299,7 +296,6 @@
             </button>
             <h2 class="editorial-title text-4xl font-light text-stone-900 mb-2">Artes y Humanidades</h2>
             <p class="font-mono text-xs text-stone-500 mb-8 pb-4 border-b border-stone-200 uppercase tracking-widest">Selecciona una titulación</p>
-            
             <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-[11px] md:text-xs">
                 <li><a href="#" onclick="abrirGradoDirecto(event, 'grado1')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Estudios Clásicos y Románicos</a></li>
                 <li><a href="#" onclick="abrirGradoDirecto(event, 'grado2')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Estudios Ingleses</a></li>
@@ -314,33 +310,29 @@
         </div>
     </div>
 
-    <!-- Modal Semestre (Iframe) -->
-    <div id="modalSemestre" class="fixed inset-0 z-[2000] bg-stone-900/90 backdrop-blur-md flex justify-center items-center opacity-0 pointer-events-none transition-all duration-300">
-        <div class="bg-stone-50 w-full h-full md:w-11/12 md:h-5/6 flex flex-col p-4 md:p-6 relative transform translate-y-8 transition-transform duration-300 modal-content" onclick="event.stopPropagation()">
-            <div class="flex justify-between items-center mb-4 pb-4 border-b border-stone-200">
-                <span class="font-mono text-xs text-stone-500 uppercase tracking-widest">VISOR DE BIBLIOGRAFÍA</span>
-                <button onclick="cerrarModalSemestre(event)" class="text-stone-500 hover:text-stone-900 text-xl transition-colors"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <iframe id="iframeSemestre" src="" class="w-full flex-1 border border-stone-200 bg-white"></iframe>
-        </div>
-    </div>
-
-    <!-- Modal Alerta -->
-    <div id="customAlertModal" class="fixed inset-0 z-[3000] bg-stone-900/60 backdrop-blur-sm flex justify-center items-center opacity-0 pointer-events-none transition-all duration-300" onclick="cerrarModalAlerta()">
-        <div class="bg-stone-50 w-11/12 max-w-sm p-8 text-center border border-stone-200 transform translate-y-8 transition-transform duration-300 modal-content" onclick="event.stopPropagation()">
-            <i class="fa-regular fa-clock text-4xl text-sand mb-4"></i>
-            <p id="alertMessageText" class="font-serif text-xl text-stone-900 mb-8">Mensaje de alerta</p>
-            <button onclick="cerrarModalAlerta()" class="w-full bg-stone-900 text-stone-100 py-3 font-mono text-xs uppercase tracking-widest hover:bg-sand hover:text-stone-900 transition-colors">
-                Entendido
-            </button>
-        </div>
-    </div>
-
-    <!-- LOGICA JAVASCRIPT (Original mantenida) -->
+    <!-- LOGICA JAVASCRIPT -->
     <script>
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
 
-        // 1. SUMAR VISITA
+        // Redirección de Búsqueda a nueva página (resultados.html)
+        function ejecutarBusquedaEnNuevaPagina(event) {
+            if (event) event.preventDefault();
+            const input = document.getElementById('input-busqueda-index');
+            const texto = input ? input.value.trim() : '';
+            if (texto) {
+                window.open(`resultados.html?q=${encodeURIComponent(texto)}`, '_blank');
+            }
+        }
+
+        function aplicarFiltroPopular(filtro) {
+            const input = document.getElementById('input-busqueda-index');
+            if (input) {
+                input.value = filtro;
+                ejecutarBusquedaEnNuevaPagina();
+            }
+        }
+
+        // Sumar Visitas y Contadores
         async function incrementarVisitasIndex() {
             const numVisitas = document.getElementById('numVisitas');
             if (!numVisitas) return;
@@ -362,10 +354,8 @@
             }
         }
 
-        // 2. ACTUALIZACIÓN PERIÓDICA DE CONTADORES
         async function refrescarTodosLosContadores() {
             const timestamp = new Date().getTime();
-            // Refrescar Encontrados
             try {
                 const numEncontrado = document.getElementById('numEncontrado');
                 const resA2 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&celda=A2&accion=leer&t=${timestamp}`, { method: 'GET', redirect: 'follow' });
@@ -376,9 +366,8 @@
                         numEncontrado.textContent = valorEncontrados;
                     }
                 }
-            } catch (err) { console.warn("Error leyendo el contador de encontrados:", err); }
+            } catch (err) { console.warn("Error leyendo el contador:", err); }
 
-            // Refrescar Visitas
             try {
                 const numVisitas = document.getElementById('numVisitas');
                 const resA1 = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=leer&t=${timestamp}`, { method: 'GET', redirect: 'follow' });
@@ -389,94 +378,27 @@
                         numVisitas.textContent = valorVisitas;
                     }
                 }
-            } catch (err) { console.warn("Error leyendo el contador de visitas:", err); }
+            } catch (err) { console.warn("Error leyendo visitas:", err); }
         }
 
-        // Broadcast Channel para búsquedas en tiempo real
-        try {
-            const canal = new BroadcastChannel('canal_contador_encontrados');
-            canal.onmessage = function(event) {
-                if (event.data && event.data.nuevoConteo !== undefined) {
-                    const numEncontrado = document.getElementById('numEncontrado');
-                    if (numEncontrado) numEncontrado.textContent = event.data.nuevoConteo;
-                }
-            };
-        } catch (e) {}
-
-        // Inicialización
         document.addEventListener("DOMContentLoaded", function() {
             incrementarVisitasIndex();
             refrescarTodosLosContadores();
             setInterval(refrescarTodosLosContadores, 60000);
         });
 
-        // FUNCIONES MODALES (Adaptadas para usar clases Tailwind en vez de .style.display)
         function abrirModalGrados(e) {
             if (e) e.preventDefault();
             const modal = document.getElementById('modalGrados');
-            const content = modal.querySelector('.modal-content');
             modal.classList.add('modal-active');
-            content.classList.add('modal-content-active');
+            modal.querySelector('.modal-content').classList.add('modal-content-active');
         }
 
         function cerrarModalGrados(e) {
             if (e) e.preventDefault();
             const modal = document.getElementById('modalGrados');
-            const content = modal.querySelector('.modal-content');
             modal.classList.remove('modal-active');
-            content.classList.remove('modal-content-active');
-        }
-
-        function mostrarModal(mensaje) {
-            document.getElementById('alertMessageText').textContent = mensaje;
-            const alertModal = document.getElementById('customAlertModal');
-            const content = alertModal.querySelector('.modal-content');
-            alertModal.classList.add('modal-active');
-            content.classList.add('modal-content-active');
-        }
-
-        function cerrarModalAlerta() {
-            const alertModal = document.getElementById('customAlertModal');
-            const content = alertModal.querySelector('.modal-content');
-            alertModal.classList.remove('modal-active');
-            content.classList.remove('modal-content-active');
-        }
-
-        function abrirGradoDirecto(e, idGrado) {
-            if (e) e.preventDefault();
-            const urlDestino = `Grados/${idGrado}.html`;
-            abrirModalSemestre(urlDestino);
-        }
-
-        async function abrirModalSemestre(urlDestino) {
-            try {
-                let respuesta = await fetch(urlDestino, { method: 'HEAD' });
-                if (respuesta.ok) {
-                    cerrarModalGrados();
-                    document.getElementById('iframeSemestre').src = urlDestino;
-                    const modal = document.getElementById('modalSemestre');
-                    const content = modal.querySelector('.modal-content');
-                    modal.classList.add('modal-active');
-                    content.classList.add('modal-content-active');
-                } else {
-                    mostrarModal("En breve tendrás disponible la bibliografía detallada para este grado.");
-                }
-            } catch (error) {
-                cerrarModalGrados();
-                document.getElementById('iframeSemestre').src = '';
-                mostrarModal("Ha ocurrido un error al cargar la bibliografía.");
-            }
-        }
-
-        function cerrarModalSemestre(e) {
-            if (e) e.preventDefault();
-            const modal = document.getElementById('modalSemestre');
-            const content = modal.querySelector('.modal-content');
-            modal.classList.remove('modal-active');
-            content.classList.remove('modal-content-active');
-            setTimeout(() => {
-                document.getElementById('iframeSemestre').src = '';
-            }, 300);
+            modal.querySelector('.modal-content').classList.remove('modal-content-active');
         }
     </script>
 </body>
