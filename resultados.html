@@ -53,6 +53,10 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #F4F0E8; }
         ::-webkit-scrollbar-thumb { background: #1A1817; }
+
+        /* Estilos para la ventana superpuesta Modal */
+        .modal-active { opacity: 1 !important; pointer-events: auto !important; }
+        .modal-content-active { transform: translateY(0) !important; }
     </style>
 </head>
 <body class="antialiased selection:bg-stone-800 selection:text-stone-50 min-h-screen flex flex-col justify-between">
@@ -105,7 +109,7 @@
                 </h1>
             </div>
 
-            <!-- Formulario de búsqueda dentro de resultados -->
+            <!-- Formulario de búsqueda -->
             <form onsubmit="nuevaBusqueda(event)" class="relative max-w-4xl">
                 <div class="flex flex-col sm:flex-row gap-2">
                     <input type="text" id="input-busqueda" placeholder="Buscar por signatura o título..." 
@@ -156,6 +160,24 @@
 
     </main>
 
+    <!-- VENTANA SUPERPUESTA (MODAL LOCALIZADOR) -->
+    <div id="modalLocalizador" class="fixed inset-0 z-[2000] bg-stone-900/80 backdrop-blur-md flex justify-center items-center opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-stone-50 w-full h-full md:w-11/12 md:h-5/6 max-w-4xl flex flex-col p-4 md:p-6 relative transform translate-y-8 transition-transform duration-300 modal-content border border-stone-200 shadow-2xl">
+            <div class="flex justify-between items-center mb-4 pb-4 border-b border-stone-200">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="font-mono text-xs text-stone-700 font-bold uppercase tracking-widest">UBICACIÓN EN BIBLIOTECA</span>
+                </div>
+                <button onclick="cerrarModalLocalizador()" class="text-stone-500 hover:text-stone-900 text-xs font-mono uppercase tracking-wider px-3 py-1.5 border border-stone-300 hover:border-stone-900 transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                    <span>Cerrar</span>
+                </button>
+            </div>
+            <!-- Iframe donde se ejecuta localizador.html y muestra la ubicación -->
+            <iframe id="iframeLocalizador" src="" class="w-full flex-1 border border-stone-200 bg-white"></iframe>
+        </div>
+    </div>
+
     <!-- FOOTER WITH EDITORIAL SIGNATURE -->
     <footer class="bg-stone-900 text-stone-100 pt-12 pb-8 font-mono text-xs mt-16">
         <div class="max-w-7xl mx-auto px-6">
@@ -174,23 +196,21 @@
         </div>
     </footer>
 
-    <!-- LÓGICA DE BÚSQUEDA Y NAVEGACIÓN A LOCALIZADOR -->
+    <!-- LÓGICA JAVASCRIPT -->
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDcDemo123/exec";
 
-        // Función para limpiar texto: quita diacríticos, acentos, caracteres especiales y normaliza a minúsculas
         function limpiarTexto(str) {
             if (!str) return '';
             return str.toString()
                 .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")      // Quita acentos/diacríticos
-                .replace(/[^a-zA-Z0-9\s]/g, "")      // Quita caracteres especiales
-                .replace(/\s+/g, " ")                // Espacios limpios
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-zA-Z0-9\s]/g, "")
+                .replace(/\s+/g, " ")
                 .trim()
                 .toLowerCase();
         }
 
-        // Carga secuencial de libros1.json, libros2.json, libros3.json...
         async function cargarTodosLosLibros() {
             let todosLosLibros = [];
             let index = 1;
@@ -218,7 +238,6 @@
             return todosLosLibros;
         }
 
-        // Registrar contador de búsqueda realizada exitosamente
         async function registrarBusquedaEncontrada() {
             try {
                 const timestamp = new Date().getTime();
@@ -231,12 +250,11 @@
             }
         }
 
-        // Algoritmo de Búsqueda
         function ejecutarAlgoritmoBusqueda(libros, textoIngresado) {
             const textoLimpioBusqueda = textoIngresado.trim();
             if (!textoLimpioBusqueda) return { tipo: 'vacio', resultados: [], total: 0 };
 
-            // 1. PRIMERA BÚSQUEDA: Campo SIGNATURA
+            // 1. Busqueda por SIGNATURA
             const busquedaSigLimpia = limpiarTexto(textoLimpioBusqueda);
             const resultadosSignatura = libros.filter(libro => {
                 const sigVal = libro.signatura || libro.Signatura || libro.SIGNATURA || '';
@@ -252,8 +270,7 @@
                 };
             }
 
-            // 2. SEGUNDA BÚSQUEDA: Campo TÍTULO
-            // Si el texto supera las 8 palabras, coge las primeras 8
+            // 2. Busqueda por TÍTULO
             const palabras = textoLimpioBusqueda.split(/\s+/);
             let textoParaTitulo = textoLimpioBusqueda;
             let fueRecortado = false;
@@ -281,8 +298,8 @@
             };
         }
 
-        // Función para procesar y abrir directamente la ubicación en localizador.html
-        function abrirLocalizador(signatura) {
+        // Abrir la ubicación en la ventana superpuesta
+        function abrirLocalizadorSuperpuesto(signatura) {
             if (!signatura || signatura === 'S/S') return;
 
             let fichero = signatura.replace(/\/AST$/i, "").replace(/\/COMIC$/i, "");
@@ -301,10 +318,25 @@
                 sig = fichero;
             }
 
-            window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
+            const url = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
+            
+            const iframe = document.getElementById('iframeLocalizador');
+            iframe.src = url;
+
+            const modal = document.getElementById('modalLocalizador');
+            modal.classList.add('modal-active');
+            modal.querySelector('.modal-content').classList.add('modal-content-active');
         }
 
-        // Renderizado de las tarjetas con NEA, Signatura y Título + redirección al localizador
+        function cerrarModalLocalizador() {
+            const modal = document.getElementById('modalLocalizador');
+            modal.classList.remove('modal-active');
+            modal.querySelector('.modal-content').classList.remove('modal-content-active');
+            setTimeout(() => {
+                document.getElementById('iframeLocalizador').src = '';
+            }, 300);
+        }
+
         function renderizarResultados(respuestaBusqueda) {
             const loader = document.getElementById('loader');
             const sinResultados = document.getElementById('sin-resultados');
@@ -342,7 +374,6 @@
                 }
             }
 
-            // Renderizado de tarjetas interactivas
             respuestaBusqueda.resultados.forEach((libro, idx) => {
                 const nea = libro.nea || libro.NEA || libro.Nea || libro[Object.keys(libro)[0]] || 'S/N';
                 const signatura = libro.signatura || libro.Signatura || libro.SIGNATURA || libro[Object.keys(libro)[1]] || 'S/S';
@@ -350,7 +381,7 @@
 
                 const card = document.createElement('div');
                 card.className = "bg-stone-50 border border-stone-200 p-6 flex flex-col justify-between hover-lift relative group cursor-pointer hover:border-stone-900 transition-all";
-                card.onclick = function() { abrirLocalizador(signatura); };
+                card.onclick = function() { abrirLocalizadorSuperpuesto(signatura); };
 
                 card.innerHTML = `
                     <div>
@@ -384,7 +415,6 @@
             registrarBusquedaEncontrada();
         }
 
-        // Inicializar
         let listaLibrosGlobal = [];
 
         async function inicializarPaginaResultados() {

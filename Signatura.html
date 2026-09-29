@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Búsqueda por Signatura · Biblioteca de Humanidades</title>
+    <title>Ubicación del Libro · Biblioteca de Humanidades</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -21,32 +21,57 @@
 <body class="antialiased selection:bg-stone-800 selection:text-stone-50 flex flex-col min-h-screen">
 
     <header class="sticky top-0 z-40 bg-stone-100/90 backdrop-blur-md grid-line-b">
-        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <div>
                 <span class="block text-xs font-mono font-medium tracking-[0.3em] text-stone-800 uppercase">B . U . O</span>
                 <span class="text-[11px] text-stone-500 font-mono tracking-wider block mt-0.5">CAMPUS DE EL MILÁN</span>
             </div>
-            <a href="index.html" class="inline-flex items-center space-x-2 text-xs font-mono px-4 py-2 border border-stone-800 text-stone-800 hover:bg-stone-900 hover:text-stone-100 transition-all uppercase tracking-wider">
-                <i class="fa-solid fa-arrow-left text-[10px]"></i><span>Volver al inicio</span>
-            </a>
+            <span class="text-xs font-mono text-sand font-bold tracking-widest uppercase">
+                <i class="fa-solid fa-map-pin mr-1"></i> UBICACIÓN FÍSICA
+            </span>
         </div>
     </header>
 
-    <section class="grid-line-b bg-stone-900 text-stone-100 relative overflow-hidden">
-        <img src="imagenes/buobh.png" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca'" alt="Biblioteca" class="absolute inset-0 w-full h-full object-cover opacity-20 filter">
-        <div class="max-w-7xl mx-auto px-6 py-16 md:py-24 relative z-10 text-center">
-            <span class="text-xs font-mono text-sand font-semibold uppercase tracking-widest block mb-4">[ BÚSQUEDA DIRECTA ]</span>
-            <h1 class="editorial-title text-4xl md:text-6xl font-light mb-6">Búsqueda por Signatura.</h1>
-        </div>
-    </section>
+    <main class="max-w-3xl mx-auto px-6 py-8 flex flex-col items-center gap-6 flex-1 w-full">
+        
+        <!-- Vista 1: Tarjeta de Localización Retocada (Si vienen datos en la URL) -->
+        <div id="contenedorUbicacion" class="hidden w-full bg-stone-50 border-2 border-stone-900 p-8 shadow-lg relative">
+            <div class="flex justify-between items-start border-b border-stone-200 pb-4 mb-6">
+                <div>
+                    <span class="text-xs font-mono text-sand font-bold tracking-widest uppercase block mb-1">SIGNATURA CONSULTADA</span>
+                    <h2 id="lblSignaturaOriginal" class="editorial-title text-3xl font-bold text-stone-900"></h2>
+                </div>
+                <span id="badgeBase" class="bg-stone-900 text-sand text-xs font-mono font-bold px-3 py-1 uppercase tracking-wider">
+                    SALA DE LECTURA
+                </span>
+            </div>
 
-    <main class="max-w-3xl mx-auto px-6 py-16 flex flex-col items-center gap-8 flex-1">
-        
-        <p class="font-mono text-sm text-stone-600 text-center leading-relaxed">
-            Recuerda que los libros que se encuentran en las salas son de acceso libre y sus signaturas comienzan por HG.
-        </p>
-        
-        <div class="w-full flex flex-col items-center gap-4">
+            <!-- Parámetros de Ubicación -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 font-mono text-xs">
+                <div class="bg-stone-100 p-4 border border-stone-200">
+                    <span class="text-stone-500 uppercase block mb-1">PLANTA</span>
+                    <span id="lblPlanta" class="text-base font-bold text-stone-900">--</span>
+                </div>
+                <div class="bg-stone-100 p-4 border border-stone-200">
+                    <span class="text-stone-500 uppercase block mb-1">SALA</span>
+                    <span id="lblSala" class="text-base font-bold text-stone-900">--</span>
+                </div>
+                <div class="bg-stone-100 p-4 border border-stone-200">
+                    <span class="text-stone-500 uppercase block mb-1">ESTANTERÍA / MÓDULO</span>
+                    <span id="lblEstanteria" class="text-base font-bold text-stone-900">--</span>
+                </div>
+                <div class="bg-stone-100 p-4 border border-stone-200">
+                    <span class="text-stone-500 uppercase block mb-1">DETALLE UBICACIÓN</span>
+                    <span id="lblUbicacion" class="text-base font-bold text-stone-900">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vista 2: Buscador Manual (Si se entra sin parámetros de URL) -->
+        <div id="contenedorBuscador" class="w-full flex flex-col items-center gap-4">
+            <p class="font-mono text-sm text-stone-600 text-center leading-relaxed">
+                Escribe la signatura para obtener la localización en las salas del Campus de El Milán.
+            </p>
             <input type="text" id="campoSignatura" class="w-full md:w-3/4 px-6 py-4 text-center font-mono text-xl border-2 border-stone-300 bg-stone-50 text-stone-900 focus:outline-none focus:border-stone-900 focus:bg-white transition-all uppercase placeholder:text-stone-400" 
                    placeholder="HG..." 
                    onfocus="if(this.value.trim() === '') { this.value = 'HG'; setTimeout(() => this.setSelectionRange(2, 2), 0); }" 
@@ -57,12 +82,6 @@
             </button>
         </div>
 
-        <div class="w-full md:w-3/4 bg-stone-100 border border-stone-200 p-8 flex flex-col items-center gap-4 mt-8">
-            <span class="font-serif text-xl text-stone-800">¿Quieres ver si está disponible?</span>
-            <button onclick="buscarEnCatalogo()" class="w-full border border-stone-800 bg-transparent text-stone-800 hover:bg-stone-900 hover:text-stone-100 py-3 font-mono text-xs uppercase tracking-widest transition-all">
-                <i class="fa-solid fa-book-open mr-2"></i> Búscalo en el catálogo
-            </button>
-        </div>
     </main>
 
     <!-- Modal Alerta -->
@@ -90,6 +109,27 @@
             const content = modal.querySelector('.modal-content');
             modal.classList.remove("modal-active");
             content.classList.remove("modal-content-active");
+        }
+
+        function cargarDatosUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const orig = params.get('orig');
+            const sig = params.get('sig');
+            const planta = params.get('planta');
+            const sala = params.get('sala');
+            const ubicacion = params.get('ubicacion');
+            const estanteria = params.get('estanteria');
+
+            if (orig || sig || planta) {
+                document.getElementById('contenedorBuscador').classList.add('hidden');
+                document.getElementById('contenedorUbicacion').classList.remove('hidden');
+
+                document.getElementById('lblSignaturaOriginal').textContent = orig || sig || 'S/S';
+                document.getElementById('lblPlanta').textContent = planta || 'No asignada';
+                document.getElementById('lblSala').textContent = sala || 'No asignada';
+                document.getElementById('lblEstanteria').textContent = estanteria || 'No asignada';
+                document.getElementById('lblUbicacion').textContent = ubicacion || 'No asignada';
+            }
         }
 
         function localizarLibro(event) {
@@ -121,19 +161,10 @@
                 sig = fichero;
             }
 
-            window.open("localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura), "_blank");
+            window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
         }
-        
-        function buscarEnCatalogo() {
-            const signatura = document.getElementById("campoSignatura").value.trim();
-            if (signatura === "" || signatura === "HG") {
-                window.open("https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac", "_blank");
-            } else {
-                const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
-                const urlFinal = urlBase + encodeURIComponent('"' + signatura + '"') + "&START=1&FORM=1";
-                window.open(urlFinal, "_blank");
-            }
-        }
+
+        document.addEventListener("DOMContentLoaded", cargarDatosUrl);
     </script>
 </body>
 </html>
