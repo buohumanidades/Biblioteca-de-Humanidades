@@ -14,32 +14,33 @@
         body { background-color: #F4F0E8; color: #1A1817; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
         .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 0.95; }
         .grid-line-b { border-bottom: 1px solid rgba(26, 24, 23, 0.12); }
-        .modal-active { opacity: 1 !important; pointer-events: auto !important; }
-        .modal-content-active { transform: translateY(0) !important; }
     </style>
 </head>
 <body class="antialiased selection:bg-stone-800 selection:text-stone-50 flex flex-col min-h-screen">
 
     <header class="sticky top-0 z-40 bg-stone-100/90 backdrop-blur-md grid-line-b">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div>
-                <span class="block text-xs font-mono font-medium tracking-[0.3em] text-stone-800 uppercase">B . U . O</span>
-                <span class="text-[11px] text-stone-500 font-mono tracking-wider block mt-0.5">CAMPUS DE EL MILÁN</span>
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center gap-4">
+            <div class="flex-1">
+                <!-- Aquí aparecerá la signatura -->
+                <span id="headerSignatura" class="block text-sm font-mono font-bold tracking-widest text-stone-800 uppercase">B . U . O</span>
+                <!-- Aquí aparecerá el título del libro -->
+                <span id="headerTitulo" class="text-xs text-stone-600 font-sans tracking-wide block mt-0.5 line-clamp-2">CAMPUS DE EL MILÁN</span>
             </div>
-            <span class="text-xs font-mono text-sand font-bold tracking-widest uppercase">
+            <span class="text-xs font-mono text-sand font-bold tracking-widest uppercase flex-shrink-0 text-right">
                 <i class="fa-solid fa-map-pin mr-1"></i> UBICACIÓN FÍSICA
             </span>
         </div>
     </header>
 
-    <main class="max-w-3xl mx-auto px-6 py-8 flex flex-col items-center gap-6 flex-1 w-full">
+    <!-- Se ha añadido "justify-center" para centrar la tarjeta en la pantalla ahora que no hay buscador -->
+    <main class="max-w-3xl mx-auto px-6 py-12 flex flex-col items-center justify-center gap-6 flex-1 w-full">
         
-        <!-- Vista 1: Tarjeta de Localización Retocada (Si vienen datos en la URL) -->
-        <div id="contenedorUbicacion" class="hidden w-full bg-stone-50 border-2 border-stone-900 p-8 shadow-lg relative">
+        <!-- Tarjeta de Localización (Única vista, siempre visible) -->
+        <div id="contenedorUbicacion" class="w-full bg-stone-50 border-2 border-stone-900 p-8 shadow-lg relative">
             <div class="flex justify-between items-start border-b border-stone-200 pb-4 mb-6">
                 <div>
                     <span class="text-xs font-mono text-sand font-bold tracking-widest uppercase block mb-1">SIGNATURA CONSULTADA</span>
-                    <h2 id="lblSignaturaOriginal" class="editorial-title text-3xl font-bold text-stone-900"></h2>
+                    <h2 id="lblSignaturaOriginal" class="editorial-title text-3xl md:text-4xl font-bold text-stone-900">--</h2>
                 </div>
                 <span id="badgeBase" class="bg-stone-900 text-sand text-xs font-mono font-bold px-3 py-1 uppercase tracking-wider">
                     SALA DE LECTURA
@@ -67,50 +68,9 @@
             </div>
         </div>
 
-        <!-- Vista 2: Buscador Manual (Si se entra sin parámetros de URL) -->
-        <div id="contenedorBuscador" class="w-full flex flex-col items-center gap-4">
-            <p class="font-mono text-sm text-stone-600 text-center leading-relaxed">
-                Escribe la signatura para obtener la localización en las salas del Campus de El Milán.
-            </p>
-            <input type="text" id="campoSignatura" class="w-full md:w-3/4 px-6 py-4 text-center font-mono text-xl border-2 border-stone-300 bg-stone-50 text-stone-900 focus:outline-none focus:border-stone-900 focus:bg-white transition-all uppercase placeholder:text-stone-400" 
-                   placeholder="HG..." 
-                   onfocus="if(this.value.trim() === '') { this.value = 'HG'; setTimeout(() => this.setSelectionRange(2, 2), 0); }" 
-                   oninput="this.value = this.value.toUpperCase();">
-            
-            <button onclick="localizarLibro(event)" class="w-full md:w-3/4 bg-stone-900 text-sand hover:bg-sand hover:text-stone-900 py-4 px-8 font-mono text-sm uppercase tracking-widest font-bold transition-all flex items-center justify-center gap-3">
-                <i class="fa-solid fa-location-dot"></i> Localizar en la estantería
-            </button>
-        </div>
-
     </main>
 
-    <!-- Modal Alerta -->
-    <div id="customModal" class="fixed inset-0 z-[3000] bg-stone-900/60 backdrop-blur-sm flex justify-center items-center opacity-0 pointer-events-none transition-all duration-300" onclick="cerrarModal()">
-        <div class="bg-stone-50 w-11/12 max-w-sm p-8 text-center border border-stone-200 transform translate-y-4 transition-transform duration-300 modal-content" onclick="event.stopPropagation()">
-            <i class="fa-solid fa-circle-exclamation text-4xl text-sand mb-4"></i>
-            <p id="modalMessage" class="font-sans text-sm text-stone-700 mb-8 whitespace-pre-wrap leading-relaxed">Mensaje</p>
-            <button onclick="cerrarModal()" class="w-full bg-stone-900 text-stone-100 py-3 font-mono text-xs uppercase tracking-widest hover:bg-sand hover:text-stone-900 transition-colors">
-                Aceptar
-            </button>
-        </div>
-    </div>
-
     <script>
-        function mostrarModal(mensaje) {
-            document.getElementById("modalMessage").innerText = mensaje;
-            const modal = document.getElementById("customModal");
-            const content = modal.querySelector('.modal-content');
-            modal.classList.add("modal-active");
-            content.classList.add("modal-content-active");
-        }
-
-        function cerrarModal() {
-            const modal = document.getElementById("customModal");
-            const content = modal.querySelector('.modal-content');
-            modal.classList.remove("modal-active");
-            content.classList.remove("modal-content-active");
-        }
-
         function cargarDatosUrl() {
             const params = new URLSearchParams(window.location.search);
             const orig = params.get('orig');
@@ -119,49 +79,21 @@
             const sala = params.get('sala');
             const ubicacion = params.get('ubicacion');
             const estanteria = params.get('estanteria');
+            // Nuevo parámetro esperado en la URL para el título (ej: &titulo=El Quijote)
+            const titulo = params.get('titulo'); 
 
-            if (orig || sig || planta) {
-                document.getElementById('contenedorBuscador').classList.add('hidden');
-                document.getElementById('contenedorUbicacion').classList.remove('hidden');
+            const signaturaMostrar = orig || sig || 'SIGNATURA NO ESPECIFICADA';
 
-                document.getElementById('lblSignaturaOriginal').textContent = orig || sig || 'S/S';
-                document.getElementById('lblPlanta').textContent = planta || 'No asignada';
-                document.getElementById('lblSala').textContent = sala || 'No asignada';
-                document.getElementById('lblEstanteria').textContent = estanteria || 'No asignada';
-                document.getElementById('lblUbicacion').textContent = ubicacion || 'No asignada';
-            }
-        }
+            // Actualizar la cabecera dinámica
+            document.getElementById('headerSignatura').textContent = signaturaMostrar;
+            document.getElementById('headerTitulo').textContent = titulo || 'Título no disponible';
 
-        function localizarLibro(event) {
-            event.preventDefault();
-            let signatura = document.getElementById("campoSignatura").value.trim();
-
-            if (signatura === "" || signatura === "HG") {
-                mostrarModal("Por favor, escribe una signatura válida.");
-                return;
-            }
-            if (!signatura.startsWith("HG")) {
-                mostrarModal("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudaremos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
-                return; 
-            }
-
-            let fichero = signatura.replace(/\/AST$/i, "").replace(/\/COMIC$/i, "");
-            if (!fichero.endsWith("/4")) {
-                fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
-            }
-
-            let sig = "";
-            let ultimoIndiceBarra = fichero.lastIndexOf("/");
-
-            if (ultimoIndiceBarra !== -1) {
-                let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
-                if (parteDerecha === "4") sig = "HG/4";
-                else sig = fichero.substring(0, ultimoIndiceBarra);
-            } else {
-                sig = fichero;
-            }
-
-            window.location.href = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
+            // Actualizar los datos de la tarjeta central
+            document.getElementById('lblSignaturaOriginal').textContent = signaturaMostrar;
+            document.getElementById('lblPlanta').textContent = planta || '--';
+            document.getElementById('lblSala').textContent = sala || '--';
+            document.getElementById('lblEstanteria').textContent = estanteria || '--';
+            document.getElementById('lblUbicacion').textContent = ubicacion || '--';
         }
 
         document.addEventListener("DOMContentLoaded", cargarDatosUrl);
