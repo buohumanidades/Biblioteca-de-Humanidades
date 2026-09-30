@@ -27,7 +27,7 @@
     </script>
     <style>
         body { 
-            background-color: transparent; /* Permite que se vea el fondo del iframe/modal padre si lo hay, o usa el del modal */
+            background-color: transparent; 
             color: #1A1817; 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             height: 100dvh; 
@@ -43,25 +43,18 @@
 </head>
 <body class="antialiased selection:bg-stone-800 selection:text-stone-50 bg-[#FAF8F5]">
 
-    <!-- CABECERA: SIGNATURA, TÍTULO Y BOTÓN CERRAR -->
+    <!-- CABECERA: SIGNATURA Y TÍTULO -->
     <header class="bg-stone-100/90 backdrop-blur-md grid-line-b shrink-0 z-10 bg-white">
         <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center w-full gap-4">
             <div class="overflow-hidden flex-1 pr-4">
-                <!-- Se reemplaza B.U.O por Signatura -->
                 <span id="header-signatura" class="block text-sm md:text-base font-mono font-bold tracking-widest text-stone-800 uppercase truncate" title="Signatura">
                     CARGANDO...
                 </span>
-                <!-- Se reemplaza Biblioteca de Humanidades por Título -->
                 <span id="header-titulo" class="text-[11px] md:text-[13px] text-stone-500 font-sans font-medium block mt-0.5 truncate" title="Título del Libro">
                     Cargando título...
                 </span>
             </div>
-            
-            <!-- Botón de Cerrar Ventana -->
-            <button onclick="cerrarVentana()" class="shrink-0 inline-flex items-center space-x-2 text-[10px] md:text-xs font-mono px-3 md:px-4 py-2 border border-stone-800 text-stone-800 hover:bg-stone-900 hover:text-stone-100 transition-all uppercase tracking-wider rounded-sm cursor-pointer">
-                <i class="fa-solid fa-xmark"></i>
-                <span class="hidden sm:inline">Cerrar ventana</span>
-            </button>
+            <!-- El botón de Cerrar Ventana fue eliminado según tu instrucción -->
         </div>
     </header>
 
@@ -71,43 +64,44 @@
         <div class="bg-stone-900 text-stone-100 border-l-4 border-sand shadow-xl shrink-0 rounded-r-sm w-full">
             <div class="flex flex-col md:flex-row md:items-stretch justify-between h-full">
                 
-                <div class="p-6 md:p-10 flex flex-col md:flex-row gap-6 md:gap-8 items-start md:items-center flex-1">
+                <!-- ZONA IZQUIERDA (Piso, Zona, Sector) -->
+                <div class="p-6 md:p-8 flex flex-col md:flex-row gap-4 md:gap-6 items-start md:items-center flex-1 min-w-0">
                     
                     <!-- PLANTA -->
-                    <div class="flex items-center gap-4">
-                        <i class="fa-solid fa-map-location-dot text-3xl text-stone-500 hidden md:block"></i>
+                    <div class="flex items-center gap-4 shrink-0">
+                        <i class="fa-solid fa-map-location-dot text-2xl md:text-3xl text-stone-500 hidden md:block"></i>
                         <div class="flex flex-col">
                             <span class="text-[11px] font-mono text-stone-500 uppercase tracking-widest mb-1">Piso</span>
-                            <span id="txt-planta" class="font-serif text-2xl md:text-3xl whitespace-nowrap">--</span>
+                            <span id="txt-planta" class="font-serif text-2xl md:text-3xl break-words">--</span>
                         </div>
                     </div>
 
-                    <i class="fa-solid fa-chevron-right text-stone-700 text-lg hidden md:block"></i>
-                    <i class="fa-solid fa-chevron-down text-stone-700 text-lg md:hidden ml-4 -my-2"></i>
+                    <i class="fa-solid fa-chevron-right text-stone-700 text-lg hidden md:block shrink-0"></i>
+                    <i class="fa-solid fa-chevron-down text-stone-700 text-lg md:hidden ml-4 -my-2 shrink-0"></i>
 
                     <!-- SALA -->
-                    <div class="flex flex-col">
+                    <div class="flex flex-col flex-1 min-w-0">
                         <span class="text-[11px] font-mono text-stone-500 uppercase tracking-widest mb-1">Zona</span>
-                        <span id="txt-sala" class="font-serif text-2xl md:text-3xl whitespace-nowrap">--</span>
+                        <span id="txt-sala" class="font-serif text-2xl md:text-3xl break-words">--</span>
                     </div>
 
-                    <i class="fa-solid fa-chevron-right text-stone-700 text-lg hidden md:block"></i>
-                    <i class="fa-solid fa-chevron-down text-stone-700 text-lg md:hidden ml-4 -my-2"></i>
+                    <i class="fa-solid fa-chevron-right text-stone-700 text-lg hidden md:block shrink-0"></i>
+                    <i class="fa-solid fa-chevron-down text-stone-700 text-lg md:hidden ml-4 -my-2 shrink-0"></i>
 
                     <!-- UBICACIÓN -->
-                    <div class="flex flex-col">
+                    <div class="flex flex-col flex-1 min-w-0">
                         <span class="text-[11px] font-mono text-stone-500 uppercase tracking-widest mb-1">Sector</span>
-                        <span id="txt-ubicacion" class="font-serif text-2xl md:text-3xl">--</span>
+                        <span id="txt-ubicacion" class="font-serif text-2xl md:text-3xl break-words">--</span>
                     </div>
                 </div>
 
-                <!-- ESTANTERÍA -->
-                <div class="bg-sand text-stone-900 p-6 md:p-10 flex flex-col justify-center min-w-[300px]">
+                <!-- ZONA DERECHA (Estantería) -->
+                <div class="bg-sand text-stone-900 p-6 md:p-8 flex flex-col justify-center shrink-0 w-full md:w-[35%] lg:w-[30%]">
                     <div class="flex justify-between items-start mb-2">
                         <span class="text-xs font-mono uppercase tracking-widest font-bold">DESTINO EXACTO</span>
                         <div id="display-signatura" class="bg-stone-900 text-sand text-[10px] font-mono font-bold px-2 py-1 hidden rounded-sm shadow-sm"></div>
                     </div>
-                    <span id="txt-estanteria" class="font-serif text-4xl md:text-5xl font-bold mb-1">--</span>
+                    <span id="txt-estanteria" class="font-serif text-4xl md:text-5xl font-bold mb-1 break-words">--</span>
                 </div>
             </div>
         </div>
@@ -142,20 +136,9 @@
             badge.textContent = sigBuscada;
             badge.style.display = 'inline-block';
         }
-
-        // Función para cerrar la ventana (soporta iFrames y ventanas independientes)
-        function cerrarVentana() {
-            if (window.parent && typeof window.parent.cerrarModalLocalizador === 'function') {
-                window.parent.cerrarModalLocalizador();
-            } else if (window.opener) {
-                window.close();
-            } else {
-                window.history.back();
-            }
-        }
     </script>
 
-    <!-- CONTROL DE VISITAS Y CAMBIO DE DÍA (Mantenido intacto) -->
+    <!-- CONTROL DE VISITAS Y CAMBIO DE DÍA -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
