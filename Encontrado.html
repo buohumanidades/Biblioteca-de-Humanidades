@@ -4,93 +4,119 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ubicación del Libro · Biblioteca de Humanidades</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script>
-        tailwind.config = { theme: { extend: { colors: { stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' }, sand: '#C5A059' }, fontFamily: { serif: ['Cormorant Garamond', 'serif'], sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { 
+                        stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' }, 
+                        sand: '#C5A059' 
+                    }, 
+                    fontFamily: { 
+                        serif: ['Cormorant Garamond', 'serif'], 
+                        sans: ['Plus Jakarta Sans', 'sans-serif'], 
+                        mono: ['Space Grotesk', 'monospace'] 
+                    } 
+                } 
+            } 
+        }
     </script>
     <style>
-        body { background-color: #F4F0E8; color: #1A1817; font-family: 'Plus Jakarta Sans', sans-serif; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; margin: 0; padding: 0; }
+        body { 
+            background-color: transparent; /* Permite que se vea el fondo del iframe/modal padre si lo hay, o usa el del modal */
+            color: #1A1817; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            height: 100dvh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+            margin: 0; 
+            padding: 0; 
+        }
         .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 0.95; }
         .grid-line-b { border-bottom: 1px solid rgba(26, 24, 23, 0.12); }
     </style>
 </head>
-<body class="antialiased selection:bg-stone-800 selection:text-stone-50">
+<body class="antialiased selection:bg-stone-800 selection:text-stone-50 bg-[#FAF8F5]">
 
-    <header class="bg-stone-100/90 backdrop-blur-md grid-line-b shrink-0 z-10">
-        <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center w-full">
-            <div>
-                <span class="block text-xs font-mono font-medium tracking-[0.3em] text-stone-800 uppercase">B . U . O</span>
-                <span class="text-[10px] md:text-[11px] text-stone-500 font-mono tracking-wider block mt-0.5">BIBLIOTECA DE HUMANIDADES</span>
+    <!-- CABECERA: SIGNATURA, TÍTULO Y BOTÓN CERRAR -->
+    <header class="bg-stone-100/90 backdrop-blur-md grid-line-b shrink-0 z-10 bg-white">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center w-full gap-4">
+            <div class="overflow-hidden flex-1 pr-4">
+                <!-- Se reemplaza B.U.O por Signatura -->
+                <span id="header-signatura" class="block text-sm md:text-base font-mono font-bold tracking-widest text-stone-800 uppercase truncate" title="Signatura">
+                    CARGANDO...
+                </span>
+                <!-- Se reemplaza Biblioteca de Humanidades por Título -->
+                <span id="header-titulo" class="text-[11px] md:text-[13px] text-stone-500 font-sans font-medium block mt-0.5 truncate" title="Título del Libro">
+                    Cargando título...
+                </span>
             </div>
             
-            <a href="index.html" class="inline-flex items-center space-x-2 text-[10px] md:text-xs font-mono px-3 md:px-4 py-2 border border-stone-800 text-stone-800 hover:bg-stone-900 hover:text-stone-100 transition-all uppercase tracking-wider">
-                <i class="fa-solid fa-house"></i>
-                <span class="hidden sm:inline">Inicio</span>
-            </a>
+            <!-- Botón de Cerrar Ventana -->
+            <button onclick="cerrarVentana()" class="shrink-0 inline-flex items-center space-x-2 text-[10px] md:text-xs font-mono px-3 md:px-4 py-2 border border-stone-800 text-stone-800 hover:bg-stone-900 hover:text-stone-100 transition-all uppercase tracking-wider rounded-sm cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+                <span class="hidden sm:inline">Cerrar ventana</span>
+            </button>
         </div>
     </header>
 
-    <main class="flex-1 flex flex-col max-w-7xl mx-auto w-full px-3 md:px-6 py-4 overflow-hidden gap-4">
+    <!-- CONTENIDO PRINCIPAL: UBICACIÓN CENTRADA -->
+    <main class="flex-1 flex flex-col justify-center items-center max-w-7xl mx-auto w-full px-3 md:px-6 py-4 overflow-hidden">
         
-        <div class="bg-stone-900 text-stone-100 border-l-4 border-sand shadow-lg shrink-0 rounded-r-sm">
+        <div class="bg-stone-900 text-stone-100 border-l-4 border-sand shadow-xl shrink-0 rounded-r-sm w-full">
             <div class="flex flex-col md:flex-row md:items-stretch justify-between h-full">
                 
-                <div class="p-5 md:p-8 flex flex-col md:flex-row gap-4 md:gap-8 items-start md:items-center flex-1">
+                <div class="p-6 md:p-10 flex flex-col md:flex-row gap-6 md:gap-8 items-start md:items-center flex-1">
                     
+                    <!-- PLANTA -->
                     <div class="flex items-center gap-4">
-                        <i class="fa-solid fa-map-location-dot text-2xl text-stone-500 hidden md:block"></i>
+                        <i class="fa-solid fa-map-location-dot text-3xl text-stone-500 hidden md:block"></i>
                         <div class="flex flex-col">
-                            <span class="text-[10px] font-mono text-stone-500 uppercase tracking-widest mb-1">Piso</span>
-                            <span id="txt-planta" class="font-serif text-xl md:text-2xl whitespace-nowrap">PLANTA 2</span>
+                            <span class="text-[11px] font-mono text-stone-500 uppercase tracking-widest mb-1">Piso</span>
+                            <span id="txt-planta" class="font-serif text-2xl md:text-3xl whitespace-nowrap">--</span>
                         </div>
                     </div>
 
-                    <i class="fa-solid fa-chevron-right text-stone-700 text-sm hidden md:block"></i>
-                    <i class="fa-solid fa-chevron-down text-stone-700 text-sm md:hidden ml-4 -my-1"></i>
+                    <i class="fa-solid fa-chevron-right text-stone-700 text-lg hidden md:block"></i>
+                    <i class="fa-solid fa-chevron-down text-stone-700 text-lg md:hidden ml-4 -my-2"></i>
 
+                    <!-- SALA -->
                     <div class="flex flex-col">
-                        <span class="text-[10px] font-mono text-stone-500 uppercase tracking-widest mb-1">Zona</span>
-                        <span id="txt-sala" class="font-serif text-xl md:text-2xl whitespace-nowrap">Sala de la derecha</span>
+                        <span class="text-[11px] font-mono text-stone-500 uppercase tracking-widest mb-1">Zona</span>
+                        <span id="txt-sala" class="font-serif text-2xl md:text-3xl whitespace-nowrap">--</span>
                     </div>
 
-                    <i class="fa-solid fa-chevron-right text-stone-700 text-sm hidden md:block"></i>
-                    <i class="fa-solid fa-chevron-down text-stone-700 text-sm md:hidden ml-4 -my-1"></i>
+                    <i class="fa-solid fa-chevron-right text-stone-700 text-lg hidden md:block"></i>
+                    <i class="fa-solid fa-chevron-down text-stone-700 text-lg md:hidden ml-4 -my-2"></i>
 
+                    <!-- UBICACIÓN -->
                     <div class="flex flex-col">
-                        <span class="text-[10px] font-mono text-stone-500 uppercase tracking-widest mb-1">Sector</span>
-                        <span id="txt-ubicacion" class="font-serif text-xl md:text-2xl">Estanterías de la derecha</span>
+                        <span class="text-[11px] font-mono text-stone-500 uppercase tracking-widest mb-1">Sector</span>
+                        <span id="txt-ubicacion" class="font-serif text-2xl md:text-3xl">--</span>
                     </div>
                 </div>
 
-                <div class="bg-sand text-stone-900 p-5 md:p-8 flex flex-col justify-center min-w-[280px]">
+                <!-- ESTANTERÍA -->
+                <div class="bg-sand text-stone-900 p-6 md:p-10 flex flex-col justify-center min-w-[300px]">
                     <div class="flex justify-between items-start mb-2">
-                        <span class="text-[10px] font-mono uppercase tracking-widest font-bold">DESTINO EXACTO</span>
+                        <span class="text-xs font-mono uppercase tracking-widest font-bold">DESTINO EXACTO</span>
                         <div id="display-signatura" class="bg-stone-900 text-sand text-[10px] font-mono font-bold px-2 py-1 hidden rounded-sm shadow-sm"></div>
                     </div>
-                    <span id="txt-estanteria" class="font-serif text-3xl font-bold mb-1">Estantería 3</span>
+                    <span id="txt-estanteria" class="font-serif text-4xl md:text-5xl font-bold mb-1">--</span>
                 </div>
             </div>
-        </div>
-
-        <div class="flex-1 w-full bg-white border border-stone-200 shadow-sm relative overflow-hidden rounded-sm">
-            <iframe id="iframeCatalogo" class="absolute inset-0 w-full h-full border-none bg-stone-50" title="Resultados en el catálogo de la biblioteca"></iframe>
-        </div>
-
-        <!-- BOTONERA DE ACCIÓN -->
-        <div class="shrink-0 flex flex-col sm:flex-row gap-3 w-full">
-            <a id="btnCamera" href="#" class="flex-1 bg-emerald-700 text-stone-50 font-mono text-[11px] md:text-xs uppercase tracking-widest flex items-center justify-center py-4 rounded-sm hover:bg-emerald-800 transition-colors">
-                <i class="fa-solid fa-camera mr-2"></i> Buscar con la cámara
-            </a>
-            <a href="#" onclick="event.preventDefault(); window.close();" class="flex-1 bg-stone-900 text-stone-100 font-mono text-[11px] md:text-xs uppercase tracking-widest flex items-center justify-center py-4 rounded-sm hover:bg-sand hover:text-stone-900 transition-colors border border-transparent">
-                <i class="fa-solid fa-xmark mr-2"></i> Cerrar ventana
-            </a>
         </div>
 
     </main>
 
+    <!-- LÓGICA DE DATOS Y BOTONES -->
     <script>
+        // Extraer los datos de la URL
         const params = new URLSearchParams(window.location.search);
         
         const sigBuscada = params.get('sig'); 
@@ -99,7 +125,13 @@
         const valSala = params.get('sala');
         const valUbicacion = params.get('ubicacion');
         const valEstanteria = params.get('estanteria');
+        const valTitulo = params.get('titulo') || 'Sin título especificado';
 
+        // Insertar datos en la cabecera
+        document.getElementById('header-signatura').textContent = sigOriginal || 'S/S';
+        document.getElementById('header-titulo').textContent = valTitulo;
+
+        // Insertar datos en la tarjeta de ubicación
         if (valPlanta) document.getElementById('txt-planta').textContent = valPlanta;
         if (valSala) document.getElementById('txt-sala').textContent = valSala;
         if (valUbicacion) document.getElementById('txt-ubicacion').textContent = valUbicacion;
@@ -111,25 +143,19 @@
             badge.style.display = 'inline-block';
         }
 
-        const btnCamera = document.getElementById('btnCamera');
-        if (sigOriginal) {
-            btnCamera.href = `escaner.html?buscar=${encodeURIComponent(sigOriginal)}`;
-        } else {
-            btnCamera.style.display = 'none';
-        }
-
-        const iframe = document.getElementById('iframeCatalogo');
-
-        if (sigOriginal) {
-            const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=131&xsqf01=";
-            const urlFinal = urlBase + encodeURIComponent('"' + sigOriginal + '"') + "&START=1&FORM=1";
-            iframe.src = urlFinal;
-        } else {
-            iframe.srcdoc = `<div style="font-family: 'Plus Jakarta Sans', sans-serif; height: 100%; display: flex; align-items: center; justify-content: center; color: #7f8c8d; text-align: center; padding: 20px;"><p>No se ha detectado ninguna signatura en la búsqueda.</p></div>`;
+        // Función para cerrar la ventana (soporta iFrames y ventanas independientes)
+        function cerrarVentana() {
+            if (window.parent && typeof window.parent.cerrarModalLocalizador === 'function') {
+                window.parent.cerrarModalLocalizador();
+            } else if (window.opener) {
+                window.close();
+            } else {
+                window.history.back();
+            }
         }
     </script>
 
-    <!-- CONTROL DE VISITAS Y CAMBIO DE DÍA -->
+    <!-- CONTROL DE VISITAS Y CAMBIO DE DÍA (Mantenido intacto) -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
