@@ -5,67 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Procesando Signatura...</title>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            background-color: #f4f6f7; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
-            color: #2c3e50;
-        }
-        .loader-container {
-            text-align: center;
-            background: #fff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            max-width: 400px;
-            width: 90%;
-        }
-        .spinner {
-            border: 5px solid #ecf0f1;
-            border-top: 5px solid #2980b9; 
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        h2 {
-            font-family: 'Romana Moderna', Georgia, serif;
-            color: #1a252f;
-            margin-bottom: 10px;
-            font-size: 1.5em;
-        }
-        p {
-            color: #7f8c8d;
-            font-size: 0.95em;
-            line-height: 1.4;
-        }
-        .btn-volver {
-            background-color: #e67e22; 
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 1em;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.3s ease;
-        }
-        .btn-volver:hover {
-            background-color: #d35400;
-        }
-        .icono-aviso {
-            font-size: 3em;
-            margin-bottom: 10px;
-        }
+        body { font-family: Arial, sans-serif; background-color: #f4f6f7; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: #2c3e50; }
+        .loader-container { text-align: center; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); max-width: 400px; width: 90%; }
+        .spinner { border: 5px solid #ecf0f1; border-top: 5px solid #2980b9; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        h2 { font-family: 'Romana Moderna', Georgia, serif; color: #1a252f; margin-bottom: 10px; font-size: 1.5em; }
+        p { color: #7f8c8d; font-size: 0.95em; line-height: 1.4; }
+        .icono-aviso { font-size: 3em; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -78,38 +24,37 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         let sigBuscada = params.get('sig');
-        const sigOriginal = params.get('orig'); // Se captura la original
+        const sigOriginal = params.get('orig'); 
+        // CAPTURA DEL TÍTULO
+        const valTitulo = params.get('titulo'); 
 
-        // Normalización preventiva si la URL llega con texto intermedio antes de números con '='
         if (sigBuscada) {
             sigBuscada = sigBuscada.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+(?=\d+=)/gi, "/");
         }
 
-        // Hacemos una petición para leer el archivo externo signaturas.json
         fetch('signaturas.json')
             .then(response => {
-                if (!response.ok) {
-                    throw new Error("No se pudo cargar el archivo de datos");
-                }
-                return response.json(); // Convertimos la respuesta a un objeto Javascript
+                if (!response.ok) throw new Error("No se pudo cargar el archivo de datos");
+                return response.json(); 
             })
             .then(baseDatos => {
                 setTimeout(() => {
                     if (sigBuscada && baseDatos[sigBuscada]) {
                         const datos = baseDatos[sigBuscada];
                         
+                        // REENVÍO DEL TÍTULO A LA URL FINAL
                         const paramsUrl = new URLSearchParams({
                             sig: sigBuscada,
-                            orig: sigOriginal || sigBuscada, // Se traspasa la original
+                            orig: sigOriginal || sigBuscada,
                             planta: datos.planta,
                             sala: datos.sala,
                             ubicacion: datos.ubicacion,
-                            estanteria: datos.estanteria
+                            estanteria: datos.estanteria,
+                            titulo: valTitulo || 'Sin título especificado'
                         });
 
                         window.location.href = datos.html + "?" + paramsUrl.toString();
                     } else {
-                        // Si no está en el primer archivo, buscamos en el repositorio general
                         buscarEnTodasSignaturas(sigBuscada);
                     }
                 }, 600);
@@ -124,41 +69,27 @@
                 mostrarError(sig);
                 return;
             }
-
             fetch('todassignaturas.json')
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error("No se pudo cargar el archivo todassignaturas.json");
-                    }
+                    if (!response.ok) throw new Error("No se pudo cargar el archivo");
                     return response.json();
                 })
                 .then(todas => {
-                    // Busca el objeto dentro del array donde la propiedad "signaturas" coincida con la buscada
                     const encontrada = todas.find(item => item.signaturas === sig);
-
-                    if (encontrada) {
-                        mostrarAvisoPersonal(encontrada);
-                    } else {
-                        mostrarError(sig);
-                    }
+                    if (encontrada) mostrarAvisoPersonal(encontrada);
+                    else mostrarError(sig);
                 })
-                .catch(error => {
-                    console.error("Error:", error);
-                    mostrarError(sig, "Error al cargar la base de datos secundaria.");
-                });
+                .catch(error => mostrarError(sig, "Error al cargar la base de datos secundaria."));
         }
 
+        // BOTONES CERRAR ELIMINADOS COMO SE PIDIÓ
         function mostrarAvisoPersonal(datos) {
             const contenedor = document.getElementById('contenedor-principal');
-            // Formatea el campo descripción (si está vacío, no muestra el guion)
             const descripcionTexto = datos.descripcion ? ` ${datos.descripcion}` : '';
-            
             contenedor.innerHTML = `
                 <div class="icono-aviso">ℹ️</div>
                 <h2>Aviso de ubicación</h2>
                 <p>La signatura <strong>${datos.signaturas}</strong>${descripcionTexto}, no se encuentra en las SALAS. Acuda al personal de la biblioteca para solicitar el libro.</p>
-                <!-- MODIFICACIÓN: Se cambia window.history.back() por window.close() -->
-                <button class="btn-volver" onclick="window.close()">Cerrar y volver al buscador</button>
             `;
         }
 
@@ -170,8 +101,6 @@
                 <p>La signatura no existe o es incorrecta. Puedes realizar la comprobación en el catálogo.</p>
                 <p><strong>Signatura buscada:</strong> ${sig || "Ninguna"}</p>
                 ${mensajeExtra ? `<p style="color:red; font-size: 0.8em;">${mensajeExtra}</p>` : ""}
-                <!-- MODIFICACIÓN: Se cambia window.history.back() por window.close() -->
-                <button class="btn-volver" onclick="window.close()">Cerrar y volver al buscador</button>
             `;
         }
     </script>
