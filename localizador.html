@@ -39,21 +39,24 @@
             })
             .then(baseDatos => {
                 setTimeout(() => {
-                    if (sigBuscada && baseDatos[sigBuscada]) {
-                        const datos = baseDatos[sigBuscada];
-                        
-                        // REENVÍO DEL TÍTULO A LA URL FINAL
+                    // BÚSQUEDA CORREGIDA: Si baseDatos es un Array, buscamos con .find()
+                    const datos = Array.isArray(baseDatos)
+                        ? baseDatos.find(item => item.signaturas === sigBuscada)
+                        : baseDatos[sigBuscada];
+
+                    if (sigBuscada && datos) {
+                        // REENVÍO DEL TÍTULO Y PROPIEDADES A LA URL FINAL
                         const paramsUrl = new URLSearchParams({
                             sig: sigBuscada,
                             orig: sigOriginal || sigBuscada,
-                            planta: datos.planta,
-                            sala: datos.sala,
-                            ubicacion: datos.ubicacion,
-                            estanteria: datos.estanteria,
+                            planta: datos.planta || '',
+                            sala: datos.sala || '',
+                            ubicacion: datos.ubicacion || '',
+                            estanteria: datos.estanteria || '',
                             titulo: valTitulo || 'Sin título especificado'
                         });
 
-                        window.location.href = datos.html + "?" + paramsUrl.toString();
+                        window.location.href = (datos.html || 'ubicacion.html') + "?" + paramsUrl.toString();
                     } else {
                         buscarEnTodasSignaturas(sigBuscada);
                     }
@@ -82,7 +85,6 @@
                 .catch(error => mostrarError(sig, "Error al cargar la base de datos secundaria."));
         }
 
-        // BOTONES CERRAR ELIMINADOS COMO SE PIDIÓ
         function mostrarAvisoPersonal(datos) {
             const contenedor = document.getElementById('contenedor-principal');
             const descripcionTexto = datos.descripcion ? ` ${datos.descripcion}` : '';
