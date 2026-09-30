@@ -7,7 +7,7 @@
     <style>
         body { 
             font-family: Arial, sans-serif; 
-            background-color: #FAF8F5; /* Color adaptado al modal de la biblioteca */
+            background-color: #f4f6f7; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
@@ -23,11 +23,10 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             max-width: 400px;
             width: 90%;
-            border: 1px solid #E6DFC6;
         }
         .spinner {
             border: 5px solid #ecf0f1;
-            border-top: 5px solid #C5A059; /* Color de acento sand de la UI */
+            border-top: 5px solid #2980b9; 
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -39,8 +38,8 @@
             100% { transform: rotate(360deg); }
         }
         h2 {
-            font-family: 'Georgia', serif;
-            color: #1A1817;
+            font-family: 'Romana Moderna', Georgia, serif;
+            color: #1a252f;
             margin-bottom: 10px;
             font-size: 1.5em;
         }
@@ -50,7 +49,7 @@
             line-height: 1.4;
         }
         .btn-volver {
-            background-color: #1A1817; 
+            background-color: #e67e22; 
             color: white;
             border: none;
             padding: 10px 20px;
@@ -61,8 +60,7 @@
             transition: background-color 0.3s ease;
         }
         .btn-volver:hover {
-            background-color: #C5A059;
-            color: #1A1817;
+            background-color: #d35400;
         }
         .icono-aviso {
             font-size: 3em;
@@ -80,28 +78,20 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         let sigBuscada = params.get('sig');
-        const sigOriginal = params.get('orig');
-        const tituloLibro = params.get('titulo');
+        const sigOriginal = params.get('orig'); // Se captura la original
 
+        // Normalización preventiva si la URL llega con texto intermedio antes de números con '='
         if (sigBuscada) {
             sigBuscada = sigBuscada.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+(?=\d+=)/gi, "/");
         }
 
-        // Función segura para cerrar el iframe desde dentro del contenedor
-        function cerrarDesdeIframe() {
-            if (window.parent && typeof window.parent.cerrarModalLocalizador === 'function') {
-                window.parent.cerrarModalLocalizador();
-            } else {
-                window.close();
-            }
-        }
-
+        // Hacemos una petición para leer el archivo externo signaturas.json
         fetch('signaturas.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error("No se pudo cargar el archivo de datos");
                 }
-                return response.json();
+                return response.json(); // Convertimos la respuesta a un objeto Javascript
             })
             .then(baseDatos => {
                 setTimeout(() => {
@@ -110,16 +100,16 @@
                         
                         const paramsUrl = new URLSearchParams({
                             sig: sigBuscada,
-                            orig: sigOriginal || sigBuscada,
+                            orig: sigOriginal || sigBuscada, // Se traspasa la original
                             planta: datos.planta,
                             sala: datos.sala,
                             ubicacion: datos.ubicacion,
-                            estanteria: datos.estanteria,
-                            titulo: tituloLibro || '' 
+                            estanteria: datos.estanteria
                         });
 
-                        window.location.href = Signatura.html + "?" + paramsUrl.toString();
+                        window.location.href = datos.html + "?" + paramsUrl.toString();
                     } else {
+                        // Si no está en el primer archivo, buscamos en el repositorio general
                         buscarEnTodasSignaturas(sigBuscada);
                     }
                 }, 600);
@@ -143,6 +133,7 @@
                     return response.json();
                 })
                 .then(todas => {
+                    // Busca el objeto dentro del array donde la propiedad "signaturas" coincida con la buscada
                     const encontrada = todas.find(item => item.signaturas === sig);
 
                     if (encontrada) {
@@ -159,13 +150,15 @@
 
         function mostrarAvisoPersonal(datos) {
             const contenedor = document.getElementById('contenedor-principal');
+            // Formatea el campo descripción (si está vacío, no muestra el guion)
             const descripcionTexto = datos.descripcion ? ` ${datos.descripcion}` : '';
             
             contenedor.innerHTML = `
                 <div class="icono-aviso">ℹ️</div>
                 <h2>Aviso de ubicación</h2>
                 <p>La signatura <strong>${datos.signaturas}</strong>${descripcionTexto}, no se encuentra en las SALAS. Acuda al personal de la biblioteca para solicitar el libro.</p>
-                <button class="btn-volver" onclick="cerrarDesdeIframe()">Cerrar y volver al buscador</button>
+                <!-- MODIFICACIÓN: Se cambia window.history.back() por window.close() -->
+                <button class="btn-volver" onclick="window.close()">Cerrar y volver al buscador</button>
             `;
         }
 
@@ -174,10 +167,11 @@
             contenedor.innerHTML = `
                 <div class="icono-aviso">⚠️</div>
                 <h2>Signatura no encontrada</h2>
-                <p>La signatura no existe o es incorrecta en las salas de lectura.</p>
+                <p>La signatura no existe o es incorrecta. Puedes realizar la comprobación en el catálogo.</p>
                 <p><strong>Signatura buscada:</strong> ${sig || "Ninguna"}</p>
                 ${mensajeExtra ? `<p style="color:red; font-size: 0.8em;">${mensajeExtra}</p>` : ""}
-                <button class="btn-volver" onclick="cerrarDesdeIframe()">Cerrar y volver al buscador</button>
+                <!-- MODIFICACIÓN: Se cambia window.history.back() por window.close() -->
+                <button class="btn-volver" onclick="window.close()">Cerrar y volver al buscador</button>
             `;
         }
     </script>
