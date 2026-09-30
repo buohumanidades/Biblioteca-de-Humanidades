@@ -22,9 +22,9 @@
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center gap-4">
             <div class="flex-1">
                 <!-- Aquí aparecerá la signatura -->
-                <span id="headerSignatura" class="block text-sm font-mono font-bold tracking-widest text-stone-800 uppercase">B . U . O</span>
+                <span id="headerSignatura" class="block text-sm font-mono font-bold tracking-widest text-stone-800 uppercase">SIGNATURA DEL LIBRO</span>
                 <!-- Aquí aparecerá el título del libro -->
-                <span id="headerTitulo" class="text-xs text-stone-600 font-sans tracking-wide block mt-0.5 line-clamp-2">CAMPUS DE EL MILÁN</span>
+                <span id="headerTitulo" class="text-xs text-stone-600 font-sans tracking-wide block mt-0.5 line-clamp-2">NOMBRE DEL LIBRO</span>
             </div>
             <span class="text-xs font-mono text-sand font-bold tracking-widest uppercase flex-shrink-0 text-right">
                 <i class="fa-solid fa-map-pin mr-1"></i> UBICACIÓN FÍSICA
@@ -32,7 +32,6 @@
         </div>
     </header>
 
-    <!-- Se ha añadido "justify-center" para centrar la tarjeta en la pantalla ahora que no hay buscador -->
     <main class="max-w-3xl mx-auto px-6 py-12 flex flex-col items-center justify-center gap-6 flex-1 w-full">
         
         <!-- Tarjeta de Localización (Única vista, siempre visible) -->
@@ -79,14 +78,14 @@
             const sala = params.get('sala');
             const ubicacion = params.get('ubicacion');
             const estanteria = params.get('estanteria');
-            // Nuevo parámetro esperado en la URL para el título (ej: &titulo=El Quijote)
+            // Parámetro esperado en la URL para el título (ej: &titulo=El Quijote)
             const titulo = params.get('titulo'); 
 
-            const signaturaMostrar = orig || sig || 'SIGNATURA NO ESPECIFICADA';
+            const signaturaMostrar = orig || sig || 'SIGNATURA DEL LIBRO';
 
             // Actualizar la cabecera dinámica
             document.getElementById('headerSignatura').textContent = signaturaMostrar;
-            document.getElementById('headerTitulo').textContent = titulo || 'Título no disponible';
+            document.getElementById('headerTitulo').textContent = titulo || 'NOMBRE DEL LIBRO';
 
             // Actualizar los datos de la tarjeta central
             document.getElementById('lblSignaturaOriginal').textContent = signaturaMostrar;
