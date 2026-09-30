@@ -78,7 +78,8 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         let sigBuscada = params.get('sig');
-        const sigOriginal = params.get('orig'); // Se captura la original
+        const sigOriginal = params.get('orig');
+        const tituloLibro = params.get('titulo'); // Captura el título del libro
 
         // Normalización preventiva si la URL llega con texto intermedio antes de números con '='
         if (sigBuscada) {
@@ -91,7 +92,7 @@
                 if (!response.ok) {
                     throw new Error("No se pudo cargar el archivo de datos");
                 }
-                return response.json(); // Convertimos la respuesta a un objeto Javascript
+                return response.json();
             })
             .then(baseDatos => {
                 setTimeout(() => {
@@ -100,11 +101,12 @@
                         
                         const paramsUrl = new URLSearchParams({
                             sig: sigBuscada,
-                            orig: sigOriginal || sigBuscada, // Se traspasa la original
+                            orig: sigOriginal || sigBuscada,
                             planta: datos.planta,
                             sala: datos.sala,
                             ubicacion: datos.ubicacion,
-                            estanteria: datos.estanteria
+                            estanteria: datos.estanteria,
+                            titulo: tituloLibro || '' // Reenvía el título
                         });
 
                         window.location.href = datos.html + "?" + paramsUrl.toString();
@@ -133,7 +135,6 @@
                     return response.json();
                 })
                 .then(todas => {
-                    // Busca el objeto dentro del array donde la propiedad "signaturas" coincida con la buscada
                     const encontrada = todas.find(item => item.signaturas === sig);
 
                     if (encontrada) {
@@ -150,14 +151,12 @@
 
         function mostrarAvisoPersonal(datos) {
             const contenedor = document.getElementById('contenedor-principal');
-            // Formatea el campo descripción (si está vacío, no muestra el guion)
             const descripcionTexto = datos.descripcion ? ` ${datos.descripcion}` : '';
             
             contenedor.innerHTML = `
                 <div class="icono-aviso">ℹ️</div>
                 <h2>Aviso de ubicación</h2>
                 <p>La signatura <strong>${datos.signaturas}</strong>${descripcionTexto}, no se encuentra en las SALAS. Acuda al personal de la biblioteca para solicitar el libro.</p>
-                <!-- MODIFICACIÓN: Se cambia window.history.back() por window.close() -->
                 <button class="btn-volver" onclick="window.close()">Cerrar y volver al buscador</button>
             `;
         }
@@ -167,10 +166,9 @@
             contenedor.innerHTML = `
                 <div class="icono-aviso">⚠️</div>
                 <h2>Signatura no encontrada</h2>
-                <p>La signatura no existe o es incorrecta. Puedes realizar la comprobación en el catálogo.</p>
+                <p>La signatura no existe o es incorrecta en las salas de lectura.</p>
                 <p><strong>Signatura buscada:</strong> ${sig || "Ninguna"}</p>
                 ${mensajeExtra ? `<p style="color:red; font-size: 0.8em;">${mensajeExtra}</p>` : ""}
-                <!-- MODIFICACIÓN: Se cambia window.history.back() por window.close() -->
                 <button class="btn-volver" onclick="window.close()">Cerrar y volver al buscador</button>
             `;
         }

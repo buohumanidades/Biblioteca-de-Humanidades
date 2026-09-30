@@ -298,8 +298,8 @@
             };
         }
 
-        // Abrir la ubicación en la ventana superpuesta
-        function abrirLocalizadorSuperpuesto(signatura) {
+        // Abrir la ubicación en la ventana superpuesta pasando signatura y título
+        function abrirLocalizadorSuperpuesto(signatura, titulo) {
             if (!signatura || signatura === 'S/S') return;
 
             let fichero = signatura.replace(/\/AST$/i, "").replace(/\/COMIC$/i, "");
@@ -318,7 +318,9 @@
                 sig = fichero;
             }
 
-            const url = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura);
+            const url = "localizador.html?sig=" + encodeURIComponent(sig) + 
+                        "&orig=" + encodeURIComponent(signatura) + 
+                        "&titulo=" + encodeURIComponent(titulo || '');
             
             const iframe = document.getElementById('iframeLocalizador');
             iframe.src = url;
@@ -381,7 +383,7 @@
 
                 const card = document.createElement('div');
                 card.className = "bg-stone-50 border border-stone-200 p-6 flex flex-col justify-between hover-lift relative group cursor-pointer hover:border-stone-900 transition-all";
-                card.onclick = function() { abrirLocalizadorSuperpuesto(signatura); };
+                card.onclick = function() { abrirLocalizadorSuperpuesto(signatura, titulo); };
 
                 card.innerHTML = `
                     <div>
