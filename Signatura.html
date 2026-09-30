@@ -1,73 +1,129 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ubicación del Libro · Biblioteca de Humanidades</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script>
-        tailwind.config = { theme: { extend: { colors: { stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' }, sand: '#C5A059' }, fontFamily: { serif: ['Cormorant Garamond', 'serif'], sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        stone: {
+                            50: '#FAF8F5',
+                            100: '#F4F0E8',
+                            200: '#E6DFC6',
+                            300: '#D5CBBF',
+                            800: '#2A2725',
+                            900: '#1A1817',
+                        },
+                        sand: '#C5A059',
+                    },
+                    fontFamily: {
+                        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['Space Grotesk', 'monospace'],
+                    }
+                }
+            }
+        }
     </script>
     <style>
-        body { background-color: #F4F0E8; color: #1A1817; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
-        .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 0.95; }
-        .grid-line-b { border-bottom: 1px solid rgba(26, 24, 23, 0.12); }
+        body {
+            background-color: #F4F0E8;
+            color: #1A1817;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
     </style>
 </head>
-<body class="antialiased selection:bg-stone-800 selection:text-stone-50 flex flex-col min-h-screen">
+<body class="antialiased p-4 md:p-6 min-h-screen flex items-center justify-center">
 
-    <header class="sticky top-0 z-40 bg-stone-100/90 backdrop-blur-md grid-line-b">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center gap-4">
-            <div class="flex-1">
-                <!-- Muestra dinámicamente la signatura del libro -->
-                <span id="headerSignatura" class="block text-sm font-mono font-bold tracking-widest text-stone-800 uppercase">SIGNATURA DEL LIBRO</span>
-                <!-- Muestra dinámicamente el título del libro -->
-                <span id="headerTitulo" class="text-xs text-stone-600 font-sans tracking-wide block mt-0.5 line-clamp-2">NOMBRE DEL LIBRO</span>
-            </div>
-            <span class="text-xs font-mono text-sand font-bold tracking-widest uppercase flex-shrink-0 text-right">
-                <i class="fa-solid fa-map-pin mr-1"></i> UBICACIÓN FÍSICA
-            </span>
-        </div>
-    </header>
-
-    <main class="max-w-3xl mx-auto px-6 py-12 flex flex-col items-center justify-center gap-6 flex-1 w-full">
+    <div class="w-full max-w-4xl bg-[#FAF8F5] border border-stone-300 p-6 shadow-sm">
         
-        <!-- Tarjeta de Localización -->
-        <div id="contenedorUbicacion" class="w-full bg-stone-50 border-2 border-stone-900 p-8 shadow-lg relative">
-            <div class="flex justify-between items-start border-b border-stone-200 pb-4 mb-6">
-                <div>
-                    <span class="text-xs font-mono text-sand font-bold tracking-widest uppercase block mb-1">SIGNATURA CONSULTADA</span>
-                    <h2 id="lblSignaturaOriginal" class="editorial-title text-3xl md:text-4xl font-bold text-stone-900">--</h2>
+        <!-- 1. BARRA SUPERIOR -->
+        <div class="flex justify-between items-center pb-4 border-b border-stone-200">
+            <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="font-mono text-xs font-bold text-stone-800 uppercase tracking-widest">
+                    UBICACIÓN EN BIBLIOTECA
+                </span>
+            </div>
+            <button onclick="cerrarUbicacion()" class="font-mono text-xs text-stone-600 hover:text-stone-900 border border-stone-300 hover:border-stone-800 px-3 py-1.5 transition-colors uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-solid fa-xmark text-sm"></i>
+                <span>CERRAR</span>
+            </button>
+        </div>
+
+        <!-- 2. SUBCABECERA B.U.O. (Sin botón Inicio) -->
+        <div class="py-6 border-b border-stone-200/60 mb-6">
+            <h1 class="font-mono text-sm font-bold tracking-[0.3em] text-stone-900 uppercase">
+                B . U . O
+            </h1>
+            <p class="font-mono text-[11px] text-stone-500 tracking-wider uppercase mt-1">
+                BIBLIOTECA DE HUMANIDADES
+            </p>
+            
+            <!-- Detalle opcional del libro consultado -->
+            <div id="infoLibro" class="hidden mt-3 pt-3 border-t border-stone-200 text-xs font-mono text-stone-600">
+                <span id="headerSignatura" class="font-bold text-stone-900"></span>
+                <span id="headerTitulo" class="block text-stone-500 font-sans mt-0.5 italic"></span>
+            </div>
+        </div>
+
+        <!-- 3. TARJETA DE UBICACIÓN PRINCIPAL -->
+        <div class="bg-stone-900 text-stone-100 flex flex-col md:flex-row border-l-4 border-sand shadow-md overflow-hidden">
+            
+            <!-- Pasos: Piso > Zona > Sector -->
+            <div class="flex-1 p-6 flex flex-col sm:flex-row sm:items-center gap-6 overflow-x-auto">
+                <!-- Icono de mapa -->
+                <div class="text-stone-400 text-2xl flex-shrink-0">
+                    <i class="fa-solid fa-map-location-dot"></i>
                 </div>
-                <span id="badgeBase" class="bg-stone-900 text-sand text-xs font-mono font-bold px-3 py-1 uppercase tracking-wider">
-                    SALA DE LECTURA
+
+                <!-- Piso -->
+                <div class="flex flex-col">
+                    <span class="font-mono text-[10px] uppercase text-stone-400 tracking-widest mb-1">PISO</span>
+                    <span id="lblPlanta" class="font-serif text-2xl text-stone-100 whitespace-nowrap">--</span>
+                </div>
+
+                <span class="hidden sm:inline text-stone-600 text-lg">›</span>
+
+                <!-- Zona -->
+                <div class="flex flex-col">
+                    <span class="font-mono text-[10px] uppercase text-stone-400 tracking-widest mb-1">ZONA</span>
+                    <span id="lblSala" class="font-serif text-2xl text-stone-100 whitespace-nowrap">--</span>
+                </div>
+
+                <span class="hidden sm:inline text-stone-600 text-lg">›</span>
+
+                <!-- Sector -->
+                <div class="flex flex-col">
+                    <span class="font-mono text-[10px] uppercase text-stone-400 tracking-widest mb-1">SECTOR</span>
+                    <span id="lblUbicacion" class="font-serif text-2xl text-stone-100 whitespace-nowrap">--</span>
+                </div>
+            </div>
+
+            <!-- Destino Exacto (Caja Dorada) -->
+            <div class="bg-sand text-stone-900 p-6 flex flex-col justify-center min-w-[220px] border-t md:border-t-0 md:border-l border-stone-800">
+                <span class="font-mono text-[10px] font-bold uppercase tracking-widest text-stone-900 mb-1">
+                    DESTINO EXACTO
+                </span>
+                <span id="lblEstanteria" class="font-serif text-2xl font-normal text-stone-900 whitespace-nowrap">
+                    --
                 </span>
             </div>
 
-            <!-- Parámetros de Ubicación -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 font-mono text-xs">
-                <div class="bg-stone-100 p-4 border border-stone-200">
-                    <span class="text-stone-500 uppercase block mb-1">PLANTA</span>
-                    <span id="lblPlanta" class="text-base font-bold text-stone-900">--</span>
-                </div>
-                <div class="bg-stone-100 p-4 border border-stone-200">
-                    <span class="text-stone-500 uppercase block mb-1">SALA</span>
-                    <span id="lblSala" class="text-base font-bold text-stone-900">--</span>
-                </div>
-                <div class="bg-stone-100 p-4 border border-stone-200">
-                    <span class="text-stone-500 uppercase block mb-1">ESTANTERÍA / MÓDULO</span>
-                    <span id="lblEstanteria" class="text-base font-bold text-stone-900">--</span>
-                </div>
-                <div class="bg-stone-100 p-4 border border-stone-200">
-                    <span class="text-stone-500 uppercase block mb-1">DETALLE UBICACIÓN</span>
-                    <span id="lblUbicacion" class="text-base font-bold text-stone-900">--</span>
-                </div>
-            </div>
         </div>
 
-    </main>
+    </div>
 
     <script>
         function cargarDatosUrl() {
@@ -78,20 +134,33 @@
             const sala = params.get('sala');
             const ubicacion = params.get('ubicacion');
             const estanteria = params.get('estanteria');
-            const titulo = params.get('titulo'); 
+            const titulo = params.get('titulo');
 
-            const signaturaMostrar = orig || sig || 'SIGNATURA DEL LIBRO';
+            const signaturaMostrar = orig || sig;
 
-            // Actualizar la cabecera dinámica
-            document.getElementById('headerSignatura').textContent = signaturaMostrar;
-            document.getElementById('headerTitulo').textContent = titulo || 'NOMBRE DEL LIBRO';
+            if (signaturaMostrar || titulo) {
+                const infoLibro = document.getElementById('infoLibro');
+                if (infoLibro) {
+                    infoLibro.classList.remove('hidden');
+                    document.getElementById('headerSignatura').textContent = signaturaMostrar ? `Signatura: ${signaturaMostrar}` : '';
+                    document.getElementById('headerTitulo').textContent = titulo || '';
+                }
+            }
 
-            // Actualizar los datos de la tarjeta central
-            document.getElementById('lblSignaturaOriginal').textContent = signaturaMostrar;
-            document.getElementById('lblPlanta').textContent = planta || '--';
-            document.getElementById('lblSala').textContent = sala || '--';
-            document.getElementById('lblEstanteria').textContent = estanteria || '--';
-            document.getElementById('lblUbicacion').textContent = ubicacion || '--';
+            document.getElementById('lblPlanta').textContent = planta || 'PLANTA 1';
+            document.getElementById('lblSala').textContent = sala || 'Sala de la derecha';
+            document.getElementById('lblUbicacion').textContent = ubicacion || 'Estanterías de la izquierda';
+            document.getElementById('lblEstanteria').textContent = estanteria || 'Estantería 19';
+        }
+
+        function cerrarUbicacion() {
+            if (window.parent && typeof window.parent.cerrarModalLocalizador === 'function') {
+                window.parent.cerrarModalLocalizador();
+            } else if (window.opener) {
+                window.close();
+            } else {
+                window.history.back();
+            }
         }
 
         document.addEventListener("DOMContentLoaded", cargarDatosUrl);
