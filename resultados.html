@@ -56,7 +56,7 @@
 
         /* Estilos para la ventana superpuesta Modal */
         .modal-active { opacity: 1 !important; pointer-events: auto !important; }
-        .modal-content-active { transform: translateY(0) !important; }
+        .modal-content-active { transform: translateY(0) scale(1) !important; opacity: 1 !important; }
     </style>
 </head>
 <body class="antialiased selection:bg-stone-800 selection:text-stone-50 min-h-screen flex flex-col justify-between">
@@ -161,20 +161,11 @@
     </main>
 
     <!-- VENTANA SUPERPUESTA (MODAL LOCALIZADOR) -->
-    <div id="modalLocalizador" class="fixed inset-0 z-[2000] bg-stone-900/80 backdrop-blur-md flex justify-center items-center opacity-0 pointer-events-none transition-all duration-300">
-        <div class="bg-stone-50 w-full h-full md:w-11/12 md:h-5/6 max-w-4xl flex flex-col p-4 md:p-6 relative transform translate-y-8 transition-transform duration-300 modal-content border border-stone-200 shadow-2xl">
-            <div class="flex justify-between items-center mb-4 pb-4 border-b border-stone-200">
-                <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="font-mono text-xs text-stone-700 font-bold uppercase tracking-widest">UBICACIÓN EN BIBLIOTECA</span>
-                </div>
-                <button onclick="cerrarModalLocalizador()" class="text-stone-500 hover:text-stone-900 text-xs font-mono uppercase tracking-wider px-3 py-1.5 border border-stone-300 hover:border-stone-900 transition-colors flex items-center gap-2">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                    <span>Cerrar</span>
-                </button>
-            </div>
-            <!-- Iframe donde se ejecuta localizador.html y muestra la ubicación -->
-            <iframe id="iframeLocalizador" src="" class="w-full flex-1 border border-stone-200 bg-white"></iframe>
+    <!-- Se ha modificado para que muestre exclusivamente el contenido del Iframe sin cabeceras extra -->
+    <div id="modalLocalizador" class="fixed inset-0 z-[2000] bg-stone-900/90 backdrop-blur-sm flex justify-center items-center opacity-0 pointer-events-none transition-opacity duration-300 p-4">
+        <div class="w-full max-w-4xl h-[90vh] md:h-[600px] flex flex-col relative transform translate-y-8 scale-95 opacity-0 transition-all duration-300 modal-content shadow-2xl rounded-lg overflow-hidden bg-[#FAF8F5]">
+            <!-- Iframe donde se ejecuta localizador_2.html y muestra exclusivamente los datos -->
+            <iframe id="iframeLocalizador" src="" class="w-full h-full flex-1 border-0 bg-transparent"></iframe>
         </div>
     </div>
 
@@ -318,7 +309,8 @@
                 sig = fichero;
             }
 
-            const url = "localizador.html?sig=" + encodeURIComponent(sig) + 
+            // Se cambia la ruta a localizador_2.html
+            const url = "localizador_2.html?sig=" + encodeURIComponent(sig) + 
                         "&orig=" + encodeURIComponent(signatura) + 
                         "&titulo=" + encodeURIComponent(titulo || '');
             

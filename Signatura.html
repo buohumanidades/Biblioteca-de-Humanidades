@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ubicación del Libro · Biblioteca de Humanidades</title>
+    <title>Ubicación del Libro</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script>
@@ -38,91 +38,87 @@
     </script>
     <style>
         body {
-            background-color: #F4F0E8;
-            color: #1A1817;
             font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: transparent; /* Permite que se vea limpio dentro del modal */
         }
+        /* Oculta scrollbar por estética */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #FAF8F5; }
+        ::-webkit-scrollbar-thumb { background: #D5CBBF; border-radius: 4px; }
     </style>
 </head>
-<body class="antialiased p-4 md:p-6 min-h-screen flex items-center justify-center">
+<body class="antialiased min-h-screen flex items-center justify-center">
 
-    <div class="w-full max-w-4xl bg-[#FAF8F5] border border-stone-300 p-6 shadow-sm">
+    <div class="w-full h-full flex flex-col bg-[#FAF8F5] max-w-4xl">
         
-        <!-- 1. BARRA SUPERIOR -->
-        <div class="flex justify-between items-center pb-4 border-b border-stone-200">
-            <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="font-mono text-xs font-bold text-stone-800 uppercase tracking-widest">
-                    UBICACIÓN EN BIBLIOTECA
-                </span>
-            </div>
-            <button onclick="cerrarUbicacion()" class="font-mono text-xs text-stone-600 hover:text-stone-900 border border-stone-300 hover:border-stone-800 px-3 py-1.5 transition-colors uppercase tracking-wider flex items-center gap-1.5">
+        <!-- BARRA SUPERIOR: EXCLUSIVA PARA CERRAR -->
+        <div class="flex justify-end items-center p-4 border-b border-stone-200 bg-white">
+            <button onclick="cerrarUbicacion()" class="font-mono text-xs text-stone-600 hover:text-stone-900 border border-stone-300 hover:border-stone-800 px-4 py-2 transition-colors uppercase tracking-wider flex items-center gap-2 rounded-sm shadow-sm">
                 <i class="fa-solid fa-xmark text-sm"></i>
-                <span>CERRAR</span>
+                <span>CERRAR VENTANA</span>
             </button>
         </div>
 
-        <!-- 2. SUBCABECERA B.U.O. (Sin botón Inicio) -->
-        <div class="py-6 border-b border-stone-200/60 mb-6">
-            <h1 class="font-mono text-sm font-bold tracking-[0.3em] text-stone-900 uppercase">
-                B . U . O
-            </h1>
-            <p class="font-mono text-[11px] text-stone-500 tracking-wider uppercase mt-1">
-                BIBLIOTECA DE HUMANIDADES
-            </p>
+        <!-- CONTENIDO PRINCIPAL: TÍTULO Y SIGNATURA -->
+        <div class="flex-1 p-6 md:p-10 flex flex-col justify-center overflow-y-auto">
             
-            <!-- Detalle opcional del libro consultado -->
-            <div id="infoLibro" class="hidden mt-3 pt-3 border-t border-stone-200 text-xs font-mono text-stone-600">
-                <span id="headerSignatura" class="font-bold text-stone-900"></span>
-                <span id="headerTitulo" class="block text-stone-500 font-sans mt-0.5 italic"></span>
-            </div>
-        </div>
-
-        <!-- 3. TARJETA DE UBICACIÓN PRINCIPAL -->
-        <div class="bg-stone-900 text-stone-100 flex flex-col md:flex-row border-l-4 border-sand shadow-md overflow-hidden">
-            
-            <!-- Pasos: Piso > Zona > Sector -->
-            <div class="flex-1 p-6 flex flex-col sm:flex-row sm:items-center gap-6 overflow-x-auto">
-                <!-- Icono de mapa -->
-                <div class="text-stone-400 text-2xl flex-shrink-0">
-                    <i class="fa-solid fa-map-location-dot"></i>
-                </div>
-
-                <!-- Piso -->
-                <div class="flex flex-col">
-                    <span class="font-mono text-[10px] uppercase text-stone-400 tracking-widest mb-1">PISO</span>
-                    <span id="lblPlanta" class="font-serif text-2xl text-stone-100 whitespace-nowrap">--</span>
-                </div>
-
-                <span class="hidden sm:inline text-stone-600 text-lg">›</span>
-
-                <!-- Zona -->
-                <div class="flex flex-col">
-                    <span class="font-mono text-[10px] uppercase text-stone-400 tracking-widest mb-1">ZONA</span>
-                    <span id="lblSala" class="font-serif text-2xl text-stone-100 whitespace-nowrap">--</span>
-                </div>
-
-                <span class="hidden sm:inline text-stone-600 text-lg">›</span>
-
-                <!-- Sector -->
-                <div class="flex flex-col">
-                    <span class="font-mono text-[10px] uppercase text-stone-400 tracking-widest mb-1">SECTOR</span>
-                    <span id="lblUbicacion" class="font-serif text-2xl text-stone-100 whitespace-nowrap">--</span>
-                </div>
-            </div>
-
-            <!-- Destino Exacto (Caja Dorada) -->
-            <div class="bg-sand text-stone-900 p-6 flex flex-col justify-center min-w-[220px] border-t md:border-t-0 md:border-l border-stone-800">
-                <span class="font-mono text-[10px] font-bold uppercase tracking-widest text-stone-900 mb-1">
-                    DESTINO EXACTO
+            <div class="mb-10 text-center">
+                <span class="text-xs font-mono text-stone-500 tracking-widest uppercase block mb-3">
+                    Título del Libro
                 </span>
-                <span id="lblEstanteria" class="font-serif text-2xl font-normal text-stone-900 whitespace-nowrap">
+                <h1 id="headerTitulo" class="text-3xl md:text-5xl font-serif text-stone-900 leading-tight mb-6 font-bold px-4">
+                    Cargando título...
+                </h1>
+                
+                <span class="text-xs font-mono text-stone-500 tracking-widest uppercase block mb-2">
+                    Signatura
+                </span>
+                <span id="headerSignatura" class="inline-block bg-stone-900 text-sand px-6 py-2.5 font-mono text-lg md:text-xl font-bold tracking-wider rounded-md shadow-md">
                     --
                 </span>
             </div>
 
-        </div>
+            <!-- TARJETA DE UBICACIÓN (Planta, Sala, Ubicación, Estantería) -->
+            <div class="bg-stone-900 text-stone-100 rounded-lg shadow-xl overflow-hidden border border-stone-800 mx-auto w-full max-w-3xl">
+                <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-stone-700">
+                    
+                    <!-- Planta -->
+                    <div class="p-6 md:p-8 flex flex-col items-center text-center bg-stone-900/50">
+                        <span class="font-mono text-[11px] uppercase text-stone-400 tracking-widest mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-building text-stone-500"></i> Planta
+                        </span>
+                        <span id="lblPlanta" class="font-sans text-2xl md:text-3xl text-stone-100 font-semibold">--</span>
+                    </div>
 
+                    <!-- Sala -->
+                    <div class="p-6 md:p-8 flex flex-col items-center text-center bg-stone-900/50">
+                        <span class="font-mono text-[11px] uppercase text-stone-400 tracking-widest mb-2 flex items-center gap-2">
+                            <i class="fa-regular fa-map text-stone-500"></i> Sala
+                        </span>
+                        <span id="lblSala" class="font-sans text-2xl md:text-3xl text-stone-100 font-semibold">--</span>
+                    </div>
+
+                    <!-- Ubicación -->
+                    <div class="p-6 md:p-8 flex flex-col items-center text-center bg-stone-900/50">
+                        <span class="font-mono text-[11px] uppercase text-stone-400 tracking-widest mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-location-crosshairs text-stone-500"></i> Ubicación
+                        </span>
+                        <span id="lblUbicacion" class="font-sans text-2xl md:text-3xl text-stone-100 font-semibold">--</span>
+                    </div>
+                </div>
+                
+                <!-- Estantería (Destacado en bloque inferior dorado) -->
+                <div class="bg-sand text-stone-900 p-8 text-center border-t border-stone-800">
+                    <span class="font-mono text-[12px] font-bold uppercase tracking-widest block mb-2 flex justify-center items-center gap-2">
+                        <i class="fa-solid fa-books"></i> NÚMERO DE ESTANTERÍA
+                    </span>
+                    <span id="lblEstanteria" class="font-sans text-5xl md:text-6xl font-extrabold block tracking-tight">
+                        --
+                    </span>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <script>
@@ -138,21 +134,16 @@
 
             const signaturaMostrar = orig || sig;
 
-            if (signaturaMostrar || titulo) {
-                const infoLibro = document.getElementById('infoLibro');
-                if (infoLibro) {
-                    infoLibro.classList.remove('hidden');
-                    document.getElementById('headerSignatura').textContent = signaturaMostrar ? `Signatura: ${signaturaMostrar}` : '';
-                    document.getElementById('headerTitulo').textContent = titulo || '';
-                }
-            }
-
-            document.getElementById('lblPlanta').textContent = planta || 'PLANTA 1';
-            document.getElementById('lblSala').textContent = sala || 'Sala de la derecha';
-            document.getElementById('lblUbicacion').textContent = ubicacion || 'Estanterías de la izquierda';
-            document.getElementById('lblEstanteria').textContent = estanteria || 'Estantería 19';
+            document.getElementById('headerTitulo').textContent = titulo || 'Libro sin título especificado';
+            document.getElementById('headerSignatura').textContent = signaturaMostrar || 'S/S';
+            
+            document.getElementById('lblPlanta').textContent = planta || '--';
+            document.getElementById('lblSala').textContent = sala || '--';
+            document.getElementById('lblUbicacion').textContent = ubicacion || '--';
+            document.getElementById('lblEstanteria').textContent = estanteria || '--';
         }
 
+        // Función para cerrar que se comunica con el contenedor Iframe padre
         function cerrarUbicacion() {
             if (window.parent && typeof window.parent.cerrarModalLocalizador === 'function') {
                 window.parent.cerrarModalLocalizador();
