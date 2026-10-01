@@ -35,12 +35,12 @@
     // Definimos la signatura tal y como se hizo clic para mostrarla en el aviso
     const signaturaClicada = sigOriginal || sigBuscada || 'Desconocida';
 
-    // Verificamos si la signatura NO empieza por "HG" (ignorando mayúsculas/minúsculas y espacios extra)
+    // REGLA: ÚNICAMENTE los libros que empiezan por "HG" están en las salas.
+    // Si la signatura NO empieza por "HG", mostramos directamente el aviso personal de que no están en sala.
     if (!sigBuscada || !sigBuscada.trim().toUpperCase().startsWith('HG')) {
-        // Si no empieza por HG, mostramos directamente el aviso personal
         mostrarAvisoPersonal({ signaturas: signaturaClicada });
     } else {
-        // Si empieza por HG, procedemos con la búsqueda en el JSON principal
+        // Si SÍ empieza por HG, procedemos con la búsqueda en el JSON principal
         fetch('signaturas.json')
             .then(response => {
                 if (!response.ok) throw new Error("No se pudo cargar el archivo de datos");
@@ -80,14 +80,14 @@
 
                         window.location.href = (datos.html || 'ubicacion.html') + "?" + paramsUrl.toString();
                     } else {
-                        // Si empieza por HG pero no se encuentra en el JSON, mostramos el aviso personal
+                        // Si empieza por HG pero no se encuentra en el JSON, mostramos también el aviso
                         mostrarAvisoPersonal({ signaturas: signaturaClicada });
                     }
                 }, 600);
             })
             .catch(error => {
                 console.error("Error:", error);
-                // Si hay un error de red o al cargar el JSON, se garantiza que no haya "mostrarError"
+                // Si hay un error de red o al cargar el JSON, mostramos el aviso preventivo
                 mostrarAvisoPersonal({ signaturas: signaturaClicada });
             });
     }
