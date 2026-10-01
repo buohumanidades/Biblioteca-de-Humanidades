@@ -5,7 +5,7 @@
         "sala": "Sala de la derecha",
         "ubicacion": "Estanterías de la izquierda",
         "estanteria": "Estantería 15"
-	"mapa": "donde.jpg",
+	    "mapa": "donde.jpg",
         "pos_x": "45", 
         "pos_y": "60",
         "tam_punto": "24"
@@ -44,6 +44,10 @@
         "sala": "Sala de la derecha",
         "ubicacion": "Estanterías de la izquierda",
         "estanteria": "Estantería 14 (Asturias)"
+		"mapa": "donde.jpg",
+        "pos_x": "45", 
+        "pos_y": "60",
+        "tam_punto": "24"
     },
     "HG007": {
         "html": "Encontrado.html",
