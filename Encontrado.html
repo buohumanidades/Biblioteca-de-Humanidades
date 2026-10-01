@@ -61,7 +61,7 @@
 
     <!-- CABECERA: SIGNATURA Y TÍTULO -->
     <header class="bg-white/90 backdrop-blur-md grid-line-b shrink-0 z-10 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col w-full">
+        <div class="max-w-[1600px] mx-auto px-4 py-3 flex flex-col w-full">
             <span id="header-signatura" class="text-base font-mono font-bold tracking-widest text-stone-900 uppercase truncate" title="Signatura">
                 CARGANDO...
             </span>
@@ -72,49 +72,49 @@
     </header>
 
     <!-- CONTENIDO PRINCIPAL (Flex Layout Horizontal en MD+) -->
-    <main class="flex-1 flex flex-col lg:flex-row items-center justify-center max-w-7xl mx-auto w-full px-4 py-4 gap-6 overflow-hidden">
+    <main class="flex-1 flex flex-col lg:flex-row items-center justify-center max-w-[1600px] mx-auto w-full px-4 py-4 gap-4 overflow-hidden">
         
-        <!-- COLUMNA IZQ: TARJETA DE TEXTO -->
-        <div class="w-full lg:w-5/12 flex flex-col shadow-2xl rounded-sm border-l-4 border-sand bg-stone-900 shrink-0">
+        <!-- COLUMNA IZQ: TARJETA DE TEXTO (Aproximadamente 25%-33% ancho en PC) -->
+        <div class="w-full lg:w-1/3 xl:w-1/4 flex flex-col shadow-xl rounded-sm border-l-4 border-sand bg-stone-900 shrink-0">
             
             <!-- ZONA SUPERIOR OSCURA -->
-            <div class="p-6 md:p-8 flex flex-col gap-6 text-stone-100">
+            <div class="p-4 md:p-5 flex flex-col gap-4 text-stone-100">
                 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-3">
                     <!-- PLANTA -->
                     <div class="flex flex-col border-b border-stone-700 pb-2">
                         <span class="text-[10px] md:text-xs font-mono text-stone-400 uppercase tracking-widest mb-1">Piso</span>
-                        <span id="txt-planta" class="font-serif text-xl md:text-3xl text-white">--</span>
+                        <span id="txt-planta" class="font-serif text-lg md:text-2xl text-white">--</span>
                     </div>
 
                     <!-- SALA -->
                     <div class="flex flex-col border-b border-stone-700 pb-2">
                         <span class="text-[10px] md:text-xs font-mono text-stone-400 uppercase tracking-widest mb-1">Zona</span>
-                        <span id="txt-sala" class="font-serif text-xl md:text-3xl text-white">--</span>
+                        <span id="txt-sala" class="font-serif text-lg md:text-2xl text-white">--</span>
                     </div>
                 </div>
 
                 <!-- UBICACIÓN (Sector) -->
                 <div class="flex flex-col">
                     <span class="text-[10px] md:text-xs font-mono text-stone-400 uppercase tracking-widest mb-1">Sector</span>
-                    <span id="txt-ubicacion" class="font-serif text-2xl md:text-4xl text-white break-words leading-tight">--</span>
+                    <span id="txt-ubicacion" class="font-serif text-xl md:text-3xl text-white break-words leading-tight">--</span>
                 </div>
             </div>
 
             <!-- ZONA INFERIOR DORADA (Destino Exacto) -->
-            <div class="bg-sand p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mt-auto">
-                <div class="flex flex-col gap-2">
-                    <span class="text-xs font-mono uppercase tracking-widest font-bold opacity-80 text-stone-900">DESTINO EXACTO</span>
-                    <div id="display-signatura" class="bg-stone-900 text-sand text-[11px] font-mono font-bold px-2 py-1 rounded-sm w-max hidden"></div>
+            <div class="bg-sand p-4 md:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mt-auto">
+                <div class="flex flex-col gap-1.5">
+                    <span class="text-[10px] md:text-xs font-mono uppercase tracking-widest font-bold opacity-80 text-stone-900">DESTINO EXACTO</span>
+                    <div id="display-signatura" class="bg-stone-900 text-sand text-[10px] font-mono font-bold px-2 py-1 rounded-sm w-max hidden"></div>
                 </div>
                 <div class="text-left md:text-right">
-                    <span id="txt-estanteria" class="font-serif text-3xl md:text-5xl font-bold text-stone-900 leading-none">--</span>
+                    <span id="txt-estanteria" class="font-serif text-2xl md:text-4xl font-bold text-stone-900 leading-none">--</span>
                 </div>
             </div>
         </div>
 
-        <!-- COLUMNA DER: MAPA -->
-        <div id="contenedor-mapa" class="w-full lg:w-7/12 h-full min-h-[300px] lg:min-h-0 relative rounded-sm shadow-xl bg-white border border-stone-200 hidden flex items-center justify-center p-2 overflow-hidden">
+        <!-- COLUMNA DER: MAPA (Aproximadamente 66%-75% ancho en PC) -->
+        <div id="contenedor-mapa" class="w-full lg:w-2/3 xl:w-3/4 h-full min-h-[350px] lg:min-h-0 relative rounded-sm shadow-xl bg-white border border-stone-200 hidden flex items-center justify-center p-2 overflow-hidden">
             <div class="relative w-full h-full flex justify-center items-center">
                  <!-- max-h-full y object-contain aseguran que la imagen encaje sin requerir scroll -->
                 <img id="img-mapa" src="" alt="Plano de ubicación" class="max-w-full max-h-full object-contain block">
