@@ -39,6 +39,22 @@
         }
         .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 0.95; }
         .grid-line-b { border-bottom: 1px solid rgba(26, 24, 23, 0.12); }
+
+        /* Estilo y animación para el punto rojo parpadeante */
+        @keyframes parpadeo {
+            0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.3; transform: translate(-50%, -50%) scale(1.3); }
+        }
+        .punto-rojo {
+            position: absolute;
+            background-color: #ef4444;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.85);
+            animation: parpadeo 1.5s ease-in-out infinite;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-stone-800 selection:text-stone-50 bg-[#FAF8F5]">
@@ -50,7 +66,6 @@
                 <span id="header-signatura" class="block text-base md:text-lg font-mono font-bold tracking-widest text-stone-900 uppercase truncate" title="Signatura">
                     CARGANDO...
                 </span>
-                <!-- Título más destacado: mayor tamaño (text-sm a text-base) y negrita (font-semibold) -->
                 <span id="header-titulo" class="text-sm md:text-base text-stone-700 font-sans font-semibold block mt-1 truncate" title="Título del Libro">
                     Cargando título...
                 </span>
@@ -58,14 +73,13 @@
         </div>
     </header>
 
-    <!-- CONTENIDO PRINCIPAL: UBICACIÓN CENTRADA -->
-    <main class="flex-1 flex flex-col justify-center items-center max-w-5xl mx-auto w-full px-4 md:px-8 py-6 overflow-hidden">
+    <!-- CONTENIDO PRINCIPAL: UBICACIÓN Y PLANO -->
+    <main class="flex-1 flex flex-col items-center max-w-5xl mx-auto w-full px-4 md:px-8 py-6 overflow-y-auto">
         
-        <!-- TARJETA PRINCIPAL (Ahora con flex-col para poner el recuadro dorado debajo) -->
+        <!-- TARJETA PRINCIPAL -->
         <div class="shadow-2xl shrink-0 rounded-sm w-full flex flex-col border-l-4 border-sand overflow-hidden">
             
             <!-- ZONA SUPERIOR OSCURA (Piso, Zona, Sector) -->
-            <!-- Al no estar el recuadro dorado a la derecha, el sector tiene todo el espacio para no cortarse -->
             <div class="bg-stone-900 text-stone-100 p-6 md:p-8 lg:p-10 flex flex-col md:flex-row gap-6 md:gap-8 items-start md:items-center w-full">
                 
                 <!-- PLANTA -->
@@ -90,7 +104,6 @@
                 <i class="fa-solid fa-chevron-down text-stone-700 text-xl md:hidden shrink-0 -my-2 ml-4"></i>
 
                 <!-- UBICACIÓN (Sector) -->
-                <!-- flex-1 asegura que tome todo el espacio horizontal restante -->
                 <div class="flex flex-col flex-1 min-w-0">
                     <span class="text-[11px] font-mono text-stone-500 uppercase tracking-widest mb-1">Sector</span>
                     <span id="txt-ubicacion" class="font-serif text-2xl md:text-3xl lg:text-4xl break-words leading-tight">--</span>
@@ -98,7 +111,6 @@
             </div>
 
             <!-- ZONA INFERIOR DORADA (Destino Exacto) -->
-            <!-- Colocada en la parte inferior para darle una jerarquía visual profesional -->
             <div class="bg-sand text-stone-900 p-6 md:px-10 md:py-8 flex flex-col md:flex-row md:items-center justify-between w-full gap-4">
                 
                 <div class="flex flex-col gap-3">
@@ -114,9 +126,15 @@
 
         </div>
 
+        <!-- ZONA DEL MAPA DE UBICACIÓN -->
+        <div id="contenedor-mapa" class="w-full mt-6 relative rounded-sm shadow-xl overflow-hidden hidden bg-white border border-stone-200 shrink-0">
+            <img id="img-mapa" src="" alt="Plano de ubicación de la estantería" class="w-full h-auto block">
+            <div id="indicador-posicion" class="punto-rojo hidden"></div>
+        </div>
+
     </main>
 
-    <!-- LÓGICA DE DATOS Y BOTONES -->
+    <!-- LÓGICA DE DATOS Y RENDERIZADO DEL PLANO -->
     <script>
         // Extraer los datos de la URL
         const params = new URLSearchParams(window.location.search);
@@ -128,6 +146,12 @@
         const valUbicacion = params.get('ubicacion');
         const valEstanteria = params.get('estanteria');
         const valTitulo = params.get('titulo') || 'Sin título especificado';
+
+        // Captura de datos del plano
+        const valMapa = params.get('mapa');
+        const valPosX = params.get('pos_x');
+        const valPosY = params.get('pos_y');
+        const valTamPunto = params.get('tam_punto');
 
         // Insertar datos en la cabecera
         document.getElementById('header-signatura').textContent = sigOriginal || 'S/S';
@@ -143,6 +167,26 @@
             const badge = document.getElementById('display-signatura');
             badge.textContent = sigBuscada;
             badge.style.display = 'inline-block';
+        }
+
+        // Cargar plano e indicador si existen en los parámetros
+        if (valMapa) {
+            const contenedorMapa = document.getElementById('contenedor-mapa');
+            const imgMapa = document.getElementById('img-mapa');
+            const indicador = document.getElementById('indicador-posicion');
+
+            contenedorMapa.classList.remove('hidden');
+            imgMapa.src = valMapa;
+
+            if (valPosX !== null && valPosY !== null && valPosX !== '' && valPosY !== '') {
+                indicador.classList.remove('hidden');
+                indicador.style.left = valPosX + '%';
+                indicador.style.top = valPosY + '%';
+                
+                const tamano = valTamPunto ? valTamPunto + 'px' : '20px';
+                indicador.style.width = tamano;
+                indicador.style.height = tamano;
+            }
         }
     </script>
 

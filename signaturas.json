@@ -5,6 +5,10 @@
         "sala": "Sala de la derecha",
         "ubicacion": "Estanterías de la izquierda",
         "estanteria": "Estantería 15"
+	"mapa": "donde.jpg",
+        "pos_x": "45", 
+        "pos_y": "60",
+        "tam_punto": "24"
     },
     "HG001/03": {
         "html": "Encontrado.html",
