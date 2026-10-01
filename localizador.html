@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procesando Signatura...</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f7; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: #2c3e50; }
+        .loader-container { text-align: center; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); max-width: 400px; width: 90%; }
+        .spinner { border: 5px solid #ecf0f1; border-top: 5px solid #2980b9; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        h2 { font-family: 'Romana Moderna', Georgia, serif; color: #1a252f; margin-bottom: 10px; font-size: 1.5em; }
+        p { color: #7f8c8d; font-size: 0.95em; line-height: 1.4; }
+        .icono-aviso { font-size: 3em; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="loader-container" id="contenedor-principal">
+        <div class="spinner"></div>
+        <h2>Buscando ubicación...</h2>
+        <p>Comprobando la signatura en la base de datos de la biblioteca.</p>
+    </div>
+
+    <script>
+    const params = new URLSearchParams(window.location.search);
+    let sigBuscada = params.get('sig');
+    const sigOriginal = params.get('orig'); 
+    // CAPTURA DEL TÍTULO
+    const valTitulo = params.get('titulo'); 
+
+    if (sigBuscada) {
+        sigBuscada = sigBuscada.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+(?=\d+=)/gi, "/");
+    }
+
+    // Definimos la signatura tal y como se hizo clic para mostrarla en el aviso
+    const signaturaClicada = sigOriginal || sigBuscada || 'Desconocida';
+
+    // Verificamos si la signatura NO empieza por "HG" (ignorando mayúsculas/minúsculas y espacios extra)
+    if (!sigBuscada || !sigBuscada.trim().toUpperCase().startsWith('HG')) {
+        // Si no empieza por HG, mostramos directamente el aviso personal
+        mostrarAvisoPersonal({ signaturas: signaturaClicada });
+    } else {
+        // Si empieza por HG, procedemos con la búsqueda en el JSON principal
+        fetch('signaturas.json')
+            .then(response => {
+                if (!response.ok) throw new Error("No se pudo cargar el archivo de datos");
+                return response.json(); 
+            })
+            .then(baseDatos => {
+                setTimeout(() => {
+                    const sigBuscadaLower = sigBuscada.toLowerCase();
+                    let datos = null;
+
+                    if (Array.isArray(baseDatos)) {
+                        // Búsqueda insensible a mayúsculas/minúsculas si baseDatos es un Array
+                        datos = baseDatos.find(item => item.signaturas && item.signaturas.toLowerCase() === sigBuscadaLower);
+                    } else if (baseDatos && typeof baseDatos === 'object') {
+                        // Búsqueda insensible a mayúsculas/minúsculas si baseDatos es un Objeto clave-valor
+                        const claveEncontrada = Object.keys(baseDatos).find(key => key.toLowerCase() === sigBuscadaLower);
+                        if (claveEncontrada) {
+                            datos = baseDatos[claveEncontrada];
+                        }
+                    }
+
+                    if (datos) {
+                        // REENVÍO DEL TÍTULO Y PROPIEDADES A LA URL FINAL
+                        const paramsUrl = new URLSearchParams({
+                            sig: sigBuscada,
+                            orig: signaturaClicada,
+                            planta: datos.planta || '',
+                            sala: datos.sala || '',
+                            ubicacion: datos.ubicacion || '',
+                            estanteria: datos.estanteria || '',
+                            titulo: valTitulo || 'Sin título especificado'
+                        });
+
+                        window.location.href = (datos.html || 'ubicacion.html') + "?" + paramsUrl.toString();
+                    } else {
+                        // Si empieza por HG pero no se encuentra en el JSON, mostramos el aviso personal
+                        mostrarAvisoPersonal({ signaturas: signaturaClicada });
+                    }
+                }, 600);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                // Si hay un error de red o al cargar el JSON, se garantiza que no haya "mostrarError"
+                mostrarAvisoPersonal({ signaturas: signaturaClicada });
+            });
+    }
+
+    function mostrarAvisoPersonal(datos) {
+        const contenedor = document.getElementById('contenedor-principal');
+        const descripcionTexto = datos.descripcion ? ` ${datos.descripcion}` : '';
+        contenedor.innerHTML = `
+            <div class="icono-aviso">ℹ️</div>
+            <h2>Aviso de ubicación</h2>
+            <p>La signatura <strong>${datos.signaturas}</strong>${descripcionTexto}, no se encuentra en las SALAS. Acuda al personal de la biblioteca para solicitar el libro.</p>
+        `;
+    }
+    </script>
+</body>
+</html>
