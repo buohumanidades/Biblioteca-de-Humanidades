@@ -4,11 +4,7 @@
         "planta": "PLANTA 1",
         "sala": "Sala de la derecha",
         "ubicacion": "Estanterías de la izquierda",
-        "estanteria": "Estantería 15"
-	    "mapa": "donde.jpg",
-        "pos_x": "45", 
-        "pos_y": "60",
-        "tam_punto": "24"
+        "estanteria": "Estantería 15"	    
     },
     "HG001/03": {
         "html": "Encontrado.html",
@@ -43,11 +39,7 @@
         "planta": "PLANTA 1",
         "sala": "Sala de la derecha",
         "ubicacion": "Estanterías de la izquierda",
-        "estanteria": "Estantería 14 (Asturias)"
-		"mapa": "donde.jpg",
-        "pos_x": "45", 
-        "pos_y": "60",
-        "tam_punto": "24"
+        "estanteria": "Estantería 14 (Asturias)"		
     },
     "HG007": {
         "html": "Encontrado.html",
