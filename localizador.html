@@ -35,12 +35,12 @@
     // Definimos la signatura tal y como se hizo clic para mostrarla en el aviso
     const signaturaClicada = sigOriginal || sigBuscada || 'Desconocida';
 
-    // REGLA: ÚNICAMENTE los libros que empiezan por "HG" están en las salas.
-    // Si la signatura NO empieza por "HG", mostramos directamente el aviso personal de que no están en sala.
+    // Verificamos si la signatura NO empieza por "HG" (ignorando mayúsculas/minúsculas y espacios extra)
     if (!sigBuscada || !sigBuscada.trim().toUpperCase().startsWith('HG')) {
+        // Si no empieza por HG, mostramos directamente el aviso personal
         mostrarAvisoPersonal({ signaturas: signaturaClicada });
     } else {
-        // Si SÍ empieza por HG, procedemos con la búsqueda en el JSON principal
+        // Si empieza por HG, procedemos con la búsqueda en el JSON principal
         fetch('signaturas.json')
             .then(response => {
                 if (!response.ok) throw new Error("No se pudo cargar el archivo de datos");
@@ -63,7 +63,7 @@
                     }
 
                     if (datos) {
-                        // REENVÍO DEL TÍTULO, PROPIEDADES Y DATOS DEL PLANO A LA URL FINAL
+                        // REENVÍO DEL TÍTULO Y PROPIEDADES A LA URL FINAL
                         const paramsUrl = new URLSearchParams({
                             sig: sigBuscada,
                             orig: signaturaClicada,
@@ -71,8 +71,8 @@
                             sala: datos.sala || '',
                             ubicacion: datos.ubicacion || '',
                             estanteria: datos.estanteria || '',
-                            titulo: valTitulo || 'Sin título especificado',
-                            mapa: datos.mapa || '',
+                            titulo: valTitulo || 'Sin título especificado'                       
+			    mapa: datos.mapa || '',
                             pos_x: datos.pos_x || '',
                             pos_y: datos.pos_y || '',
                             tam_punto: datos.tam_punto || '20'
@@ -80,14 +80,14 @@
 
                         window.location.href = (datos.html || 'ubicacion.html') + "?" + paramsUrl.toString();
                     } else {
-                        // Si empieza por HG pero no se encuentra en el JSON, mostramos también el aviso
+                        // Si empieza por HG pero no se encuentra en el JSON, mostramos el aviso personal
                         mostrarAvisoPersonal({ signaturas: signaturaClicada });
                     }
                 }, 600);
             })
             .catch(error => {
                 console.error("Error:", error);
-                // Si hay un error de red o al cargar el JSON, mostramos el aviso preventivo
+                // Si hay un error de red o al cargar el JSON, se garantiza que no haya "mostrarError"
                 mostrarAvisoPersonal({ signaturas: signaturaClicada });
             });
     }
