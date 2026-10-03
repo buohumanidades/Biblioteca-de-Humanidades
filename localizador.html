@@ -32,7 +32,6 @@
     }
 
     const signaturaClicada = sigOriginal || sigBuscada || 'Desconocida';
-
     alert("Signatura buscada: " + sigBuscada + "\nSignatura original: " + sigOriginal);
 
     if (!sigBuscada || !sigBuscada.trim().toUpperCase().startsWith('HG')) {
@@ -99,11 +98,12 @@
                         break;
                     } else {
                         // Usamos localeCompare para garantizar una comparación alfabética estricta y segura
-                        let esMayorOIgual = sigBuscadaUpper.localeCompare(inicio, 'es') >= 0;
-                        let esMenorOIgual = sigBuscadaUpper.localeCompare(fin, 'es') <= 0;
+			let sigOriginalUpper = sigOriginal.trim().toUpperCase();
+                        let esMayorOIgual = sigOriginalUpper.localeCompare(inicio, 'es') >= 0;
+                        let esMenorOIgual = sigOriginalBuscadaUpper.localeCompare(fin, 'es') <= 0;
                         
                         // Si la signatura del límite superior es "HG860/COR", aceptamos también palabras que lo continúen (ej. "HG860/CORRE")
-                        let empiezaPorFin = sigBuscadaUpper.startsWith(fin);
+                        let empiezaPorFin = sigOriginal.startsWith(fin);
 
                         if (esMayorOIgual && (esMenorOIgual || empiezaPorFin)) {
                             datosEncontrados = item;
