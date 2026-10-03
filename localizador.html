@@ -49,8 +49,7 @@
         ])
         .then(([baseDatos, planosDatos]) => {
             setTimeout(() => {
-                // Limpiamos de espacios en blanco y pasamos a mayúsculas
-                let sigBuscadaUpper = sigBuscada.trim().toUpperCase();
+                let sigBuscadaUpper = sigBuscada.toUpperCase();
                 
                 let arrDatos = Array.isArray(baseDatos) ? baseDatos : 
                     Object.keys(baseDatos).map(k => {
@@ -63,7 +62,7 @@
 
                 // Buscamos candidatos por concordancia exacta o por prefijo válido
                 let candidatos = arrDatos.filter(item => {
-                    let sigItem = (item.signatura || item.signaturas || "").trim().toUpperCase();
+                    let sigItem = (item.signatura || item.signaturas || "").toUpperCase();
                     if (!sigItem) return false;
                     
                     if (sigBuscadaUpper === sigItem) return true;
@@ -79,31 +78,29 @@
 
                 // Ordenamos por longitud de mayor a menor para priorizar coincidencias más específicas
                 candidatos.sort((a, b) => {
-                    let lenA = (a.signatura || a.signaturas || "").trim().length;
-                    let lenB = (b.signatura || b.signaturas || "").trim().length;
+                    let lenA = (a.signatura || a.signaturas || "").length;
+                    let lenB = (b.signatura || b.signaturas || "").length;
                     return lenB - lenA;
                 });
 
                 let datosEncontrados = null;
 
-                // Iteramos los candidatos para aplicar la lógica de los campos inicio y fin
+                // Nueva lógica simplificada
                 for (let item of candidatos) {
-                    let inicio = (item.inicio || "").trim().toUpperCase();
-                    let fin = (item.fin || "").trim().toUpperCase();
+                    let inicio = (item.inicio || "").trim();
+                    let fin = (item.fin || "").trim();
 
                     if (inicio === "") {
-                        // Si "inicio" está vacío, la signatura se considera correcta de inmediato
+                        // Si inicio está vacío, este es el correcto
                         datosEncontrados = item;
                         break;
                     } else {
-                        // Usamos localeCompare para garantizar una comparación alfabética estricta y segura
-                        let esMayorOIgual = sigBuscadaUpper.localeCompare(inicio, 'es') >= 0;
-                        let esMenorOIgual = sigBuscadaUpper.localeCompare(fin, 'es') <= 0;
-                        
-                        // Si la signatura del límite superior es "HG860/COR", aceptamos también palabras que lo continúen (ej. "HG860/CORRE")
-                        let empiezaPorFin = sigBuscadaUpper.startsWith(fin);
+                        // Comparamos convirtiendo todo a minúsculas
+                        let sigBuscadaLower = sigBuscada.trim().toLowerCase();
+                        let inicioLower = inicio.toLowerCase();
+                        let finLower = fin.toLowerCase();
 
-                        if (esMayorOIgual && (esMenorOIgual || empiezaPorFin)) {
+                        if (sigBuscadaLower >= inicioLower && sigBuscadaLower <= finLower) {
                             datosEncontrados = item;
                             break;
                         }
@@ -125,31 +122,40 @@
                         titulo: valTitulo || 'Sin título especificado',
                         mapa: planoInfo.mapa || '',
                         pos_x: planoInfo.pos_x || '',
-                        pos_y: planoInfo.pos_y || '',
-                        tam_punto: planoInfo.tam_punto || '20'
-                    });
+                        pos_y: planoInfo.pos_y || '',Has explicado la lógica de forma perfecta y estructurada. Tienes toda la razón: es un algoritmo de búsqueda y filtrado de rangos muy clásico y directo. 
 
-                    window.location.href = (datosEncontrados.html || 'Encontrado.html') + "?" + paramsUrl.toString();
-                } else {
-                    mostrarAvisoPersonal({ signaturas: signaturaClicada });
-                }
-            }, 600);
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            mostrarAvisoPersonal({ signaturas: signaturaClicada });
-        });
-    }
+Para que veas cómo se traduce **exactamente tu explicación** a código, aquí tienes cómo quedaría implementado. Te lo muestro en **Python** y **JavaScript**, que son los lenguajes más habituales para leer archivos `.json`.
 
-    function mostrarAvisoPersonal(datos) {
-        const contenedor = document.getElementById('contenedor-principal');
-        const descripcionTexto = datos.descripcion ? ` ${datos.descripcion}` : '';
-        contenedor.innerHTML = `
-            <div class="icono-aviso">ℹ️</div>
-            <h2>Aviso de ubicación</h2>
-            <p>La signatura <strong>${datos.signaturas}</strong>${descripcionTexto}, no se encuentra en las SALAS. Acuda al personal de la biblioteca para solicitar el libro.</p>
-        `;
-    }
-    </script>
-</body>
-</html>
+### Opción 1: Python
+
+```python
+import json
+
+def buscar_signatura(signatura_libro, archivo_json):
+    # Pasamos la signatura del libro a minúsculas para ignorar mayúsculas/minúsculas
+    sig_libro = signatura_libro.lower()
+    
+    with open(archivo_json, 'r', encoding='utf-8') as f:
+        registros = json.load(f)
+        
+    for registro in registros:
+        # Extraemos los campos y los pasamos a minúsculas
+        sig_campo = registro.get("signatura", "").lower()
+        inicio = registro.get("inicio", "").lower()
+        fin = registro.get("fin", "").lower()
+        
+        # 1. Comprobamos que el campo signatura base coincide (ej. HG860)
+        if sig_campo in sig_libro:
+            
+            # 2. Si inicio está en blanco, este es el registro correcto
+            if inicio == "":
+                return registro
+            
+            # 3. Si inicio NO está en blanco, comparamos si es menor o igual
+            if inicio <= sig_libro:
+                
+                # 4. Comparamos si el fin es mayor o igual
+                if fin >= sig_libro:
+                    return registro 
+                    
+    # Si termina el bucle y no encuentra nada, continúa (devuelve None)
