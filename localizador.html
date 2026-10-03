@@ -49,8 +49,8 @@
         ])
         .then(([baseDatos, planosDatos]) => {
             setTimeout(() => {
-                // Pasamos la signatura buscada a mayúsculas para asegurar que no importen las mayúsculas/minúsculas
-                let sigBuscadaUpper = sigBuscada.toUpperCase();
+                // Limpiamos de espacios en blanco y pasamos a mayúsculas
+                let sigBuscadaUpper = sigBuscada.trim().toUpperCase();
                 
                 let arrDatos = Array.isArray(baseDatos) ? baseDatos : 
                     Object.keys(baseDatos).map(k => {
@@ -63,7 +63,7 @@
 
                 // Buscamos candidatos por concordancia exacta o por prefijo válido
                 let candidatos = arrDatos.filter(item => {
-                    let sigItem = (item.signatura || item.signaturas || "").toUpperCase();
+                    let sigItem = (item.signatura || item.signaturas || "").trim().toUpperCase();
                     if (!sigItem) return false;
                     
                     if (sigBuscadaUpper === sigItem) return true;
@@ -79,8 +79,8 @@
 
                 // Ordenamos por longitud de mayor a menor para priorizar coincidencias más específicas
                 candidatos.sort((a, b) => {
-                    let lenA = (a.signatura || a.signaturas || "").length;
-                    let lenB = (b.signatura || b.signaturas || "").length;
+                    let lenA = (a.signatura || a.signaturas || "").trim().length;
+                    let lenB = (b.signatura || b.signaturas || "").trim().length;
                     return lenB - lenA;
                 });
 
@@ -96,8 +96,14 @@
                         datosEncontrados = item;
                         break;
                     } else {
-                        // Comparamos el valor del campo inicio y fin con la signatura del libro sin añadirles nada
-                        if (sigBuscadaUpper >= inicio && sigBuscadaUpper <= fin) {
+                        // Usamos localeCompare para garantizar una comparación alfabética estricta y segura
+                        let esMayorOIgual = sigBuscadaUpper.localeCompare(inicio, 'es') >= 0;
+                        let esMenorOIgual = sigBuscadaUpper.localeCompare(fin, 'es') <= 0;
+                        
+                        // Si la signatura del límite superior es "HG860/COR", aceptamos también palabras que lo continúen (ej. "HG860/CORRE")
+                        let empiezaPorFin = sigBuscadaUpper.startsWith(fin);
+
+                        if (esMayorOIgual && (esMenorOIgual || empiezaPorFin)) {
                             datosEncontrados = item;
                             break;
                         }
