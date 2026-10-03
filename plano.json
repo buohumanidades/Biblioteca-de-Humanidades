@@ -86,9 +86,9 @@
     {
         "pos_plano": "13",
         "mapa": "donde.jpg",
-        "pos_x": "45",
+        "pos_x": "50",
         "pos_y": "60",
-        "tam_punto": "24"
+        "tam_punto": "20"
     },
     {
         "pos_plano": "14",
