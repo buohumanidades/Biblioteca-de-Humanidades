@@ -126,7 +126,7 @@
         "planta": "PLANTA 2",
         "sala": "Sala de la derecha",
         "ubicacion": "Estanterías de la derecha",
-        "estanteria": "Estantería 2, 3, 4 y 5",
+        "estanteria": "Estantería 4",
         "inicio": "HG860/A",
         "fin": "HG860/COR",
         "zona": "4"
@@ -137,7 +137,7 @@
         "planta": "PLANTA 2",
         "sala": "Sala de la derecha",
         "ubicacion": "Estanterías de la derecha",
-        "estanteria": "Estantería 2, 3, 4 y 5",
+        "estanteria": "Estantería 3",
         "inicio": "HG860/CORR",
         "fin": "HG860/PLAN",
         "zona": "3"
@@ -148,7 +148,7 @@
         "planta": "PLANTA 2",
         "sala": "Sala de la derecha",
         "ubicacion": "Estanterías de la derecha",
-        "estanteria": "Estantería 2, 3, 4 y 5",
+        "estanteria": "Estantería 2",
         "inicio": "HG860/POEM",
         "fin": "HG860/ZZZZ",
         "zona": "2"
