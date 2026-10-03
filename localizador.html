@@ -90,18 +90,14 @@
                 for (let item of candidatos) {
                     let inicio = (item.inicio || "").trim().toUpperCase();
                     let fin = (item.fin || "").trim().toUpperCase();
-                    let sigItem = (item.signatura || item.signaturas || "").toUpperCase();
 
                     if (inicio === "") {
                         // Si "inicio" está vacío, la signatura se considera correcta de inmediato
                         datosEncontrados = item;
                         break;
                     } else {
-                        // Si tiene rango, construimos los límites y comprobamos ignorando mayúsculas/minúsculas
-                        let limiteInicio = sigItem + "/" + inicio;
-                        let limiteFin = sigItem + "/" + fin;
-                        
-                        if (sigBuscadaUpper >= limiteInicio && sigBuscadaUpper <= limiteFin) {
+                        // Comparamos el valor del campo inicio y fin con la signatura del libro sin añadirles nada
+                        if (sigBuscadaUpper >= inicio && sigBuscadaUpper <= fin) {
                             datosEncontrados = item;
                             break;
                         }
