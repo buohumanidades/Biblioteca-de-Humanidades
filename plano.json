@@ -2,22 +2,22 @@
     {
         "pos_plano": "1",
         "mapa": "donde.jpg",
-        "pos_x": "45",
-        "pos_y": "60",
+        "pos_x": "73",
+        "pos_y": "95",
         "tam_punto": "24"
     },
     {
         "pos_plano": "2",
         "mapa": "donde.jpg",
-        "pos_x": "45",
-        "pos_y": "60",
+        "pos_x": "80",
+        "pos_y": "86",
         "tam_punto": "24"
     },
     {
         "pos_plano": "3",
         "mapa": "donde.jpg",
-        "pos_x": "45",
-        "pos_y": "58",
+        "pos_x": "86",
+        "pos_y": "79",
         "tam_punto": "24"
     },
     {
