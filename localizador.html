@@ -36,7 +36,7 @@
     if (!sigBuscada || !sigBuscada.trim().toUpperCase().startsWith('HG')) {
         mostrarAvisoPersonal({ signaturas: signaturaClicada });
     } else {
-        // Ejecutamos ambas peticiones al mismo tiempo
+        // Cargamos simultáneamente signaturas.json y plano.json
         Promise.all([
             fetch('signaturas.json').then(res => {
                 if (!res.ok) throw new Error("Error cargando signaturas.json");
@@ -49,9 +49,9 @@
         ])
         .then(([baseDatos, planosDatos]) => {
             setTimeout(() => {
+                // Pasamos la signatura buscada a mayúsculas para asegurar que no importen las mayúsculas/minúsculas
                 let sigBuscadaUpper = sigBuscada.toUpperCase();
                 
-                // Normalizamos los datos de signaturas a un Array
                 let arrDatos = Array.isArray(baseDatos) ? baseDatos : 
                     Object.keys(baseDatos).map(k => {
                         let v = baseDatos[k];
@@ -59,17 +59,15 @@
                         return v;
                     });
 
-                // Normalizamos los datos de planos a un Array
                 let arrPlanos = Array.isArray(planosDatos) ? planosDatos : Object.values(planosDatos);
 
-                // 1. Encontrar todos los candidatos que coincidan de forma exacta o como prefijo
+                // Buscamos candidatos por concordancia exacta o por prefijo válido
                 let candidatos = arrDatos.filter(item => {
                     let sigItem = (item.signatura || item.signaturas || "").toUpperCase();
                     if (!sigItem) return false;
                     
                     if (sigBuscadaUpper === sigItem) return true;
                     if (sigBuscadaUpper.startsWith(sigItem)) {
-                        // Evitar que HG8 se considere prefijo de HG860 validando que el siguiente caracter no sea número si el prefijo termina en número
                         let nextChar = sigBuscadaUpper.charAt(sigItem.length);
                         if (/[0-9]/.test(nextChar) && /[0-9]/.test(sigItem.slice(-1))) {
                             return false; 
@@ -79,7 +77,7 @@
                     return false;
                 });
 
-                // 2. Ordenar por longitud descendente (priorizar siempre las coincidencias más largas y exactas primero)
+                // Ordenamos por longitud de mayor a menor para priorizar coincidencias más específicas
                 candidatos.sort((a, b) => {
                     let lenA = (a.signatura || a.signaturas || "").length;
                     let lenB = (b.signatura || b.signaturas || "").length;
@@ -88,22 +86,21 @@
 
                 let datosEncontrados = null;
 
-                // 3. Evaluar reglas de inicio y fin iterando candidatos hasta encontrar el correcto
+                // Iteramos los candidatos para aplicar la lógica de los campos inicio y fin
                 for (let item of candidatos) {
                     let inicio = (item.inicio || "").trim().toUpperCase();
                     let fin = (item.fin || "").trim().toUpperCase();
                     let sigItem = (item.signatura || item.signaturas || "").toUpperCase();
 
                     if (inicio === "") {
-                        // Si está vacío se considera correcta inmediatamente
+                        // Si "inicio" está vacío, la signatura se considera correcta de inmediato
                         datosEncontrados = item;
                         break;
                     } else {
-                        // Construir límites lógicos agregando la barra (ej: HG860/A y HG860/COR)
+                        // Si tiene rango, construimos los límites y comprobamos ignorando mayúsculas/minúsculas
                         let limiteInicio = sigItem + "/" + inicio;
                         let limiteFin = sigItem + "/" + fin;
                         
-                        // Evaluar si la signatura que tiene el libro se encuentra en el rango
                         if (sigBuscadaUpper >= limiteInicio && sigBuscadaUpper <= limiteFin) {
                             datosEncontrados = item;
                             break;
@@ -112,7 +109,7 @@
                 }
 
                 if (datosEncontrados) {
-                    // 4. Buscar información extra del plano utilizando el campo zona
+                    // Si se encuentra, obtenemos la zona y buscamos sus coordenadas en plano.json
                     let zona = datosEncontrados.zona || "";
                     let planoInfo = arrPlanos.find(p => p.pos_plano == zona) || {};
 
