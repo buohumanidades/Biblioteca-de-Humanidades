@@ -32,7 +32,7 @@
     }
 
     const signaturaClicada = sigOriginal || sigBuscada || 'Desconocida';
-    alert("Signatura buscada: " + sigBuscada + "\nSignatura original: " + sigOriginal);
+   
 
     if (!sigBuscada || !sigBuscada.trim().toUpperCase().startsWith('HG')) {
         mostrarAvisoPersonal({ signaturas: signaturaClicada });
