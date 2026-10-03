@@ -100,7 +100,7 @@
                         // Usamos localeCompare para garantizar una comparación alfabética estricta y segura
 			let sigOriginalUpper = sigOriginal.trim().toUpperCase();
                         let esMayorOIgual = sigOriginalUpper.localeCompare(inicio, 'es') >= 0;
-                        let esMenorOIgual = sigOriginalBuscadaUpper.localeCompare(fin, 'es') <= 0;
+                        let esMenorOIgual = sigOriginalUpper.localeCompare(fin, 'es') <= 0;
                         
                         // Si la signatura del límite superior es "HG860/COR", aceptamos también palabras que lo continúen (ej. "HG860/CORRE")
                         let empiezaPorFin = sigOriginal.startsWith(fin);
