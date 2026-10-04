@@ -72,28 +72,28 @@
     {
         "pos_plano": "11",
         "mapa": "donde.jpg",
-        "pos_x": "48",
+        "pos_x": "55",
         "pos_y": "60",
         "tam_punto": "18"
     },
     {
         "pos_plano": "12",
         "mapa": "donde.jpg",
-        "pos_x": "48",
+        "pos_x": "55",
         "pos_y": "29",
         "tam_punto": "18"
     },
     {
         "pos_plano": "13",
         "mapa": "donde.jpg",
-        "pos_x": "45",
+        "pos_x": "48",
         "pos_y": "59",
         "tam_punto": "18"
     },
     {
         "pos_plano": "14",
         "mapa": "donde.jpg",
-        "pos_x": "45",
+        "pos_x": "48",
         "pos_y": "29",
         "tam_punto": "18"
     },
