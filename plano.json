@@ -30,120 +30,113 @@
     {
         "pos_plano": "5",
         "mapa": "donde.jpg",
-        "pos_x": "45",
+        "pos_x": "82",
         "pos_y": "60",
-        "tam_punto": "24"
+        "tam_punto": "18"
     },
     {
         "pos_plano": "6",
         "mapa": "donde.jpg",
-        "pos_x": "45",
-        "pos_y": "60",
-        "tam_punto": "24"
+        "pos_x": "82",
+        "pos_y": "46",
+        "tam_punto": "18"
     },
     {
         "pos_plano": "7",
         "mapa": "donde.jpg",
-        "pos_x": "45",
-        "pos_y": "60",
-        "tam_punto": "24"
+        "pos_x": "82",
+        "pos_y": "39",
+        "tam_punto": "18"
     },
     {
         "pos_plano": "8",
         "mapa": "donde.jpg",
-        "pos_x": "45",
-        "pos_y": "60",
-        "tam_punto": "24"
+        "pos_x": "82",
+        "pos_y": "25",
+        "tam_punto": "18"
     },
     {
         "pos_plano": "9",
         "mapa": "donde.jpg",
-        "pos_x": "45",
-        "pos_y": "60",
-        "tam_punto": "24"
+        "pos_x": "82",
+        "pos_y": "19",
+        "tam_punto": "18"
     },
     {
         "pos_plano": "10",
         "mapa": "donde.jpg",
-        "pos_x": "45",
-        "pos_y": "60",
-        "tam_punto": "24"
+        "pos_x": "82",
+        "pos_y": "5",
+        "tam_punto": "18"
     },
     {
         "pos_plano": "11",
         "mapa": "donde.jpg",
-        "pos_x": "45",
+        "pos_x": "48",
         "pos_y": "60",
-        "tam_punto": "24"
+        "tam_punto": "18"
     },
     {
         "pos_plano": "12",
         "mapa": "donde.jpg",
-        "pos_x": "45",
-        "pos_y": "60",
-        "tam_punto": "24"
+        "pos_x": "48",
+        "pos_y": "29",
+        "tam_punto": "18"
     },
     {
         "pos_plano": "13",
         "mapa": "donde.jpg",
-        "pos_x": "50",
-        "pos_y": "60",
-        "tam_punto": "20"
+        "pos_x": "45",
+        "pos_y": "59",
+        "tam_punto": "18"
     },
     {
         "pos_plano": "14",
         "mapa": "donde.jpg",
         "pos_x": "45",
-        "pos_y": "60",
-        "tam_punto": "24"
+        "pos_y": "29",
+        "tam_punto": "18"
     },
     {
         "pos_plano": "15",
         "mapa": "donde.jpg",
-        "pos_x": "45",
-        "pos_y": "60",
-        "tam_punto": "24"
+        "pos_x": "12",
+        "pos_y": "59",
+        "tam_punto": "18"
     },
     {
         "pos_plano": "16",
         "mapa": "donde.jpg",
-        "pos_x": "45",
-        "pos_y": "60",
-        "tam_punto": "24"
+        "pos_x": "12",
+        "pos_y": "46",
+        "tam_punto": "18"
     },
     {
         "pos_plano": "17",
         "mapa": "donde.jpg",
-        "pos_x": "45",
-        "pos_y": "60",
-        "tam_punto": "24"
+        "pos_x": "12",
+        "pos_y": "38",
+        "tam_punto": "18"
     },
     {
         "pos_plano": "18",
         "mapa": "donde.jpg",
-        "pos_x": "45",
-        "pos_y": "60",
-        "tam_punto": "24"
+        "pos_x": "12",
+        "pos_y": "27",
+        "tam_punto": "18"
     },
     {
         "pos_plano": "19",
         "mapa": "donde.jpg",
-        "pos_x": "45",
-        "pos_y": "60",
-        "tam_punto": "24"
+        "pos_x": "12",
+        "pos_y": "18",
+        "tam_punto": "18"
     },
     {
         "pos_plano": "20",
         "mapa": "donde.jpg",
-        "pos_x": "45",
-        "pos_y": "60",
-        "tam_punto": "24"
-    },
-    {
-        "pos_plano": "21",
-        "mapa": "donde.jpg",
-        "pos_x": "45",
-        "pos_y": "60",
-        "tam_punto": "24"
+        "pos_x": "12",
+        "pos_y": "5",
+        "tam_punto": "18"
     }
 ]
