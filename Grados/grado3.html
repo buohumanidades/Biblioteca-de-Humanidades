@@ -136,7 +136,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- MOTOR LÓGICO Y DE DATOS (Nivel Superior)   -->
+    <!-- MOTOR LÓGICO Y DE DATOS                    -->
     <!-- ========================================== -->
     <script>
         // Variables globales
@@ -357,7 +357,8 @@
                     const spanBib = document.createElement("button");
                     spanBib.className = "bg-stone-900 text-stone-100 px-4 py-2 font-mono text-xs uppercase tracking-widest hover:bg-sand hover:text-stone-900 transition-all";
                     spanBib.innerHTML = '<i class="fa-solid fa-book-open mr-2"></i>Textos';
-                    spanBib.onclick = function() { abrirModalBibliografia(nombreAsignatura, codigoGrado); };
+                    // Pasamos 'this' (el botón) para activar el indicador visual inmediato de búsqueda
+                    spanBib.onclick = function() { abrirModalBibliografia(nombreAsignatura, codigoGrado, this); };
                     tdBib.appendChild(spanBib);
 
                     tr.appendChild(tdAsig);
@@ -373,17 +374,31 @@
             }
         }
 
-        async function abrirModalBibliografia(nombreAsignatura, codigoGrado) {
+        async function abrirModalBibliografia(nombreAsignatura, codigoGrado, btnElement) {
+            // Feedback visual inmediato en el botón clicado
+            let textoOriginalBtn = "";
+            if (btnElement) {
+                textoOriginalBtn = btnElement.innerHTML;
+                btnElement.disabled = true;
+                btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Buscando...';
+            }
+
             const modal = document.getElementById("modalBibliografia");
             const tituloModal = document.getElementById("modalTitulo");
             const contenedorLista = document.getElementById("modalListaCuerpo");
             const modalContent = modal.querySelector('.modal-content');
 
             tituloModal.innerText = nombreAsignatura;
-            contenedorLista.innerHTML = '<div class="text-center py-16 text-stone-500 font-mono text-xs uppercase tracking-widest"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Explorando estanterías...</div>';
+            contenedorLista.innerHTML = '<div class="text-center py-16 text-stone-500 font-mono text-xs uppercase tracking-widest"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando bibliografía y comprobando estanterías...</div>';
             
             modal.classList.add('modal-active');
             modalContent.classList.add('modal-content-active');
+
+            // Restaurar el estado del botón una vez abierto el modal
+            if (btnElement) {
+                btnElement.disabled = false;
+                btnElement.innerHTML = textoOriginalBtn;
+            }
 
             try {
                 const data = await cargarDatos();
