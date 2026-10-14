@@ -220,7 +220,8 @@
             return Array.from(mapaEjemplares.values());
         }
 
-        function localizarLibroDirecto(signatura) {
+        // CORREGIDO: Ahora acepta el título y lo pasa por URL a localizador.html
+        function localizarLibroDirecto(signatura, titulo) {
             let sigOriginal = signatura.trim();
             if (!sigOriginal.startsWith("HG")) {
                 mostrarModalMensajes(`Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSignatura: ${sigOriginal}.\n\nTe ayudamos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.`);
@@ -234,7 +235,7 @@
                 ? (sig.substring(ultimoBarra + 1) === "4" ? "HG/4" : sig.substring(0, ultimoBarra)) 
                 : sig;
                 
-            window.open("../localizador.html?sig=" + encodeURIComponent(sigFinal) + "&orig=" + encodeURIComponent(sigOriginal), "_blank");
+            window.open("../localizador.html?sig=" + encodeURIComponent(sigFinal) + "&orig=" + encodeURIComponent(sigOriginal) + "&titulo=" + encodeURIComponent(titulo || ''), "_blank");
         }
 
         async function cargarDatos() {
@@ -357,7 +358,6 @@
                     const spanBib = document.createElement("button");
                     spanBib.className = "bg-stone-900 text-stone-100 px-4 py-2 font-mono text-xs uppercase tracking-widest hover:bg-sand hover:text-stone-900 transition-all";
                     spanBib.innerHTML = '<i class="fa-solid fa-book-open mr-2"></i>Textos';
-                    // Pasamos 'this' (el botón) para activar el indicador visual inmediato de búsqueda
                     spanBib.onclick = function() { abrirModalBibliografia(nombreAsignatura, codigoGrado, this); };
                     tdBib.appendChild(spanBib);
 
@@ -375,7 +375,6 @@
         }
 
         async function abrirModalBibliografia(nombreAsignatura, codigoGrado, btnElement) {
-            // Feedback visual inmediato en el botón clicado
             let textoOriginalBtn = "";
             if (btnElement) {
                 textoOriginalBtn = btnElement.innerHTML;
@@ -394,7 +393,6 @@
             modal.classList.add('modal-active');
             modalContent.classList.add('modal-content-active');
 
-            // Restaurar el estado del botón una vez abierto el modal
             if (btnElement) {
                 btnElement.disabled = false;
                 btnElement.innerHTML = textoOriginalBtn;
@@ -416,7 +414,6 @@
                 }
 
                 items.forEach(item => {
-                    // Contenedor tarjeta principal (Tailwind)
                     const divItem = document.createElement("div");
                     divItem.className = "bg-stone-50 p-6 md:p-8 border border-stone-200 shadow-sm hover:border-stone-400 transition-colors mb-4 rounded-sm";
 
@@ -431,13 +428,11 @@
                     let terminoBusqueda = autor ? (autor.trim() + ' "' + titulo.trim() + '"') : ('"' + titulo.trim() + '"');
                     let urlBusqueda = `https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH&xsqf01=${encodeURIComponent(terminoBusqueda)}`;
                     
-                    // Texto Bibliográfico
                     const titleDiv = document.createElement("div");
                     titleDiv.className = "font-serif text-lg text-stone-600 leading-relaxed mb-5";
                     titleDiv.innerHTML = textoCompleto;
                     divItem.appendChild(titleDiv);
 
-                    // Contenedor dinámico (Disponibilidad)
                     const dynamicContainer = document.createElement("div");
                     dynamicContainer.innerHTML = '<div class="text-stone-400 font-mono text-[10px] uppercase tracking-widest"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Comprobando sala...</div>';
                     divItem.appendChild(dynamicContainer);
@@ -457,8 +452,10 @@
                                     <div class="flex flex-wrap gap-2 mt-2">`;
                                             
                                 coincidencias.forEach(c => {
+                                    // CORREGIDO: Se pasa tanto c.signatura como c.titulo debidamente escapados
+                                    const tituloSeguro = (c.titulo || '').replace(/'/g, "\\'");
                                     html += `
-                                        <button class="inline-flex items-center bg-stone-900 text-sand px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider hover:bg-sand hover:text-stone-900 transition-colors" onclick="localizarLibroDirecto('${c.signatura}')" title="Haz clic para generar ruta">
+                                        <button class="inline-flex items-center bg-stone-900 text-sand px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider hover:bg-sand hover:text-stone-900 transition-colors" onclick="localizarLibroDirecto('${c.signatura}', '${tituloSeguro}')" title="Haz clic para generar ruta">
                                             <i class="fa-solid fa-location-dot mr-2"></i> ${c.signatura} 
                                             <span class="bg-stone-100 text-stone-900 px-1.5 py-0.5 ml-2 font-bold">${c.ejemplares}</span>
                                         </button>`;
