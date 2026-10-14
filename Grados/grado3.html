@@ -84,7 +84,7 @@
             <div class="bg-stone-200/50 p-6 border-l-2 border-sand max-w-sm w-full lg:w-auto">
                 <ul class="space-y-3 font-mono text-xs text-stone-700 leading-relaxed">
                     <li><i class="fa-solid fa-arrow-pointer text-sand mr-2"></i> Clic en <strong>ASIGNATURA</strong> para ver la Guía Docente.</li>
-                    <li><i class="fa-solid fa-book-open text-sand mr-2"></i> Clic en <strong>BIBLIOGRAFÍA</strong> para la disponibilidad.</li>
+                    <li><i class="fa-solid fa-book-open text-sand mr-2"></i> Clic en <strong>TEXTOS</strong> para bibliografía y disponibilidad.</li>
                 </ul>
             </div>
         </div>
@@ -136,7 +136,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- MOTOR LÓGICO Y DE DATOS (Mantenido Intacto)-->
+    <!-- MOTOR LÓGICO Y DE DATOS (Nivel Superior)   -->
     <!-- ========================================== -->
     <script>
         // Variables globales
@@ -148,11 +148,11 @@
         let promesaCargaLibros = null;
         let libroCount = 0;
 
-        // Detectar archivos libros_*.json
+        // Detectar archivos libros_*.json en el nivel superior (../)
         async function detectarArchivosLibros() {
             let count = 0;
             while (true) {
-                const filename = `libros_${count + 1}.json`;
+                const filename = `../libros_${count + 1}.json`;
                 try {
                     const response = await fetch(filename, { method: 'HEAD' });
                     if (response.ok) count++;
@@ -169,12 +169,12 @@
                 libroCount = await detectarArchivosLibros();
                 for (let i = 1; i <= libroCount; i++) {
                     try {
-                        const response = await fetch(`libros_${i}.json`);
+                        const response = await fetch(`../libros_${i}.json`);
                         if (response.ok) {
                             const data = await response.json();
                             librosTemp = librosTemp.concat(data);
                         }
-                    } catch (error) { console.error(`Error cargando libros_${i}.json:`, error); }
+                    } catch (error) { console.error(`Error cargando ../libros_${i}.json:`, error); }
                 }
                 return librosTemp;
             })();
@@ -239,8 +239,8 @@
 
         async function cargarDatos() {
             if (!datosGrado) {
-                const response = await fetch('grado3.json');
-                if (!response.ok) { throw new Error('No se pudo cargar el fichero grado3.json'); }
+                const response = await fetch('../grado3.json');
+                if (!response.ok) { throw new Error('No se pudo cargar el fichero ../grado3.json'); }
                 datosGrado = await response.json();
             }
             return datosGrado;
@@ -249,8 +249,8 @@
         async function cargarGuias() {
             if (!datosGuias) {
                 try {
-                    const response = await fetch('guiadocente.json');
-                    if (!response.ok) { throw new Error('No se pudo cargar el fichero guiadocente.json'); }
+                    const response = await fetch('../guiadocente.json');
+                    if (!response.ok) { throw new Error('No se pudo cargar el fichero ../guiadocente.json'); }
                     const jsonDatos = await response.json();
                     datosGuias = jsonDatos.map(item => ({ asignatura: item.Asignatura, url: item.url }));
                 } catch (error) {
