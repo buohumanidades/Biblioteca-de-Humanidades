@@ -148,11 +148,11 @@
         let promesaCargaLibros = null;
         let libroCount = 0;
 
-        // Detectar archivos libros_*.json en el nivel superior (../)
+        // Detectar archivos libros*.json en el nivel superior (../)
         async function detectarArchivosLibros() {
             let count = 0;
             while (true) {
-                const filename = `../libros_${count + 1}.json`;
+                const filename = `../libros${count + 1}.json`;
                 try {
                     const response = await fetch(filename, { method: 'HEAD' });
                     if (response.ok) count++;
@@ -169,12 +169,12 @@
                 libroCount = await detectarArchivosLibros();
                 for (let i = 1; i <= libroCount; i++) {
                     try {
-                        const response = await fetch(`../libros_${i}.json`);
+                        const response = await fetch(`../libros${i}.json`);
                         if (response.ok) {
                             const data = await response.json();
                             librosTemp = librosTemp.concat(data);
                         }
-                    } catch (error) { console.error(`Error cargando ../libros_${i}.json:`, error); }
+                    } catch (error) { console.error(`Error cargando ../libros${i}.json:`, error); }
                 }
                 return librosTemp;
             })();
