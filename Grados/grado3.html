@@ -239,8 +239,8 @@
 
         async function cargarDatos() {
             if (!datosGrado) {
-                const response = await fetch('../grado3.json');
-                if (!response.ok) { throw new Error('No se pudo cargar el fichero ../grado3.json'); }
+                const response = await fetch('grado3.json');
+                if (!response.ok) { throw new Error('No se pudo cargar el fichero grado3.json'); }
                 datosGrado = await response.json();
             }
             return datosGrado;
@@ -249,8 +249,8 @@
         async function cargarGuias() {
             if (!datosGuias) {
                 try {
-                    const response = await fetch('../guiadocente.json');
-                    if (!response.ok) { throw new Error('No se pudo cargar el fichero ../guiadocente.json'); }
+                    const response = await fetch('guiadocente.json');
+                    if (!response.ok) { throw new Error('No se pudo cargar el fichero guiadocente.json'); }
                     const jsonDatos = await response.json();
                     datosGuias = jsonDatos.map(item => ({ asignatura: item.Asignatura, url: item.url }));
                 } catch (error) {
