@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Procesando Signatura...</title>
+    <title>Procesando Búsqueda...</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f6f7; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: #2c3e50; }
         .loader-container { text-align: center; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); max-width: 400px; width: 90%; }
@@ -18,7 +18,7 @@
     <div class="loader-container" id="contenedor-principal">
         <div class="spinner"></div>
         <h2>Buscando ubicación...</h2>
-        <p>Comprobando la signatura en la base de datos de la biblioteca.</p>
+        <p>Comprobando los datos en la base de datos de la biblioteca.</p>
     </div>
 
     <script>
@@ -32,12 +32,9 @@
     }
 
     const signaturaClicada = sigOriginal || sigBuscada || 'Desconocida';
-   
 
-    if (!sigBuscada || !sigBuscada.trim().toUpperCase().startsWith('HG')) {
-        mostrarAvisoPersonal({ signaturas: signaturaClicada });
-    } else {
-        // Cargamos simultáneamente signaturas.json y plano.json
+    // CASO 1: Búsqueda por Título (si se proporciona 'titulo' y no hay 'sig')
+    if (!sigBuscada && valTitulo) {
         Promise.all([
             fetch('signaturas.json').then(res => {
                 if (!res.ok) throw new Error("Error cargando signaturas.json");
@@ -50,7 +47,82 @@
         ])
         .then(([baseDatos, planosDatos]) => {
             setTimeout(() => {
-                // Limpiamos de espacios en blanco y pasamos a mayúsculas
+                let tituloBusquedaUpper = valTitulo.trim().toUpperCase();
+                
+                let arrDatos = Array.isArray(baseDatos) ? baseDatos : 
+                    Object.keys(baseDatos).map(k => {
+                        let v = baseDatos[k];
+                        if (!v.signatura && !v.signaturas) v.signatura = k;
+                        return v;
+                    });
+
+                let arrPlanos = Array.isArray(planosDatos) ? planosDatos : Object.values(planosDatos);
+
+                // Filtrar candidatos por título (que contengan el texto buscado)
+                let candidatos = arrDatos.filter(item => {
+                    let tituloItem = (item.titulo || "").trim().toUpperCase();
+                    if (!tituloItem) return false;
+                    return tituloItem.includes(tituloBusquedaUpper);
+                });
+
+                // Ordenar: primero coincidencia exacta, después el resto
+                candidatos.sort((a, b) => {
+                    let tA = (a.titulo || "").trim().toUpperCase();
+                    let tB = (b.titulo || "").trim().toUpperCase();
+                    
+                    let esExactoA = (tA === tituloBusquedaUpper) ? 1 : 0;
+                    let esExactoB = (tB === tituloBusquedaUpper) ? 1 : 0;
+                    
+                    if (esExactoA !== esExactoB) {
+                        return esExactoB - esExactoA; // Los exactos van primero
+                    }
+                    return tA.localeCompare(tB, 'es'); // Orden alfabético secundario
+                });
+
+                if (candidatos.length > 0) {
+                    let datosEncontrados = candidatos[0]; // Tomamos el primer resultado optimizado
+                    let zona = datosEncontrados.zona || "";
+                    let planoInfo = arrPlanos.find(p => p.pos_plano == zona) || {};
+
+                    const paramsUrl = new URLSearchParams({
+                        sig: datosEncontrados.signatura || datosEncontrados.signaturas || '',
+                        orig: datosEncontrados.signatura || datosEncontrados.signaturas || '',
+                        planta: datosEncontrados.planta || '',
+                        sala: datosEncontrados.sala || '',
+                        ubicacion: datosEncontrados.ubicacion || '',
+                        estanteria: datosEncontrados.estanteria || '',
+                        titulo: datosEncontrados.titulo || valTitulo,
+                        mapa: planoInfo.mapa || '',
+                        pos_x: planoInfo.pos_x || '',
+                        pos_y: planoInfo.pos_y || '',
+                        tam_punto: planoInfo.tam_punto || '20'
+                    });
+
+                    window.location.href = (datosEncontrados.html || 'Encontrado.html') + "?" + paramsUrl.toString();
+                } else {
+                    mostrarAvisoPersonal({ signaturas: valTitulo, descripcion: `con título "${valTitulo}"` });
+                }
+            }, 600);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            mostrarAvisoPersonal({ signaturas: valTitulo });
+        });
+    } 
+    // CASO 2: Búsqueda por Signatura (Lógica original)
+    else if (sigBuscada && sigBuscada.trim().toUpperCase().startsWith('HG')) {
+        Promise.all([
+            fetch('signaturas.json').then(res => {
+                if (!res.ok) throw new Error("Error cargando signaturas.json");
+                return res.json();
+            }),
+            fetch('plano.json').then(res => {
+                if (!res.ok) throw new Error("Error cargando plano.json");
+                return res.json();
+            })
+        ])
+        .then(([baseDatos, planosDatos]) => {
+            setTimeout(() => {
                 let sigBuscadaUpper = sigBuscada.trim().toUpperCase();
                 
                 let arrDatos = Array.isArray(baseDatos) ? baseDatos : 
@@ -62,7 +134,6 @@
 
                 let arrPlanos = Array.isArray(planosDatos) ? planosDatos : Object.values(planosDatos);
 
-                // Buscamos candidatos por concordancia exacta o por prefijo válido
                 let candidatos = arrDatos.filter(item => {
                     let sigItem = (item.signatura || item.signaturas || "").trim().toUpperCase();
                     if (!sigItem) return false;
@@ -78,7 +149,6 @@
                     return false;
                 });
 
-                // Ordenamos por longitud de mayor a menor para priorizar coincidencias más específicas
                 candidatos.sort((a, b) => {
                     let lenA = (a.signatura || a.signaturas || "").trim().length;
                     let lenB = (b.signatura || b.signaturas || "").trim().length;
@@ -87,22 +157,17 @@
 
                 let datosEncontrados = null;
 
-                // Iteramos los candidatos para aplicar la lógica de los campos inicio y fin
                 for (let item of candidatos) {
                     let inicio = (item.inicio || "").trim().toUpperCase();
                     let fin = (item.fin || "").trim().toUpperCase();
 
                     if (inicio === "") {
-                        // Si "inicio" está vacío, la signatura se considera correcta de inmediato
                         datosEncontrados = item;
                         break;
                     } else {
-                        // Usamos localeCompare para garantizar una comparación alfabética estricta y segura
-			let sigOriginalUpper = sigOriginal.trim().toUpperCase();
+                        let sigOriginalUpper = sigOriginal.trim().toUpperCase();
                         let esMayorOIgual = sigOriginalUpper.localeCompare(inicio, 'es') >= 0;
                         let esMenorOIgual = sigOriginalUpper.localeCompare(fin, 'es') <= 0;
-                        
-                        // Si la signatura del límite superior es "HG860/COR", aceptamos también palabras que lo continúen (ej. "HG860/CORRE")
                         let empiezaPorFin = sigOriginal.startsWith(fin);
 
                         if (esMayorOIgual && (esMenorOIgual || empiezaPorFin)) {
@@ -113,7 +178,6 @@
                 }
 
                 if (datosEncontrados) {
-                    // Si se encuentra, obtenemos la zona y buscamos sus coordenadas en plano.json
                     let zona = datosEncontrados.zona || "";
                     let planoInfo = arrPlanos.find(p => p.pos_plano == zona) || {};
 
@@ -124,7 +188,7 @@
                         sala: datosEncontrados.sala || '',
                         ubicacion: datosEncontrados.ubicacion || '',
                         estanteria: datosEncontrados.estanteria || '',
-                        titulo: valTitulo || 'Sin título especificado',
+                        titulo: valTitulo || datosEncontrados.titulo || 'Sin título especificado',
                         mapa: planoInfo.mapa || '',
                         pos_x: planoInfo.pos_x || '',
                         pos_y: planoInfo.pos_y || '',
@@ -141,6 +205,8 @@
             console.error("Error:", error);
             mostrarAvisoPersonal({ signaturas: signaturaClicada });
         });
+    } else {
+        mostrarAvisoPersonal({ signaturas: signaturaClicada });
     }
 
     function mostrarAvisoPersonal(datos) {
@@ -149,7 +215,7 @@
         contenedor.innerHTML = `
             <div class="icono-aviso">ℹ️</div>
             <h2>Aviso de ubicación</h2>
-            <p>La signatura <strong>${datos.signaturas}</strong>${descripcionTexto}, no se encuentra en las SALAS. Acuda al personal de la biblioteca para solicitar el libro.</p>
+            <p>La búsqueda de <strong>${datos.signaturas}</strong>${descripcionTexto} no se encuentra disponible en las SALAS. Acuda al personal de la biblioteca para solicitarlo.</p>
         `;
     }
     </script>
