@@ -1,750 +1,5 @@
 [
     {
-        "signatura": "HG802.0-5/Side",
-        "nea": "1690115",
-        "titulo": "Grammar and vocabulary for Cambridge Advanced and Proficieny"
-    },
-    {
-        "signatura": "HG802.0-5/Side",
-        "nea": "1626388",
-        "titulo": "Grammar and vocabulary for Cambridge Advanced and Proficieny"
-    },
-    {
-        "signatura": "HG802.0-5/Side",
-        "nea": "1626385",
-        "titulo": "Grammar and vocabulary for Cambridge Advanced and Proficieny"
-    },
-    {
-        "signatura": "HG802.0-5/Skip",
-        "nea": "1628854",
-        "titulo": "Advanced grammar vocabulary Teachers book"
-    },
-    {
-        "signatura": "HG802.0-5/Skip",
-        "nea": "1628881",
-        "titulo": "Advanced grammar vocabulary Students book"
-    },
-    {
-        "signatura": "HG802.0-5/Skip",
-        "nea": "1628875",
-        "titulo": "Advanced grammar vocabulary Students book"
-    },
-    {
-        "signatura": "HG802.0-5/Skip",
-        "nea": "1606211",
-        "titulo": "Advanced grammar vocabulary Students book"
-    },
-    {
-        "signatura": "HG802.0-5/Skip",
-        "nea": "1650553",
-        "titulo": "Advanced grammar vocabulary Students book"
-    },
-    {
-        "signatura": "HG802.0-5/Smal",
-        "nea": "1631048",
-        "titulo": "Basic grammar in use Workbook with answers"
-    },
-    {
-        "signatura": "HG802.0-5/Smit",
-        "nea": "995940",
-        "titulo": "An historical study of English function form and change"
-    },
-    {
-        "signatura": "HG802.0-5/Stra",
-        "nea": "183656",
-        "titulo": "Modern English structure"
-    },
-    {
-        "signatura": "HG802.0-5/Stra",
-        "nea": "183668",
-        "titulo": "Modern English structure"
-    },
-    {
-        "signatura": "HG802.0-5/Stra",
-        "nea": "184925",
-        "titulo": "A history of English"
-    },
-    {
-        "signatura": "HG802.0-5/Stra",
-        "nea": "183839",
-        "titulo": "A history of English"
-    },
-    {
-        "signatura": "HG802.0-5/Stra",
-        "nea": "876196",
-        "titulo": "A history of English"
-    },
-    {
-        "signatura": "HG802.0-5/Stra",
-        "nea": "876197",
-        "titulo": "A history of English"
-    },
-    {
-        "signatura": "HG802.0-5/Swan",
-        "nea": "1512127",
-        "titulo": "Practical English usage"
-    },
-    {
-        "signatura": "HG802.0-5/Swan",
-        "nea": "879053",
-        "titulo": "Basic English usage"
-    },
-    {
-        "signatura": "HG802.0-5/Swan",
-        "nea": "898447",
-        "titulo": "Practical English usage"
-    },
-    {
-        "signatura": "HG802.0-5/Swan",
-        "nea": "934962",
-        "titulo": "Practical English usage"
-    },
-    {
-        "signatura": "HG802.0-5/Swan",
-        "nea": "1595202",
-        "titulo": "Basic English usage"
-    },
-    {
-        "signatura": "HG802.0-5/Swan",
-        "nea": "898437",
-        "titulo": "Basic English usage"
-    },
-    {
-        "signatura": "HG802.0-5/Swan",
-        "nea": "1630017",
-        "titulo": "Practical English usage"
-    },
-    {
-        "signatura": "HG802.0-5/Swan",
-        "nea": "789265",
-        "titulo": "Practical English usage"
-    },
-    {
-        "signatura": "HG802.0-5/Talk",
-        "nea": "699385",
-        "titulo": "Talking about grammar"
-    },
-    {
-        "signatura": "HG802.0-5/Thom",
-        "nea": "661739",
-        "titulo": "Beginning syntax"
-    },
-    {
-        "signatura": "HG802.0-5/Thor",
-        "nea": "960821",
-        "titulo": "Mastering advanced English language"
-    },
-    {
-        "signatura": "HG802.0-5/Thor",
-        "nea": "954118",
-        "titulo": "Mastering advanced English language"
-    },
-    {
-        "signatura": "HG802.0-5/Thor",
-        "nea": "936243",
-        "titulo": "Mastering advanced English language"
-    },
-    {
-        "signatura": "HG802.0-5/Thor",
-        "nea": "1017031",
-        "titulo": "Mastering advanced English language"
-    },
-    {
-        "signatura": "HG802.0-5/Tink",
-        "nea": "423284",
-        "titulo": "Vocabulary and syntax of the old English version in the Pari"
-    },
-    {
-        "signatura": "HG802.0-5/Top",
-        "nea": "1726346",
-        "titulo": "Top grammar from basic to upperintermediate Students bo"
-    },
-    {
-        "signatura": "HG802.0-5/Tott",
-        "nea": "577950",
-        "titulo": "Negation in English speech and writing a study in variatio"
-    },
-    {
-        "signatura": "HG802.0-5/Trau",
-        "nea": "1892351",
-        "titulo": "Discourse structuring markers in English a historical cons"
-    },
-    {
-        "signatura": "HG802.0-5/Trud",
-        "nea": "1708301",
-        "titulo": "International English a guide to the varieties of standard"
-    },
-    {
-        "signatura": "HG802.0-5/Vinc",
-        "nea": "1662072",
-        "titulo": "First Certificate language practice with key English gram"
-    },
-    {
-        "signatura": "HG802.0-5/Vinc",
-        "nea": "1726333",
-        "titulo": "Macmillan English grammar in context Intermediate with ke"
-    },
-    {
-        "signatura": "HG802.0-5/Vinc",
-        "nea": "1631255",
-        "titulo": "Intermediate language practice English grammar and vocabul"
-    },
-    {
-        "signatura": "HG802.0-5/Vinc",
-        "nea": "1626936",
-        "titulo": "Advanced language practice with key"
-    },
-    {
-        "signatura": "HG802.0-5/Vinc",
-        "nea": "1574406",
-        "titulo": "Advanced language practice with key"
-    },
-    {
-        "signatura": "HG802.0-5/Vinc",
-        "nea": "1574409",
-        "titulo": "Advanced language practice with key"
-    },
-    {
-        "signatura": "HG802.0-5/Walt",
-        "nea": "1001936",
-        "titulo": "Advanced English CAE grammar practice"
-    },
-    {
-        "signatura": "HG802.0-5/Webe",
-        "nea": "667408",
-        "titulo": "Varieties of questions in English conversation"
-    },
-    {
-        "signatura": "HG802.0-5/Wekk",
-        "nea": "34798",
-        "titulo": "A modern course in English syntax"
-    },
-    {
-        "signatura": "HG802.0-5/Wier",
-        "nea": "588091",
-        "titulo": "English speech act verbs a semantic dictionary"
-    },
-    {
-        "signatura": "HG802.0-5/Wood",
-        "nea": "1584712",
-        "titulo": "The communicative grammar of English workbook"
-    },
-    {
-        "signatura": "HG802.0-5/Wood",
-        "nea": "1584710",
-        "titulo": "The communicative grammar of English workbook"
-    },
-    {
-        "signatura": "HG802.0-5/Wood",
-        "nea": "1584562",
-        "titulo": "The communicative grammar of English workbook"
-    },
-    {
-        "signatura": "HG802.0-5/Zago",
-        "nea": "139062",
-        "titulo": "Verb phrase syntax a parametric study of English and Spani"
-    },
-    {
-        "signatura": "HG802.0-82/Acev",
-        "nea": "1010904",
-        "titulo": "Reach for bachillerato Students book 1"
-    },
-    {
-        "signatura": "HG802.0-82/Ackl",
-        "nea": "774095",
-        "titulo": "Help with phrasal verbs"
-    },
-    {
-        "signatura": "HG802.0-82/Alej",
-        "nea": "1003995",
-        "titulo": "Aprender inglés en Internet"
-    },
-    {
-        "signatura": "HG802.0-82/Alla",
-        "nea": "1711054",
-        "titulo": "Oxford Placement Test 2"
-    },
-    {
-        "signatura": "HG802.0-82/Alla",
-        "nea": "1711053",
-        "titulo": "Oxford Placement Test 1"
-    },
-    {
-        "signatura": "HG802.0-82/Alls",
-        "nea": "774108",
-        "titulo": "Making sense of idioms"
-    },
-    {
-        "signatura": "HG802.0-82/Ande",
-        "nea": "990058",
-        "titulo": "Listening"
-    },
-    {
-        "signatura": "HG802.0-82/Ande",
-        "nea": "1622900",
-        "titulo": "Exploring second language reading issues and strategies"
-    },
-    {
-        "signatura": "HG802.0-82/Appl",
-        "nea": "773895",
-        "titulo": "Help with idioms"
-    },
-    {
-        "signatura": "HG802.0-82/Arme",
-        "nea": "1851081",
-        "titulo": "Cambridge English for scientists"
-    },
-    {
-        "signatura": "HG802.0-82/Arme",
-        "nea": "1851082",
-        "titulo": "Cambridge English for scientists"
-    },
-    {
-        "signatura": "HG802.0-82/Ashl",
-        "nea": "898430",
-        "titulo": "A correspondence workbook"
-    },
-    {
-        "signatura": "HG802.0-82/Ashl",
-        "nea": "898442",
-        "titulo": "A handbook of commercial correspondence"
-    },
-    {
-        "signatura": "HG802.0-82/Aspi",
-        "nea": "1629708",
-        "titulo": "Advanced Masterclass CAE Teachers book"
-    },
-    {
-        "signatura": "HG802.0-82/Aspi",
-        "nea": "1629706",
-        "titulo": "Advanced Masterclass CAE Students book"
-    },
-    {
-        "signatura": "HG802.0-82/Aspi",
-        "nea": "1629719",
-        "titulo": "Advanced Masterclass CAE Workbook"
-    },
-    {
-        "signatura": "HG802.0-82/Aspi",
-        "nea": "938430",
-        "titulo": "CAE practice tests 1"
-    },
-    {
-        "signatura": "HG802.0-82/Atki",
-        "nea": "652293",
-        "titulo": "Teaching monolingual classes"
-    },
-    {
-        "signatura": "HG802.0-82/Baig",
-        "nea": "1863051",
-        "titulo": "Natural English Reading writing skills intermediate res"
-    },
-    {
-        "signatura": "HG802.0-82/Bail",
-        "nea": "1582564",
-        "titulo": "Accelerate a skillsbased short course elementary"
-    },
-    {
-        "signatura": "HG802.0-82/Bail",
-        "nea": "1724402",
-        "titulo": "Academic writing a handbook for international students"
-    },
-    {
-        "signatura": "HG802.0-82/Bara",
-        "nea": "1535285",
-        "titulo": "English for academic purposes learning English through the"
-    },
-    {
-        "signatura": "HG802.0-82/Bats",
-        "nea": "988865",
-        "titulo": "Grammar"
-    },
-    {
-        "signatura": "HG802.0-82/Baue",
-        "nea": "994781",
-        "titulo": "Vocabulary"
-    },
-    {
-        "signatura": "HG802.0-82/Bazi",
-        "nea": "1714440",
-        "titulo": "Achieve IELTS practice test book"
-    },
-    {
-        "signatura": "HG802.0-82/Bell",
-        "nea": "648940",
-        "titulo": "Soundings"
-    },
-    {
-        "signatura": "HG802.0-82/Bell",
-        "nea": "1661970",
-        "titulo": "First certificate expert Coursebook"
-    },
-    {
-        "signatura": "HG802.0-82/Bell",
-        "nea": "1711016",
-        "titulo": "Passport to academic presentations Students book"
-    },
-    {
-        "signatura": "HG802.0-82/Bell",
-        "nea": "1711013",
-        "titulo": "Passport to academic presentations Teachers book"
-    },
-    {
-        "signatura": "HG802.0-82/Betw",
-        "nea": "992637",
-        "titulo": "Between the lines textbased activities for the study of E"
-    },
-    {
-        "signatura": "HG802.0-82/Bili",
-        "nea": "1755262",
-        "titulo": "2000 frases bilingües 2000 bilingual phrases nivel 2 le"
-    },
-    {
-        "signatura": "HG802.0-82/Bili",
-        "nea": "1755263",
-        "titulo": "2000 frases bilingües 2000 bilingual phrases nivel 3 le"
-    },
-    {
-        "signatura": "HG802.0-82/Blac",
-        "nea": "1808881",
-        "titulo": "Objective IELTS advanced Workbook with answers"
-    },
-    {
-        "signatura": "HG802.0-82/Blac",
-        "nea": "1730694",
-        "titulo": "Open Forum 1 academic listening and speaking"
-    },
-    {
-        "signatura": "HG802.0-82/Blan",
-        "nea": "1726326",
-        "titulo": "Ready to write more from paragraph to essay"
-    },
-    {
-        "signatura": "HG802.0-82/Blan",
-        "nea": "1730684",
-        "titulo": "Ready to write 1 a first composition text"
-    },
-    {
-        "signatura": "HG802.0-82/Bona",
-        "nea": "1691972",
-        "titulo": "Technology 1 Teachers resourde book"
-    },
-    {
-        "signatura": "HG802.0-82/Bowe",
-        "nea": "727621",
-        "titulo": "Inside teaching options for English language teachers"
-    },
-    {
-        "signatura": "HG802.0-82/Bowl",
-        "nea": "643240",
-        "titulo": "Headway upperintermediate Pronunciation"
-    },
-    {
-        "signatura": "HG802.0-82/Bowl",
-        "nea": "994070",
-        "titulo": "Headway upperintermediate Pronunciation"
-    },
-    {
-        "signatura": "HG802.0-82/Bowl",
-        "nea": "1011054",
-        "titulo": "Password Students book 2"
-    },
-    {
-        "signatura": "HG802.0-82/Braz",
-        "nea": "1567209",
-        "titulo": "Pronunciation for advanced leaners of English Students boo"
-    },
-    {
-        "signatura": "HG802.0-82/Braz",
-        "nea": "1567204",
-        "titulo": "Pronunciation for advanced leaners of English Teachers boo"
-    },
-    {
-        "signatura": "HG802.0-82/Brew",
-        "nea": "654990",
-        "titulo": "The primary English teachers guide"
-    },
-    {
-        "signatura": "HG802.0-82/Brie",
-        "nea": "1622264",
-        "titulo": "Technical English vocabulary and grammar"
-    },
-    {
-        "signatura": "HG802.0-82/Broa",
-        "nea": "1713768",
-        "titulo": "Advance your English a short course for advanced learners"
-    },
-    {
-        "signatura": "HG802.0-82/Broa",
-        "nea": "1713783",
-        "titulo": "Advance your English a short course for advanced learners"
-    },
-    {
-        "signatura": "HG802.0-82/Broa",
-        "nea": "1713784",
-        "titulo": "Advance your English a short course for advanced learners"
-    },
-    {
-        "signatura": "HG802.0-82/Brow",
-        "nea": "1677987",
-        "titulo": "Law"
-    },
-    {
-        "signatura": "HG802.0-82/Burl",
-        "nea": "1625735",
-        "titulo": "Listening the forgotten skill"
-    },
-    {
-        "signatura": "HG802.0-82/Burt",
-        "nea": "936230",
-        "titulo": "Mastering English language"
-    },
-    {
-        "signatura": "HG802.0-82/Butl",
-        "nea": "1729639",
-        "titulo": "Fundamentals of academic writing"
-    },
-    {
-        "signatura": "HG802.0-82/Byga",
-        "nea": "988863",
-        "titulo": "Speaking"
-    },
-    {
-        "signatura": "HG802.0-82/Byrn",
-        "nea": "649242",
-        "titulo": "Teaching oral English"
-    },
-    {
-        "signatura": "HG802.0-82/Bywa",
-        "nea": "704615",
-        "titulo": "A proficiency course in English with key"
-    },
-    {
-        "signatura": "HG802.0-82/Cae",
-        "nea": "981459",
-        "titulo": "The Cambridge CAE course Students book"
-    },
-    {
-        "signatura": "HG802.0-82/Cae",
-        "nea": "981461",
-        "titulo": "The Cambridge CAE course Teachers book"
-    },
-    {
-        "signatura": "HG802.0-82/Cama",
-        "nea": "1700927",
-        "titulo": "English 40 introducción al inglés para programas universi"
-    },
-    {
-        "signatura": "HG802.0-82/Camb",
-        "nea": "1727299",
-        "titulo": "Cambridge certificate of proficiency in English 5 with answ"
-    },
-    {
-        "signatura": "HG802.0-82/Camb",
-        "nea": "1736200",
-        "titulo": "Cambridge First Certificate in English with answers offici"
-    },
-    {
-        "signatura": "HG802.0-82/Camb",
-        "nea": "1736240",
-        "titulo": "Cambridge First Certificate in English with answers offici"
-    },
-    {
-        "signatura": "HG802.0-82/Camb",
-        "nea": "1727294",
-        "titulo": "Cambridge certificate of proficiency in English 4 with answ"
-    },
-    {
-        "signatura": "HG802.0-82/Camb",
-        "nea": "1736204",
-        "titulo": "Cambridge First Certificate in English with answers offici"
-    },
-    {
-        "signatura": "HG802.0-82/Camb",
-        "nea": "1730691",
-        "titulo": "Cambridge IELTS 6 with answers examination papers from U"
-    },
-    {
-        "signatura": "HG802.0-82/Camp",
-        "nea": "1770551",
-        "titulo": "English for academic study listening Teachers book"
-    },
-    {
-        "signatura": "HG802.0-82/Camp",
-        "nea": "1512464",
-        "titulo": "Learnerbased teaching"
-    },
-    {
-        "signatura": "HG802.0-82/Cand",
-        "nea": "1543055",
-        "titulo": "English language teaching in its social context a reader"
-    },
-    {
-        "signatura": "HG802.0-82/Cape",
-        "nea": "1700699",
-        "titulo": "Objective first certificate Selfstudy students book"
-    },
-    {
-        "signatura": "HG802.0-82/Cape",
-        "nea": "1766904",
-        "titulo": "Objective proficiency selfstudy students book"
-    },
-    {
-        "signatura": "HG802.0-82/Cape",
-        "nea": "1700703",
-        "titulo": "Objective writing for first certificate"
-    },
-    {
-        "signatura": "HG802.0-82/Cart",
-        "nea": "1524409",
-        "titulo": "The Cambridge guide to teaching English to speakers of other"
-    },
-    {
-        "signatura": "HG802.0-82/Cart",
-        "nea": "1852463",
-        "titulo": "Exploring spoken English"
-    },
-    {
-        "signatura": "HG802.0-82/Cham",
-        "nea": "1510264",
-        "titulo": "Language development through content mathematics book A"
-    },
-    {
-        "signatura": "HG802.0-82/Cham",
-        "nea": "1623838",
-        "titulo": "The CALlA handbook implementing the cognitive academic lan"
-    },
-    {
-        "signatura": "HG802.0-82/Cham",
-        "nea": "935063",
-        "titulo": "Advanced English for translation"
-    },
-    {
-        "signatura": "HG802.0-82/Clar",
-        "nea": "1737971",
-        "titulo": "How idioms work resource book"
-    },
-    {
-        "signatura": "HG802.0-82/Clar",
-        "nea": "1722540",
-        "titulo": "Total English Intermediate Class CDs"
-    },
-    {
-        "signatura": "HG802.0-82/Clem",
-        "nea": "1730761",
-        "titulo": "Contemporary topics intro academic listening and notetaki"
-    },
-    {
-        "signatura": "HG802.0-82/Coff",
-        "nea": "575152",
-        "titulo": "Communication through writing"
-    },
-    {
-        "signatura": "HG802.0-82/Cogg",
-        "nea": "955339",
-        "titulo": "Do you speak Estuary the new standard English"
-    },
-    {
-        "signatura": "HG802.0-82/Cole",
-        "nea": "1702905",
-        "titulo": "The preposition book practice toward mastering English pre"
-    },
-    {
-        "signatura": "HG802.0-82/Coll",
-        "nea": "1516780",
-        "titulo": "Whats it like life and culture in Britain today"
-    },
-    {
-        "signatura": "HG802.0-82/Coll",
-        "nea": "1747269",
-        "titulo": "Gateway to science vocabulary and concepts"
-    },
-    {
-        "signatura": "HG802.0-82/Coll",
-        "nea": "1747270",
-        "titulo": "Gateway to science vocabulary and concepts Teacher editio"
-    },
-    {
-        "signatura": "HG802.0-82/Cook",
-        "nea": "934359",
-        "titulo": "Discourse"
-    },
-    {
-        "signatura": "HG802.0-82/Cooz",
-        "nea": "1702864",
-        "titulo": "100 ideas for teaching English"
-    },
-    {
-        "signatura": "HG802.0-82/Corb",
-        "nea": "1512514",
-        "titulo": "English for international banking and finance"
-    },
-    {
-        "signatura": "HG802.0-82/Corb",
-        "nea": "1512515",
-        "titulo": "English for international banking and finance"
-    },
-    {
-        "signatura": "HG802.0-82/Corb",
-        "nea": "1512521",
-        "titulo": "English for international banking and finance Guide for tea"
-    },
-    {
-        "signatura": "HG802.0-82/Cott",
-        "nea": "1724403",
-        "titulo": "The study skills handbook"
-    },
-    {
-        "signatura": "HG802.0-82/Crav",
-        "nea": "1715064",
-        "titulo": "Real listening speaking 3 with answers"
-    },
-    {
-        "signatura": "HG802.0-82/Crav",
-        "nea": "1739085",
-        "titulo": "Real listening speaking 3 with answers"
-    },
-    {
-        "signatura": "HG802.0-82/Crow",
-        "nea": "1718564",
-        "titulo": "Business roles 2"
-    },
-    {
-        "signatura": "HG802.0-82/Cunn",
-        "nea": "993255",
-        "titulo": "Headway intermediate Pronunciation"
-    },
-    {
-        "signatura": "HG802.0-82/Cunn",
-        "nea": "1630522",
-        "titulo": "New Headway pronunciation intermediate students practice"
-    },
-    {
-        "signatura": "HG802.0-82/Cunn",
-        "nea": "1630520",
-        "titulo": "New Headway pronunciation intermediate students practice"
-    },
-    {
-        "signatura": "HG802.0-82/Cunn",
-        "nea": "994855",
-        "titulo": "Headway elementary Pronunciation"
-    },
-    {
-        "signatura": "HG802.0-82/Cunn",
-        "nea": "1582507",
-        "titulo": "Cutting edge Intermediate Students book"
-    },
-    {
-        "signatura": "HG802.0-82/Cunn",
-        "nea": "1683202",
-        "titulo": "Cutting edge Advanced Students book"
-    },
-    {
-        "signatura": "HG802.0-82/Cunn",
-        "nea": "1683165",
-        "titulo": "Cutting edge Advanced Students book"
-    },
-    {
         "signatura": "HG802.0-82/Cutt",
         "nea": "1700773",
         "titulo": "Oxford guide to plain English"
@@ -630088,5 +629343,1490 @@
         "signatura": "LTypo-0086",
         "nea": "1594866",
         "titulo": "Charmes et prières apotropaïques"
+    },
+    {
+        "signatura": "HG1/Buen",
+        "nea": "1913709",
+        "titulo": "Panfleto contra la democracia realmente existente más un"
+    },
+    {
+        "signatura": "HG82.08/Sanc",
+        "nea": "1913817",
+        "titulo": "Retórica parlamentaria española"
+    },
+    {
+        "signatura": "HG860/Alas03=40",
+        "nea": "1913487",
+        "titulo": "La Régente"
+    },
+    {
+        "signatura": "HG860/Alas06Mart",
+        "nea": "1913623",
+        "titulo": "Las palabras y los días de Leopoldo Alas Miscelánea de es"
+    },
+    {
+        "signatura": "EXP-HG860/Quev",
+        "nea": "64278",
+        "titulo": "La vida del Buscón llamado Don Pablos"
+    },
+    {
+        "signatura": "F008-0057",
+        "nea": "1913457",
+        "titulo": "Evolución de las ideas sobre la decadencia española y otros"
+    },
+    {
+        "signatura": "F1Nie-008",
+        "nea": "1914010",
+        "titulo": "Consideraciones intempestivas"
+    },
+    {
+        "signatura": "F1Sop-017",
+        "nea": "1913945",
+        "titulo": "Eudemonología parerga y paralipomena aforismos sobre la"
+    },
+    {
+        "signatura": "H",
+        "nea": "1913848",
+        "titulo": "Il cantiere romanico di SainteFoy de Conques la ricchezza"
+    },
+    {
+        "signatura": "H",
+        "nea": "1913700",
+        "titulo": "Une préhistoire des femmes"
+    },
+    {
+        "signatura": "H",
+        "nea": "1913835",
+        "titulo": "Heritage and tourism places imageries and the digital age"
+    },
+    {
+        "signatura": "H",
+        "nea": "1913723",
+        "titulo": "De la ville au patrimoine urbain histoires de forme et de"
+    },
+    {
+        "signatura": "H",
+        "nea": "1913710",
+        "titulo": "Atlas de la Préhistoire"
+    },
+    {
+        "signatura": "H",
+        "nea": "1913793",
+        "titulo": "Decolonizing the museum art activism and the question of"
+    },
+    {
+        "signatura": "H",
+        "nea": "1913789",
+        "titulo": "De larada a la ploma les elits rurals del País Valencià a"
+    },
+    {
+        "signatura": "H",
+        "nea": "1913824",
+        "titulo": "Gender and rurality"
+    },
+    {
+        "signatura": "H",
+        "nea": "1913790",
+        "titulo": "Una teoría de los géneros musicales cómo nacen cambian d"
+    },
+    {
+        "signatura": "H",
+        "nea": "1914054",
+        "titulo": "Delicati and Delicia in the Roman Empire a study of ep"
+    },
+    {
+        "signatura": "H",
+        "nea": "1913893",
+        "titulo": "El primer catolicismo social y la rerum novarum en España 1"
+    },
+    {
+        "signatura": "H",
+        "nea": "1913690",
+        "titulo": "Tecnológica tecnología una paleohistoria de los objeto"
+    },
+    {
+        "signatura": "H",
+        "nea": "1913860",
+        "titulo": "Beyond convention genre innovation in academic writing"
+    },
+    {
+        "signatura": "H",
+        "nea": "1914058",
+        "titulo": "Mitos y disputas en la historia de España"
+    },
+    {
+        "signatura": "H",
+        "nea": "1913837",
+        "titulo": "Gender and craftwork in rural society the role of educatio"
+    },
+    {
+        "signatura": "H",
+        "nea": "1913713",
+        "titulo": "Geology for archaeologists a short introduction"
+    },
+    {
+        "signatura": "H",
+        "nea": "1913695",
+        "titulo": "Cave art a guide to the decorated ice age caves of Europe"
+    },
+    {
+        "signatura": "H",
+        "nea": "1913722",
+        "titulo": "Gender and the archaeology of death"
+    },
+    {
+        "signatura": "H",
+        "nea": "1914057",
+        "titulo": "Artivist sonorities liminal listening in IberoAmerican ex"
+    },
+    {
+        "signatura": "H1-0938",
+        "nea": "1913526",
+        "titulo": "The Christian invention of time temporality and the litera"
+    },
+    {
+        "signatura": "H1-0939",
+        "nea": "1913538",
+        "titulo": "Une histoire du temps dans le monde arabe"
+    },
+    {
+        "signatura": "H1-0940",
+        "nea": "1913703",
+        "titulo": "El hombre de la Luna sobre Ernst Jünger"
+    },
+    {
+        "signatura": "H159-0189",
+        "nea": "1914011",
+        "titulo": "Un encantamiento que se rompe cuestionamiento del hechizo"
+    },
+    {
+        "signatura": "H159-0190",
+        "nea": "1913810",
+        "titulo": "La mente appassionata cognizione ed emozione nei processi"
+    },
+    {
+        "signatura": "H316-1130",
+        "nea": "1913717",
+        "titulo": "Les sociétés de chasseurs de rennes du paléolithique récent"
+    },
+    {
+        "signatura": "H34-0710",
+        "nea": "1913532",
+        "titulo": "Couples en justice IVeXIXe siècle"
+    },
+    {
+        "signatura": "H39-0005",
+        "nea": "1913534",
+        "titulo": "Lenfant des miracles enfance et société au Moyen âge XII"
+    },
+    {
+        "signatura": "H63-0194-I",
+        "nea": "163096",
+        "titulo": "Apuntes para la historia de la pesca continental española"
+    },
+    {
+        "signatura": "H72-0482",
+        "nea": "689254",
+        "titulo": "Oviedo Arquitectura y desarrollo urbano Del eclecticismo"
+    },
+    {
+        "signatura": "H72-0960",
+        "nea": "1506693",
+        "titulo": "Arquitectura en Asturias 15001580 la dinastía de los Cer"
+    },
+    {
+        "signatura": "H78-1933",
+        "nea": "1913858",
+        "titulo": "Tablature Europe 13001750"
+    },
+    {
+        "signatura": "H7B-0266-I",
+        "nea": "1913529",
+        "titulo": "The Cambridge encyclopaedia of late antique art and archaeol"
+    },
+    {
+        "signatura": "H7B-0266-II",
+        "nea": "1913530",
+        "titulo": "The Cambridge encyclopaedia of late antique art and archaeol"
+    },
+    {
+        "signatura": "H7C-0173",
+        "nea": "205477",
+        "titulo": "Arte paleocristiano en España"
+    },
+    {
+        "signatura": "H7C-0530",
+        "nea": "172931",
+        "titulo": "Arte hispánico de la época visigoda"
+    },
+    {
+        "signatura": "H902-1238",
+        "nea": "1913718",
+        "titulo": "Terra Amata Nice AlpesMaritimes France"
+    },
+    {
+        "signatura": "H902-1239",
+        "nea": "1913715",
+        "titulo": "Architecture regional identity and power in the Iron Age"
+    },
+    {
+        "signatura": "H902-1240",
+        "nea": "1913706",
+        "titulo": "The hillforts of Iron Age Wales"
+    },
+    {
+        "signatura": "H929-0393",
+        "nea": "121092",
+        "titulo": "Eruditos y libreros del siglo XVIII estudios históricolit"
+    },
+    {
+        "signatura": "H93A-0655-94",
+        "nea": "1913899",
+        "titulo": "Llibre dels censals memòries familiars i altres negocis del"
+    },
+    {
+        "signatura": "H946C-1295",
+        "nea": "131604",
+        "titulo": "La Península en la Edad Media"
+    },
+    {
+        "signatura": "HE7-0376",
+        "nea": "718790",
+        "titulo": "Del sentimiento cómico en la vida y en el arte ensayo esté"
+    },
+    {
+        "signatura": "HG007/Inne",
+        "nea": "1913682",
+        "titulo": "Una teoría crítica de la inteligencia artificial"
+    },
+    {
+        "signatura": "HG1/Buen",
+        "nea": "1913708",
+        "titulo": "España frente a Europa"
+    },
+    {
+        "signatura": "HG1/Buen",
+        "nea": "1913691",
+        "titulo": "Der Mythos der Kultur essay einer materialistischen Kultur"
+    },
+    {
+        "signatura": "HG1/Buen",
+        "nea": "1913702",
+        "titulo": "El mito de la izquierda El mito de la derecha"
+    },
+    {
+        "signatura": "HG1/Posa",
+        "nea": "1913548",
+        "titulo": "Breve historia del Krausismo español"
+    },
+    {
+        "signatura": "HG159.9/Enfo",
+        "nea": "1913711",
+        "titulo": "Enfoques de Psicopatología"
+    },
+    {
+        "signatura": "HG159.9/Enfo",
+        "nea": "1913712",
+        "titulo": "Enfoques de Psicopatología"
+    },
+    {
+        "signatura": "HG159.9/Gobb",
+        "nea": "1913688",
+        "titulo": "The future of neurodiversity"
+    },
+    {
+        "signatura": "HG308/46/Garc",
+        "nea": "1913565",
+        "titulo": "Inmaculada la muerte que precipitó el final del Patronato"
+    },
+    {
+        "signatura": "HG316/Manu",
+        "nea": "1913927",
+        "titulo": "Manual de primeros auxilios artísticos para un planeta her"
+    },
+    {
+        "signatura": "HG32/46/Mart",
+        "nea": "1913506",
+        "titulo": "Lorenzo Arrazola o El Estado liberalcatólico"
+    },
+    {
+        "signatura": "HG321.01/Gil",
+        "nea": "1913551",
+        "titulo": "Krausistas y liberales"
+    },
+    {
+        "signatura": "HG323/Ceci",
+        "nea": "1913567",
+        "titulo": "La fe armada católicos y violencia política en el siglo XX"
+    },
+    {
+        "signatura": "HG325/Pras",
+        "nea": "1913566",
+        "titulo": "Las naciones oscuras otra historia del tercer mundo"
+    },
+    {
+        "signatura": "HG329/46/Casp",
+        "nea": "1913555",
+        "titulo": "Un pasado muy presente tradicionalismo y carlismo ante la"
+    },
+    {
+        "signatura": "HG329/46/Dere",
+        "nea": "1913563",
+        "titulo": "Derecho memoria histórica y dictaduras"
+    },
+    {
+        "signatura": "HG329/46/Leon",
+        "nea": "1913546",
+        "titulo": "Las voces del silencio memorias de una instructora de juv"
+    },
+    {
+        "signatura": "HG329/Scar",
+        "nea": "1913630",
+        "titulo": "Il fascismo delle cose oggetti e consumi nel Ventennio"
+    },
+    {
+        "signatura": "HG33/Libr",
+        "nea": "1913552",
+        "titulo": "El libro negro del capitalismo"
+    },
+    {
+        "signatura": "HG33/Pome",
+        "nea": "1913564",
+        "titulo": "La gran divergencia"
+    },
+    {
+        "signatura": "HG331/Beav",
+        "nea": "1913624",
+        "titulo": "Leisure citizenship and workingclass men in Britain 1850"
+    },
+    {
+        "signatura": "HG39/Adam",
+        "nea": "1913892",
+        "titulo": "Las raíces filosóficas de la antropología"
+    },
+    {
+        "signatura": "HG396/Wome",
+        "nea": "1913611",
+        "titulo": "Women business and finance in nineteenthcentury Europe r"
+    },
+    {
+        "signatura": "HG504/Aber",
+        "nea": "1913536",
+        "titulo": "An environmental history of the Middle Ages the crucible o"
+    },
+    {
+        "signatura": "HG61/Etic",
+        "nea": "1913686",
+        "titulo": "Ética y salud pública propuestas para su integración insti"
+    },
+    {
+        "signatura": "HG654/Casc",
+        "nea": "1913547",
+        "titulo": "Historia de la televisión"
+    },
+    {
+        "signatura": "HG7.01/Alba",
+        "nea": "1913922",
+        "titulo": "Ojos vendados tortura y representación en la cultura visua"
+    },
+    {
+        "signatura": "HG7.01/Font",
+        "nea": "1913900",
+        "titulo": "El arte de la mediación"
+    },
+    {
+        "signatura": "HG7.01/Hant",
+        "nea": "1913903",
+        "titulo": "Cómo hacer cosas con arte el sentido de la performatividad"
+    },
+    {
+        "signatura": "HG7.01/Lope",
+        "nea": "1913928",
+        "titulo": "Arte y posnaturaleza teorías genealogías y escalas"
+    },
+    {
+        "signatura": "HG7.02/Nouv",
+        "nea": "1913539",
+        "titulo": "Nouvelles lectures patrimoniales les Pays de la Loire au m"
+    },
+    {
+        "signatura": "HG7.032.7/Heni",
+        "nea": "37810",
+        "titulo": "El arte romano una revisión de las artes visuales del mund"
+    },
+    {
+        "signatura": "HG7.032.7/Pica",
+        "nea": "131108",
+        "titulo": "Arte romano"
+    },
+    {
+        "signatura": "HG7.033.4/Foci",
+        "nea": "42553",
+        "titulo": "Arte de occidente la Edad Media románica y gótica"
+    },
+    {
+        "signatura": "HG7.033.5/Whit",
+        "nea": "166670",
+        "titulo": "Arte y arquitectura en Italia 12501400"
+    },
+    {
+        "signatura": "HG7.033/461.2/Garc",
+        "nea": "1840525",
+        "titulo": "El prerrománico asturiano historia de la arquitectura y re"
+    },
+    {
+        "signatura": "HG7.033/Seba",
+        "nea": "883171",
+        "titulo": "Mensaje simbólico del arte medieval arquitectura liturgia"
+    },
+    {
+        "signatura": "HG7.034.7/46/Brow",
+        "nea": "301099",
+        "titulo": "La Edad de Oro de la pintura en España"
+    },
+    {
+        "signatura": "HG7.034.7/Seba",
+        "nea": "310629",
+        "titulo": "El barroco iberoamericano mensaje iconográfico"
+    },
+    {
+        "signatura": "HG7.034.7/Varr",
+        "nea": "1620791",
+        "titulo": "Arquitectura italiana del barroco al rococó"
+    },
+    {
+        "signatura": "HG7.034/Ketc",
+        "nea": "122986",
+        "titulo": "El Renacimiento cultura y arte de una época"
+    },
+    {
+        "signatura": "HG7.034/Pint",
+        "nea": "156343",
+        "titulo": "Grands peintres"
+    },
+    {
+        "signatura": "HG7.035/Clay",
+        "nea": "259059",
+        "titulo": "Le romantisme"
+    },
+    {
+        "signatura": "HG7.035/Noch",
+        "nea": "426249",
+        "titulo": "El realismo"
+    },
+    {
+        "signatura": "HG7.035/Wood",
+        "nea": "135426",
+        "titulo": "The preraphaelites"
+    },
+    {
+        "signatura": "HG7.036.2/Call",
+        "nea": "34257",
+        "titulo": "Técnicas de los impresionistas"
+    },
+    {
+        "signatura": "HG7.036.2/Denv",
+        "nea": "1913725",
+        "titulo": "Impressionism the painters and the paintings"
+    },
+    {
+        "signatura": "HG7.036/46/Arte",
+        "nea": "783209",
+        "titulo": "Arte en España 19181994 en la Colección Arte Contemporáne"
+    },
+    {
+        "signatura": "HG7.036/Alba",
+        "nea": "1913918",
+        "titulo": "Disputas sobre lo contemporáneo arte español entre el anti"
+    },
+    {
+        "signatura": "HG7.036/Gold",
+        "nea": "639280",
+        "titulo": "El cubismo una historia y un análisis 19071914"
+    },
+    {
+        "signatura": "HG7.036/Hult",
+        "nea": "164549",
+        "titulo": "Futurismo Futurismi"
+    },
+    {
+        "signatura": "HG7.036/Huyg",
+        "nea": "132831",
+        "titulo": "El arte y el mundo moderno"
+    },
+    {
+        "signatura": "HG7.036/Huyg",
+        "nea": "132846",
+        "titulo": "El arte y el mundo moderno"
+    },
+    {
+        "signatura": "HG7.038/Alba",
+        "nea": "1913926",
+        "titulo": "Ficción a muerte sobre performance y novela"
+    },
+    {
+        "signatura": "HG7.038/Arte",
+        "nea": "164930",
+        "titulo": "El arte de nuestro tiempo corrientes figurativas desde 194"
+    },
+    {
+        "signatura": "HG7.038/Erto",
+        "nea": "1913629",
+        "titulo": "Tracce fasciste leredità materiale del Ventennio"
+    },
+    {
+        "signatura": "HG7.038/Rosl",
+        "nea": "1913901",
+        "titulo": "La dominación y lo cotidiano ensayos y guiones"
+    },
+    {
+        "signatura": "HG7/03/Ella",
+        "nea": "1913930",
+        "titulo": "Ellas diccionario de mujeres artistas"
+    },
+    {
+        "signatura": "HG7/069.01/Bism",
+        "nea": "1913913",
+        "titulo": "Lo curatorial"
+    },
+    {
+        "signatura": "HG711/Beav",
+        "nea": "1913628",
+        "titulo": "The devils highway urban anxieties and subaltern culturas"
+    },
+    {
+        "signatura": "HG711/Ciud",
+        "nea": "1913512",
+        "titulo": "Ciudades invisibles paisajes urbanos de la Antigüedad ta"
+    },
+    {
+        "signatura": "HG726/46/Cate",
+        "nea": "1604177",
+        "titulo": "La Catedral de León mil años de historia"
+    },
+    {
+        "signatura": "HG728/Cong",
+        "nea": "1913857",
+        "titulo": "Congrès archéologique de France Aveyron"
+    },
+    {
+        "signatura": "HG73/Buen",
+        "nea": "1913633",
+        "titulo": "Ídolos hijas del sol pequeñas imágenes humanas en el ti"
+    },
+    {
+        "signatura": "HG73/Buen",
+        "nea": "1913631",
+        "titulo": "Ídolos hijas del sol pequeñas imágenes humanas en el ti"
+    },
+    {
+        "signatura": "HG745/Bayl",
+        "nea": "507027",
+        "titulo": "Guía Conran del diseño"
+    },
+    {
+        "signatura": "HG745/Bayl",
+        "nea": "933695",
+        "titulo": "Guía Conran del diseño"
+    },
+    {
+        "signatura": "HG75/Cara-Otti",
+        "nea": "135638",
+        "titulo": "La obra pictórica completa de Caravaggio"
+    },
+    {
+        "signatura": "HG75/Dure-Pano",
+        "nea": "136787",
+        "titulo": "Vida y arte de Alberto Durero"
+    },
+    {
+        "signatura": "HG75/Goya",
+        "nea": "843271",
+        "titulo": "Goya 250 aniversario exposición Museo del Prado del 3"
+    },
+    {
+        "signatura": "HG75/Mone",
+        "nea": "140551",
+        "titulo": "Claude Monet au temps de Giverny exposition 6 avril17 ju"
+    },
+    {
+        "signatura": "HG75/Mone-Roua",
+        "nea": "164563",
+        "titulo": "Claude Monet"
+    },
+    {
+        "signatura": "HG75/Reni-Bacc",
+        "nea": "130803",
+        "titulo": "La obra pictórica completa de Guido Reni"
+    },
+    {
+        "signatura": "HG75/Vall",
+        "nea": "171138",
+        "titulo": "Evaristo Valle 18731951 dibujos exposición Museo"
+    },
+    {
+        "signatura": "HG75/Warh",
+        "nea": "1913859",
+        "titulo": "Warhol Pollock y otros espacios americanos"
+    },
+    {
+        "signatura": "HG78.032/Rees",
+        "nea": "267013",
+        "titulo": "La música en la Edad Media con una introducción sobre la m"
+    },
+    {
+        "signatura": "HG78/09/Grou",
+        "nea": "272832",
+        "titulo": "Historia de la música occidental"
+    },
+    {
+        "signatura": "HG78/09/Grou",
+        "nea": "38911",
+        "titulo": "Historia de la música occidental"
+    },
+    {
+        "signatura": "HG78/09/Hist",
+        "nea": "930795",
+        "titulo": "Historia de la música la música occidental desde la Edad M"
+    },
+    {
+        "signatura": "HG78/Wagn-Newm",
+        "nea": "137750",
+        "titulo": "Wagner el hombre y el artista"
+    },
+    {
+        "signatura": "HG782/Rubi",
+        "nea": "1913951",
+        "titulo": "En clave de lluna 12 pieces clásiques de la ópera y el Lie"
+    },
+    {
+        "signatura": "HG791/Port",
+        "nea": "1913562",
+        "titulo": "El portavoz del franquismo el noticiario del NODO desde l"
+    },
+    {
+        "signatura": "HG792/Fraz",
+        "nea": "1913543",
+        "titulo": "The history of dance the dance in Portugal Spain and Ita"
+    },
+    {
+        "signatura": "HG792/Lope",
+        "nea": "1913541",
+        "titulo": "Segundo de Olaeta"
+    },
+    {
+        "signatura": "HG800.1/Peel",
+        "nea": "1913613",
+        "titulo": "The neuroscience of language"
+    },
+    {
+        "signatura": "HG801.5/Schn",
+        "nea": "1913528",
+        "titulo": "Reduced parenthetical clauses as mitigators a corpus study o"
+    },
+    {
+        "signatura": "HG801/Vill",
+        "nea": "1913938",
+        "titulo": "Morderse la lengua corrección política y posverdad"
+    },
+    {
+        "signatura": "HG802.0-3/Cham",
+        "nea": "1913831",
+        "titulo": "Lo que nunca se aprendió en clase eufemismos y disfemismos"
+    },
+    {
+        "signatura": "HG805.0/Toma",
+        "nea": "1913473",
+        "titulo": "Storie della lingua litaliano in dieci lezioni"
+    },
+    {
+        "signatura": "HG806.0-5/Alar",
+        "nea": "1913888",
+        "titulo": "Suma de estudios de gramática funcional del español"
+    },
+    {
+        "signatura": "HG806.0-5/Alar",
+        "nea": "1913890",
+        "titulo": "Suma de estudios de gramática funcional del español"
+    },
+    {
+        "signatura": "HG806.0-5/Comp",
+        "nea": "1913523",
+        "titulo": "Sintaxis histórica de la lengua española"
+    },
+    {
+        "signatura": "HG806.0-5/Comp",
+        "nea": "1913524",
+        "titulo": "Sintaxis histórica de la lengua española"
+    },
+    {
+        "signatura": "HG806.0-5/Comp",
+        "nea": "1913522",
+        "titulo": "Sintaxis histórica de la lengua española"
+    },
+    {
+        "signatura": "HG806.0-5/Intr",
+        "nea": "1913462",
+        "titulo": "Introducción a la sintaxis del español"
+    },
+    {
+        "signatura": "HG806.0-5/Lope",
+        "nea": "1913786",
+        "titulo": "Las etiquetas discursivas cohesión anafórica y categorizac"
+    },
+    {
+        "signatura": "HG806.0-5/Vand",
+        "nea": "1913791",
+        "titulo": "Las construcciones apositivas de referente humano en el disc"
+    },
+    {
+        "signatura": "HG806.0-82/Hern",
+        "nea": "1913553",
+        "titulo": "Teorías psicosociolingüísticas y su aplicación a la adquisic"
+    },
+    {
+        "signatura": "HG806.0/Pons",
+        "nea": "1913933",
+        "titulo": "El dedo en los labios el silencio en la historia de la leng"
+    },
+    {
+        "signatura": "HG806.0/Voce",
+        "nea": "1913597",
+        "titulo": "Voces del hispanismo nuevas exploraciones lingüísticas y l"
+    },
+    {
+        "signatura": "HG806Ast-3/Sanc AST",
+        "nea": "1913750",
+        "titulo": "Diccionariu de la mazana el pumar y la sidra con refranes"
+    },
+    {
+        "signatura": "HG806Ast-3/Soli AST",
+        "nea": "1913958",
+        "titulo": "Nosotros los pexes"
+    },
+    {
+        "signatura": "HG806EO-87/Rieg AST",
+        "nea": "1913907",
+        "titulo": "Segundas foyas cuaderno dactividades deonaviego 3º ES"
+    },
+    {
+        "signatura": "HG806EO-87/Rieg AST",
+        "nea": "1913914",
+        "titulo": "Segundas foyas cuaderno dactividades deonaviego 4º ES"
+    },
+    {
+        "signatura": "HG806EO-87/Rieg AST",
+        "nea": "1913904",
+        "titulo": "Segundas foyas cuaderno dactividades deonaviego 1º ES"
+    },
+    {
+        "signatura": "HG806EO-87/Rieg AST",
+        "nea": "1913906",
+        "titulo": "Segundas foyas cuaderno dactividades deonaviego 2º ES"
+    },
+    {
+        "signatura": "HG807/Text",
+        "nea": "1913685",
+        "titulo": "Texto y contexto en griego antiguo y latín"
+    },
+    {
+        "signatura": "HG82.08/Gall",
+        "nea": "1913794",
+        "titulo": "Usos políticos del lenguaje un discurso paradójico"
+    },
+    {
+        "signatura": "HG82.08/Labo",
+        "nea": "1913813",
+        "titulo": "Lágrimas de cocodrilo análisis del discurso político Xav"
+    },
+    {
+        "signatura": "HG82.08/Sanc",
+        "nea": "1913883",
+        "titulo": "Pragmática de los titulares políticos las estrategias impl"
+    },
+    {
+        "signatura": "HG82.08/Spag",
+        "nea": "1913494",
+        "titulo": "Elementos de crítica textual"
+    },
+    {
+        "signatura": "HG82.09/Arno",
+        "nea": "1913614",
+        "titulo": "Medieval riverscapes environment and memory in northwest E"
+    },
+    {
+        "signatura": "HG82.09/Dalm",
+        "nea": "1913460",
+        "titulo": "Los Goytisolo"
+    },
+    {
+        "signatura": "HG860-1.09/Fran",
+        "nea": "1913676",
+        "titulo": "Eternità di Spagna lassoluto in poesia nella Spagna del"
+    },
+    {
+        "signatura": "HG860-1.09/Jorn",
+        "nea": "1914009",
+        "titulo": "Ángel me dicen actas de las I Jornadas Académicas sobre Á"
+    },
+    {
+        "signatura": "HG860-1.09/Poes",
+        "nea": "1913513",
+        "titulo": "Poesía de los siglos XVI y XVII"
+    },
+    {
+        "signatura": "HG860-2.09/Rubi",
+        "nea": "1913625",
+        "titulo": "Ideología y teatro en España 18901900"
+    },
+    {
+        "signatura": "HG860-3.09/Diaz",
+        "nea": "1913950",
+        "titulo": "El cuento español en el siglo XX"
+    },
+    {
+        "signatura": "HG860-3.09/Muje",
+        "nea": "1913849",
+        "titulo": "Mujeres novelistas jóvenes narradoras de los noventa"
+    },
+    {
+        "signatura": "HG860.09/Amor",
+        "nea": "1913935",
+        "titulo": "Antología comentada de la literatura española"
+    },
+    {
+        "signatura": "HG860.09/Amor",
+        "nea": "1913934",
+        "titulo": "Antología comentada de la literatura española"
+    },
+    {
+        "signatura": "HG860.09/Garc",
+        "nea": "1913915",
+        "titulo": "Historia de la literatura española"
+    },
+    {
+        "signatura": "HG860.09/Liss",
+        "nea": "1913549",
+        "titulo": "Realismo y naturalismo en España en la segunda mitad del sig"
+    },
+    {
+        "signatura": "HG860.09/Mene",
+        "nea": "1913853",
+        "titulo": "Historia de la literatura española"
+    },
+    {
+        "signatura": "HG860.09/Mene",
+        "nea": "1913886",
+        "titulo": "Historia de la literatura española"
+    },
+    {
+        "signatura": "HG860.09/Mene",
+        "nea": "1913885",
+        "titulo": "Historia de la literatura española"
+    },
+    {
+        "signatura": "HG860.09/Mene",
+        "nea": "1913855",
+        "titulo": "Historia de la literatura española"
+    },
+    {
+        "signatura": "HG860.09/Migr",
+        "nea": "1913608",
+        "titulo": "Migraciones exilios y desplazamientos en las literaturas hi"
+    },
+    {
+        "signatura": "HG860.09/Prie",
+        "nea": "1913852",
+        "titulo": "Manual de literatura española actual de la transición al t"
+    },
+    {
+        "signatura": "HG860.09/Sete",
+        "nea": "1913925",
+        "titulo": "Setenta años después el exilio literario español de 1939"
+    },
+    {
+        "signatura": "HG860.09/Zule",
+        "nea": "1913627",
+        "titulo": "Historia de la crítica española contemporánea"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913484",
+        "titulo": "Narraciones breves"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913602",
+        "titulo": "Cuentos morales"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913500",
+        "titulo": "El Señor y lo demás son cuentos"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913556",
+        "titulo": "Apuntes de clase de Clarín"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913496",
+        "titulo": "Textos y contextos de Clarín los artículos de Leopoldo Al"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913490",
+        "titulo": "El gallo de Sócrates y otros cuentos"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913612",
+        "titulo": "Juan Ruiz Periódico humorístico"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913505",
+        "titulo": "Preludios de Clarín"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913479",
+        "titulo": "La Regenta"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913478",
+        "titulo": "La Regenta"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913609",
+        "titulo": "Clarín en su obra ejemplar"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913480",
+        "titulo": "La Regenta"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913493",
+        "titulo": "Obra olvidada Artículos de crítica"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913485",
+        "titulo": "Pipá"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913482",
+        "titulo": "Adiós Cordera y otros cuentos"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913502",
+        "titulo": "La Regenta"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913475",
+        "titulo": "La Regenta"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913476",
+        "titulo": "La Regenta"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913501",
+        "titulo": "La Regenta"
+    },
+    {
+        "signatura": "HG860/Alas",
+        "nea": "1913474",
+        "titulo": "La Regenta"
+    },
+    {
+        "signatura": "HG860/Alas03=69.0",
+        "nea": "1913489",
+        "titulo": "A Corregedora"
+    },
+    {
+        "signatura": "HG860/Alas06Agud",
+        "nea": "1913550",
+        "titulo": "Inspiración y estética en La Regenta de Clarín"
+    },
+    {
+        "signatura": "HG860/Alas06Alba",
+        "nea": "1913557",
+        "titulo": "Teoría de los mundos posibles y macroestructura narrativa"
+    },
+    {
+        "signatura": "HG860/Alas06Avel",
+        "nea": "1913618",
+        "titulo": "Clarín y La Regenta 18841984 18851985"
+    },
+    {
+        "signatura": "HG860/Alas06Bese",
+        "nea": "1913615",
+        "titulo": "Leopoldo Alas teoría y crítica de la novela española"
+    },
+    {
+        "signatura": "HG860/Alas06Bese",
+        "nea": "1913621",
+        "titulo": "Leopoldo Alas crítico literario"
+    },
+    {
+        "signatura": "HG860/Alas06Bese",
+        "nea": "1913491",
+        "titulo": "Clarín y La Regenta"
+    },
+    {
+        "signatura": "HG860/Alas06Bobe",
+        "nea": "1913545",
+        "titulo": "Teoría general de la novela semiología de La Regenta"
+    },
+    {
+        "signatura": "HG860/Alas06Clar",
+        "nea": "1913492",
+        "titulo": "Clarín y su obra en el centenario de La Regenta Barce"
+    },
+    {
+        "signatura": "HG860/Alas06Clar",
+        "nea": "1913481",
+        "titulo": "Clarín y La Regenta en su tiempo actas del Simposio Inte"
+    },
+    {
+        "signatura": "HG860/Alas06Garc",
+        "nea": "1913554",
+        "titulo": "El pensamiento de Leopoldo Alas Clarín"
+    },
+    {
+        "signatura": "HG860/Alas06Mare",
+        "nea": "1913619",
+        "titulo": "Hipótesis sobre Clarín El pensamiento crítico del reformis"
+    },
+    {
+        "signatura": "HG860/Alas06Orti",
+        "nea": "1913616",
+        "titulo": "Las mujeres de Clarín Esperpentos y camafeos"
+    },
+    {
+        "signatura": "HG860/Alas06Sanc",
+        "nea": "1913714",
+        "titulo": "El teatro en la novela Galdós y Clarín"
+    },
+    {
+        "signatura": "HG860/Alas06Tint",
+        "nea": "1913483",
+        "titulo": "La Regenta de Clarín y la crítica de su tiempo"
+    },
+    {
+        "signatura": "HG860/Alas06Torr",
+        "nea": "1913610",
+        "titulo": "Los prólogos de Leopoldo Alas"
+    },
+    {
+        "signatura": "HG860/Alas06Vare",
+        "nea": "1913486",
+        "titulo": "Leopoldo Alas Clarín"
+    },
+    {
+        "signatura": "HG860/Azor",
+        "nea": "1913917",
+        "titulo": "La ruta de Don Quijote"
+    },
+    {
+        "signatura": "HG860/Leon",
+        "nea": "1913955",
+        "titulo": "Poesías completas propias imitaciones y traducciones"
+    },
+    {
+        "signatura": "HG860/Medi06Lumb",
+        "nea": "1913626",
+        "titulo": "Nosotros los Rivero 19522017 historia vicisitudes y e"
+    },
+    {
+        "signatura": "HG860/Niet",
+        "nea": "1913559",
+        "titulo": "Obras completas"
+    },
+    {
+        "signatura": "HG860/Oter06Comp",
+        "nea": "1913921",
+        "titulo": "Compromisos y palabras bajo el franquismo recordando a Bla"
+    },
+    {
+        "signatura": "HG860/Poes",
+        "nea": "1913919",
+        "titulo": "Poesía lírica del Siglo de Oro"
+    },
+    {
+        "signatura": "HG860/Poes",
+        "nea": "1913923",
+        "titulo": "Poesía de la Edad de Oro"
+    },
+    {
+        "signatura": "HG860/Roja06Cele",
+        "nea": "1913912",
+        "titulo": "La Celestina V Centenario 14991999 actas del congres"
+    },
+    {
+        "signatura": "HG860/Sanc",
+        "nea": "1913957",
+        "titulo": "Ñaque o De piojos y actores Ay Carmela"
+    },
+    {
+        "signatura": "HG860Alas06Dura",
+        "nea": "1913504",
+        "titulo": "La Regenta de Leopoldo Alas Clarín"
+    },
+    {
+        "signatura": "HG860Alas06Liss",
+        "nea": "1913499",
+        "titulo": "Clarín político"
+    },
+    {
+        "signatura": "HG860Alas06Liss",
+        "nea": "1913498",
+        "titulo": "Clarín político"
+    },
+    {
+        "signatura": "HG869.9.09/Rodr",
+        "nea": "1913792",
+        "titulo": "Literatura y narcotráfico en Galicia formas narrativas si"
+    },
+    {
+        "signatura": "HG882/Dost",
+        "nea": "1913477",
+        "titulo": "Crimen y castigo"
+    },
+    {
+        "signatura": "HG902/Must",
+        "nea": "1913861",
+        "titulo": "Must Farm piledwelling settlement"
+    },
+    {
+        "signatura": "HG903/46/632/Atap",
+        "nea": "1913692",
+        "titulo": "Atapuerca el gran tesoro arqueológico que ilumina los secr"
+    },
+    {
+        "signatura": "HG903/46/632/Mega",
+        "nea": "1913721",
+        "titulo": "El megalitismo en las tierras de Cádiz"
+    },
+    {
+        "signatura": "HG903/46/638/Lice",
+        "nea": "1913724",
+        "titulo": "La edad del Hierro en el Alto Duero siglos VII ane I n"
+    },
+    {
+        "signatura": "HG903/46/Nean",
+        "nea": "1913693",
+        "titulo": "Neandertales la historia de una estirpe perdida"
+    },
+    {
+        "signatura": "HG929/Bene",
+        "nea": "1913459",
+        "titulo": "El plural es una lata biografía de Juan Benet"
+    },
+    {
+        "signatura": "HG929/Cirl",
+        "nea": "1913458",
+        "titulo": "Cirlot ser y no ser de un poeta único"
+    },
+    {
+        "signatura": "HG929/Cort",
+        "nea": "1913454",
+        "titulo": "Julio Cortázar el cronopio fugitivo"
+    },
+    {
+        "signatura": "HG929/Cunq",
+        "nea": "1913442",
+        "titulo": "Álvaro Cunqueiro sueño y leyenda"
+    },
+    {
+        "signatura": "HG929/Gil",
+        "nea": "1913455",
+        "titulo": "Jaime Gil de Biedma retrato de un poeta"
+    },
+    {
+        "signatura": "HG929/Guin",
+        "nea": "1913441",
+        "titulo": "Las claves de lo oscuro biografía de Ángel Guinda"
+    },
+    {
+        "signatura": "HG929/Luzz",
+        "nea": "1913558",
+        "titulo": "El primer fascista la fascinante vida y el oscuro legado d"
+    },
+    {
+        "signatura": "HG929/Sanc",
+        "nea": "1913443",
+        "titulo": "El incógnito Rafael Sánchez Ferlosio apuntes para una biog"
+    },
+    {
+        "signatura": "HG929/Stal",
+        "nea": "1913684",
+        "titulo": "La biblioteca de Stalin el dictador y sus lecturas"
+    },
+    {
+        "signatura": "HG930.27/Casa",
+        "nea": "1913887",
+        "titulo": "Láminas de la Cátedra de Paleografía y Diplomática"
+    },
+    {
+        "signatura": "HG946B/Rold",
+        "nea": "1913896",
+        "titulo": "Hispania la península ibérica en la antigüedad"
+    },
+    {
+        "signatura": "HG946C/Gaut",
+        "nea": "134353",
+        "titulo": "Historia urbana de León y Castilla en la Edad Media siglo"
+    },
+    {
+        "signatura": "HG946C/Gaut",
+        "nea": "127483",
+        "titulo": "Historia urbana de León y Castilla en la Edad Media siglo"
+    },
+    {
+        "signatura": "HG946C/Gaut",
+        "nea": "134338",
+        "titulo": "Historia urbana de León y Castilla en la Edad Media siglo"
+    },
+    {
+        "signatura": "HG946G/Gome",
+        "nea": "1913560",
+        "titulo": "Cómo terminó la guerra civil española"
+    },
+    {
+        "signatura": "HG972/Alon",
+        "nea": "1913929",
+        "titulo": "Cuba postcolonial patrimonio nación y revolución 189820"
+    },
+    {
+        "signatura": "HR07/Plur",
+        "nea": "1913965",
+        "titulo": "Plural revista mensual de literatura Madrid 1925"
+    },
+    {
+        "signatura": "HR08/Caso",
+        "nea": "1913902",
+        "titulo": "Actas del Homenaje a Alejandro Casona 19031965 Congres"
+    },
+    {
+        "signatura": "HR08/Ducr",
+        "nea": "1913897",
+        "titulo": "Homenaje a Oswald Ducrot"
+    },
+    {
+        "signatura": "HR08/Fern",
+        "nea": "1913689",
+        "titulo": "LAncien et le Nouveau considérations au sein des études f"
+    },
+    {
+        "signatura": "HRA801/08/Gill",
+        "nea": "1913672",
+        "titulo": "Table de lAtlas linguistique de la France"
+    },
+    {
+        "signatura": "HRA801/08/Gill",
+        "nea": "1913674",
+        "titulo": "Atlas linguistique de la France suppléments"
+    },
+    {
+        "signatura": "HRA801/08/Pere",
+        "nea": "1913463",
+        "titulo": "Atlas lingüístico y etnográfico de la zona norte de los Vall"
+    },
+    {
+        "signatura": "L",
+        "nea": "1914042",
+        "titulo": "El español en Argentina y Uruguay"
+    },
+    {
+        "signatura": "L",
+        "nea": "1914051",
+        "titulo": "Aire en el aire poesía 20012025"
+    },
+    {
+        "signatura": "L",
+        "nea": "1914043",
+        "titulo": "El español en Argentina y Uruguay"
+    },
+    {
+        "signatura": "L",
+        "nea": "1914036",
+        "titulo": "Valente el fulgor y las tinieblas"
+    },
+    {
+        "signatura": "L",
+        "nea": "1914044",
+        "titulo": "El español en Argentina y Uruguay"
+    },
+    {
+        "signatura": "L",
+        "nea": "1914049",
+        "titulo": "Poesía"
+    },
+    {
+        "signatura": "L",
+        "nea": "1914053",
+        "titulo": "Todos aquellos sueños poesía 19922026"
+    },
+    {
+        "signatura": "L",
+        "nea": "1914055",
+        "titulo": "Poesía completa"
+    },
+    {
+        "signatura": "L",
+        "nea": "1914041",
+        "titulo": "La boz de Bulgaria"
+    },
+    {
+        "signatura": "L7-2061-I",
+        "nea": "1913954",
+        "titulo": "Mapa de la documentación teatral en España"
+    },
+    {
+        "signatura": "L7-2061-II",
+        "nea": "1913952",
+        "titulo": "Guía de obras de referencia y consulta"
+    },
+    {
+        "signatura": "L802-1411",
+        "nea": "1913877",
+        "titulo": "Reformulations and relevance theory pragmatics the case of"
+    },
+    {
+        "signatura": "L803-0328",
+        "nea": "1913681",
+        "titulo": "Etymologisches Worterbuch der deutschen Sprache"
+    },
+    {
+        "signatura": "L804-0607",
+        "nea": "1913880",
+        "titulo": "Discourse markers in Romance Languages Crosslinguistic app"
+    },
+    {
+        "signatura": "L82-4411",
+        "nea": "1913495",
+        "titulo": "Obra olvidada Artículos de crítica"
+    },
+    {
+        "signatura": "L820-6692",
+        "nea": "1913590",
+        "titulo": "El hombre que fue Jueves"
+    },
+    {
+        "signatura": "L820-6693",
+        "nea": "1913588",
+        "titulo": "Hombre lento"
+    },
+    {
+        "signatura": "L820-6694",
+        "nea": "1913948",
+        "titulo": "60 sonetos"
+    },
+    {
+        "signatura": "L830-0912",
+        "nea": "1913701",
+        "titulo": "Der Sandmann"
+    },
+    {
+        "signatura": "L830-0914",
+        "nea": "1913806",
+        "titulo": "Reden im Herbst"
+    },
+    {
+        "signatura": "L830-0915",
+        "nea": "1913871",
+        "titulo": "Im Dialog aktuelle Texte"
+    },
+    {
+        "signatura": "L850-0763",
+        "nea": "1913807",
+        "titulo": "Suoni dinfinito poesie"
+    },
+    {
+        "signatura": "L86-08826",
+        "nea": "1913964",
+        "titulo": "Epístola moral a fabio y otros escritos"
+    },
+    {
+        "signatura": "L86-09668",
+        "nea": "1913617",
+        "titulo": "Luis Bonafoux La víbora de Asnieres"
+    },
+    {
+        "signatura": "L86-09900-IV",
+        "nea": "1913851",
+        "titulo": "Historia y antología del teatro español de posguerra 19401"
+    },
+    {
+        "signatura": "L86-10217",
+        "nea": "1913924",
+        "titulo": "Setenta años después el exilio literario español de 1939"
+    },
+    {
+        "signatura": "L86-14791",
+        "nea": "1913517",
+        "titulo": "Decires dirigidos a Don Alfonso Carrillo arzobispo de Toled"
+    },
+    {
+        "signatura": "L86-14792",
+        "nea": "1913940",
+        "titulo": "Los conceptos de Rococó Neoclasicismo y prerromanticismo en"
+    },
+    {
+        "signatura": "L86-14793",
+        "nea": "1913939",
+        "titulo": "Porcel y el barroquismo literario del siglo XVIII síntesi"
+    },
+    {
+        "signatura": "L86-14794",
+        "nea": "1913937",
+        "titulo": "La literatura española del siglo XVIII y sus fuentes extranj"
+    },
+    {
+        "signatura": "L86-14797",
+        "nea": "1913963",
+        "titulo": "Setenta años después el exilio literario español de 1939"
+    },
+    {
+        "signatura": "L86-14798",
+        "nea": "1913854",
+        "titulo": "Un cielo sin salida"
+    },
+    {
+        "signatura": "L86-14799",
+        "nea": "1913850",
+        "titulo": "Obras para la escena"
+    },
+    {
+        "signatura": "LCR-2658",
+        "nea": "1913944",
+        "titulo": "Incorporaciones léxicas en el español del siglo XVIII"
+    },
+    {
+        "signatura": "LCR-2659",
+        "nea": "1913943",
+        "titulo": "Feijoo y el misterio de la naturaleza animal"
+    },
+    {
+        "signatura": "LCR-2660",
+        "nea": "1913942",
+        "titulo": "La lexicografía académica del siglo XVIII"
+    },
+    {
+        "signatura": "LCR-2661",
+        "nea": "1913916",
+        "titulo": "El tema del árbol caido en Meléndez Valdés"
     }
 ]
