@@ -220,7 +220,6 @@
             return Array.from(mapaEjemplares.values());
         }
 
-        // CORREGIDO: Ahora acepta el título y lo pasa por URL a localizador.html
         function localizarLibroDirecto(signatura, titulo) {
             let sigOriginal = signatura.trim();
             if (!sigOriginal.startsWith("HG")) {
@@ -379,7 +378,7 @@
             if (btnElement) {
                 textoOriginalBtn = btnElement.innerHTML;
                 btnElement.disabled = true;
-                btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Buscando...';
+                btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Presentando...';
             }
 
             const modal = document.getElementById("modalBibliografia");
@@ -388,15 +387,17 @@
             const modalContent = modal.querySelector('.modal-content');
 
             tituloModal.innerText = nombreAsignatura;
-            contenedorLista.innerHTML = '<div class="text-center py-16 text-stone-500 font-mono text-xs uppercase tracking-widest"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando bibliografía y comprobando estanterías...</div>';
+            
+            // FEEDBACK VISUAL MEJORADO: Indicador claro de presentación en curso
+            contenedorLista.innerHTML = `
+                <div class="text-center py-20 flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-spinner fa-spin text-4xl text-sand mb-4"></i>
+                    <p class="font-mono text-xs text-stone-700 uppercase tracking-widest font-bold">Presentando los libros recomendados</p>
+                    <p class="font-serif text-lg text-stone-500 mt-1">${nombreAsignatura}</p>
+                </div>`;
             
             modal.classList.add('modal-active');
             modalContent.classList.add('modal-content-active');
-
-            if (btnElement) {
-                btnElement.disabled = false;
-                btnElement.innerHTML = textoOriginalBtn;
-            }
 
             try {
                 const data = await cargarDatos();
@@ -452,7 +453,6 @@
                                     <div class="flex flex-wrap gap-2 mt-2">`;
                                             
                                 coincidencias.forEach(c => {
-                                    // CORREGIDO: Se pasa tanto c.signatura como c.titulo debidamente escapados
                                     const tituloSeguro = (c.titulo || '').replace(/'/g, "\\'");
                                     html += `
                                         <button class="inline-flex items-center bg-stone-900 text-sand px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider hover:bg-sand hover:text-stone-900 transition-colors" onclick="localizarLibroDirecto('${c.signatura}', '${tituloSeguro}')" title="Haz clic para generar ruta">
@@ -483,6 +483,12 @@
             } catch (error) {
                 console.error("Error:", error);
                 contenedorLista.innerHTML = '<div class="text-center py-16 text-red-700 font-mono text-xs uppercase tracking-widest">Error de sistema.</div>';
+            } finally {
+                // Restaurar el botón original una vez finalizado el proceso de carga
+                if (btnElement) {
+                    btnElement.disabled = false;
+                    btnElement.innerHTML = textoOriginalBtn;
+                }
             }
         }
 
