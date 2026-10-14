@@ -220,7 +220,6 @@
             return Array.from(mapaEjemplares.values());
         }
 
-        // CORREGIDO: Ahora acepta el título y lo pasa por URL a localizador.html
         function localizarLibroDirecto(signatura, titulo) {
             let sigOriginal = signatura.trim();
             if (!sigOriginal.startsWith("HG")) {
@@ -388,17 +387,29 @@
             const modalContent = modal.querySelector('.modal-content');
 
             tituloModal.innerText = nombreAsignatura;
-            contenedorLista.innerHTML = '<div class="text-center py-16 text-stone-500 font-mono text-xs uppercase tracking-widest"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando bibliografía y comprobando estanterías...</div>';
+            
+            // FEEDBACK VISUAL CONSISTENTE EN CADA CLIC (INCLUSO CON DATOS EN CACHÉ)
+            contenedorLista.innerHTML = `
+                <div class="bg-stone-200/80 border-l-4 border-sand p-6 mb-6 flex items-center space-x-4 animate-pulse shadow-sm">
+                    <i class="fa-solid fa-magnifying-glass-arrow-right text-3xl text-sand"></i>
+                    <div>
+                        <p class="font-mono text-xs font-bold text-stone-900 uppercase tracking-widest">Realizando búsqueda de bibliografía</p>
+                        <p class="font-sans text-xs text-stone-600 mt-0.5">Consultando registros y comprobando disponibilidad física en la sala...</p>
+                    </div>
+                </div>
+                <div class="text-center py-12 flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-spinner fa-spin text-4xl text-sand mb-4"></i>
+                    <p class="font-mono text-xs text-stone-700 uppercase tracking-widest font-semibold">Procesando textos recomendados para:</p>
+                    <p class="font-serif text-xl text-stone-800 mt-1">${nombreAsignatura}</p>
+                </div>`;
             
             modal.classList.add('modal-active');
             modalContent.classList.add('modal-content-active');
 
-            if (btnElement) {
-                btnElement.disabled = false;
-                btnElement.innerHTML = textoOriginalBtn;
-            }
-
             try {
+                // Pequeña pausa fluida opcional para asegurar que el indicador visual aparezca siempre de forma uniforme en cualquier clic
+                await new Promise(resolve => setTimeout(resolve, 350));
+
                 const data = await cargarDatos();
                 const items = data.filter(item => 
                     item.ASIGNATURA && 
@@ -452,7 +463,6 @@
                                     <div class="flex flex-wrap gap-2 mt-2">`;
                                             
                                 coincidencias.forEach(c => {
-                                    // CORREGIDO: Se pasa tanto c.signatura como c.titulo debidamente escapados
                                     const tituloSeguro = (c.titulo || '').replace(/'/g, "\\'");
                                     html += `
                                         <button class="inline-flex items-center bg-stone-900 text-sand px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider hover:bg-sand hover:text-stone-900 transition-colors" onclick="localizarLibroDirecto('${c.signatura}', '${tituloSeguro}')" title="Haz clic para generar ruta">
@@ -483,6 +493,12 @@
             } catch (error) {
                 console.error("Error:", error);
                 contenedorLista.innerHTML = '<div class="text-center py-16 text-red-700 font-mono text-xs uppercase tracking-widest">Error de sistema.</div>';
+            } finally {
+                // Restaurar el botón original al finalizar el proceso
+                if (btnElement) {
+                    btnElement.disabled = false;
+                    btnElement.innerHTML = textoOriginalBtn;
+                }
             }
         }
 
