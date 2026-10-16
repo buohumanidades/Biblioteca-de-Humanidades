@@ -177,7 +177,7 @@
                 </p>
             </div>
 
-            <!-- Formulario de búsqueda con apertura en la misma ventana -->
+            <!-- Formulario de búsqueda que redirige a localizador.html -->
             <form onsubmit="ejecutarBusqueda(event)" class="relative max-w-4xl">
                 <div class="flex flex-col sm:flex-row gap-2">
                     <input type="text" id="input-busqueda-index" placeholder="Escribe signatura, título o palabra clave..." 
@@ -323,7 +323,7 @@
             <!-- Copyright and Credits -->
             <div class="flex flex-col sm:flex-row justify-between items-center pt-8 text-stone-500 text-[11px]">
                 <span>© 2026 Universidad de Oviedo · Biblioteca de Humanidades</span>
-                <a href="#" <span class="mt-2 sm:mt-0 text-stone-400">INICIO</span></a>
+                <a href="#" class="mt-2 sm:mt-0 text-stone-400">INICIO</a>
             </div>
 
         </div>
@@ -340,7 +340,7 @@
             <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-[11px] md:text-xs">
                 <li><a href="#" onclick="abrirGradoDirecto(event, 'grado1')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Estudios Clásicos y Románicos</a></li>
                 <li><a href="#" onclick="abrirGradoDirecto(event, 'grado2')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Estudios Ingleses</a></li>
-                <li><a href="Grados/grado3.html" onclick="abrirGradoDirecto(event, 'grado3')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Filosofía</a></li>
+                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado3')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Filosofía</a></li>
                 <li><a href="#" onclick="abrirGradoDirecto(event, 'grado4')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Geografía y Ordenación del Territorio</a></li>
                 <li><a href="#" onclick="abrirGradoDirecto(event, 'grado5')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Historia</a></li>
                 <li><a href="#" onclick="abrirGradoDirecto(event, 'grado6')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Historia del Arte</a></li>
@@ -355,13 +355,18 @@
     <script>
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
 
-        // Redirección de Búsqueda a resultados.html en la misma ventana
+        // Redirección al localizador oficial configurado con la jerarquía de búsqueda
         function ejecutarBusqueda(event) {
             if (event) event.preventDefault();
             const input = document.getElementById('input-busqueda-index');
             const texto = input ? input.value.trim() : '';
             if (texto) {
-                window.location.href = `resultados.html?q=${encodeURIComponent(texto)}`;
+                // Comprueba si es una signatura (empieza por HG) o un título/palabra clave
+                if (texto.toUpperCase().startsWith('HG')) {
+                    window.location.href = `localizador.html?sig=${encodeURIComponent(texto)}`;
+                } else {
+                    window.location.href = `localizador.html?titulo=${encodeURIComponent(texto)}`;
+                }
             }
         }
 
@@ -369,29 +374,7 @@
             const input = document.getElementById('input-busqueda-index');
             if (input) {
                 input.value = filtro;
-                ejecutarBusqueda();
-            }
-        }
-
-        // Sumar Visitas y Contadores
-        async function incrementarVisitasIndex() {
-            const numVisitas = document.getElementById('numVisitas');
-            if (!numVisitas) return;
-            const hoy = new Date();
-            const fechaString = hoy.getFullYear() + "-" + String(hoy.getMonth() + 1).padStart(2, '0') + "-" + String(hoy.getDate()).padStart(2, '0');
-            const fechaTexto = "TEXTO_" + fechaString; 
-            const timestamp = hoy.getTime(); 
-
-            try {
-                const respuesta = await fetch(`${GOOGLE_SCRIPT_URL}?tipo=visitas_index&celda=A1&accion=sumar_con_fecha&fecha=${fechaTexto}&t=${timestamp}`, {
-                    method: 'GET',
-                    redirect: 'follow'
-                });
-                const datos = await respuesta.json();
-                const valorVisitas = datos.visitas ?? datos.valor ?? datos.A1 ?? datos.resultado ?? datos.total;
-                numVisitas.textContent = (valorVisitas !== undefined && valorVisitas !== null) ? valorVisitas : "--";
-            } catch (error) {
-                if (numVisitas.textContent === '...') numVisitas.textContent = "Offline";
+                window.location.href = `localizador.html?sig=${encodeURIComponent(filtro)}`;
             }
         }
 
@@ -423,7 +406,6 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            incrementarVisitasIndex();
             refrescarTodosLosContadores();
             setInterval(refrescarTodosLosContadores, 60000);
         });
