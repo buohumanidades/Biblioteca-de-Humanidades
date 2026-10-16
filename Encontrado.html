@@ -61,63 +61,62 @@
 
     <!-- CABECERA PRINCIPAL (Blanca) -->
     <header class="bg-white/90 backdrop-blur-md grid-line-b shrink-0 z-10 shadow-sm">
-        <div class="max-w-[1600px] mx-auto px-4 py-3 flex flex-col w-full">
+        <div class="max-w-full mx-auto px-4 py-2 flex flex-col w-full">
             <span id="header-signatura" class="text-base font-mono font-bold tracking-widest text-stone-900 uppercase truncate" title="Signatura">
                 CARGANDO...
             </span>
-            <span id="header-titulo" class="text-sm text-stone-600 font-sans font-medium truncate" title="Título del Libro">
+            <span id="header-titulo" class="text-xs md:text-sm text-stone-600 font-sans font-medium truncate" title="Título del Libro">
                 Cargando título...
             </span>
         </div>
     </header>
 
-    <!-- CONTENEDOR DE LA APLICACIÓN -->
-    <main class="flex-1 flex flex-col max-w-[1600px] mx-auto w-full px-4 py-4 gap-4 overflow-hidden">
+    <!-- CONTENEDOR DE LA APLICACIÓN (Pantalla completa ampliada) -->
+    <main class="flex-1 flex flex-col max-w-full mx-auto w-full px-2 md:px-4 py-2 gap-2 overflow-hidden">
         
-        <!-- BANDA HORIZONTAL NEGRA DE UBICACIÓN (Datos a un lado, Estantería al otro) -->
-        <div class="w-full flex flex-col md:flex-row justify-between shadow-xl rounded-sm border-l-4 border-sand bg-stone-900 shrink-0 text-stone-100 p-4 md:p-5 gap-4">
+        <!-- BANDA HORIZONTAL NEGRA DE UBICACIÓN -->
+        <div class="w-full flex flex-col md:flex-row justify-between shadow-lg rounded-sm border-l-4 border-sand bg-stone-900 shrink-0 text-stone-100 p-3 md:p-4 gap-3">
             
             <!-- Bloque Izquierdo: Piso, Zona, Sector -->
-            <div class="flex-1 flex flex-col md:flex-row gap-4 md:gap-8 border-b md:border-b-0 md:border-r border-stone-700 pb-4 md:pb-0 md:pr-8">
+            <div class="flex-1 flex flex-col md:flex-row gap-3 md:gap-6 border-b md:border-b-0 md:border-r border-stone-700 pb-3 md:pb-0 md:pr-6">
                 
-                <div class="flex flex-row md:flex-col gap-4 md:gap-1">
+                <div class="flex flex-row md:flex-col gap-3 md:gap-1">
                     <!-- PLANTA -->
-                    <div class="flex flex-col min-w-[80px]">
-                        <span class="text-[10px] md:text-xs font-mono text-stone-400 uppercase tracking-widest mb-1">Piso</span>
-                        <span id="txt-planta" class="font-serif text-lg md:text-2xl text-white">--</span>
+                    <div class="flex flex-col min-w-[70px]">
+                        <span class="text-[9px] md:text-[10px] font-mono text-stone-400 uppercase tracking-widest">Piso</span>
+                        <span id="txt-planta" class="font-serif text-base md:text-xl text-white">--</span>
                     </div>
 
                     <!-- SALA -->
                     <div class="flex flex-col">
-                        <span class="text-[10px] md:text-xs font-mono text-stone-400 uppercase tracking-widest mb-1">Zona</span>
-                        <span id="txt-sala" class="font-serif text-lg md:text-2xl text-white">--</span>
+                        <span class="text-[9px] md:text-[10px] font-mono text-stone-400 uppercase tracking-widest">Zona</span>
+                        <span id="txt-sala" class="font-serif text-base md:text-xl text-white">--</span>
                     </div>
                 </div>
 
                 <!-- UBICACIÓN (Sector) -->
                 <div class="flex flex-col flex-1">
-                    <span class="text-[10px] md:text-xs font-mono text-stone-400 uppercase tracking-widest mb-1">Sector</span>
-                    <span id="txt-ubicacion" class="font-serif text-xl md:text-3xl text-white break-words leading-tight">--</span>
+                    <span class="text-[9px] md:text-[10px] font-mono text-stone-400 uppercase tracking-widest">Sector</span>
+                    <span id="txt-ubicacion" class="font-serif text-lg md:text-2xl text-white break-words leading-tight">--</span>
                 </div>
             </div>
 
-            <!-- Bloque Derecho: Destino Exacto y Estantería -->
-            <div class="md:w-1/3 flex flex-col items-start md:items-end justify-center pt-2 md:pt-0">
-                <div class="flex flex-row md:flex-col items-center md:items-end gap-2 md:gap-1 mb-1 md:mb-2 w-full md:w-auto">
-                    <span class="text-[10px] md:text-xs font-mono uppercase tracking-widest font-bold text-sand opacity-80">DESTINO EXACTO</span>
-                    <div id="display-signatura" class="bg-sand text-stone-900 text-[10px] font-mono font-bold px-2 py-1 rounded-sm hidden"></div>
+            <!-- Bloque Derecho: Destino Exacto y Estantería (Descripción de todassignaturas.json) -->
+            <div class="md:w-1/3 flex flex-col items-start md:items-end justify-center">
+                <div class="flex flex-row md:flex-col items-center md:items-end gap-2 md:gap-1 mb-1 w-full md:w-auto">
+                    <span class="text-[9px] md:text-[10px] font-mono uppercase tracking-widest font-bold text-sand opacity-80">DESTINO EXACTO</span>
+                    <div id="display-signatura" class="bg-sand text-stone-900 text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm hidden"></div>
                 </div>
                 <div class="text-left md:text-right">
-                    <span id="txt-estanteria" class="font-serif text-xl md:text-3xl font-bold text-sand leading-tight">--</span>
+                    <span id="txt-estanteria" class="font-serif text-lg md:text-2xl font-bold text-sand leading-tight">--</span>
                 </div>
             </div>
 
         </div> <!-- Fin Banda Horizontal -->
 
-        <!-- ZONA DEL MAPA DE UBICACIÓN (Ocupa todo el alto restante) -->
-        <div id="contenedor-mapa" class="flex-1 w-full relative rounded-sm shadow-xl bg-white border border-stone-200 hidden flex items-center justify-center p-2 overflow-hidden">
+        <!-- ZONA DEL MAPA DE UBICACIÓN (Maximizado para ocupar todo el espacio restante) -->
+        <div id="contenedor-mapa" class="flex-1 w-full relative rounded-sm shadow-xl bg-white border border-stone-200 hidden flex items-center justify-center p-1 overflow-hidden">
             <div class="relative w-full h-full flex justify-center items-center">
-                 <!-- max-h-full y object-contain para encajar perfecto -->
                 <img id="img-mapa" src="" alt="Plano de ubicación" class="max-w-full max-h-full object-contain block">
                 <div id="indicador-posicion" class="punto-rojo hidden"></div>
             </div>
@@ -164,12 +163,10 @@
                     let sigUpper = sigBuscada.trim().toUpperCase();
                     let descripcionEncontrada = '';
 
-                    // 1. Coincidencia exacta en el campo "signaturas"
                     let matchExacto = data.find(item => (item.signaturas || '').trim().toUpperCase() === sigUpper);
                     if (matchExacto) {
                         descripcionEncontrada = matchExacto.descripcion || '';
                     } else {
-                        // 2. Coincidencia por aproximación (prefijo más específico)
                         let candidatos = data.filter(item => {
                             let itemSig = (item.signaturas || '').trim().toUpperCase();
                             if (!itemSig) return false;
@@ -225,33 +222,6 @@
                 indicador.style.height = tamano;
             }
         }
-    </script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
-            const hoy = new Date();
-            const fechaString = hoy.getFullYear() + "-" + String(hoy.getMonth() + 1).padStart(2, '0') + "-" + String(hoy.getDate()).padStart(2, '0');
-            const fechaTexto = "TEXTO_" + fechaString; 
-            const timestamp = hoy.getTime(); 
-
-            fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&accion=sumar_con_fecha&fecha=${fechaTexto}&t=${timestamp}`, {
-                method: 'GET',
-                redirect: 'follow'
-            })
-            .then(respuesta => respuesta.json())
-            .then(datos => {
-                if (datos && datos.visitas !== undefined) {
-                    const nuevoTotal = datos.visitas;
-                    localStorage.setItem('ultimo_encontrados_global', nuevoTotal);
-                    try {
-                        const canal = new BroadcastChannel('canal_contador_encontrados');
-                        canal.postMessage({ nuevoConteo: nuevoTotal });
-                        canal.close();
-                    } catch (e) { }
-                }
-            }).catch(error => console.error(error));
-        });
     </script>
 </body>
 </html>
