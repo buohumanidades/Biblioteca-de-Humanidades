@@ -33,90 +33,102 @@
 
     const signaturaClicada = sigOriginal || sigBuscada || 'Desconocida';
 
-    // Normalizador de texto (elimina tildes y pasa a mayúsculas)
-    function normalizar(str) {
-        return (str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
-    }
-
-    // Artículos, preposiciones y conjunciones (Stop Words) en español
     const STOP_WORDS = new Set([
-        "EL", "LA", "LOS", "LAS", "UN", "UNA", "UNOS", "UNAS",
-        "Y", "E", "O", "U", "NI",
-        "DE", "DEL", "AL", "A", "ANTE", "BAJO", "CABE", "CON", "CONTRA",
-        "DESDE", "DURANTE", "EN", "ENTRE", "HACIA", "HASTA", "MEDIANTE",
-        "PARA", "POR", "SEGÚN", "SEGUN", "SIN", "SO", "SOBRE", "TRAS",
-        "QUE", "PORQUE", "COMO", "DONDE", "CUANDO"
+        'el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas',
+        'a', 'ante', 'bajo', 'cabe', 'con', 'contra', 'de', 'del', 'desde',
+        'durante', 'en', 'entre', 'hacia', 'hasta', 'mediante', 'para',
+        'por', 'según', 'sin', 'so', 'sobre', 'tras', 'versus', 'vía',
+        'y', 'e', 'o', 'u', 'que', 'al'
     ]);
 
-    // Algoritmo de búsqueda en 3 niveles para títulos
-    function buscarCandidatosPorTitulo(arrDatos, queryOriginal) {
-        const queryClean = normalizar(queryOriginal).trim();
-        const queryWordsRaw = queryClean.replace(/[^A-Z0-9\s]/g, " ").split(/\s+/).filter(Boolean);
-        const keywords = queryWordsRaw.filter(w => !STOP_WORDS.has(w));
-
-        let resultadosConPuntuacion = arrDatos.map(item => {
-            let tituloOriginal = item.titulo || "";
-            let tituloNorm = normalizar(tituloOriginal);
-            let tituloWordsRaw = tituloNorm.replace(/[^A-Z0-9\s]/g, " ").split(/\s+/).filter(Boolean);
-
-            let score = 0;
-            let tier = 4; // 4 = sin coincidencia
-
-            // NIVEL 1: Empieza exactamente con el texto de búsqueda completo
-            if (tituloNorm.startsWith(queryClean)) {
-                tier = 1;
-                score = 1000 + (100 - Math.min(tituloNorm.length, 100));
-            }
-            // NIVEL 2: Contiene el texto de búsqueda completo en cualquier parte del título
-            else if (tituloNorm.includes(queryClean)) {
-                tier = 2;
-                score = 500 + (100 - Math.min(tituloNorm.length, 100));
-            }
-            // NIVEL 3: Contiene todas las palabras clave (sin preposiciones/artículos) independiente de su orden
-            else if (keywords.length > 0) {
-                let matchesAll = keywords.every(kw => tituloWordsRaw.includes(kw));
-                if (matchesAll) {
-                    tier = 3;
-                    score = 100 + (keywords.length * 10);
-                }
-            }
-
-            return { item, tier, score };
-        });
-
-        let filtrados = resultadosConPuntuacion.filter(r => r.tier <= 3);
-        filtrados.sort((a, b) => {
-            if (a.tier !== b.tier) {
-                return a.tier - b.tier;
-            }
-            return b.score - a.score;
-        });
-
-        return filtrados.map(r => r.item);
+    function limpiarTextoLocal(str) {
+        if (!str) return '';
+        return str.toString()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-zA-Z0-9\s]/g, " ")
+            .replace(/\s+/g, " ")
+            .trim()
+            .toLowerCase();
     }
 
-    // CASO 1: Búsqueda por Título / Texto (Leyendo libros1.json y libros2.json)
+    // Algoritmo de 3 niveles para búsqueda por título
+    function buscarLibrosPorTituloLocal(libros, textoIngresado) {
+        const queryOriginal = textoIngresado.trim();
+        if (!queryOriginal) return [];
+
+        const queryNorm = limpiarTextoLocal(queryOriginal);
+        const palabrasQuery = queryNorm.split(/\s+/).filter(p => p.length > 0);
+        const keywords = palabrasQuery.filter(p => !STOP_WORDS.has(p));
+
+        let tier1 = []; // Comienzan exactamente con el texto completo
+        let tier2 = []; // Contienen el texto completo en cualquier parte
+        let tier3 = []; // Contienen todas las palabras clave (sin preposiciones) en cualquier orden
+
+        libros.forEach(libro => {
+            const tituloRaw = libro.titulo || libro.Titulo || libro.TITULO || '';
+            const tituloNorm = limpiarTextoLocal(tituloRaw);
+            if (!tituloNorm) return;
+
+            if (tituloNorm.startsWith(queryNorm)) {
+                tier1.push(libro);
+            } else if (tituloNorm.includes(queryNorm)) {
+                tier2.push(libro);
+            } else if (keywords.length > 0 && keywords.every(kw => tituloNorm.includes(kw))) {
+                tier3.push(libro);
+            }
+        });
+
+        const sortFn = (a, b) => {
+            const tA = (a.titulo || a.Titulo || a.TITULO || '').trim();
+            const tB = (b.titulo || b.Titulo || b.TITULO || '').trim();
+            return tA.localeCompare(tB, 'es');
+        };
+
+        tier1.sort(sortFn);
+        tier2.sort(sortFn);
+        tier3.sort(sortFn);
+
+        const combinados = [...tier1, ...tier2, ...tier3];
+        const vistos = new Set();
+        const resultadosUnicos = [];
+        for (const item of combinados) {
+            const idUnico = (item.signatura || item.Signatura || '') + '|' + (item.titulo || item.Titulo || '');
+            if (!vistos.has(idUnico)) {
+                vistos.add(idUnico);
+                resultadosUnicos.push(item);
+            }
+        }
+        return resultadosUnicos;
+    }
+
+    // CASO 1: Búsqueda por Título
     if (!sigBuscada && valTitulo) {
         Promise.all([
-            fetch('libros1.json').then(res => res.ok ? res.json() : []).catch(() => []),
-            fetch('libros2.json').then(res => res.ok ? res.json() : []).catch(() => []),
+            fetch('signaturas.json').then(res => {
+                if (!res.ok) throw new Error("Error cargando signaturas.json");
+                return res.json();
+            }),
             fetch('plano.json').then(res => {
                 if (!res.ok) throw new Error("Error cargando plano.json");
                 return res.json();
             })
         ])
-        .then(([libros1, libros2, planosDatos]) => {
+        .then(([baseDatos, planosDatos]) => {
             setTimeout(() => {
-                // Combinar ambos archivos de libros
-                let arrDatos = [...(Array.isArray(libros1) ? libros1 : Object.values(libros1)), 
-                                ...(Array.isArray(libros2) ? libros2 : Object.values(libros2))];
+                let arrDatos = Array.isArray(baseDatos) ? baseDatos : 
+                    Object.keys(baseDatos).map(k => {
+                        let v = baseDatos[k];
+                        if (!v.signatura && !v.signaturas) v.signatura = k;
+                        return v;
+                    });
 
                 let arrPlanos = Array.isArray(planosDatos) ? planosDatos : Object.values(planosDatos);
 
-                let candidatos = buscarCandidatosPorTitulo(arrDatos, valTitulo);
+                let candidatos = buscarLibrosPorTituloLocal(arrDatos, valTitulo);
 
                 if (candidatos.length > 0) {
-                    let datosEncontrados = candidatos[0]; // El mejor resultado de los 3 niveles
+                    let datosEncontrados = candidatos[0]; // Tomamos el mejor resultado optimizado
                     let zona = datosEncontrados.zona || "";
                     let planoInfo = arrPlanos.find(p => p.pos_plano == zona) || {};
 
