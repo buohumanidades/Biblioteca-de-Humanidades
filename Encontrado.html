@@ -1,382 +1,206 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Procesando Búsqueda...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ubicación del Libro · Biblioteca de Humanidades</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { 
+                        stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' }, 
+                        sand: '#C5A059' 
+                    }, 
+                    fontFamily: { 
+                        serif: ['Cormorant Garamond', 'serif'], 
+                        sans: ['Plus Jakarta Sans', 'sans-serif'], 
+                        mono: ['Space Grotesk', 'monospace'] 
+                    } 
+                } 
+            } 
+        }
+    </script>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f6f7; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: #2c3e50; }
-        .loader-container { text-align: center; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); max-width: 600px; width: 90%; }
-        .spinner { border: 5px solid #ecf0f1; border-top: 5px solid #2980b9; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        h2 { font-family: 'Romana Moderna', Georgia, serif; color: #1a252f; margin-bottom: 10px; font-size: 1.5em; }
-        p { color: #7f8c8d; font-size: 0.95em; line-height: 1.4; }
-        .icono-aviso { font-size: 3em; margin-bottom: 10px; }
-        
-        /* Estilos para lista de resultados múltiples y filtros */
-        .results-list { text-align: left; max-height: 400px; overflow-y: auto; margin-top: 20px; border-top: 1px solid #ecf0f1; padding-top: 15px; }
-        .result-item { background: #faf8f5; border: 1px solid #e6dfc; padding: 12px 15px; margin-bottom: 10px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
-        .result-item:hover { background: #f4f0e8; border-color: #2980b9; }
-        .result-title { font-weight: bold; color: #1a252f; font-size: 1em; margin-bottom: 4px; }
-        .result-meta { font-size: 0.85em; color: #7f8c8d; display: flex; gap: 15px; flex-wrap: wrap; }
-        .filter-bar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; }
-        .filter-select { padding: 6px 12px; border-radius: 4px; border: 1px solid #bdc3c7; font-size: 0.9em; background: #fff; color: #2c3e50; }
+        body { 
+            background-color: #FAF8F5; 
+            color: #1A1817; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            height: 100dvh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+            margin: 0; 
+            padding: 0; 
+        }
+        .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 0.95; }
+        .grid-line-b { border-bottom: 1px solid rgba(26, 24, 23, 0.12); }
+
+        /* Animación punto rojo */
+        @keyframes parpadeo {
+            0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.3; transform: translate(-50%, -50%) scale(1.3); }
+        }
+        .punto-rojo {
+            position: absolute;
+            background-color: #ef4444;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.85);
+            animation: parpadeo 1.5s ease-in-out infinite;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+        }
     </style>
 </head>
-<body>
-    <div class="loader-container" id="contenedor-principal">
-        <div class="spinner"></div>
-        <h2>Buscando ubicación...</h2>
-        <p>Comprobando los datos en la base de datos de la biblioteca.</p>
-    </div>
+<body class="antialiased selection:bg-stone-800 selection:text-stone-50">
 
-    <script>
-    const params = new URLSearchParams(window.location.search);
-    let sigBuscada = params.get('sig');
-    const sigOriginal = params.get('orig'); 
-    const valTitulo = params.get('titulo'); 
+    <!-- CABECERA PRINCIPAL (Blanca) -->
+    <header class="bg-white/90 backdrop-blur-md grid-line-b shrink-0 z-10 shadow-sm">
+        <div class="max-w-[1600px] mx-auto px-4 py-3 flex flex-col w-full">
+            <span id="header-signatura" class="text-base font-mono font-bold tracking-widest text-stone-900 uppercase truncate" title="Signatura">
+                CARGANDO...
+            </span>
+            <span id="header-titulo" class="text-sm text-stone-600 font-sans font-medium truncate" title="Título del Libro">
+                Cargando título...
+            </span>
+        </div>
+    </header>
 
-    if (sigBuscada) {
-        sigBuscada = sigBuscada.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+(?=\d+=)/gi, "/");
-    }
-
-    const signaturaClicada = sigOriginal || sigBuscada || 'Desconocida';
-
-    // Lista de stop words (artículos y preposiciones en español)
-    const STOP_WORDS = new Set([
-        'EL', 'LA', 'LOS', 'LAS', 'UN', 'UNA', 'UNOS', 'UNAS', 
-        'DE', 'DEL', 'AL', 'A', 'EN', 'CON', 'POR', 'PARA', 'SIN', 
-        'SOBRE', 'ENTRE', 'CONTRA', 'HACIA', 'DESDE', 'HASTA', 
-        'Y', 'E', 'O', 'U', 'QUE', 'ES', 'SU', 'SUS', 'LO'
-    ]);
-
-    function limpiarYExtraerPalabras(texto) {
-        if (!texto) return [];
-        let normalizado = texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
-        let palabras = normalizado.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g,"").split(/\s+/);
-        let significativas = palabras.filter(p => p.length > 0 && !STOP_WORDS.has(p));
-        return significativas.length > 0 ? significativas : palabras;
-    }
-
-    function registrarHistorial(termino) {
-        if (!termino) return;
-        try {
-            let historial = JSON.parse(localStorage.getItem('historial_busquedas_libros') || '{}');
-            let key = termino.trim().toUpperCase();
-            historial[key] = (historial[key] || 0) + 1;
-            localStorage.setItem('historial_busquedas_libros', JSON.stringify(historial));
-        } catch(e) {}
-    }
-
-    function obtenerPuntajeHistorial(tituloItem) {
-        try {
-            let historial = JSON.parse(localStorage.getItem('historial_busquedas_libros') || '{}');
-            let score = 0;
-            let tituloUpper = tituloItem.toUpperCase();
-            for (let term in historial) {
-                if (tituloUpper.includes(term)) {
-                    score += historial[term] * 2;
-                }
-            }
-            return score;
-        } catch(e) {
-            return 0;
-        }
-    }
-
-    // Función auxiliar para cargar todassignaturas.json y sustituir la estantería por la descripción
-    async function procesarSustitucionEstanteria(datosEncontrados) {
-        try {
-            const res = await fetch('todassignaturas.json');
-            if (res.ok) {
-                const todasAsignaturas = await res.json();
-                const arrAsignaturas = Array.isArray(todasAsignaturas) ? todasAsignaturas : Object.values(todasAsignaturas);
+    <!-- CONTENEDOR DE LA APLICACIÓN -->
+    <main class="flex-1 flex flex-col max-w-[1600px] mx-auto w-full px-4 py-4 gap-4 overflow-hidden">
+        
+        <!-- BANDA HORIZONTAL NEGRA DE UBICACIÓN (Datos a un lado, Estantería al otro) -->
+        <div class="w-full flex flex-col md:flex-row justify-between shadow-xl rounded-sm border-l-4 border-sand bg-stone-900 shrink-0 text-stone-100 p-4 md:p-5 gap-4">
+            
+            <!-- Bloque Izquierdo: Piso, Zona, Sector -->
+            <div class="flex-1 flex flex-col md:flex-row gap-4 md:gap-8 border-b md:border-b-0 md:border-r border-stone-700 pb-4 md:pb-0 md:pr-8">
                 
-                // Buscamos coincidencia por signatura
-                const sigClave = (datosEncontrados.signatura || datosEncontrados.signaturas || '').trim().toUpperCase();
-                const matchAsignatura = arrAsignaturas.find(a => {
-                    const asigFila = (a.signaturas || a.signatura || '').trim().toUpperCase();
-                    return asigFila === sigClave;
-                });
+                <div class="flex flex-row md:flex-col gap-4 md:gap-1">
+                    <!-- PLANTA -->
+                    <div class="flex flex-col min-w-[80px]">
+                        <span class="text-[10px] md:text-xs font-mono text-stone-400 uppercase tracking-widest mb-1">Piso</span>
+                        <span id="txt-planta" class="font-serif text-lg md:text-2xl text-white">--</span>
+                    </div>
 
-                if (matchAsignatura && matchAsignatura.descripcion) {
-                    datosEncontrados.estanteria = matchAsignatura.descripcion;
-                }
-            }
-        } catch (e) {
-            console.error("No se pudo cargar todassignaturas.json para la sustitución:", e);
-        }
-        return datosEncontrados;
-    }
+                    <!-- SALA -->
+                    <div class="flex flex-col">
+                        <span class="text-[10px] md:text-xs font-mono text-stone-400 uppercase tracking-widest mb-1">Zona</span>
+                        <span id="txt-sala" class="font-serif text-lg md:text-2xl text-white">--</span>
+                    </div>
+                </div>
 
-    // CASO 1: Búsqueda por Título con limpieza de artículos/preposiciones, historial y filtros
-    if (!sigBuscada && valTitulo) {
-        registrarHistorial(valTitulo);
-        
-        Promise.all([
-            fetch('signaturas.json').then(res => {
-                if (!res.ok) throw new Error("Error cargando signaturas.json");
-                return res.json();
-            }),
-            fetch('plano.json').then(res => {
-                if (!res.ok) throw new Error("Error cargando plano.json");
-                return res.json();
-            })
-        ])
-        .then(async ([baseDatos, planosDatos]) => {
-            let palabrasBusqueda = limpiarYExtraerPalabras(valTitulo);
-            let tituloBusquedaCompleto = valTitulo.trim().toUpperCase();
-            
-            let arrDatos = Array.isArray(baseDatos) ? baseDatos : 
-                Object.keys(baseDatos).map(k => {
-                    let v = baseDatos[k];
-                    if (!v.signatura && !v.signaturas) v.signatura = k;
-                    return v;
-                });
-
-            let arrPlanos = Array.isArray(planosDatos) ? planosDatos : Object.values(planosDatos);
-
-            let candidatosPuntuados = arrDatos.map(item => {
-                let tituloItem = (item.titulo || "").trim().toUpperCase();
-                if (!tituloItem) return null;
-
-                let score = 0;
-                if (tituloItem === tituloBusquedaCompleto) {
-                    score += 100;
-                } else if (tituloItem.includes(tituloBusquedaCompleto)) {
-                    score += 50;
-                }
-
-                let coincidenciasPalabras = 0;
-                palabrasBusqueda.forEach(palabra => {
-                    if (tituloItem.includes(palabra)) {
-                        coincidenciasPalabras++;
-                        score += 10;
-                    }
-                });
-
-                score += obtenerPuntajeHistorial(tituloItem);
-
-                if (coincidenciasPalabras > 0 || tituloItem.includes(tituloBusquedaCompleto)) {
-                    return { item, score, coincidenciasPalabras };
-                }
-                return null;
-            }).filter(Boolean);
-
-            candidatosPuntuados.sort((a, b) => b.score - a.score);
-            let candidatos = candidatosPuntuados.map(cp => cp.item);
-
-            if (candidatos.length > 0) {
-                if (candidatos.length === 1 || candidatosPuntuados[0].score >= 80) {
-                    let elegido = await procesarSustitucionEstanteria(candidatos[0]);
-                    redireccionarResultado(elegido, valTitulo, arrPlanos);
-                } else {
-                    mostrarSelectorResultados(candidatos, valTitulo, arrPlanos);
-                }
-            } else {
-                mostrarAvisoPersonal({ signaturas: valTitulo, descripcion: `con título "${valTitulo}"` });
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            mostrarAvisoPersonal({ signaturas: valTitulo });
-        });
-    } 
-    // CASO 2: Búsqueda por Signatura con soporte de historial
-    else if (sigBuscada && sigBuscada.trim().toUpperCase().startsWith('HG')) {
-        registrarHistorial(sigBuscada);
-        
-        Promise.all([
-            fetch('signaturas.json').then(res => {
-                if (!res.ok) throw new Error("Error cargando signaturas.json");
-                return res.json();
-            }),
-            fetch('plano.json').then(res => {
-                if (!res.ok) throw new Error("Error cargando plano.json");
-                return res.json();
-            })
-        ])
-        .then(async ([baseDatos, planosDatos]) => {
-            let sigBuscadaUpper = sigBuscada.trim().toUpperCase();
-            
-            let arrDatos = Array.isArray(baseDatos) ? baseDatos : 
-                Object.keys(baseDatos).map(k => {
-                    let v = baseDatos[k];
-                    if (!v.signatura && !v.signaturas) v.signatura = k;
-                    return v;
-                });
-
-            let arrPlanos = Array.isArray(planosDatos) ? planosDatos : Object.values(planosDatos);
-
-            let candidatos = arrDatos.filter(item => {
-                let sigItem = (item.signatura || item.signaturas || "").trim().toUpperCase();
-                if (!sigItem) return false;
-                
-                if (sigBuscadaUpper === sigItem) return true;
-                if (sigBuscadaUpper.startsWith(sigItem)) {
-                    let nextChar = sigBuscadaUpper.charAt(sigItem.length);
-                    if (/[0-9]/.test(nextChar) && /[0-9]/.test(sigItem.slice(-1))) {
-                        return false; 
-                    }
-                    return true;
-                }
-                return false;
-            });
-
-            candidatos.sort((a, b) => {
-                let lenA = (a.signatura || a.signaturas || "").trim().length;
-                let lenB = (b.signatura || b.signaturas || "").trim().length;
-                return lenB - lenA;
-            });
-
-            let datosEncontrados = null;
-
-            for (let item of candidatos) {
-                let inicio = (item.inicio || "").trim().toUpperCase();
-                let fin = (item.fin || "").trim().toUpperCase();
-
-                if (inicio === "") {
-                    datosEncontrados = item;
-                    break;
-                } else {
-                    let sigOriginalUpper = sigOriginal.trim().toUpperCase();
-                    let esMayorOIgual = sigOriginalUpper.localeCompare(inicio, 'es') >= 0;
-                    let esMenorOIgual = sigOriginalUpper.localeCompare(fin, 'es') <= 0;
-                    let empiezaPorFin = sigOriginal.startsWith(fin);
-
-                    if (esMayorOIgual && (esMenorOIgual || empiezaPorFin)) {
-                        datosEncontrados = item;
-                        break;
-                    }
-                }
-            }
-
-            if (datosEncontrados) {
-                let elegido = await procesarSustitucionEstanteria(datosEncontrados);
-                redireccionarResultado(elegido, valTitulo || elegido.titulo, arrPlanos, sigBuscada);
-            } else {
-                mostrarAvisoPersonal({ signaturas: signaturaClicada });
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            mostrarAvisoPersonal({ signaturas: signaturaClicada });
-        });
-    } else {
-        mostrarAvisoPersonal({ signaturas: signaturaClicada });
-    }
-
-    function redireccionarResultado(datosEncontrados, tituloOriginal, arrPlanos, sigBusc = '') {
-        let zona = datosEncontrados.zona || "";
-        let planoInfo = arrPlanos.find(p => p.pos_plano == zona) || {};
-
-        const paramsUrl = new URLSearchParams({
-            sig: sigBusc || datosEncontrados.signatura || datosEncontrados.signaturas || '',
-            orig: sigOriginal || sigBusc || datosEncontrados.signatura || datosEncontrados.signaturas || '',
-            planta: datosEncontrados.planta || '',
-            sala: datosEncontrados.sala || '',
-            ubicacion: datosEncontrados.ubicacion || '',
-            estanteria: datosEncontrados.estanteria || '',
-            titulo: tituloOriginal || datosEncontrados.titulo || 'Sin título especificado',
-            mapa: planoInfo.mapa || '',
-            pos_x: planoInfo.pos_x || '',
-            pos_y: planoInfo.pos_y || '',
-            tam_punto: planoInfo.tam_punto || '20'
-        });
-
-        window.location.href = (datosEncontrados.html || 'Encontrado.html') + "?" + paramsUrl.toString();
-    }
-
-    function mostrarSelectorResultados(candidatos, busquedaOriginal, arrPlanos) {
-        const contenedor = document.getElementById('contenedor-principal');
-        
-        let plantasUnicas = [...new Set(candidatos.map(c => c.planta).filter(Boolean))];
-        let salasUnicas = [...new Set(candidatos.map(c => c.sala).filter(Boolean))];
-
-        contenedor.innerHTML = `
-            <h2>Resultados para "${busquedaOriginal}"</h2>
-            <p>Se han encontrado varios resultados. Seleccione el libro deseado o filtre por planta/zona:</p>
-            
-            <div class="filter-bar">
-                <select id="filtro-planta" class="filter-select">
-                    <option value="">Todas las plantas</option>
-                    ${plantasUnicas.map(p => `<option value="${p}">Planta: ${p}</option>`).join('')}
-                </select>
-                <select id="filtro-sala" class="filter-select">
-                    <option value="">Todas las zonas/salas</option>
-                    ${salasUnicas.map(s => `<option value="${s}">Zona: ${s}</option>`).join('')}
-                </select>
-            </div>
-
-            <div class="results-list" id="lista-resultados">
-                ${renderizarItemsResultados(candidatos)}
-            </div>
-        `;
-
-        const filtrarResultados = () => {
-            let plantaSel = document.getElementById('filtro-planta').value;
-            let salaSel = document.getElementById('filtro-sala').value;
-
-            let filtrados = candidatos.filter(c => {
-                let matchPlanta = !plantaSel || c.planta === plantaSel;
-                let matchSala = !salaSel || c.sala === salaSel;
-                return matchPlanta && matchSala;
-            });
-
-            document.getElementById('lista-resultados').innerHTML = renderizarItemsResultados(filtrados);
-            asociarEventosClick(arrPlanos, busquedaOriginal);
-        };
-
-        document.getElementById('filtro-planta').addEventListener('change', filtrarResultados);
-        document.getElementById('filtro-sala').addEventListener('change', filtrarResultados);
-        asociarEventosClick(arrPlanos, busquedaOriginal);
-    }
-
-    function renderizarItemsResultados(lista) {
-        if (lista.length === 0) {
-            return '<p style="text-align:center; color:#7f8c8d; padding:20px;">No hay resultados con los filtros seleccionados.</p>';
-        }
-        return lista.map((item, index) => `
-            <div class="result-item" data-index="${index}">
-                <div class="result-title">${item.titulo || 'Sin título'}</div>
-                <div class="result-meta">
-                    <span><strong>Signatura:</strong> ${item.signatura || item.signaturas || 'S/S'}</span>
-                    <span><strong>Planta:</strong> ${item.planta || '--'}</span>
-                    <span><strong>Zona:</strong> ${item.sala || '--'}</span>
-                    <span><strong>Estantería:</strong> ${item.estanteria || '--'}</span>
+                <!-- UBICACIÓN (Sector) -->
+                <div class="flex flex-col flex-1">
+                    <span class="text-[10px] md:text-xs font-mono text-stone-400 uppercase tracking-widest mb-1">Sector</span>
+                    <span id="txt-ubicacion" class="font-serif text-xl md:text-3xl text-white break-words leading-tight">--</span>
                 </div>
             </div>
-        `).join('');
-    }
 
-    function asociarEventosClick(arrPlanos, busquedaOriginal) {
-        document.querySelectorAll('.result-item').forEach(el => {
-            el.addEventListener('click', async function() {
-                let idx = this.getAttribute('data-index');
-                if (window._candidatosActuales && window._candidatosActuales[idx]) {
-                    let elegido = await procesarSustitucionEstanteria(window._candidatosActuales[idx]);
-                    redireccionarResultado(elegido, busquedaOriginal, arrPlanos);
+            <!-- Bloque Derecho: Destino Exacto y Estantería -->
+            <div class="md:w-1/3 flex flex-col items-start md:items-end justify-center pt-2 md:pt-0">
+                <div class="flex flex-row md:flex-col items-center md:items-end gap-2 md:gap-1 mb-1 md:mb-2 w-full md:w-auto">
+                    <span class="text-[10px] md:text-xs font-mono uppercase tracking-widest font-bold text-sand opacity-80">DESTINO EXACTO</span>
+                    <div id="display-signatura" class="bg-sand text-stone-900 text-[10px] font-mono font-bold px-2 py-1 rounded-sm hidden"></div>
+                </div>
+                <div class="text-left md:text-right">
+                    <span id="txt-estanteria" class="font-serif text-2xl md:text-4xl font-bold text-sand leading-none">--</span>
+                </div>
+            </div>
+
+        </div> <!-- Fin Banda Horizontal -->
+
+        <!-- ZONA DEL MAPA DE UBICACIÓN (Ocupa todo el alto restante) -->
+        <div id="contenedor-mapa" class="flex-1 w-full relative rounded-sm shadow-xl bg-white border border-stone-200 hidden flex items-center justify-center p-2 overflow-hidden">
+            <div class="relative w-full h-full flex justify-center items-center">
+                 <!-- max-h-full y object-contain para encajar perfecto -->
+                <img id="img-mapa" src="" alt="Plano de ubicación" class="max-w-full max-h-full object-contain block">
+                <div id="indicador-posicion" class="punto-rojo hidden"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- SCRIPTS LÓGICA -->
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        
+        const sigBuscada = params.get('sig'); 
+        const sigOriginal = params.get('orig') || sigBuscada; 
+        const valPlanta = params.get('planta');
+        const valSala = params.get('sala');
+        const valUbicacion = params.get('ubicacion');
+        const valEstanteria = params.get('estanteria');
+        const valTitulo = params.get('titulo') || 'Sin título especificado';
+
+        const valMapa = params.get('mapa');
+        const valPosX = params.get('pos_x');
+        const valPosY = params.get('pos_y');
+        const valTamPunto = params.get('tam_punto');
+
+        document.getElementById('header-signatura').textContent = sigOriginal || 'S/S';
+        document.getElementById('header-titulo').textContent = valTitulo;
+
+        if (valPlanta) document.getElementById('txt-planta').textContent = valPlanta;
+        if (valSala) document.getElementById('txt-sala').textContent = valSala;
+        if (valUbicacion) document.getElementById('txt-ubicacion').textContent = valUbicacion;
+        if (valEstanteria) document.getElementById('txt-estanteria').textContent = valEstanteria;
+
+        if (sigBuscada) {
+            const badge = document.getElementById('display-signatura');
+            badge.textContent = sigBuscada;
+            badge.style.display = 'inline-block';
+        }
+
+        if (valMapa) {
+            const contenedorMapa = document.getElementById('contenedor-mapa');
+            const imgMapa = document.getElementById('img-mapa');
+            const indicador = document.getElementById('indicador-posicion');
+
+            contenedorMapa.classList.remove('hidden');
+            imgMapa.src = valMapa;
+
+            if (valPosX !== null && valPosY !== null && valPosX !== '' && valPosY !== '') {
+                indicador.classList.remove('hidden');
+                indicador.style.left = valPosX + '%';
+                indicador.style.top = valPosY + '%';
+                
+                const tamano = valTamPunto ? valTamPunto + 'px' : '20px';
+                indicador.style.width = tamano;
+                indicador.style.height = tamano;
+            }
+        }
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
+            const hoy = new Date();
+            const fechaString = hoy.getFullYear() + "-" + String(hoy.getMonth() + 1).padStart(2, '0') + "-" + String(hoy.getDate()).padStart(2, '0');
+            const fechaTexto = "TEXTO_" + fechaString; 
+            const timestamp = hoy.getTime(); 
+
+            fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&accion=sumar_con_fecha&fecha=${fechaTexto}&t=${timestamp}`, {
+                method: 'GET',
+                redirect: 'follow'
+            })
+            .then(respuesta => respuesta.json())
+            .then(datos => {
+                if (datos && datos.visitas !== undefined) {
+                    const nuevoTotal = datos.visitas;
+                    localStorage.setItem('ultimo_encontrados_global', nuevoTotal);
+                    try {
+                        const canal = new BroadcastChannel('canal_contador_encontrados');
+                        canal.postMessage({ nuevoConteo: nuevoTotal });
+                        canal.close();
+                    } catch (e) { }
                 }
-            });
+            }).catch(error => console.error(error));
         });
-    }
-
-    window._candidatosActuales = [];
-    const originalMostrarSelector = mostrarSelectorResultados;
-    mostrarSelectorResultados = function(candidatos, busquedaOriginal, arrPlanos) {
-        window._candidatosActuales = candidatos;
-        originalMostrarSelector(candidatos, busquedaOriginal, arrPlanos);
-    };
-
-    function mostrarAvisoPersonal(datos) {
-        const contenedor = document.getElementById('contenedor-principal');
-        const descripcionTexto = datos.descripcion ? ` ${datos.descripcion}` : '';
-        contenedor.innerHTML = `
-            <div class="icono-aviso">ℹ️</div>
-            <h2>Aviso de ubicación</h2>
-            <p>La búsqueda de <strong>${datos.signaturas}</strong>${descripcionTexto} no se encuentra disponible en las SALAS. Acuda al personal de la biblioteca para solicitarlo.</p>
-        `;
-    }
     </script>
 </body>
 </html>
