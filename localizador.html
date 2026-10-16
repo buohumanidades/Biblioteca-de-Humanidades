@@ -48,12 +48,10 @@
         "QUE", "PORQUE", "COMO", "DONDE", "CUANDO"
     ]);
 
-    // Algoritmo de búsqueda en 3 niveles
+    // Algoritmo de búsqueda en 3 niveles para títulos
     function buscarCandidatosPorTitulo(arrDatos, queryOriginal) {
         const queryClean = normalizar(queryOriginal).trim();
-        // Quitar caracteres especiales y extraer palabras de la consulta
         const queryWordsRaw = queryClean.replace(/[^A-Z0-9\s]/g, " ").split(/\s+/).filter(Boolean);
-        // Filtrar palabras vacías (preposiciones y artículos)
         const keywords = queryWordsRaw.filter(w => !STOP_WORDS.has(w));
 
         let resultadosConPuntuacion = arrDatos.map(item => {
@@ -74,7 +72,7 @@
                 tier = 2;
                 score = 500 + (100 - Math.min(tituloNorm.length, 100));
             }
-            // NIVEL 3: Contiene todas las palabras clave (sin preposiciones/artículos) independiente de su orden y posición
+            // NIVEL 3: Contiene todas las palabras clave (sin preposiciones/artículos) independiente de su orden
             else if (keywords.length > 0) {
                 let matchesAll = keywords.every(kw => tituloWordsRaw.includes(kw));
                 if (matchesAll) {
@@ -86,7 +84,6 @@
             return { item, tier, score };
         });
 
-        // Filtrar descartados y ordenar por Nivel (1 > 2 > 3) y puntuación
         let filtrados = resultadosConPuntuacion.filter(r => r.tier <= 3);
         filtrados.sort((a, b) => {
             if (a.tier !== b.tier) {
@@ -98,33 +95,28 @@
         return filtrados.map(r => r.item);
     }
 
-    // CASO 1: Búsqueda por Título / Texto
+    // CASO 1: Búsqueda por Título / Texto (Leyendo libros1.json y libros2.json)
     if (!sigBuscada && valTitulo) {
         Promise.all([
-            fetch('signaturas.json').then(res => {
-                if (!res.ok) throw new Error("Error cargando signaturas.json");
-                return res.json();
-            }),
+            fetch('libros1.json').then(res => res.ok ? res.json() : []).catch(() => []),
+            fetch('libros2.json').then(res => res.ok ? res.json() : []).catch(() => []),
             fetch('plano.json').then(res => {
                 if (!res.ok) throw new Error("Error cargando plano.json");
                 return res.json();
             })
         ])
-        .then(([baseDatos, planosDatos]) => {
+        .then(([libros1, libros2, planosDatos]) => {
             setTimeout(() => {
-                let arrDatos = Array.isArray(baseDatos) ? baseDatos : 
-                    Object.keys(baseDatos).map(k => {
-                        let v = baseDatos[k];
-                        if (!v.signatura && !v.signaturas) v.signatura = k;
-                        return v;
-                    });
+                // Combinar ambos archivos de libros
+                let arrDatos = [...(Array.isArray(libros1) ? libros1 : Object.values(libros1)), 
+                                ...(Array.isArray(libros2) ? libros2 : Object.values(libros2))];
 
                 let arrPlanos = Array.isArray(planosDatos) ? planosDatos : Object.values(planosDatos);
 
                 let candidatos = buscarCandidatosPorTitulo(arrDatos, valTitulo);
 
                 if (candidatos.length > 0) {
-                    let datosEncontrados = candidatos[0]; // Primer resultado optimizado según los 3 niveles
+                    let datosEncontrados = candidatos[0]; // El mejor resultado de los 3 niveles
                     let zona = datosEncontrados.zona || "";
                     let planoInfo = arrPlanos.find(p => p.pos_plano == zona) || {};
 
