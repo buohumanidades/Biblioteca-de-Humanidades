@@ -34,7 +34,6 @@
     const params = new URLSearchParams(window.location.search);
     let sigBuscada = params.get('sig');
     const sigOriginal = params.get('orig'); 
-    // Admite tanto 'titulo' como 'q' para evitar fallos si se llama desde distintas páginas
     const valTitulo = params.get('titulo') || params.get('q'); 
 
     if (sigBuscada) {
@@ -118,9 +117,9 @@
 
                 let arrPlanos = Array.isArray(planosDatos) ? planosDatos : Object.values(planosDatos);
 
-                let grupoEmpiezan = [];         // Nivel 1: Empiezan exactamente con el texto completo
-                let grupoContienenTexto = [];    // Nivel 2: Contienen el texto completo en cualquier parte
-                let grupoContienenPalabras = []; // Nivel 3: Contienen todas las palabras clave (tokens) sin stop words
+                let grupoEmpiezan = [];         
+                let grupoContienenTexto = [];    
+                let grupoContienenPalabras = []; 
 
                 arrDatos.forEach(item => {
                     let tituloItemRaw = item.titulo || "";
@@ -143,12 +142,10 @@
                     }
                 });
 
-                // Ordenar cada grupo internamente por puntaje de historial (aprendizaje)
                 grupoEmpiezan.sort((a, b) => b.score - a.score);
                 grupoContienenTexto.sort((a, b) => b.score - a.score);
                 grupoContienenPalabras.sort((a, b) => b.score - a.score);
 
-                // Concatenación respetando estrictamente el orden de prioridad solicitado
                 let candidatosCombinados = [
                     ...grupoEmpiezan,
                     ...grupoContienenTexto,
@@ -275,7 +272,8 @@
             tam_punto: planoInfo.tam_punto || '20'
         });
 
-        window.location.href = (datosEncontrados.html || 'Encontrado.html') + "?" + paramsUrl.toString();
+        // Forzamos 'Encontrado.html' para evitar que se recargue localizador.html
+        window.location.href = 'Encontrado.html' + "?" + paramsUrl.toString();
     }
 
     function mostrarSelectorResultados(candidatos, busquedaOriginal, arrPlanos) {
