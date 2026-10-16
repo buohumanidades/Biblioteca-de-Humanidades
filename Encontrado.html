@@ -3,110 +3,380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Localizador de Biblioteca - Biblioteca de Humanidades</title>
-    <!-- Tailwind CSS para un diseño limpio y moderno -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Procesando Búsqueda...</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f7; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: #2c3e50; }
+        .loader-container { text-align: center; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); max-width: 600px; width: 90%; }
+        .spinner { border: 5px solid #ecf0f1; border-top: 5px solid #2980b9; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        h2 { font-family: 'Romana Moderna', Georgia, serif; color: #1a252f; margin-bottom: 10px; font-size: 1.5em; }
+        p { color: #7f8c8d; font-size: 0.95em; line-height: 1.4; }
+        .icono-aviso { font-size: 3em; margin-bottom: 10px; }
+        
+        /* Estilos para lista de resultados múltiples y filtros */
+        .results-list { text-align: left; max-height: 400px; overflow-y: auto; margin-top: 20px; border-top: 1px solid #ecf0f1; padding-top: 15px; }
+        .result-item { background: #faf8f5; border: 1px solid #e6dfc; padding: 12px 15px; margin-bottom: 10px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+        .result-item:hover { background: #f4f0e8; border-color: #2980b9; }
+        .result-title { font-weight: bold; color: #1a252f; font-size: 1em; margin-bottom: 4px; }
+        .result-meta { font-size: 0.85em; color: #7f8c8d; display: flex; gap: 15px; flex-wrap: wrap; }
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; }
+        .filter-select { padding: 6px 12px; border-radius: 4px; border: 1px solid #bdc3c7; font-size: 0.9em; background: #fff; color: #2c3e50; }
+    </style>
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col items-center justify-start p-6">
-
-    <div class="max-w-3xl w-full bg-white shadow-md rounded-lg p-6">
-        <h1 class="text-2xl font-bold text-gray-800 mb-4 text-center">Localizador de Bibliografía y Signaturas</h1>
-        <p class="text-gray-600 text-center mb-6">Introduce el título, autor o signatura para localizar el ejemplar en la biblioteca.</p>
-
-        <!-- Formulario de Búsqueda -->
-        <div class="flex gap-2 mb-6">
-            <input type="text" id="inputBusqueda" placeholder="Buscar por título, autor o signatura..." class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" onkeypress="if(event.key === 'Enter') realizarBusqueda()">
-            <button onclick="realizarBusqueda()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Buscar</button>
-        </div>
-
-        <!-- Contenedor de Resultados -->
-        <div id="resultadosContainer" class="space-y-4">
-            <p class="text-gray-500 text-center">Realiza una búsqueda para ver los resultados.</p>
-        </div>
+<body>
+    <div class="loader-container" id="contenedor-principal">
+        <div class="spinner"></div>
+        <h2>Buscando ubicación...</h2>
+        <p>Comprobando los datos en la base de datos de la biblioteca.</p>
     </div>
 
     <script>
-        let mapaDescripciones = {};
-        let librosData = [];
+    const params = new URLSearchParams(window.location.search);
+    let sigBuscada = params.get('sig');
+    const sigOriginal = params.get('orig'); 
+    const valTitulo = params.get('titulo'); 
 
-        // Cargar los archivos JSON al iniciar la página
-        async function inicializarDatos() {
-            try {
-                // 1. Cargar el mapa de signaturas y descripciones desde todassignaturas.json
-                const respuestaAsignaturas = await fetch('todassignaturas.json');
-                const todassignaturasData = await respuestaAsignaturas.json();
+    if (sigBuscada) {
+        sigBuscada = sigBuscada.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+(?=\d+=)/gi, "/");
+    }
+
+    const signaturaClicada = sigOriginal || sigBuscada || 'Desconocida';
+
+    // Lista de stop words (artículos y preposiciones en español)
+    const STOP_WORDS = new Set([
+        'EL', 'LA', 'LOS', 'LAS', 'UN', 'UNA', 'UNOS', 'UNAS', 
+        'DE', 'DEL', 'AL', 'A', 'EN', 'CON', 'POR', 'PARA', 'SIN', 
+        'SOBRE', 'ENTRE', 'CONTRA', 'HACIA', 'DESDE', 'HASTA', 
+        'Y', 'E', 'O', 'U', 'QUE', 'ES', 'SU', 'SUS', 'LO'
+    ]);
+
+    function limpiarYExtraerPalabras(texto) {
+        if (!texto) return [];
+        let normalizado = texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+        let palabras = normalizado.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g,"").split(/\s+/);
+        let significativas = palabras.filter(p => p.length > 0 && !STOP_WORDS.has(p));
+        return significativas.length > 0 ? significativas : palabras;
+    }
+
+    function registrarHistorial(termino) {
+        if (!termino) return;
+        try {
+            let historial = JSON.parse(localStorage.getItem('historial_busquedas_libros') || '{}');
+            let key = termino.trim().toUpperCase();
+            historial[key] = (historial[key] || 0) + 1;
+            localStorage.setItem('historial_busquedas_libros', JSON.stringify(historial));
+        } catch(e) {}
+    }
+
+    function obtenerPuntajeHistorial(tituloItem) {
+        try {
+            let historial = JSON.parse(localStorage.getItem('historial_busquedas_libros') || '{}');
+            let score = 0;
+            let tituloUpper = tituloItem.toUpperCase();
+            for (let term in historial) {
+                if (tituloUpper.includes(term)) {
+                    score += historial[term] * 2;
+                }
+            }
+            return score;
+        } catch(e) {
+            return 0;
+        }
+    }
+
+    // Función auxiliar para cargar todassignaturas.json y sustituir la estantería por la descripción
+    async function procesarSustitucionEstanteria(datosEncontrados) {
+        try {
+            const res = await fetch('todassignaturas.json');
+            if (res.ok) {
+                const todasAsignaturas = await res.json();
+                const arrAsignaturas = Array.isArray(todasAsignaturas) ? todasAsignaturas : Object.values(todasAsignaturas);
                 
-                todassignaturasData.forEach(row => {
-                    const sig = row.signaturas || row.signatura;
-                    if (sig) {
-                        mapaDescripciones[sig.trim()] = row.descripcion;
+                // Buscamos coincidencia por signatura
+                const sigClave = (datosEncontrados.signatura || datosEncontrados.signaturas || '').trim().toUpperCase();
+                const matchAsignatura = arrAsignaturas.find(a => {
+                    const asigFila = (a.signaturas || a.signatura || '').trim().toUpperCase();
+                    return asigFila === sigClave;
+                });
+
+                if (matchAsignatura && matchAsignatura.descripcion) {
+                    datosEncontrados.estanteria = matchAsignatura.descripcion;
+                }
+            }
+        } catch (e) {
+            console.error("No se pudo cargar todassignaturas.json para la sustitución:", e);
+        }
+        return datosEncontrados;
+    }
+
+    // CASO 1: Búsqueda por Título con limpieza de artículos/preposiciones, historial y filtros
+    if (!sigBuscada && valTitulo) {
+        registrarHistorial(valTitulo);
+        
+        Promise.all([
+            fetch('signaturas.json').then(res => {
+                if (!res.ok) throw new Error("Error cargando signaturas.json");
+                return res.json();
+            }),
+            fetch('plano.json').then(res => {
+                if (!res.ok) throw new Error("Error cargando plano.json");
+                return res.json();
+            })
+        ])
+        .then(async ([baseDatos, planosDatos]) => {
+            let palabrasBusqueda = limpiarYExtraerPalabras(valTitulo);
+            let tituloBusquedaCompleto = valTitulo.trim().toUpperCase();
+            
+            let arrDatos = Array.isArray(baseDatos) ? baseDatos : 
+                Object.keys(baseDatos).map(k => {
+                    let v = baseDatos[k];
+                    if (!v.signatura && !v.signaturas) v.signatura = k;
+                    return v;
+                });
+
+            let arrPlanos = Array.isArray(planosDatos) ? planosDatos : Object.values(planosDatos);
+
+            let candidatosPuntuados = arrDatos.map(item => {
+                let tituloItem = (item.titulo || "").trim().toUpperCase();
+                if (!tituloItem) return null;
+
+                let score = 0;
+                if (tituloItem === tituloBusquedaCompleto) {
+                    score += 100;
+                } else if (tituloItem.includes(tituloBusquedaCompleto)) {
+                    score += 50;
+                }
+
+                let coincidenciasPalabras = 0;
+                palabrasBusqueda.forEach(palabra => {
+                    if (tituloItem.includes(palabra)) {
+                        coincidenciasPalabras++;
+                        score += 10;
                     }
                 });
 
-                // 2. Cargar los archivos de libros (p. ej., libros1.json, libros2.json)
-                const [resp1, resp2] = await Promise.all([
-                    fetch('libros1.json').catch(() => ({ json: () => [] })),
-                    fetch('libros2.json').catch(() => ({ json: () => [] }))
-                ]);
+                score += obtenerPuntajeHistorial(tituloItem);
+
+                if (coincidenciasPalabras > 0 || tituloItem.includes(tituloBusquedaCompleto)) {
+                    return { item, score, coincidenciasPalabras };
+                }
+                return null;
+            }).filter(Boolean);
+
+            candidatosPuntuados.sort((a, b) => b.score - a.score);
+            let candidatos = candidatosPuntuados.map(cp => cp.item);
+
+            if (candidatos.length > 0) {
+                if (candidatos.length === 1 || candidatosPuntuados[0].score >= 80) {
+                    let elegido = await procesarSustitucionEstanteria(candidatos[0]);
+                    redireccionarResultado(elegido, valTitulo, arrPlanos);
+                } else {
+                    mostrarSelectorResultados(candidatos, valTitulo, arrPlanos);
+                }
+            } else {
+                mostrarAvisoPersonal({ signaturas: valTitulo, descripcion: `con título "${valTitulo}"` });
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            mostrarAvisoPersonal({ signaturas: valTitulo });
+        });
+    } 
+    // CASO 2: Búsqueda por Signatura con soporte de historial
+    else if (sigBuscada && sigBuscada.trim().toUpperCase().startsWith('HG')) {
+        registrarHistorial(sigBuscada);
+        
+        Promise.all([
+            fetch('signaturas.json').then(res => {
+                if (!res.ok) throw new Error("Error cargando signaturas.json");
+                return res.json();
+            }),
+            fetch('plano.json').then(res => {
+                if (!res.ok) throw new Error("Error cargando plano.json");
+                return res.json();
+            })
+        ])
+        .then(async ([baseDatos, planosDatos]) => {
+            let sigBuscadaUpper = sigBuscada.trim().toUpperCase();
+            
+            let arrDatos = Array.isArray(baseDatos) ? baseDatos : 
+                Object.keys(baseDatos).map(k => {
+                    let v = baseDatos[k];
+                    if (!v.signatura && !v.signaturas) v.signatura = k;
+                    return v;
+                });
+
+            let arrPlanos = Array.isArray(planosDatos) ? planosDatos : Object.values(planosDatos);
+
+            let candidatos = arrDatos.filter(item => {
+                let sigItem = (item.signatura || item.signaturas || "").trim().toUpperCase();
+                if (!sigItem) return false;
                 
-                const data1 = await resp1.json();
-                const data2 = await resp2.json();
-                librosData = [...data1, ...data2];
-
-                console.log("Datos de signaturas y libros cargados correctamente.");
-            } catch (error) {
-                console.error("Error al cargar los datos JSON:", error);
-            }
-        }
-
-        // Función de búsqueda y renderizado con la sustitución de estantería por descripción
-        function realizarBusqueda() {
-            const query = document.getElementById('inputBusqueda').value.toLowerCase().trim();
-            const container = document.getElementById('resultadosContainer');
-            container.innerHTML = '';
-
-            if (!query) {
-                container.innerHTML = '<p class="text-gray-500 text-center">Por favor, introduce un término de búsqueda.</p>';
-                return;
-            }
-
-            // Filtrar libros que coincidan con título, autor o signatura
-            const resultados = librosData.filter(libro => 
-                (libro.titulo && libro.titulo.toLowerCase().includes(query)) ||
-                (libro.autor && libro.autor.toLowerCase().includes(query)) ||
-                (libro.signatura && libro.signatura.toLowerCase().includes(query)) ||
-                (libro.sigbuscada && libro.sigbuscada.toLowerCase().includes(query))
-            );
-
-            if (resultados.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center">No se han encontrado resultados para tu búsqueda.</p>';
-                return;
-            }
-
-            resultados.forEach(libro => {
-                // Tomar la signatura a buscar (sigbuscada o signatura)
-                const sigBusqueda = (libro.sigbuscada || libro.signatura || '').trim();
-
-                // Buscar la descripción correspondiente en todassignaturas.json
-                // Si no se encuentra, se utiliza el campo estantería original como respaldo (fallback)
-                const descripcionSustituta = mapaDescripciones[sigBusqueda] || libro.estanteria || 'Ubicación general';
-
-                const card = document.createElement('div');
-                card.className = 'border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow transition bg-white';
-                card.innerHTML = `
-                    <h3 class="text-lg font-semibold text-blue-800">${libro.titulo || 'Sin título'}</h3>
-                    <p class="text-sm text-gray-700"><strong>Autor:</strong> ${libro.autor || 'Desconocido'}</p>
-                    <p class="text-sm text-gray-700"><strong>Signatura:</strong> ${sigBusqueda}</p>
-                    <div class="mt-3 p-3 bg-blue-50 border-l-4 border-blue-600 rounded">
-                        <p class="text-sm text-blue-900"><strong>Ubicación / Descripción:</strong> <span id="ubicacion-estanteria">${descripcionSustituta}</span></p>
-                    </div>
-                `;
-                container.appendChild(card);
+                if (sigBuscadaUpper === sigItem) return true;
+                if (sigBuscadaUpper.startsWith(sigItem)) {
+                    let nextChar = sigBuscadaUpper.charAt(sigItem.length);
+                    if (/[0-9]/.test(nextChar) && /[0-9]/.test(sigItem.slice(-1))) {
+                        return false; 
+                    }
+                    return true;
+                }
+                return false;
             });
-        }
 
-        // Inicializar al cargar la ventana
-        window.onload = inicializarDatos;
+            candidatos.sort((a, b) => {
+                let lenA = (a.signatura || a.signaturas || "").trim().length;
+                let lenB = (b.signatura || b.signaturas || "").trim().length;
+                return lenB - lenA;
+            });
+
+            let datosEncontrados = null;
+
+            for (let item of candidatos) {
+                let inicio = (item.inicio || "").trim().toUpperCase();
+                let fin = (item.fin || "").trim().toUpperCase();
+
+                if (inicio === "") {
+                    datosEncontrados = item;
+                    break;
+                } else {
+                    let sigOriginalUpper = sigOriginal.trim().toUpperCase();
+                    let esMayorOIgual = sigOriginalUpper.localeCompare(inicio, 'es') >= 0;
+                    let esMenorOIgual = sigOriginalUpper.localeCompare(fin, 'es') <= 0;
+                    let empiezaPorFin = sigOriginal.startsWith(fin);
+
+                    if (esMayorOIgual && (esMenorOIgual || empiezaPorFin)) {
+                        datosEncontrados = item;
+                        break;
+                    }
+                }
+            }
+
+            if (datosEncontrados) {
+                let elegido = await procesarSustitucionEstanteria(datosEncontrados);
+                redireccionarResultado(elegido, valTitulo || elegido.titulo, arrPlanos, sigBuscada);
+            } else {
+                mostrarAvisoPersonal({ signaturas: signaturaClicada });
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            mostrarAvisoPersonal({ signaturas: signaturaClicada });
+        });
+    } else {
+        mostrarAvisoPersonal({ signaturas: signaturaClicada });
+    }
+
+    function redireccionarResultado(datosEncontrados, tituloOriginal, arrPlanos, sigBusc = '') {
+        let zona = datosEncontrados.zona || "";
+        let planoInfo = arrPlanos.find(p => p.pos_plano == zona) || {};
+
+        const paramsUrl = new URLSearchParams({
+            sig: sigBusc || datosEncontrados.signatura || datosEncontrados.signaturas || '',
+            orig: sigOriginal || sigBusc || datosEncontrados.signatura || datosEncontrados.signaturas || '',
+            planta: datosEncontrados.planta || '',
+            sala: datosEncontrados.sala || '',
+            ubicacion: datosEncontrados.ubicacion || '',
+            estanteria: datosEncontrados.estanteria || '',
+            titulo: tituloOriginal || datosEncontrados.titulo || 'Sin título especificado',
+            mapa: planoInfo.mapa || '',
+            pos_x: planoInfo.pos_x || '',
+            pos_y: planoInfo.pos_y || '',
+            tam_punto: planoInfo.tam_punto || '20'
+        });
+
+        window.location.href = (datosEncontrados.html || 'Encontrado.html') + "?" + paramsUrl.toString();
+    }
+
+    function mostrarSelectorResultados(candidatos, busquedaOriginal, arrPlanos) {
+        const contenedor = document.getElementById('contenedor-principal');
+        
+        let plantasUnicas = [...new Set(candidatos.map(c => c.planta).filter(Boolean))];
+        let salasUnicas = [...new Set(candidatos.map(c => c.sala).filter(Boolean))];
+
+        contenedor.innerHTML = `
+            <h2>Resultados para "${busquedaOriginal}"</h2>
+            <p>Se han encontrado varios resultados. Seleccione el libro deseado o filtre por planta/zona:</p>
+            
+            <div class="filter-bar">
+                <select id="filtro-planta" class="filter-select">
+                    <option value="">Todas las plantas</option>
+                    ${plantasUnicas.map(p => `<option value="${p}">Planta: ${p}</option>`).join('')}
+                </select>
+                <select id="filtro-sala" class="filter-select">
+                    <option value="">Todas las zonas/salas</option>
+                    ${salasUnicas.map(s => `<option value="${s}">Zona: ${s}</option>`).join('')}
+                </select>
+            </div>
+
+            <div class="results-list" id="lista-resultados">
+                ${renderizarItemsResultados(candidatos)}
+            </div>
+        `;
+
+        const filtrarResultados = () => {
+            let plantaSel = document.getElementById('filtro-planta').value;
+            let salaSel = document.getElementById('filtro-sala').value;
+
+            let filtrados = candidatos.filter(c => {
+                let matchPlanta = !plantaSel || c.planta === plantaSel;
+                let matchSala = !salaSel || c.sala === salaSel;
+                return matchPlanta && matchSala;
+            });
+
+            document.getElementById('lista-resultados').innerHTML = renderizarItemsResultados(filtrados);
+            asociarEventosClick(arrPlanos, busquedaOriginal);
+        };
+
+        document.getElementById('filtro-planta').addEventListener('change', filtrarResultados);
+        document.getElementById('filtro-sala').addEventListener('change', filtrarResultados);
+        asociarEventosClick(arrPlanos, busquedaOriginal);
+    }
+
+    function renderizarItemsResultados(lista) {
+        if (lista.length === 0) {
+            return '<p style="text-align:center; color:#7f8c8d; padding:20px;">No hay resultados con los filtros seleccionados.</p>';
+        }
+        return lista.map((item, index) => `
+            <div class="result-item" data-index="${index}">
+                <div class="result-title">${item.titulo || 'Sin título'}</div>
+                <div class="result-meta">
+                    <span><strong>Signatura:</strong> ${item.signatura || item.signaturas || 'S/S'}</span>
+                    <span><strong>Planta:</strong> ${item.planta || '--'}</span>
+                    <span><strong>Zona:</strong> ${item.sala || '--'}</span>
+                    <span><strong>Estantería:</strong> ${item.estanteria || '--'}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function asociarEventosClick(arrPlanos, busquedaOriginal) {
+        document.querySelectorAll('.result-item').forEach(el => {
+            el.addEventListener('click', async function() {
+                let idx = this.getAttribute('data-index');
+                if (window._candidatosActuales && window._candidatosActuales[idx]) {
+                    let elegido = await procesarSustitucionEstanteria(window._candidatosActuales[idx]);
+                    redireccionarResultado(elegido, busquedaOriginal, arrPlanos);
+                }
+            });
+        });
+    }
+
+    window._candidatosActuales = [];
+    const originalMostrarSelector = mostrarSelectorResultados;
+    mostrarSelectorResultados = function(candidatos, busquedaOriginal, arrPlanos) {
+        window._candidatosActuales = candidatos;
+        originalMostrarSelector(candidatos, busquedaOriginal, arrPlanos);
+    };
+
+    function mostrarAvisoPersonal(datos) {
+        const contenedor = document.getElementById('contenedor-principal');
+        const descripcionTexto = datos.descripcion ? ` ${datos.descripcion}` : '';
+        contenedor.innerHTML = `
+            <div class="icono-aviso">ℹ️</div>
+            <h2>Aviso de ubicación</h2>
+            <p>La búsqueda de <strong>${datos.signaturas}</strong>${descripcionTexto} no se encuentra disponible en las SALAS. Acuda al personal de la biblioteca para solicitarlo.</p>
+        `;
+    }
     </script>
 </body>
 </html>
