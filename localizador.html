@@ -84,7 +84,7 @@
         }
     }
 
-    // CASO 1: Búsqueda por Título con jerarquía estricta (Exacta -> Todas las palabras clave) y aprendizaje
+    // CASO 1: Búsqueda por Título con jerarquía estricta de 3 niveles y aprendizaje
     if (!sigBuscada && valTitulo) {
         registrarHistorial(valTitulo);
         
@@ -112,8 +112,9 @@
 
                 let arrPlanos = Array.isArray(planosDatos) ? planosDatos : Object.values(planosDatos);
 
-                let grupoExacto = [];
-                let grupoTodasPalabras = [];
+                let grupoEmpiezan = [];         // Nivel 1: Empiezan exactamente con el texto
+                let grupoContienenTexto = [];    // Nivel 2: Contienen el texto completo en cualquier parte
+                let grupoContienenPalabras = []; // Nivel 3: Contienen todas las palabras clave sin stop words
 
                 arrDatos.forEach(item => {
                     let tituloItem = (item.titulo || "").trim().toUpperCase();
@@ -122,26 +123,30 @@
                     let scoreHistorial = obtenerPuntajeHistorial(tituloItem);
                     let candidatoObj = { item, score: scoreHistorial };
 
-                    // 1. Prioridad máxima: Coincidencia exacta del texto completo en el título
-                    if (tituloItem.includes(tituloBusquedaCompleto)) {
-                        grupoExacto.push(candidatoObj);
-                    } 
-                    // 2. Segunda prioridad: Aparecen TODAS las palabras clave (tras descartar stop words)
-                    else if (palabrasBusqueda.length > 0 && palabrasBusqueda.every(palabra => tituloItem.includes(palabra))) {
-                        grupoTodasPalabras.push(candidatoObj);
+                    if (tituloItem.startsWith(tituloBusquedaCompleto)) {
+                        grupoEmpiezan.push(candidatoObj);
+                    } else if (tituloItem.includes(tituloBusquedaCompleto)) {
+                        grupoContienenTexto.push(candidatoObj);
+                    } else if (palabrasBusqueda.length > 0 && palabrasBusqueda.every(palabra => tituloItem.includes(palabra))) {
+                        grupoContienenPalabras.push(candidatoObj);
                     }
                 });
 
-                // Ordenar cada grupo por puntuación de historial (aprendizaje acumulado)
-                grupoExacto.sort((a, b) => b.score - a.score);
-                grupoTodasPalabras.sort((a, b) => b.score - a.score);
+                // Ordenar cada grupo internamente por puntaje de historial (aprendizaje)
+                grupoEmpiezan.sort((a, b) => b.score - a.score);
+                grupoContienenTexto.sort((a, b) => b.score - a.score);
+                grupoContienenPalabras.sort((a, b) => b.score - a.score);
 
-                // Combinación final respetando estrictamente el orden solicitado
-                let candidatosCombinados = [...grupoExacto, ...grupoTodasPalabras];
+                // Concatenación respetando estrictamente el orden de prioridad solicitado
+                let candidatosCombinados = [
+                    ...grupoEmpiezan,
+                    ...grupoContienenTexto,
+                    ...grupoContienenPalabras
+                ];
                 let candidatos = candidatosCombinados.map(cp => cp.item);
 
                 if (candidatos.length > 0) {
-                    if (candidatos.length === 1 || (grupoExacto.length === 1 && grupoExacto[0].score >= 10)) {
+                    if (candidatos.length === 1 || (grupoEmpiezan.length === 1 && grupoEmpiezan[0].score >= 10)) {
                         redireccionarResultado(candidatos[0], valTitulo, arrPlanos);
                     } else {
                         mostrarSelectorResultados(candidatos, valTitulo, arrPlanos);
