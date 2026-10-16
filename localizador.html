@@ -33,7 +33,72 @@
 
     const signaturaClicada = sigOriginal || sigBuscada || 'Desconocida';
 
-    // CASO 1: Búsqueda por Título (si se proporciona 'titulo' y no hay 'sig')
+    // Normalizador de texto (elimina tildes y pasa a mayúsculas)
+    function normalizar(str) {
+        return (str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+    }
+
+    // Artículos, preposiciones y conjunciones (Stop Words) en español
+    const STOP_WORDS = new Set([
+        "EL", "LA", "LOS", "LAS", "UN", "UNA", "UNOS", "UNAS",
+        "Y", "E", "O", "U", "NI",
+        "DE", "DEL", "AL", "A", "ANTE", "BAJO", "CABE", "CON", "CONTRA",
+        "DESDE", "DURANTE", "EN", "ENTRE", "HACIA", "HASTA", "MEDIANTE",
+        "PARA", "POR", "SEGÚN", "SEGUN", "SIN", "SO", "SOBRE", "TRAS",
+        "QUE", "PORQUE", "COMO", "DONDE", "CUANDO"
+    ]);
+
+    // Algoritmo de búsqueda en 3 niveles
+    function buscarCandidatosPorTitulo(arrDatos, queryOriginal) {
+        const queryClean = normalizar(queryOriginal).trim();
+        // Quitar caracteres especiales y extraer palabras de la consulta
+        const queryWordsRaw = queryClean.replace(/[^A-Z0-9\s]/g, " ").split(/\s+/).filter(Boolean);
+        // Filtrar palabras vacías (preposiciones y artículos)
+        const keywords = queryWordsRaw.filter(w => !STOP_WORDS.has(w));
+
+        let resultadosConPuntuacion = arrDatos.map(item => {
+            let tituloOriginal = item.titulo || "";
+            let tituloNorm = normalizar(tituloOriginal);
+            let tituloWordsRaw = tituloNorm.replace(/[^A-Z0-9\s]/g, " ").split(/\s+/).filter(Boolean);
+
+            let score = 0;
+            let tier = 4; // 4 = sin coincidencia
+
+            // NIVEL 1: Empieza exactamente con el texto de búsqueda completo
+            if (tituloNorm.startsWith(queryClean)) {
+                tier = 1;
+                score = 1000 + (100 - Math.min(tituloNorm.length, 100));
+            }
+            // NIVEL 2: Contiene el texto de búsqueda completo en cualquier parte del título
+            else if (tituloNorm.includes(queryClean)) {
+                tier = 2;
+                score = 500 + (100 - Math.min(tituloNorm.length, 100));
+            }
+            // NIVEL 3: Contiene todas las palabras clave (sin preposiciones/artículos) independiente de su orden y posición
+            else if (keywords.length > 0) {
+                let matchesAll = keywords.every(kw => tituloWordsRaw.includes(kw));
+                if (matchesAll) {
+                    tier = 3;
+                    score = 100 + (keywords.length * 10);
+                }
+            }
+
+            return { item, tier, score };
+        });
+
+        // Filtrar descartados y ordenar por Nivel (1 > 2 > 3) y puntuación
+        let filtrados = resultadosConPuntuacion.filter(r => r.tier <= 3);
+        filtrados.sort((a, b) => {
+            if (a.tier !== b.tier) {
+                return a.tier - b.tier;
+            }
+            return b.score - a.score;
+        });
+
+        return filtrados.map(r => r.item);
+    }
+
+    // CASO 1: Búsqueda por Título / Texto
     if (!sigBuscada && valTitulo) {
         Promise.all([
             fetch('signaturas.json').then(res => {
@@ -47,8 +112,6 @@
         ])
         .then(([baseDatos, planosDatos]) => {
             setTimeout(() => {
-                let tituloBusquedaUpper = valTitulo.trim().toUpperCase();
-                
                 let arrDatos = Array.isArray(baseDatos) ? baseDatos : 
                     Object.keys(baseDatos).map(k => {
                         let v = baseDatos[k];
@@ -58,29 +121,10 @@
 
                 let arrPlanos = Array.isArray(planosDatos) ? planosDatos : Object.values(planosDatos);
 
-                // Filtrar candidatos por título (que contengan el texto buscado)
-                let candidatos = arrDatos.filter(item => {
-                    let tituloItem = (item.titulo || "").trim().toUpperCase();
-                    if (!tituloItem) return false;
-                    return tituloItem.includes(tituloBusquedaUpper);
-                });
-
-                // Ordenar: primero coincidencia exacta, después el resto
-                candidatos.sort((a, b) => {
-                    let tA = (a.titulo || "").trim().toUpperCase();
-                    let tB = (b.titulo || "").trim().toUpperCase();
-                    
-                    let esExactoA = (tA === tituloBusquedaUpper) ? 1 : 0;
-                    let esExactoB = (tB === tituloBusquedaUpper) ? 1 : 0;
-                    
-                    if (esExactoA !== esExactoB) {
-                        return esExactoB - esExactoA; // Los exactos van primero
-                    }
-                    return tA.localeCompare(tB, 'es'); // Orden alfabético secundario
-                });
+                let candidatos = buscarCandidatosPorTitulo(arrDatos, valTitulo);
 
                 if (candidatos.length > 0) {
-                    let datosEncontrados = candidatos[0]; // Tomamos el primer resultado optimizado
+                    let datosEncontrados = candidatos[0]; // Primer resultado optimizado según los 3 niveles
                     let zona = datosEncontrados.zona || "";
                     let planoInfo = arrPlanos.find(p => p.pos_plano == zona) || {};
 
@@ -109,7 +153,7 @@
             mostrarAvisoPersonal({ signaturas: valTitulo });
         });
     } 
-    // CASO 2: Búsqueda por Signatura (Lógica original)
+    // CASO 2: Búsqueda por Signatura
     else if (sigBuscada && sigBuscada.trim().toUpperCase().startsWith('HG')) {
         Promise.all([
             fetch('signaturas.json').then(res => {

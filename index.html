@@ -54,7 +54,6 @@
         ::-webkit-scrollbar-track { background: #F4F0E8; }
         ::-webkit-scrollbar-thumb { background: #1A1817; }
         
-        /* Modal Utilities */
         .modal-active { opacity: 1 !important; pointer-events: auto !important; }
         .modal-content-active { transform: translateY(0) !important; }
     </style>
@@ -137,7 +136,6 @@
             </div>
         </div>
 
-        <!-- Bottom Grid Meta Indicators -->
         <div class="w-full grid grid-cols-2 md:grid-cols-4 grid-line-t font-mono text-xs">
             <div class="p-6 grid-line-r flex flex-col justify-between">
                 <span class="text-stone-500 block mb-2">01 / UBICACIÓN</span>
@@ -177,10 +175,9 @@
                 </p>
             </div>
 
-            <!-- Formulario de búsqueda con apertura en la misma ventana -->
             <form onsubmit="ejecutarBusqueda(event)" class="relative max-w-4xl">
                 <div class="flex flex-col sm:flex-row gap-2">
-                    <input type="text" id="input-busqueda-index" placeholder="Escribe signatura, título o palabra clave..." 
+                    <input type="text" id="input-busqueda-index" placeholder="Escribe signatura, título o palabra clave (ej. El hombre de arena)..." 
                         class="w-full bg-stone-800/80 border border-stone-700 text-stone-100 px-6 py-5 text-sm md:text-base focus:outline-none focus:border-sand font-sans transition-colors placeholder:text-stone-500" required>
                     <button type="submit" class="bg-sand text-stone-900 px-8 py-5 text-xs font-mono font-semibold uppercase tracking-widest hover:bg-stone-100 transition-colors whitespace-nowrap flex items-center justify-center gap-2">
                         <i class="fa-solid fa-magnifying-glass text-xs"></i>
@@ -198,7 +195,7 @@
         </div>
     </section>
 
-    <!-- MATERIAS Y GRADOS (Acervo) -->
+    <!-- MATERIAS Y GRADOS -->
     <section id="acervo" class="py-20 bg-stone-100 grid-line-b">
         <div class="max-w-7xl mx-auto px-6 mb-16">
             <div class="flex flex-col md:flex-row md:items-end justify-between">
@@ -214,7 +211,6 @@
         </div>
 
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Card 1: Grados -->
             <div class="bg-stone-50 p-8 border border-stone-200 hover-lift flex flex-col justify-between group cursor-pointer" onclick="abrirModalGrados(event)">
                 <div>
                     <span class="text-xs font-mono text-sand font-semibold block mb-4">01. ESTUDIANTES</span>
@@ -231,7 +227,6 @@
                 </div>
             </div>
 
-            <!-- Card 2: Materias -->
             <div class="bg-stone-50 p-8 border border-stone-200 hover-lift flex flex-col justify-between">
                 <div>
                     <span class="text-xs font-mono text-sand font-semibold block mb-4">02. COLECCIÓN GENERAL</span>
@@ -247,7 +242,6 @@
                 </div>
             </div>
 
-            <!-- Card 3: Enlaces de interés -->
             <div class="bg-stone-900 text-stone-100 p-8 hover-lift flex flex-col justify-between">
                 <div>
                     <span class="text-xs font-mono text-sand font-semibold block mb-4">03. RECURSOS DIGITALES</span>
@@ -270,7 +264,7 @@
         </div>
     </section>
 
-    <!-- FOOTER WITH EDITORIAL SIGNATURE -->
+    <!-- FOOTER -->
     <footer id="espacio" class="bg-stone-900 text-stone-100 pt-16 pb-12 font-mono text-xs">
         <div class="max-w-7xl mx-auto px-6">
             <div class="pb-12 border-b border-stone-800 text-center">
@@ -282,26 +276,15 @@
                 </h2>
                 <p class="text-stone-400 text-xs mt-3">CAMPUS DE EL MILÁN · OVIEDO, ASTURIAS</p>
             </div>
-            <!-- Footer Grid -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 py-12 border-b border-stone-800 text-stone-400">
                 <div>
                     <span class="text-sand block mb-3 font-semibold uppercase">DIRECCIÓN</span>
-                    <p class="leading-relaxed">
-                        Campus de El Milán<br>
-                        Calle Teniente Alfonso Martínez, s/n<br>
-                        33011 Oviedo, Asturias
-                    </p>
+                    <p class="leading-relaxed">Campus de El Milán<br>Calle Teniente Alfonso Martínez, s/n<br>33011 Oviedo, Asturias</p>
                 </div>
-
                 <div>
                     <span class="text-sand block mb-3 font-semibold uppercase">CONTACTO</span>
-                    <p class="leading-relaxed">
-                        Email: buobh@uniovi.es<br>
-                        Teléfono: +34 985 10 49 49<br>
-                        Atención al usuario
-                    </p>
+                    <p class="leading-relaxed">Email: buobh@uniovi.es<br>Teléfono: +34 985 10 49 49<br>Atención al usuario</p>
                 </div>
-
                 <div>
                     <span class="text-sand block mb-3 font-semibold uppercase">ENLACES OFICIALES</span>
                     <ul class="space-y-2">
@@ -310,26 +293,19 @@
                         <li><a href="https://digibuo.uniovi.es/dspace/" target="_blank" class="hover:text-stone-100">Repositorio Institucional (RUO)</a></li>
                     </ul>
                 </div>
-
                 <div>
                     <span class="text-sand block mb-3 font-semibold uppercase">FACULTADES</span>
-                    <p class="leading-relaxed">
-                        Facultad de Filosofía y Letras<br>
-                        Estudios de Grado, Máster y Doctorado
-                    </p>
+                    <p class="leading-relaxed">Facultad de Filosofía y Letras<br>Estudios de Grado, Máster y Doctorado</p>
                 </div>
             </div>
-
-            <!-- Copyright and Credits -->
             <div class="flex flex-col sm:flex-row justify-between items-center pt-8 text-stone-500 text-[11px]">
                 <span>© 2026 Universidad de Oviedo · Biblioteca de Humanidades</span>
-                <a href="#" <span class="mt-2 sm:mt-0 text-stone-400">INICIO</span></a>
+                <a href="#"><span class="mt-2 sm:mt-0 text-stone-400">INICIO</span></a>
             </div>
-
         </div>
     </footer>
 
-    <!-- MODALES DE GRADOS Y ALERTAS -->
+    <!-- MODAL GRADOS -->
     <div id="modalGrados" class="fixed inset-0 z-[2000] bg-stone-900/80 backdrop-blur-sm flex justify-center items-center opacity-0 pointer-events-none transition-all duration-300">
         <div class="bg-stone-50 w-11/12 max-w-2xl p-8 md:p-12 border border-stone-200 transform translate-y-8 transition-transform duration-300 modal-content relative" onclick="event.stopPropagation()">
             <button onclick="cerrarModalGrados(event)" class="absolute top-6 right-6 text-stone-400 hover:text-stone-900 transition-colors text-xl">
@@ -338,30 +314,29 @@
             <h2 class="editorial-title text-4xl font-light text-stone-900 mb-2">Artes y Humanidades</h2>
             <p class="font-mono text-xs text-stone-500 mb-8 pb-4 border-b border-stone-200 uppercase tracking-widest">Selecciona una titulación</p>
             <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-[11px] md:text-xs">
-                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado1')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Estudios Clásicos y Románicos</a></li>
-                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado2')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Estudios Ingleses</a></li>
-                <li><a href="Grados/grado3.html" onclick="abrirGradoDirecto(event, 'grado3')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Filosofía</a></li>
-                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado4')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Geografía y Ordenación del Territorio</a></li>
-                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado5')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Historia</a></li>
-                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado6')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Historia del Arte</a></li>
-                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado7')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Historia y Ciencias de la Música</a></li>
-                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado8')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Lengua Española y sus Literaturas</a></li>
-                <li><a href="#" onclick="abrirGradoDirecto(event, 'grado9')" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Lenguas Modernas y sus Literaturas</a></li>
+                <li><a href="Grados/grado3.html" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Filosofía</a></li>
+                <li><a href="#" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Estudios Clásicos y Románicos</a></li>
+                <li><a href="#" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Estudios Ingleses</a></li>
+                <li><a href="#" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Geografía y Ordenación del Territorio</a></li>
+                <li><a href="#" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Historia</a></li>
+                <li><a href="#" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Historia del Arte</a></li>
             </ul>
         </div>
     </div>
 
-    <!-- LOGICA JAVASCRIPT -->
     <script>
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
 
-        // Redirección de Búsqueda a resultados.html en la misma ventana
         function ejecutarBusqueda(event) {
             if (event) event.preventDefault();
             const input = document.getElementById('input-busqueda-index');
             const texto = input ? input.value.trim() : '';
             if (texto) {
-                window.location.href = `resultados.html?q=${encodeURIComponent(texto)}`;
+                if (texto.toUpperCase().startsWith('HG')) {
+                    window.location.href = `localizador.html?sig=${encodeURIComponent(texto)}`;
+                } else {
+                    window.location.href = `localizador.html?titulo=${encodeURIComponent(texto)}`;
+                }
             }
         }
 
@@ -373,7 +348,6 @@
             }
         }
 
-        // Sumar Visitas y Contadores
         async function incrementarVisitasIndex() {
             const numVisitas = document.getElementById('numVisitas');
             if (!numVisitas) return;
@@ -407,7 +381,7 @@
                         numEncontrado.textContent = valorEncontrados;
                     }
                 }
-            } catch (err) { console.warn("Error leyendo el contador:", err); }
+            } catch (err) { console.warn("Error leyendo contador:", err); }
 
             try {
                 const numVisitas = document.getElementById('numVisitas');
