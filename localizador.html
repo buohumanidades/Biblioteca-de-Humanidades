@@ -34,7 +34,8 @@
     const params = new URLSearchParams(window.location.search);
     let sigBuscada = params.get('sig');
     const sigOriginal = params.get('orig'); 
-    const valTitulo = params.get('titulo'); 
+    // Admite tanto 'titulo' como 'q' para evitar fallos si se llama desde distintas páginas
+    const valTitulo = params.get('titulo') || params.get('q'); 
 
     if (sigBuscada) {
         sigBuscada = sigBuscada.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+(?=\d+=)/gi, "/");
