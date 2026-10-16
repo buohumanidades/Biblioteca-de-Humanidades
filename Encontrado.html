@@ -108,7 +108,7 @@
                     <div id="display-signatura" class="bg-sand text-stone-900 text-[10px] font-mono font-bold px-2 py-1 rounded-sm hidden"></div>
                 </div>
                 <div class="text-left md:text-right">
-                    <span id="txt-estanteria" class="font-serif text-2xl md:text-4xl font-bold text-sand leading-none">--</span>
+                    <span id="txt-estanteria" class="font-serif text-xl md:text-3xl font-bold text-sand leading-tight">--</span>
                 </div>
             </div>
 
@@ -148,12 +148,63 @@
         if (valPlanta) document.getElementById('txt-planta').textContent = valPlanta;
         if (valSala) document.getElementById('txt-sala').textContent = valSala;
         if (valUbicacion) document.getElementById('txt-ubicacion').textContent = valUbicacion;
-        if (valEstanteria) document.getElementById('txt-estanteria').textContent = valEstanteria;
 
+        // Cargar todassignaturas.json para buscar la descripción basándonos en display-signatura (sigBuscada)
         if (sigBuscada) {
             const badge = document.getElementById('display-signatura');
             badge.textContent = sigBuscada;
             badge.style.display = 'inline-block';
+
+            fetch('todassignaturas.json')
+                .then(res => {
+                    if (!res.ok) throw new Error("Error al cargar todassignaturas.json");
+                    return res.json();
+                })
+                .then(data => {
+                    let sigUpper = sigBuscada.trim().toUpperCase();
+                    let descripcionEncontrada = '';
+
+                    // 1. Coincidencia exacta en el campo "signaturas"
+                    let matchExacto = data.find(item => (item.signaturas || '').trim().toUpperCase() === sigUpper);
+                    if (matchExacto) {
+                        descripcionEncontrada = matchExacto.descripcion || '';
+                    } else {
+                        // 2. Coincidencia por aproximación (prefijo más específico)
+                        let candidatos = data.filter(item => {
+                            let itemSig = (item.signaturas || '').trim().toUpperCase();
+                            if (!itemSig) return false;
+                            if (sigUpper === itemSig) return true;
+                            if (sigUpper.startsWith(itemSig)) {
+                                let nextChar = sigUpper.charAt(itemSig.length);
+                                if (/[0-9]/.test(nextChar) && /[0-9]/.test(itemSig.slice(-1))) {
+                                    return false;
+                                }
+                                return true;
+                            }
+                            return false;
+                        });
+
+                        candidatos.sort((a, b) => (b.signaturas || '').trim().length - (a.signaturas || '').trim().length);
+
+                        if (candidatos.length > 0) {
+                            descripcionEncontrada = candidatos[0].descripcion || '';
+                        }
+                    }
+
+                    if (descripcionEncontrada) {
+                        document.getElementById('txt-estanteria').textContent = descripcionEncontrada;
+                    } else if (valEstanteria) {
+                        document.getElementById('txt-estanteria').textContent = valEstanteria;
+                    } else {
+                        document.getElementById('txt-estanteria').textContent = '--';
+                    }
+                })
+                .catch(err => {
+                    console.error("Error:", err);
+                    if (valEstanteria) document.getElementById('txt-estanteria').textContent = valEstanteria;
+                });
+        } else if (valEstanteria) {
+            document.getElementById('txt-estanteria').textContent = valEstanteria;
         }
 
         if (valMapa) {
