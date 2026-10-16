@@ -50,9 +50,14 @@
         'Y', 'E', 'O', 'U', 'QUE', 'ES', 'SU', 'SUS', 'LO'
     ]);
 
+    function normalizarTexto(texto) {
+        if (!texto) return "";
+        return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().trim();
+    }
+
     function limpiarYExtraerPalabras(texto) {
         if (!texto) return [];
-        let normalizado = texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+        let normalizado = normalizarTexto(texto);
         let palabras = normalizado.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g,"").split(/\s+/);
         let significativas = palabras.filter(p => p.length > 0 && !STOP_WORDS.has(p));
         return significativas.length > 0 ? significativas : palabras;
@@ -100,7 +105,7 @@
         ])
         .then(([baseDatos, planosDatos]) => {
             setTimeout(() => {
-                let tituloBusquedaCompleto = valTitulo.trim().toUpperCase();
+                let tituloBusquedaCompleto = normalizarTexto(valTitulo);
                 let palabrasBusqueda = limpiarYExtraerPalabras(valTitulo);
                 
                 let arrDatos = Array.isArray(baseDatos) ? baseDatos : 
@@ -112,23 +117,28 @@
 
                 let arrPlanos = Array.isArray(planosDatos) ? planosDatos : Object.values(planosDatos);
 
-                let grupoEmpiezan = [];         // Nivel 1: Empiezan exactamente con el texto
+                let grupoEmpiezan = [];         // Nivel 1: Empiezan exactamente con el texto completo
                 let grupoContienenTexto = [];    // Nivel 2: Contienen el texto completo en cualquier parte
-                let grupoContienenPalabras = []; // Nivel 3: Contienen todas las palabras clave sin stop words
+                let grupoContienenPalabras = []; // Nivel 3: Contienen todas las palabras clave (tokens) sin stop words
 
                 arrDatos.forEach(item => {
-                    let tituloItem = (item.titulo || "").trim().toUpperCase();
-                    if (!tituloItem) return;
+                    let tituloItemRaw = item.titulo || "";
+                    let tituloItemNorm = normalizarTexto(tituloItemRaw);
+                    if (!tituloItemNorm) return;
 
-                    let scoreHistorial = obtenerPuntajeHistorial(tituloItem);
+                    let scoreHistorial = obtenerPuntajeHistorial(tituloItemRaw);
                     let candidatoObj = { item, score: scoreHistorial };
 
-                    if (tituloItem.startsWith(tituloBusquedaCompleto)) {
+                    if (tituloItemNorm.startsWith(tituloBusquedaCompleto)) {
                         grupoEmpiezan.push(candidatoObj);
-                    } else if (tituloItem.includes(tituloBusquedaCompleto)) {
+                    } else if (tituloItemNorm.includes(tituloBusquedaCompleto)) {
                         grupoContienenTexto.push(candidatoObj);
-                    } else if (palabrasBusqueda.length > 0 && palabrasBusqueda.every(palabra => tituloItem.includes(palabra))) {
-                        grupoContienenPalabras.push(candidatoObj);
+                    } else if (palabrasBusqueda.length > 0) {
+                        let palabrasTitulo = limpiarYExtraerPalabras(tituloItemRaw);
+                        let todasPresentes = palabrasBusqueda.every(palabraBusq => palabrasTitulo.includes(palabraBusq));
+                        if (todasPresentes) {
+                            grupoContienenPalabras.push(candidatoObj);
+                        }
                     }
                 });
 
