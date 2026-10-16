@@ -5,13 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Procesando Búsqueda...</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f6f7; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: #2c3e50; }
-        .loader-container { text-align: center; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); max-width: 400px; width: 90%; }
+        body { font-family: Arial, sans-serif; background-color: #f4f6f7; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: #2c3e50; }
+        .loader-container { text-align: center; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); max-width: 600px; width: 90%; }
         .spinner { border: 5px solid #ecf0f1; border-top: 5px solid #2980b9; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         h2 { font-family: 'Romana Moderna', Georgia, serif; color: #1a252f; margin-bottom: 10px; font-size: 1.5em; }
         p { color: #7f8c8d; font-size: 0.95em; line-height: 1.4; }
         .icono-aviso { font-size: 3em; margin-bottom: 10px; }
+        
+        /* Estilos para lista de resultados múltiples y filtros */
+        .results-list { text-align: left; max-height: 400px; overflow-y: auto; margin-top: 20px; border-top: 1px solid #ecf0f1; padding-top: 15px; }
+        .result-item { background: #faf8f5; border: 1px solid #e6dfc; padding: 12px 15px; margin-bottom: 10px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+        .result-item:hover { background: #f4f0e8; border-color: #2980b9; }
+        .result-title { font-weight: bold; color: #1a252f; font-size: 1em; margin-bottom: 4px; }
+        .result-meta { font-size: 0.85em; color: #7f8c8d; display: flex; gap: 15px; flex-wrap: wrap; }
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; }
+        .filter-select { padding: 6px 12px; border-radius: 4px; border: 1px solid #bdc3c7; font-size: 0.9em; background: #fff; color: #2c3e50; }
     </style>
 </head>
 <body>
@@ -33,8 +42,52 @@
 
     const signaturaClicada = sigOriginal || sigBuscada || 'Desconocida';
 
-    // CASO 1: Búsqueda por Título (si se proporciona 'titulo' y no hay 'sig')
+    // Lista de stop words (artículos y preposiciones en español)
+    const STOP_WORDS = new Set([
+        'EL', 'LA', 'LOS', 'LAS', 'UN', 'UNA', 'UNOS', 'UNAS', 
+        'DE', 'DEL', 'AL', 'A', 'EN', 'CON', 'POR', 'PARA', 'SIN', 
+        'SOBRE', 'ENTRE', 'CONTRA', 'HACIA', 'DESDE', 'HASTA', 
+        'Y', 'E', 'O', 'U', 'QUE', 'ES', 'SU', 'SUS', 'LO'
+    ]);
+
+    function limpiarYExtraerPalabras(texto) {
+        if (!texto) return [];
+        let normalizado = texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+        let palabras = normalizado.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g,"").split(/\s+/);
+        let significativas = palabras.filter(p => p.length > 0 && !STOP_WORDS.has(p));
+        return significativas.length > 0 ? significativas : palabras;
+    }
+
+    function registrarHistorial(termino) {
+        if (!termino) return;
+        try {
+            let historial = JSON.parse(localStorage.getItem('historial_busquedas_libros') || '{}');
+            let key = termino.trim().toUpperCase();
+            historial[key] = (historial[key] || 0) + 1;
+            localStorage.setItem('historial_busquedas_libros', JSON.stringify(historial));
+        } catch(e) {}
+    }
+
+    function obtenerPuntajeHistorial(tituloItem) {
+        try {
+            let historial = JSON.parse(localStorage.getItem('historial_busquedas_libros') || '{}');
+            let score = 0;
+            let tituloUpper = tituloItem.toUpperCase();
+            for (let term in historial) {
+                if (tituloUpper.includes(term)) {
+                    score += historial[term] * 2;
+                }
+            }
+            return score;
+        } catch(e) {
+            return 0;
+        }
+    }
+
+    // CASO 1: Búsqueda por Título con limpieza de artículos/preposiciones, historial y filtros
     if (!sigBuscada && valTitulo) {
+        registrarHistorial(valTitulo);
+        
         Promise.all([
             fetch('signaturas.json').then(res => {
                 if (!res.ok) throw new Error("Error cargando signaturas.json");
@@ -47,7 +100,8 @@
         ])
         .then(([baseDatos, planosDatos]) => {
             setTimeout(() => {
-                let tituloBusquedaUpper = valTitulo.trim().toUpperCase();
+                let palabrasBusqueda = limpiarYExtraerPalabras(valTitulo);
+                let tituloBusquedaCompleto = valTitulo.trim().toUpperCase();
                 
                 let arrDatos = Array.isArray(baseDatos) ? baseDatos : 
                     Object.keys(baseDatos).map(k => {
@@ -58,59 +112,56 @@
 
                 let arrPlanos = Array.isArray(planosDatos) ? planosDatos : Object.values(planosDatos);
 
-                // Filtrar candidatos por título (que contengan el texto buscado)
-                let candidatos = arrDatos.filter(item => {
+                let candidatosPuntuados = arrDatos.map(item => {
                     let tituloItem = (item.titulo || "").trim().toUpperCase();
-                    if (!tituloItem) return false;
-                    return tituloItem.includes(tituloBusquedaUpper);
-                });
+                    if (!tituloItem) return null;
 
-                // Ordenar: primero coincidencia exacta, después el resto
-                candidatos.sort((a, b) => {
-                    let tA = (a.titulo || "").trim().toUpperCase();
-                    let tB = (b.titulo || "").trim().toUpperCase();
-                    
-                    let esExactoA = (tA === tituloBusquedaUpper) ? 1 : 0;
-                    let esExactoB = (tB === tituloBusquedaUpper) ? 1 : 0;
-                    
-                    if (esExactoA !== esExactoB) {
-                        return esExactoB - esExactoA; // Los exactos van primero
+                    let score = 0;
+                    if (tituloItem === tituloBusquedaCompleto) {
+                        score += 100;
+                    } else if (tituloItem.includes(tituloBusquedaCompleto)) {
+                        score += 50;
                     }
-                    return tA.localeCompare(tB, 'es'); // Orden alfabético secundario
-                });
 
-                if (candidatos.length > 0) {
-                    let datosEncontrados = candidatos[0]; // Tomamos el primer resultado optimizado
-                    let zona = datosEncontrados.zona || "";
-                    let planoInfo = arrPlanos.find(p => p.pos_plano == zona) || {};
-
-                    const paramsUrl = new URLSearchParams({
-                        sig: datosEncontrados.signatura || datosEncontrados.signaturas || '',
-                        orig: datosEncontrados.signatura || datosEncontrados.signaturas || '',
-                        planta: datosEncontrados.planta || '',
-                        sala: datosEncontrados.sala || '',
-                        ubicacion: datosEncontrados.ubicacion || '',
-                        estanteria: datosEncontrados.estanteria || '',
-                        titulo: datosEncontrados.titulo || valTitulo,
-                        mapa: planoInfo.mapa || '',
-                        pos_x: planoInfo.pos_x || '',
-                        pos_y: planoInfo.pos_y || '',
-                        tam_punto: planoInfo.tam_punto || '20'
+                    let coincidenciasPalabras = 0;
+                    palabrasBusqueda.forEach(palabra => {
+                        if (tituloItem.includes(palabra)) {
+                            coincidenciasPalabras++;
+                            score += 10;
+                        }
                     });
 
-                    window.location.href = (datosEncontrados.html || 'Encontrado.html') + "?" + paramsUrl.toString();
+                    score += obtenerPuntajeHistorial(tituloItem);
+
+                    if (coincidenciasPalabras > 0 || tituloItem.includes(tituloBusquedaCompleto)) {
+                        return { item, score, coincidenciasPalabras };
+                    }
+                    return null;
+                }).filter(Boolean);
+
+                candidatosPuntuados.sort((a, b) => b.score - a.score);
+                let candidatos = candidatosPuntuados.map(cp => cp.item);
+
+                if (candidatos.length > 0) {
+                    if (candidatos.length === 1 || candidatosPuntuados[0].score >= 80) {
+                        redireccionarResultado(candidatos[0], valTitulo, arrPlanos);
+                    } else {
+                        mostrarSelectorResultados(candidatos, valTitulo, arrPlanos);
+                    }
                 } else {
                     mostrarAvisoPersonal({ signaturas: valTitulo, descripcion: `con título "${valTitulo}"` });
                 }
-            }, 600);
+            }, 500);
         })
         .catch(error => {
             console.error("Error:", error);
             mostrarAvisoPersonal({ signaturas: valTitulo });
         });
     } 
-    // CASO 2: Búsqueda por Signatura (Lógica original)
+    // CASO 2: Búsqueda por Signatura con soporte de historial
     else if (sigBuscada && sigBuscada.trim().toUpperCase().startsWith('HG')) {
+        registrarHistorial(sigBuscada);
+        
         Promise.all([
             fetch('signaturas.json').then(res => {
                 if (!res.ok) throw new Error("Error cargando signaturas.json");
@@ -178,28 +229,11 @@
                 }
 
                 if (datosEncontrados) {
-                    let zona = datosEncontrados.zona || "";
-                    let planoInfo = arrPlanos.find(p => p.pos_plano == zona) || {};
-
-                    const paramsUrl = new URLSearchParams({
-                        sig: sigBuscada,
-                        orig: signaturaClicada,
-                        planta: datosEncontrados.planta || '',
-                        sala: datosEncontrados.sala || '',
-                        ubicacion: datosEncontrados.ubicacion || '',
-                        estanteria: datosEncontrados.estanteria || '',
-                        titulo: valTitulo || datosEncontrados.titulo || 'Sin título especificado',
-                        mapa: planoInfo.mapa || '',
-                        pos_x: planoInfo.pos_x || '',
-                        pos_y: planoInfo.pos_y || '',
-                        tam_punto: planoInfo.tam_punto || '20'
-                    });
-
-                    window.location.href = (datosEncontrados.html || 'Encontrado.html') + "?" + paramsUrl.toString();
+                    redireccionarResultado(datosEncontrados, valTitulo || datosEncontrados.titulo, arrPlanos, sigBuscada);
                 } else {
                     mostrarAvisoPersonal({ signaturas: signaturaClicada });
                 }
-            }, 600);
+            }, 500);
         })
         .catch(error => {
             console.error("Error:", error);
@@ -208,6 +242,107 @@
     } else {
         mostrarAvisoPersonal({ signaturas: signaturaClicada });
     }
+
+    function redireccionarResultado(datosEncontrados, tituloOriginal, arrPlanos, sigBusc = '') {
+        let zona = datosEncontrados.zona || "";
+        let planoInfo = arrPlanos.find(p => p.pos_plano == zona) || {};
+
+        const paramsUrl = new URLSearchParams({
+            sig: sigBusc || datosEncontrados.signatura || datosEncontrados.signaturas || '',
+            orig: sigOriginal || sigBusc || datosEncontrados.signatura || datosEncontrados.signaturas || '',
+            planta: datosEncontrados.planta || '',
+            sala: datosEncontrados.sala || '',
+            ubicacion: datosEncontrados.ubicacion || '',
+            estanteria: datosEncontrados.estanteria || '',
+            titulo: tituloOriginal || datosEncontrados.titulo || 'Sin título especificado',
+            mapa: planoInfo.mapa || '',
+            pos_x: planoInfo.pos_x || '',
+            pos_y: planoInfo.pos_y || '',
+            tam_punto: planoInfo.tam_punto || '20'
+        });
+
+        window.location.href = (datosEncontrados.html || 'Encontrado.html') + "?" + paramsUrl.toString();
+    }
+
+    function mostrarSelectorResultados(candidatos, busquedaOriginal, arrPlanos) {
+        const contenedor = document.getElementById('contenedor-principal');
+        
+        let plantasUnicas = [...new Set(candidatos.map(c => c.planta).filter(Boolean))];
+        let salasUnicas = [...new Set(candidatos.map(c => c.sala).filter(Boolean))];
+
+        contenedor.innerHTML = `
+            <h2>Resultados para "${busquedaOriginal}"</h2>
+            <p>Se han encontrado varios resultados. Seleccione el libro deseado o filtre por planta/zona:</p>
+            
+            <div class="filter-bar">
+                <select id="filtro-planta" class="filter-select">
+                    <option value="">Todas las plantas</option>
+                    ${plantasUnicas.map(p => `<option value="${p}">Planta: ${p}</option>`).join('')}
+                </select>
+                <select id="filtro-sala" class="filter-select">
+                    <option value="">Todas las zonas/salas</option>
+                    ${salasUnicas.map(s => `<option value="${s}">Zona: ${s}</option>`).join('')}
+                </select>
+            </div>
+
+            <div class="results-list" id="lista-resultados">
+                ${renderizarItemsResultados(candidatos)}
+            </div>
+        `;
+
+        const filtrarResultados = () => {
+            let plantaSel = document.getElementById('filtro-planta').value;
+            let salaSel = document.getElementById('filtro-sala').value;
+
+            let filtrados = candidatos.filter(c => {
+                let matchPlanta = !plantaSel || c.planta === plantaSel;
+                let matchSala = !salaSel || c.sala === salaSel;
+                return matchPlanta && matchSala;
+            });
+
+            document.getElementById('lista-resultados').innerHTML = renderizarItemsResultados(filtrados);
+            asociarEventosClick(arrPlanos, busquedaOriginal);
+        };
+
+        document.getElementById('filtro-planta').addEventListener('change', filtrarResultados);
+        document.getElementById('filtro-sala').addEventListener('change', filtrarResultados);
+        asociarEventosClick(arrPlanos, busquedaOriginal);
+    }
+
+    function renderizarItemsResultados(lista) {
+        if (lista.length === 0) {
+            return '<p style="text-align:center; color:#7f8c8d; padding:20px;">No hay resultados con los filtros seleccionados.</p>';
+        }
+        return lista.map((item, index) => `
+            <div class="result-item" data-index="${index}">
+                <div class="result-title">${item.titulo || 'Sin título'}</div>
+                <div class="result-meta">
+                    <span><strong>Signatura:</strong> ${item.signatura || item.signaturas || 'S/S'}</span>
+                    <span><strong>Planta:</strong> ${item.planta || '--'}</span>
+                    <span><strong>Zona:</strong> ${item.sala || '--'}</span>
+                    <span><strong>Estantería:</strong> ${item.estanteria || '--'}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function asociarEventosClick(arrPlanos, busquedaOriginal) {
+        document.querySelectorAll('.result-item').forEach(el => {
+            el.addEventListener('click', function() {
+                let idx = this.getAttribute('data-index');
+                if (window._candidatosActuales && window._candidatosActuales[idx]) {
+                    redireccionarResultado(window._candidatosActuales[idx], busquedaOriginal, arrPlanos);
+                }
+            });
+        });
+    }
+
+    window._candidatosActuales = [];
+    const originalMostrarSelector = mostrarSelectorResultados;
+    mostrarSelectorResultados = function(candidatos, busquedaOriginal, arrPlanos) {
+        window._candidatosActuales = candidatos;
+        originalMostrarSelector(candidatos, busquedaOriginal, arrPlanos);
+    };
 
     function mostrarAvisoPersonal(datos) {
         const contenedor = document.getElementById('contenedor-principal');
