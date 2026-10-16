@@ -303,6 +303,8 @@
             </div>
         `;
 
+        window._candidatosActuales = candidatos;
+
         const filtrarResultados = () => {
             let plantaSel = document.getElementById('filtro-planta').value;
             let salaSel = document.getElementById('filtro-sala').value;
@@ -313,6 +315,7 @@
                 return matchPlanta && matchSala;
             });
 
+            window._candidatosActuales = filtrados;
             document.getElementById('lista-resultados').innerHTML = renderizarItemsResultados(filtrados);
             asociarEventosClick(arrPlanos, busquedaOriginal);
         };
@@ -349,13 +352,6 @@
             });
         });
     }
-
-    window._candidatosActuales = [];
-    const originalMostrarSelector = mostrarSelectorResultados;
-    mostrarSelectorResultados = function(candidatos, busquedaOriginal, arrPlanos) {
-        window._candidatosActuales = candidatos;
-        originalMostrarSelector(candidatos, busquedaOriginal, arrPlanos);
-    };
 
     function mostrarAvisoPersonal(datos) {
         const contenedor = document.getElementById('contenedor-principal');
