@@ -84,7 +84,7 @@
         }
     }
 
-    // CASO 1: Búsqueda por Título con limpieza de artículos/preposiciones, historial y filtros
+    // CASO 1: Búsqueda por Título con jerarquía estricta (Exacta -> Todas las palabras clave) y aprendizaje
     if (!sigBuscada && valTitulo) {
         registrarHistorial(valTitulo);
         
@@ -100,8 +100,8 @@
         ])
         .then(([baseDatos, planosDatos]) => {
             setTimeout(() => {
-                let palabrasBusqueda = limpiarYExtraerPalabras(valTitulo);
                 let tituloBusquedaCompleto = valTitulo.trim().toUpperCase();
+                let palabrasBusqueda = limpiarYExtraerPalabras(valTitulo);
                 
                 let arrDatos = Array.isArray(baseDatos) ? baseDatos : 
                     Object.keys(baseDatos).map(k => {
@@ -112,38 +112,36 @@
 
                 let arrPlanos = Array.isArray(planosDatos) ? planosDatos : Object.values(planosDatos);
 
-                let candidatosPuntuados = arrDatos.map(item => {
+                let grupoExacto = [];
+                let grupoTodasPalabras = [];
+
+                arrDatos.forEach(item => {
                     let tituloItem = (item.titulo || "").trim().toUpperCase();
-                    if (!tituloItem) return null;
+                    if (!tituloItem) return;
 
-                    let score = 0;
-                    if (tituloItem === tituloBusquedaCompleto) {
-                        score += 100;
-                    } else if (tituloItem.includes(tituloBusquedaCompleto)) {
-                        score += 50;
+                    let scoreHistorial = obtenerPuntajeHistorial(tituloItem);
+                    let candidatoObj = { item, score: scoreHistorial };
+
+                    // 1. Prioridad máxima: Coincidencia exacta del texto completo en el título
+                    if (tituloItem.includes(tituloBusquedaCompleto)) {
+                        grupoExacto.push(candidatoObj);
+                    } 
+                    // 2. Segunda prioridad: Aparecen TODAS las palabras clave (tras descartar stop words)
+                    else if (palabrasBusqueda.length > 0 && palabrasBusqueda.every(palabra => tituloItem.includes(palabra))) {
+                        grupoTodasPalabras.push(candidatoObj);
                     }
+                });
 
-                    let coincidenciasPalabras = 0;
-                    palabrasBusqueda.forEach(palabra => {
-                        if (tituloItem.includes(palabra)) {
-                            coincidenciasPalabras++;
-                            score += 10;
-                        }
-                    });
+                // Ordenar cada grupo por puntuación de historial (aprendizaje acumulado)
+                grupoExacto.sort((a, b) => b.score - a.score);
+                grupoTodasPalabras.sort((a, b) => b.score - a.score);
 
-                    score += obtenerPuntajeHistorial(tituloItem);
-
-                    if (coincidenciasPalabras > 0 || tituloItem.includes(tituloBusquedaCompleto)) {
-                        return { item, score, coincidenciasPalabras };
-                    }
-                    return null;
-                }).filter(Boolean);
-
-                candidatosPuntuados.sort((a, b) => b.score - a.score);
-                let candidatos = candidatosPuntuados.map(cp => cp.item);
+                // Combinación final respetando estrictamente el orden solicitado
+                let candidatosCombinados = [...grupoExacto, ...grupoTodasPalabras];
+                let candidatos = candidatosCombinados.map(cp => cp.item);
 
                 if (candidatos.length > 0) {
-                    if (candidatos.length === 1 || candidatosPuntuados[0].score >= 80) {
+                    if (candidatos.length === 1 || (grupoExacto.length === 1 && grupoExacto[0].score >= 10)) {
                         redireccionarResultado(candidatos[0], valTitulo, arrPlanos);
                     } else {
                         mostrarSelectorResultados(candidatos, valTitulo, arrPlanos);
