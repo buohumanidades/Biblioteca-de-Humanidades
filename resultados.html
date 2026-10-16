@@ -112,7 +112,6 @@
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span class="font-mono text-xs text-stone-700 font-bold uppercase tracking-widest">UBICACIÓN EN BIBLIOTECA</span>
                 </div>
-                <!-- BOTÓN DE CERRAR REDUCIDO A SOLO ICONO -->
                 <button onclick="cerrarModalLocalizador()" class="text-stone-500 hover:text-stone-900 px-3 py-1.5 border border-stone-300 hover:border-stone-900 transition-colors flex items-center justify-center" title="Cerrar ventana">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
@@ -133,9 +132,23 @@
     <script>
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDcDemo123/exec";
 
+        const STOP_WORDS = new Set([
+            'el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas',
+            'a', 'ante', 'bajo', 'cabe', 'con', 'contra', 'de', 'del', 'desde',
+            'durante', 'en', 'entre', 'hacia', 'hasta', 'mediante', 'para',
+            'por', 'según', 'sin', 'so', 'sobre', 'tras', 'versus', 'vía',
+            'y', 'e', 'o', 'u', 'que', 'al'
+        ]);
+
         function limpiarTexto(str) {
             if (!str) return '';
-            return str.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9\s]/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+            return str.toString()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-zA-Z0-9\s]/g, " ")
+                .replace(/\s+/g, " ")
+                .trim()
+                .toLowerCase();
         }
 
         async function cargarTodosLosLibros() {
@@ -160,38 +173,68 @@
             try { await fetch(`${GOOGLE_SCRIPT_URL}?tipo=encontrados&celda=A2&accion=sumar&t=${new Date().getTime()}`); } catch (e) {}
         }
 
+        // Algoritmo de búsqueda en 3 niveles integrado
         function ejecutarAlgoritmoBusqueda(libros, textoIngresado) {
             const textoLimpioBusqueda = textoIngresado.trim();
             if (!textoLimpioBusqueda) return { tipo: 'vacio', resultados: [], total: 0 };
 
+            // 1. Prioridad opcional: Búsqueda por Signatura exacta o parcial
             const busquedaSigLimpia = limpiarTexto(textoLimpioBusqueda);
             const resultadosSignatura = libros.filter(libro => limpiarTexto(libro.signatura || libro.Signatura || libro.SIGNATURA || '').includes(busquedaSigLimpia));
-            if (resultadosSignatura.length > 0) {
+            if (resultadosSignatura.length > 0 && (textoLimpioBusqueda.toUpperCase().startsWith('HG') || textoLimpioBusqueda.length <= 6)) {
                 return { tipo: 'signatura', terminoUsado: textoLimpioBusqueda, resultados: resultadosSignatura, total: resultadosSignatura.length };
             }
 
-            const palabras = textoLimpioBusqueda.split(/\s+/);
-            let textoParaTitulo = textoLimpioBusqueda, fueRecortado = false;
-            if (palabras.length > 8) { textoParaTitulo = palabras.slice(0, 8).join(' '); fueRecortado = true; }
+            // 2. Búsqueda por Título en 3 Niveles
+            const queryNorm = limpiarTexto(textoLimpioBusqueda);
+            const palabrasQuery = queryNorm.split(/\s+/).filter(p => p.length > 0);
+            const keywords = palabrasQuery.filter(p => !STOP_WORDS.has(p));
 
-            const busquedaTitLimpia = limpiarTexto(textoParaTitulo);
-            let resultadosTitulo = libros.filter(libro => limpiarTexto(libro.titulo || libro.Titulo || libro.TITULO || '').includes(busquedaTitLimpia));
+            let tier1 = []; // Comienzan exactamente con el texto completo
+            let tier2 = []; // Contienen el texto completo en cualquier parte
+            let tier3 = []; // Contienen todas las palabras clave (sin artículos ni preposiciones) en cualquier orden
 
-            // ORDENACIÓN: Primero coincidencias exactas del título, después el resto
-            resultadosTitulo.sort((a, b) => {
-                let tA = limpiarTexto(a.titulo || a.Titulo || a.TITULO || '');
-                let tB = limpiarTexto(b.titulo || b.Titulo || b.TITULO || '');
+            libros.forEach(libro => {
+                const tituloRaw = libro.titulo || libro.Titulo || libro.TITULO || '';
+                const tituloNorm = limpiarTexto(tituloRaw);
+                if (!tituloNorm) return;
 
-                let esExactoA = (tA === busquedaTitLimpia) ? 1 : 0;
-                let esExactoB = (tB === busquedaTitLimpia) ? 1 : 0;
-
-                if (esExactoA !== esExactoB) {
-                    return esExactoB - esExactoA; // Las coincidencias exactas van primero
+                if (tituloNorm.startsWith(queryNorm)) {
+                    tier1.push(libro);
+                } else if (tituloNorm.includes(queryNorm)) {
+                    tier2.push(libro);
+                } else if (keywords.length > 0 && keywords.every(kw => tituloNorm.includes(kw))) {
+                    tier3.push(libro);
                 }
-                return tA.localeCompare(tB, 'es'); // Orden alfabético secundario
             });
 
-            return { tipo: 'titulo', terminoOriginal: textoLimpioBusqueda, terminoUsado: textoParaTitulo, fueRecortado: fueRecortado, totalPalabras: palabras.length, resultados: resultadosTitulo, total: resultadosTitulo.length };
+            const sortFn = (a, b) => {
+                const tA = (a.titulo || a.Titulo || a.TITULO || '').trim();
+                const tB = (b.titulo || b.Titulo || b.TITULO || '').trim();
+                return tA.localeCompare(tB, 'es');
+            };
+
+            tier1.sort(sortFn);
+            tier2.sort(sortFn);
+            tier3.sort(sortFn);
+
+            const combinados = [...tier1, ...tier2, ...tier3];
+            const vistos = new Set();
+            const resultadosUnicos = [];
+            for (const item of combinados) {
+                const idUnico = (item.signatura || item.Signatura || '') + '|' + (item.titulo || item.Titulo || '');
+                if (!vistos.has(idUnico)) {
+                    vistos.add(idUnico);
+                    resultadosUnicos.push(item);
+                }
+            }
+
+            return {
+                tipo: 'titulo',
+                terminoUsado: textoLimpioBusqueda,
+                resultados: resultadosUnicos,
+                total: resultadosUnicos.length
+            };
         }
 
         function abrirLocalizadorSuperpuesto(signatura, titulo) {
@@ -239,6 +282,7 @@
             document.getElementById('sin-resultados').classList.add('hidden');
             document.getElementById('criterio-info').classList.remove('hidden');
             document.getElementById('contador-resultados').textContent = `${respuestaBusqueda.total} libro(s) encontrado(s)`;
+            document.getElementById('texto-explicativo-criterio').textContent = `Término buscado: "${respuestaBusqueda.terminoUsado}"`;
 
             respuestaBusqueda.resultados.forEach((libro, idx) => {
                 const nea = libro.nea || libro.NEA || libro.Nea || libro[Object.keys(libro)[0]] || 'S/N';
