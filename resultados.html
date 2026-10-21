@@ -211,28 +211,36 @@
             // NIVEL 3: Búsqueda de la primera palabra clave en el campo Autor
             if (resultados.length === 0 && keywords.length > 0) {
                 const primeraPalabra = keywords[0];
-                resultados = libros.filter(libro => {
+                let resultadosAutor = libros.filter(libro => {
                     const autorNorm = limpiarTexto(libro.autor || libro.Autor || libro.AUTOR || '');
                     return autorNorm.includes(primeraPalabra);
                 });
+
+                // Si hay más palabras, exigimos que las siguientes estén en el título
+                if (resultadosAutor.length > 0 && keywords.length > 1) {
+                    const palabrasTitulo = keywords.slice(1, 3);
+                    resultados = resultadosAutor.filter(libro => {
+                        const tituloNorm = limpiarTexto(libro.titulo || libro.Titulo || libro.TITULO || '');
+                        return palabrasTitulo.every(kw => tituloNorm.includes(kw));
+                    });
+                } else {
+                    resultados = resultadosAutor;
+                }
             }
 
             // NIVEL 4: Búsqueda de la última palabra clave en el campo Autor, y luego filtrado por las 2 primeras palabras clave en el Título
-            if (resultados.length === 0 && keywords.length > 0) {
+            if (resultados.length === 0 && keywords.length > 1) {
                 const ultimaPalabra = keywords[keywords.length - 1];
-                const dosPrimerasPalabras = keywords.slice(0, 2); // Coge 1 o 2 palabras máximo
+                const dosPrimerasPalabras = keywords.slice(0, 2); 
                 
-                // Buscar por la última palabra en el autor
                 let resultadosAutor = libros.filter(libro => {
                     const autorNorm = limpiarTexto(libro.autor || libro.Autor || libro.AUTOR || '');
                     return autorNorm.includes(ultimaPalabra);
                 });
 
-                // Filtrar esos resultados comprobando el título
                 if (resultadosAutor.length > 0) {
                     resultados = resultadosAutor.filter(libro => {
                         const tituloNorm = limpiarTexto(libro.titulo || libro.Titulo || libro.TITULO || '');
-                        // Deben coincidir las dos primeras palabras
                         return dosPrimerasPalabras.every(kw => tituloNorm.includes(kw));
                     });
                 }
