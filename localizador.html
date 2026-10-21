@@ -52,7 +52,7 @@
             .toLowerCase();
     }
 
-    // Algoritmo de 3 niveles para búsqueda por título
+    // Algoritmo de búsqueda en niveles secuenciales
     function buscarLibrosPorTituloLocal(libros, textoIngresado) {
         const queryOriginal = textoIngresado.trim();
         if (!queryOriginal) return [];
@@ -61,38 +61,60 @@
         const palabrasQuery = queryNorm.split(/\s+/).filter(p => p.length > 0);
         const keywords = palabrasQuery.filter(p => !STOP_WORDS.has(p));
 
-        let tier1 = []; // Comienzan exactamente con el texto completo
-        let tier2 = []; // Contienen el texto completo en cualquier parte
-        let tier3 = []; // Contienen todas las palabras clave (sin preposiciones) en cualquier orden
+        let resultados = [];
 
-        libros.forEach(libro => {
-            const tituloRaw = libro.titulo || libro.Titulo || libro.TITULO || '';
-            const tituloNorm = limpiarTextoLocal(tituloRaw);
-            if (!tituloNorm) return;
-
-            if (tituloNorm.startsWith(queryNorm)) {
-                tier1.push(libro);
-            } else if (tituloNorm.includes(queryNorm)) {
-                tier2.push(libro);
-            } else if (keywords.length > 0 && keywords.every(kw => tituloNorm.includes(kw))) {
-                tier3.push(libro);
-            }
+        // NIVEL 1: Exacto en Título
+        resultados = libros.filter(libro => {
+            const tituloNorm = limpiarTextoLocal(libro.titulo || libro.Titulo || libro.TITULO || '');
+            return tituloNorm.includes(queryNorm);
         });
 
+        // NIVEL 2: Keywords en Título
+        if (resultados.length === 0 && keywords.length > 0) {
+            resultados = libros.filter(libro => {
+                const tituloNorm = limpiarTextoLocal(libro.titulo || libro.Titulo || libro.TITULO || '');
+                return keywords.every(kw => tituloNorm.includes(kw));
+            });
+        }
+
+        // NIVEL 3: Primera palabra en Autor
+        if (resultados.length === 0 && keywords.length > 0) {
+            const primeraPalabra = keywords[0];
+            resultados = libros.filter(libro => {
+                const autorNorm = limpiarTextoLocal(libro.autor || libro.Autor || libro.AUTOR || '');
+                return autorNorm.includes(primeraPalabra);
+            });
+        }
+
+        // NIVEL 4: Última palabra en Autor y dos primeras en Título
+        if (resultados.length === 0 && keywords.length > 0) {
+            const ultimaPalabra = keywords[keywords.length - 1];
+            const dosPrimerasPalabras = keywords.slice(0, 2);
+            
+            let resultadosAutor = libros.filter(libro => {
+                const autorNorm = limpiarTextoLocal(libro.autor || libro.Autor || libro.AUTOR || '');
+                return autorNorm.includes(ultimaPalabra);
+            });
+
+            if (resultadosAutor.length > 0) {
+                resultados = resultadosAutor.filter(libro => {
+                    const tituloNorm = limpiarTextoLocal(libro.titulo || libro.Titulo || libro.TITULO || '');
+                    return dosPrimerasPalabras.every(kw => tituloNorm.includes(kw));
+                });
+            }
+        }
+
+        // Ordenar resultados y evitar duplicados
         const sortFn = (a, b) => {
             const tA = (a.titulo || a.Titulo || a.TITULO || '').trim();
             const tB = (b.titulo || b.Titulo || b.TITULO || '').trim();
             return tA.localeCompare(tB, 'es');
         };
+        resultados.sort(sortFn);
 
-        tier1.sort(sortFn);
-        tier2.sort(sortFn);
-        tier3.sort(sortFn);
-
-        const combinados = [...tier1, ...tier2, ...tier3];
         const vistos = new Set();
         const resultadosUnicos = [];
-        for (const item of combinados) {
+        for (const item of resultados) {
             const idUnico = (item.signatura || item.Signatura || '') + '|' + (item.titulo || item.Titulo || '');
             if (!vistos.has(idUnico)) {
                 vistos.add(idUnico);
@@ -102,7 +124,7 @@
         return resultadosUnicos;
     }
 
-    // CASO 1: Búsqueda por Título
+    // CASO 1: Búsqueda por Título o Autor
     if (!sigBuscada && valTitulo) {
         Promise.all([
             fetch('signaturas.json').then(res => {
@@ -148,7 +170,7 @@
 
                     window.location.href = (datosEncontrados.html || 'Encontrado.html') + "?" + paramsUrl.toString();
                 } else {
-                    mostrarAvisoPersonal({ signaturas: valTitulo, descripcion: `con título "${valTitulo}"` });
+                    mostrarAvisoPersonal({ signaturas: valTitulo, descripcion: `con el texto "${valTitulo}"` });
                 }
             }, 600);
         })
