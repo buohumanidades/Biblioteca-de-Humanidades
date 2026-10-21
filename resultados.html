@@ -39,7 +39,7 @@
         .modal-content-active { transform: translateY(0) !important; }
     </style>
 </head>
-<body class="antialiased selection:bg-stone-800 selection:text-stone-50 min-h-screen flex flex-col justify-between">
+<body class="antialiased selection:bg-sand selection:text-stone-900 min-h-screen flex flex-col justify-between">
 
     <div class="w-full bg-stone-900 text-stone-100 text-[10px] md:text-xs font-mono py-2.5 px-6 flex justify-between items-center border-b border-stone-800">
         <div class="flex items-center space-x-4">
@@ -178,6 +178,12 @@
             const textoLimpioBusqueda = textoIngresado.trim();
             if (!textoLimpioBusqueda) return { tipo: 'vacio', resultados: [], total: 0 };
 
+            // Filtrar todos los libros cuya signatura empiece por 'EXP'
+            libros = libros.filter(libro => {
+                const sig = (libro.signatura || libro.Signatura || libro.SIGNATURA || '').trim().toUpperCase();
+                return !sig.startsWith('EXP');
+            });
+
             // Normalización del texto (quita acentos y caracteres especiales)
             const queryNorm = limpiarTexto(textoLimpioBusqueda);
             const palabrasQuery = queryNorm.split(/\s+/).filter(p => p.length > 0);
@@ -208,7 +214,7 @@
                 });
             }
 
-            // NIVEL 3: Búsqueda de la primera palabra clave en el campo Autor
+            // NIVEL 3: Búsqueda de la primera palabra clave en el campo Autor y siguientes en Título
             if (resultados.length === 0 && keywords.length > 0) {
                 const primeraPalabra = keywords[0];
                 let resultadosAutor = libros.filter(libro => {
@@ -216,7 +222,6 @@
                     return autorNorm.includes(primeraPalabra);
                 });
 
-                // Si hay más palabras, exigimos que las siguientes estén en el título
                 if (resultadosAutor.length > 0 && keywords.length > 1) {
                     const palabrasTitulo = keywords.slice(1, 3);
                     resultados = resultadosAutor.filter(libro => {
@@ -273,7 +278,6 @@
             };
         }
 
-        // Se le añaden el autor y la fecha como parámetros
         function abrirLocalizadorSuperpuesto(signatura, titulo, autor, fecha) {
             if (!signatura || signatura === 'S/S') return;
 
@@ -290,7 +294,6 @@
                 sig = fichero;
             }
 
-            // Enviamos todo por la URL hacia el localizador
             const url = "localizador.html?sig=" + encodeURIComponent(sig) + 
                         "&orig=" + encodeURIComponent(signatura) + 
                         "&titulo=" + encodeURIComponent(titulo || '') +
@@ -334,7 +337,6 @@
 
                 const card = document.createElement('div');
                 card.className = "bg-stone-50 border border-stone-200 p-6 flex flex-col justify-between hover-lift relative group cursor-pointer hover:border-stone-900 transition-all";
-                // Añadimos el autor y la fecha a la llamada de abrirLocalizadorSuperpuesto
                 card.onclick = function() { abrirLocalizadorSuperpuesto(signatura, titulo, autor, fecha); };
 
                 card.innerHTML = `

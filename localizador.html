@@ -14,7 +14,7 @@
         .icono-aviso { font-size: 3em; margin-bottom: 10px; }
     </style>
 </head>
-<body>
+<body class="antialiased selection:bg-sand selection:text-stone-900">
     <div class="loader-container" id="contenedor-principal">
         <div class="spinner"></div>
         <h2>Buscando ubicación...</h2>
@@ -57,6 +57,12 @@
 
     // Algoritmo de búsqueda en niveles secuenciales
     function buscarLibrosPorTituloLocal(libros, textoIngresado) {
+        // Descartar resultados cuya signatura empiece por 'EXP'
+        libros = libros.filter(libro => {
+            const sig = (libro.signatura || libro.Signatura || libro.SIGNATURA || '').trim().toUpperCase();
+            return !sig.startsWith('EXP');
+        });
+
         const queryOriginal = textoIngresado.trim();
         if (!queryOriginal) return [];
 
@@ -221,7 +227,8 @@
 
                 let candidatos = arrDatos.filter(item => {
                     let sigItem = (item.signatura || item.signaturas || "").trim().toUpperCase();
-                    if (!sigItem) return false;
+                    // Descartar EXP explícitamente si se hace una búsqueda de prefijo genérica
+                    if (!sigItem || sigItem.startsWith('EXP')) return false; 
                     
                     if (sigBuscadaUpper === sigItem) return true;
                     if (sigBuscadaUpper.startsWith(sigItem)) {
