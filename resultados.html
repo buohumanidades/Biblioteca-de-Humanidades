@@ -265,7 +265,8 @@
             };
         }
 
-        function abrirLocalizadorSuperpuesto(signatura, titulo) {
+        // Se le añaden el autor y la fecha como parámetros
+        function abrirLocalizadorSuperpuesto(signatura, titulo, autor, fecha) {
             if (!signatura || signatura === 'S/S') return;
 
             let fichero = signatura.replace(/\/AST$/i, "").replace(/\/COMIC$/i, "");
@@ -281,7 +282,12 @@
                 sig = fichero;
             }
 
-            const url = "localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura) + "&titulo=" + encodeURIComponent(titulo || '');
+            // Enviamos todo por la URL hacia el localizador
+            const url = "localizador.html?sig=" + encodeURIComponent(sig) + 
+                        "&orig=" + encodeURIComponent(signatura) + 
+                        "&titulo=" + encodeURIComponent(titulo || '') +
+                        "&autor=" + encodeURIComponent(autor || '') +
+                        "&fecha=" + encodeURIComponent(fecha || '');
             
             document.getElementById('iframeLocalizador').src = url;
             const modal = document.getElementById('modalLocalizador');
@@ -320,7 +326,8 @@
 
                 const card = document.createElement('div');
                 card.className = "bg-stone-50 border border-stone-200 p-6 flex flex-col justify-between hover-lift relative group cursor-pointer hover:border-stone-900 transition-all";
-                card.onclick = function() { abrirLocalizadorSuperpuesto(signatura, titulo); };
+                // Añadimos el autor y la fecha a la llamada de abrirLocalizadorSuperpuesto
+                card.onclick = function() { abrirLocalizadorSuperpuesto(signatura, titulo, autor, fecha); };
 
                 card.innerHTML = `
                     <div>

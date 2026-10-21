@@ -26,6 +26,9 @@
     let sigBuscada = params.get('sig');
     const sigOriginal = params.get('orig'); 
     const valTitulo = params.get('titulo'); 
+    // Recuperamos autor y fecha de la URL
+    const valAutor = params.get('autor') || '';
+    const valFecha = params.get('fecha') || '';
 
     if (sigBuscada) {
         sigBuscada = sigBuscada.replace(/\/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+(?=\d+=)/gi, "/");
@@ -150,7 +153,7 @@
                 let candidatos = buscarLibrosPorTituloLocal(arrDatos, valTitulo);
 
                 if (candidatos.length > 0) {
-                    let datosEncontrados = candidatos[0]; // Tomamos el mejor resultado optimizado
+                    let datosEncontrados = candidatos[0]; 
                     let zona = datosEncontrados.zona || "";
                     let planoInfo = arrPlanos.find(p => p.pos_plano == zona) || {};
 
@@ -162,6 +165,8 @@
                         ubicacion: datosEncontrados.ubicacion || '',
                         estanteria: datosEncontrados.estanteria || '',
                         titulo: datosEncontrados.titulo || valTitulo,
+                        autor: datosEncontrados.autor || datosEncontrados.Autor || valAutor,
+                        fecha: datosEncontrados.fecha || datosEncontrados.Fecha || valFecha,
                         mapa: planoInfo.mapa || '',
                         pos_x: planoInfo.pos_x || '',
                         pos_y: planoInfo.pos_y || '',
@@ -259,6 +264,8 @@
                         ubicacion: datosEncontrados.ubicacion || '',
                         estanteria: datosEncontrados.estanteria || '',
                         titulo: valTitulo || datosEncontrados.titulo || 'Sin título especificado',
+                        autor: valAutor || datosEncontrados.autor || datosEncontrados.Autor || '',
+                        fecha: valFecha || datosEncontrados.fecha || datosEncontrados.Fecha || '',
                         mapa: planoInfo.mapa || '',
                         pos_x: planoInfo.pos_x || '',
                         pos_y: planoInfo.pos_y || '',

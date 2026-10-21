@@ -68,6 +68,8 @@
             <span id="header-titulo" class="text-xs md:text-sm text-stone-600 font-sans font-medium truncate" title="Título del Libro">
                 Cargando título...
             </span>
+            <!-- Nuevo contenedor para Autor y Fecha -->
+            <span id="header-autor-fecha" class="text-[10px] md:text-xs text-stone-500 font-sans mt-0.5 truncate" style="display:none;"></span>
         </div>
     </header>
 
@@ -134,7 +136,11 @@
         const valSala = params.get('sala');
         const valUbicacion = params.get('ubicacion');
         const valEstanteria = params.get('estanteria');
+        
+        // Recogemos Título, Autor y Fecha
         const valTitulo = params.get('titulo') || 'Sin título especificado';
+        const valAutor = params.get('autor');
+        const valFecha = params.get('fecha');
 
         const valMapa = params.get('mapa');
         const valPosX = params.get('pos_x');
@@ -143,6 +149,17 @@
 
         document.getElementById('header-signatura').textContent = sigOriginal || 'S/S';
         document.getElementById('header-titulo').textContent = valTitulo;
+
+        // Mostrar autor y fecha si existen
+        if (valAutor || valFecha) {
+            let textoExtra = '';
+            if (valAutor && valAutor !== 'Desconocido') textoExtra += `<i class="fa-solid fa-pen-nib mr-1"></i> ${valAutor} `;
+            if (valFecha) textoExtra += `<span class="ml-2 px-1.5 py-0.5 bg-stone-200 rounded-sm"><i class="fa-regular fa-calendar mr-1"></i>${valFecha}</span>`;
+            
+            const contAutorFecha = document.getElementById('header-autor-fecha');
+            contAutorFecha.innerHTML = textoExtra;
+            contAutorFecha.style.display = 'block';
+        }
 
         if (valPlanta) document.getElementById('txt-planta').textContent = valPlanta;
         if (valSala) document.getElementById('txt-sala').textContent = valSala;
