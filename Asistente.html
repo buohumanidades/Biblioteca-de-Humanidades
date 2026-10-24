@@ -59,7 +59,8 @@
 </head>
 <body class="flex justify-center items-center h-screen m-0 p-0 overflow-hidden sm:py-6">
 
-    <div class="w-full h-full sm:max-w-md sm:h-[850px] sm:max-h-full flex flex-col bg-white sm:rounded-xl sm:shadow-2xl overflow-hidden relative">
+    <!-- Contenedor principal: 100% en móvil, más ancho en tablet/ordenador -->
+    <div class="w-full h-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl sm:h-[850px] sm:max-h-full flex flex-col bg-white sm:rounded-xl sm:shadow-2xl overflow-hidden relative">
         
         <header class="bg-[#008069] text-white flex items-center px-4 py-3 shadow-md z-10 flex-shrink-0">
             <button class="mr-2 hover:bg-white/20 p-1 rounded-full transition">
@@ -93,7 +94,7 @@
                 <span class="text-xs text-gray-500 bg-[#f4f4f4] px-3 py-1 rounded-lg shadow-sm">Hoy</span>
             </div>
 
-            <div class="flex w-full mt-2 space-x-3 max-w-xs">
+            <div class="flex w-full mt-2 space-x-3 max-w-[85%] sm:max-w-md md:max-w-lg">
                 <div class="relative bg-white p-2 rounded-lg rounded-tl-none shadow-sm text-sm text-gray-800 message-in">
                     <p>¡Hola! Soy el asistente virtual de la biblioteca. 📚 ¿En qué puedo ayudarte hoy? Puedes preguntarme por títulos, autores o temáticas.</p>
                     <span class="text-[10px] text-gray-400 float-right mt-1 ml-2 text-right" id="initial-time"></span>
@@ -150,7 +151,7 @@
             const messageDiv = document.createElement('div');
             
             if (isUser) {
-                messageDiv.className = "flex w-full mt-2 space-x-3 max-w-xs ml-auto justify-end";
+                messageDiv.className = "flex w-full mt-2 space-x-3 max-w-[85%] sm:max-w-md md:max-w-lg ml-auto justify-end";
                 messageDiv.innerHTML = `
                     <div class="relative bg-[#dcf8c6] p-2 rounded-lg rounded-tr-none shadow-sm text-sm text-gray-800 message-out">
                         <p>${text}</p>
@@ -163,106 +164,6 @@
                     </div>
                 `;
             } else {
-                messageDiv.className = "flex w-full mt-2 space-x-3 max-w-xs";
+                messageDiv.className = "flex w-full mt-2 space-x-3 max-w-[85%] sm:max-w-md md:max-w-lg";
                 messageDiv.innerHTML = `
-                    <div class="relative bg-white p-2 rounded-lg rounded-tl-none shadow-sm text-sm text-gray-800 message-in">
-                        <p>${text}</p>
-                        <span class="text-[10px] text-gray-400 float-right mt-1 ml-2 text-right">${time}</span>
-                    </div>
-                `;
-            }
-            
-            chatContainer.appendChild(messageDiv);
-            scrollToBottom();
-            
-            if(isUser) {
-                const checkmarks = messageDiv.querySelector('.checkmarks');
-                setTimeout(() => {
-                    checkmarks.classList.remove('text-gray-400');
-                    checkmarks.classList.add('text-blue-500');
-                }, 800);
-            }
-        }
-
-        function showTypingIndicator() {
-            statusText.innerText = "escribiendo...";
-            const typingDiv = document.createElement('div');
-            typingDiv.id = "typing-indicator";
-            typingDiv.className = "flex w-full mt-2 space-x-3 max-w-xs";
-            typingDiv.innerHTML = `
-                <div class="relative bg-white p-3 rounded-lg rounded-tl-none shadow-sm text-sm text-gray-500 message-in flex items-center justify-center gap-1">
-                    <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
-                    <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
-                    <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
-                </div>
-            `;
-            chatContainer.appendChild(typingDiv);
-            scrollToBottom();
-        }
-
-        function removeTypingIndicator() {
-            statusText.innerText = "en línea";
-            const typingDiv = document.getElementById('typing-indicator');
-            if (typingDiv) typingDiv.remove();
-        }
-
-        async function handleSend() {
-            const texto = chatInput.value.trim();
-            if (!texto) return;
-
-            addMessage(texto, true);
-            chatInput.value = '';
-            
-            showTypingIndicator();
-            
-            try {
-                // ATENCIÓN: Sustituye la URL de abajo por la que te ha dado Google Apps Script
-                const respuesta = await fetch('https://script.google.com/macros/s/AKfycbwPQ8TCivmIH_zTkFnNk8kt9g4o9n4kcwCfwDhZTEexX3CL1RCypmF0j3flagF_3dTTDA/exec', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ mensaje: texto })
-                });
-                
-                const datos = await respuesta.json();
-                removeTypingIndicator();
-                
-                addMessage(datos.texto, false);
-                
-                if (datos.libros && datos.libros.length > 0) {
-                    let htmlTarjetas = '';
-                    datos.libros.forEach(libro => {
-                        const titulo = libro.titulo || libro.Titulo || libro.Título || 'Sin título';
-                        const autor = libro.autor || libro.Autor || 'Sin autor';
-                        const signatura = libro.signatura || libro.Signatura || 'S/N';
-                        
-                        htmlTarjetas += `
-                            <div class="flex w-full mt-1 space-x-3 max-w-xs">
-                                <div class="relative bg-white p-3 rounded-lg shadow-sm border-l-4 border-[#00a884] text-sm text-gray-800 w-full ml-2">
-                                    <strong class="text-gray-900 block truncate" title="${titulo}">${titulo}</strong>
-                                    <span class="text-xs text-gray-600 truncate block" title="${autor}">${autor}</span>
-                                    <div class="mt-2 flex justify-between items-center">
-                                        <span class="bg-[#f0f0f0] border border-gray-200 px-2 py-1 rounded font-mono text-[11px] font-bold text-gray-700">📍 ${signatura}</span>
-                                        <span class="text-[10px] text-gray-400">${getCurrentTime()}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    chatContainer.insertAdjacentHTML('beforeend', htmlTarjetas);
-                    scrollToBottom();
-                }
-            } catch (error) {
-                removeTypingIndicator();
-                addMessage("Error de conexión con el servidor en la nube. Verifica tu URL de Google Apps Script.", false);
-            }
-        }
-
-        sendBtn.addEventListener('click', handleSend);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleSend();
-        });
-
-        window.onload = scrollToBottom;
-    </script>
-</body>
-</html>
+                    <div
