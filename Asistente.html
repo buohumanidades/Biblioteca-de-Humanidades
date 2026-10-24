@@ -59,11 +59,11 @@
 </head>
 <body class="flex justify-center items-center h-screen m-0 p-0 overflow-hidden sm:py-6">
 
-    <!-- Contenedor principal: 100% en móvil, más ancho en tablet/ordenador -->
+    <!-- En móvil ocupa toda la pantalla (w-full h-full); en ordenador es más ancho (sm:max-w-xl md:max-w-2xl lg:max-w-3xl) -->
     <div class="w-full h-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl sm:h-[850px] sm:max-h-full flex flex-col bg-white sm:rounded-xl sm:shadow-2xl overflow-hidden relative">
         
         <header class="bg-[#008069] text-white flex items-center px-4 py-3 shadow-md z-10 flex-shrink-0">
-            <button class="mr-2 hover:bg-white/20 p-1 rounded-full transition">
+            <button type="button" class="mr-2 hover:bg-white/20 p-1 rounded-full transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
@@ -81,7 +81,7 @@
             </div>
             
             <div class="flex gap-4 items-center">
-                <button class="hover:bg-white/20 p-1 rounded-full transition">
+                <button type="button" class="hover:bg-white/20 p-1 rounded-full transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                     </svg>
@@ -104,7 +104,7 @@
 
         <footer class="bg-[#f0f0f0] p-2 flex items-end gap-2 absolute bottom-0 w-full z-10">
             <div class="flex-1 bg-white rounded-3xl flex items-center px-4 py-2 shadow-sm min-h-[44px]">
-                <button class="text-gray-400 hover:text-gray-600 mr-2 focus:outline-none">
+                <button type="button" class="text-gray-400 hover:text-gray-600 mr-2 focus:outline-none">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -114,14 +114,14 @@
                        class="flex-1 bg-transparent focus:outline-none text-sm py-1 w-full"
                        autocomplete="off">
                 
-                <button class="text-gray-400 hover:text-gray-600 ml-2 focus:outline-none transform -rotate-45">
+                <button type="button" class="text-gray-400 hover:text-gray-600 ml-2 focus:outline-none transform -rotate-45">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                     </svg>
                 </button>
             </div>
             
-            <button id="send-btn" class="bg-[#00a884] text-white rounded-full h-11 w-11 flex items-center justify-center flex-shrink-0 hover:bg-[#008069] transition shadow-sm focus:outline-none">
+            <button type="button" id="send-btn" class="bg-[#00a884] text-white rounded-full h-11 w-11 flex items-center justify-center flex-shrink-0 hover:bg-[#008069] transition shadow-sm focus:outline-none">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
                 </svg>
@@ -146,6 +146,34 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
+        // Normaliza un texto quitando tildes, signos y espacios para comparar títulos sin fallos
+        function normalizarClave(texto) {
+            return String(texto || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]/gi, '')
+                .toLowerCase();
+        }
+
+        // Extrae el valor de una propiedad aunque el nombre de columna tenga tildes o mayúsculas distintas
+        function obtenerCampo(objeto, posiblesNombres, valorPorDefecto) {
+            for (const nombre of posiblesNombres) {
+                if (objeto[nombre] !== undefined && objeto[nombre] !== null && String(objeto[nombre]).trim() !== '') {
+                    return objeto[nombre];
+                }
+            }
+            const claves = Object.keys(objeto);
+            for (const clave of claves) {
+                const claveLimpia = normalizarClave(clave);
+                if (posiblesNombres.some(n => normalizarClave(n) === claveLimpia)) {
+                    if (objeto[clave] !== undefined && objeto[clave] !== null && String(objeto[clave]).trim() !== '') {
+                        return objeto[clave];
+                    }
+                }
+            }
+            return valorPorDefecto;
+        }
+
         function addMessage(text, isUser = false) {
             const time = getCurrentTime();
             const messageDiv = document.createElement('div');
@@ -154,7 +182,7 @@
                 messageDiv.className = "flex w-full mt-2 space-x-3 max-w-[85%] sm:max-w-md md:max-w-lg ml-auto justify-end";
                 messageDiv.innerHTML = `
                     <div class="relative bg-[#dcf8c6] p-2 rounded-lg rounded-tr-none shadow-sm text-sm text-gray-800 message-out">
-                        <p>${text}</p>
+                        <p class="break-words">${text}</p>
                         <span class="text-[10px] text-gray-500 float-right mt-1 ml-2 text-right flex items-center gap-1">
                             ${time}
                             <svg viewBox="0 0 16 15" width="16" height="15" class="text-gray-400 fill-current checkmarks">
@@ -167,7 +195,7 @@
                 messageDiv.className = "flex w-full mt-2 space-x-3 max-w-[85%] sm:max-w-md md:max-w-lg";
                 messageDiv.innerHTML = `
                     <div class="relative bg-white p-2 rounded-lg rounded-tl-none shadow-sm text-sm text-gray-800 message-in">
-                        <p>${text}</p>
+                        <p class="break-words">${text}</p>
                         <span class="text-[10px] text-gray-400 float-right mt-1 ml-2 text-right">${time}</span>
                     </div>
                 `;
@@ -176,7 +204,7 @@
             chatContainer.appendChild(messageDiv);
             scrollToBottom();
             
-            if(isUser) {
+            if (isUser) {
                 const checkmarks = messageDiv.querySelector('.checkmarks');
                 setTimeout(() => {
                     checkmarks.classList.remove('text-gray-400');
@@ -227,32 +255,41 @@
                 const datos = await respuesta.json();
                 removeTypingIndicator();
                 
-                addMessage(datos.texto, false);
+                if (datos.texto) {
+                    addMessage(datos.texto, false);
+                }
                 
-                if (datos.libros && datos.libros.length > 0) {
-                    // Agrupar resultados que tengan el mismo título en un único resultado
+                if (datos.libros && Array.isArray(datos.libros) && datos.libros.length > 0) {
                     const librosAgrupadosMap = new Map();
 
                     datos.libros.forEach(libro => {
-                        const titulo = String(libro.titulo || libro.Titulo || libro.Título || 'Sin título').trim();
-                        const autor = String(libro.autor || libro.Autor || 'Sin autor').trim();
-                        const signatura = String(libro.signatura || libro.Signatura || 'S/N').trim();
-                        
-                        // Clave normalizada para comparar títulos sin importar mayúsculas/minúsculas
-                        const claveTitulo = titulo.toLowerCase();
+                        const titulo = String(obtenerCampo(libro, ['titulo', 'Titulo', 'Título', 'TITULO', 'TÍTULO'], 'Sin título')).trim();
+                        const autor = String(obtenerCampo(libro, ['autor', 'Autor', 'AUTOR', 'autores', 'Autores'], 'Sin autor')).trim();
+                        const signaturaRaw = obtenerCampo(libro, ['signatura', 'Signatura', 'SIGNATURA', 'signaturas', 'Signaturas', 'ubicacion', 'Ubicación'], 'S/N');
+
+                        // Soporta que signatura venga como lista o como texto separado por " / " o ";"
+                        const listaSignaturas = Array.isArray(signaturaRaw)
+                            ? signaturaRaw.map(s => String(s).trim()).filter(Boolean)
+                            : String(signaturaRaw).split(/\s*(?:\/|;|\|)\s*/).map(s => s.trim()).filter(Boolean);
+
+                        const claveTitulo = normalizarClave(titulo);
 
                         if (!librosAgrupadosMap.has(claveTitulo)) {
                             librosAgrupadosMap.set(claveTitulo, {
                                 titulo: titulo,
                                 autor: autor,
-                                signaturas: [signatura]
+                                signaturas: [...listaSignaturas]
                             });
                         } else {
                             const libroExistente = librosAgrupadosMap.get(claveTitulo);
-                            // Añadimos la signatura si no está repetida exactamente igual
-                            if (!libroExistente.signaturas.includes(signatura)) {
-                                libroExistente.signaturas.push(signatura);
-                            }
+                            listaSignaturas.forEach(sig => {
+                                const yaExiste = libroExistente.signaturas.some(
+                                    s => s.toLowerCase() === sig.toLowerCase()
+                                );
+                                if (!yaExiste) {
+                                    libroExistente.signaturas.push(sig);
+                                }
+                            });
                         }
                     });
 
@@ -267,8 +304,8 @@
                         htmlTarjetas += `
                             <div class="flex w-full mt-1 space-x-3 max-w-[85%] sm:max-w-md md:max-w-lg">
                                 <div class="relative bg-white p-3 rounded-lg shadow-sm border-l-4 border-[#00a884] text-sm text-gray-800 w-full ml-2">
-                                    <strong class="text-gray-900 block truncate" title="${libro.titulo}">${libro.titulo}</strong>
-                                    <span class="text-xs text-gray-600 truncate block" title="${libro.autor}">${libro.autor}</span>
+                                    <strong class="text-gray-900 block break-words" title="${libro.titulo}">${libro.titulo}</strong>
+                                    <span class="text-xs text-gray-600 block break-words mt-0.5" title="${libro.autor}">${libro.autor}</span>
                                     <div class="mt-2 flex justify-between items-end gap-2">
                                         <div class="flex flex-wrap gap-1.5">
                                             ${etiquetasSignaturas}
@@ -290,8 +327,11 @@
         }
 
         sendBtn.addEventListener('click', handleSend);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleSend();
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSend();
+            }
         });
 
         window.onload = scrollToBottom;
