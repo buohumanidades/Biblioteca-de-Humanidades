@@ -51,10 +51,19 @@
             
             removeMessage(loadingId);
             
-            if (data.success) {
-                appendMessage(`Resultados para "${data.query}":\nRespuesta recibida del servidor de la BNE correctamente.`, 'assistant');
+            // Renderizado visual de resultados en formato de tarjetas de libros
+            if (data.success && data.results && data.results.items && data.results.items.length > 0) {
+                let htmlResponse = `Se han encontrado ${data.results.total} resultados:<br><br>`;
+                
+                data.results.items.forEach((book, index) => {
+                    htmlResponse += `<b>${index + 1}. ${book.title}</b><br>`;
+                    htmlResponse += `👤 <em>Autor:</em> ${book.author}<br>`;
+                    htmlResponse += `📅 <em>Fecha:</em> ${book.date}<br><hr style="border:0; border-top:1px solid #e2e8f0; margin:8px 0;">`;
+                });
+                
+                appendMessage(htmlResponse, 'assistant', true); // Se pasa true para renderizar HTML
             } else {
-                appendMessage("Lo siento, ocurrió un error al procesar la búsqueda.", 'assistant');
+                appendMessage("No se han encontrado registros bibliográficos para esa búsqueda en la BNE.", 'assistant');
             }
         } catch (error) {
             removeMessage(loadingId);
@@ -62,11 +71,18 @@
         }
     }
 
-    function appendMessage(text, sender) {
+    // Se ha añadido el parámetro opcional `isHtml` para renderizar código HTML en la respuesta
+    function appendMessage(text, sender, isHtml = false) {
         const messagesDiv = document.getElementById('messages');
         const msgDiv = document.createElement('div');
         msgDiv.className = `message ${sender}`;
-        msgDiv.innerText = text;
+        
+        if (isHtml) {
+            msgDiv.innerHTML = text;
+        } else {
+            msgDiv.innerText = text;
+        }
+
         const id = 'msg_' + Date.now();
         msgDiv.id = id;
         messagesDiv.appendChild(msgDiv);
