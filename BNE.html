@@ -49,25 +49,6 @@
             text-align: center;
             font-size: 17px;
             letter-spacing: 0.3px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .reset-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-
-        .reset-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
         }
 
         .chat-messages {
@@ -105,6 +86,7 @@
             width: 90%;
         }
 
+        /* --- ESTILOS MODERNOS PARA LAS TARJETAS DE LIBROS --- */
         .results-intro {
             font-weight: 600;
             color: var(--primary);
@@ -113,29 +95,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
         }
 
-        .export-buttons {
-            display: flex;
-            gap: 6px;
-        }
-
-        .export-btn {
-            background: #e2e8f0;
-            color: #334155;
-            border: none;
-            padding: 4px 8px;
+        .results-intro code {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 3px 6px;
             border-radius: 4px;
-            cursor: pointer;
             font-size: 11px;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-
-        .export-btn:hover {
-            background: #cbd5e0;
+            font-family: monospace;
+            font-weight: normal;
         }
 
         .book-card {
@@ -143,7 +112,7 @@
             border: 1px solid var(--border-color);
             border-left: 4px solid var(--primary-light);
             border-radius: 8px;
-            padding: 14px 16px;
+            padding: 12px 16px;
             margin-bottom: 10px;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
@@ -157,22 +126,13 @@
             font-weight: 600;
             color: var(--primary);
             font-size: 15px;
-            margin-bottom: 8px;
-        }
-
-        .book-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-            padding-top: 8px;
-            border-top: 1px dashed var(--border-color);
+            margin-bottom: 6px;
         }
 
         .book-meta {
             display: flex;
             flex-wrap: wrap;
-            gap: 14px;
+            gap: 16px;
             font-size: 13px;
             color: var(--text-muted);
         }
@@ -183,106 +143,18 @@
             gap: 4px;
         }
 
-        .book-link {
-            background: #eff6ff;
-            color: var(--primary-light);
-            padding: 6px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 12px;
-            font-weight: 600;
-            transition: background 0.2s, color 0.2s;
-            white-space: nowrap;
-        }
-
-        .book-link:hover {
-            background: var(--primary-light);
-            color: white;
-        }
-
-        .pagination-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 14px;
-            padding-top: 10px;
-            border-top: 1px solid var(--border-color);
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        .page-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 12px;
-            transition: background 0.2s;
-        }
-
-        .page-btn:disabled {
-            background: #cbd5e0;
-            cursor: not-allowed;
-        }
-
-        .page-btn:hover:not(:disabled) {
-            background: #1e40af;
-        }
-
-        .filter-bar {
-            display: flex;
-            gap: 6px;
-            padding: 8px 16px;
-            background: #f1f5f9;
-            border-top: 1px solid var(--border-color);
-            overflow-x: auto;
-            align-items: center;
-        }
-
-        .filter-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-muted);
-            white-space: nowrap;
-        }
-
-        .filter-pill {
-            background: white;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 4px 10px;
-            border-radius: 16px;
-            font-size: 11px;
-            font-weight: 500;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-        }
-
-        .filter-pill:hover {
-            border-color: var(--primary-light);
-        }
-
-        .filter-pill.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
+        /* Área de entrada */
         .chat-input-area {
             display: flex;
             border-top: 1px solid var(--border-color);
-            padding: 14px 16px;
+            padding: 16px;
             background: white;
             gap: 10px;
         }
 
         .chat-input-area input {
             flex: 1;
-            padding: 10px 14px;
+            padding: 12px 16px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             outline: none;
@@ -299,7 +171,7 @@
             background: var(--primary);
             color: white;
             border: none;
-            padding: 0 20px;
+            padding: 0 24px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
@@ -315,224 +187,76 @@
 <body>
 
 <div class="chat-container">
-    <div class="chat-header">
-        <span>Asistente BNE</span>
-        <button class="reset-btn" onclick="resetChat()">Reiniciar Chat</button>
+    <div class="chat-header">Biblioteca Nacional de España — Asistente de Búsqueda</div>
+    <div id="messages" class="chat-messages">
+        <div class="message assistant">¡Hola! Dime qué libro, revista o autor buscas en la BNE. Puedes refinar la búsqueda en cualquier momento (ej. "muéstrame solo los de 1920").</div>
     </div>
-    <div id="messages" class="chat-messages"></div>
-    
-    <div class="filter-bar">
-        <span class="filter-label">Filtro temporal:</span>
-        <button class="filter-pill active" onclick="setYearFilter('', this)">Todos</button>
-        <button class="filter-pill" onclick="setYearFilter('Siglo XIX', this)">Siglo XIX</button>
-        <button class="filter-pill" onclick="setYearFilter('1900-1950', this)">1900–1950</button>
-        <button class="filter-pill" onclick="setYearFilter('1951-2000', this)">1951–2000</button>
-    </div>
-
     <div class="chat-input-area">
-        <input type="text" id="userInput" placeholder="Escribe tu búsqueda o refírala..." onkeypress="handleKeyPress(event)">
-        <button onclick="sendMessage(1)">Enviar</button>
+        <input type="text" id="userInput" placeholder="Escribe tu búsqueda o refínala..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()">Enviar</button>
     </div>
 </div>
 
 <script>
+    // REEMPLAZA CON TU URL DE WEB APP DE GOOGLE APPS SCRIPT
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyoPM8W85zv2ki_ts0eukz4Ro6bsoBAq9WH5a2wXuGLHKhPWTQAtE3J_toKmQO9ZO8n7A/exec";
 
     let chatHistory = [];
-    let lastFetchedItems = []; 
-    let activeYearFilter = "";
 
-    window.addEventListener('DOMContentLoaded', () => {
-        const savedHistory = localStorage.getItem('bne_chat_history');
-        const savedItems = localStorage.getItem('bne_last_items');
-        const savedDom = localStorage.getItem('bne_chat_dom');
-        const savedFilter = localStorage.getItem('bne_active_filter');
-
-        if (savedFilter) {
-            activeYearFilter = savedFilter;
-            updateFilterUI(savedFilter);
-        }
-
-        if (savedHistory && savedDom) {
-            chatHistory = JSON.parse(savedHistory);
-            if (savedItems) lastFetchedItems = JSON.parse(savedItems);
-            document.getElementById('messages').innerHTML = savedDom;
-            scrollToBottom();
-        } else {
-            const defaultMsg = "¡Hola! Dime qué libro, revista o autor buscas en la BNE. Ahora con sistema de auto-resguardo inteligente.";
-            appendMessage(defaultMsg, 'assistant');
-        }
-    });
-
-    function setYearFilter(filterText, element) {
-        activeYearFilter = filterText;
-        localStorage.setItem('bne_active_filter', filterText);
-        document.querySelectorAll('.filter-pill').forEach(btn => btn.classList.remove('active'));
-        element.classList.add('active');
-    }
-
-    function updateFilterUI(filterText) {
-        document.querySelectorAll('.filter-pill').forEach(btn => {
-            if (btn.innerText.includes(filterText) || (filterText === "" && btn.innerText === "Todos")) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
-    }
-
-    async function sendMessage(startRecord = 1) {
+    async function sendMessage() {
         const input = document.getElementById('userInput');
-        let text = input.value.trim();
-        
-        if (!text && chatHistory.length === 0) return;
+        const text = input.value.trim();
+        if (!text) return;
 
-        if (text && startRecord === 1) {
-            let queryToSend = text;
-            if (activeYearFilter) {
-                queryToSend += ` (del periodo: ${activeYearFilter})`;
-            }
+        appendMessage(text, 'user');
+        chatHistory.push({ role: 'user', text: text });
+        input.value = '';
 
-            appendMessage(text, 'user');
-            chatHistory.push({ role: 'user', text: queryToSend });
-            input.value = '';
-            saveStateToLocalStorage();
-        }
-
-        const loadingId = appendMessage("Consultando el catálogo de la BNE...", 'assistant');
+        const loadingId = appendMessage("Analizando contexto y consultando el catálogo de la BNE...", 'assistant');
 
         try {
             const response = await fetch(GAS_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ messages: chatHistory, startRecord: startRecord })
+                body: JSON.stringify({ messages: chatHistory })
             });
             
             const data = await response.json();
             removeMessage(loadingId);
             
             if (data.success && data.results.items && data.results.items.length > 0) {
-                lastFetchedItems = data.results.items;
-                const total = data.results.total;
-                const currentStart = data.startRecord;
-                const pageSize = 10;
-                const currentEnd = Math.min(currentStart + pageSize - 1, total);
-                
+                // Construir la cabecera de resultados
                 let htmlResponse = `
                     <div class="results-intro">
-                        <span>Registros ${currentStart}-${currentEnd} de ${total} (CQL: <code>${escapeHtml(data.generatedCql)}</code>)</span>
-                        <div class="export-buttons">
-                            <button class="export-btn" onclick="exportCSV()">📥 CSV</button>
-                            <button class="export-btn" onclick="exportBibTeX()">📥 BibTeX</button>
-                        </div>
+                        <span>Se han encontrado ${data.results.total} registros</span>
+                        <code>CQL: ${data.generatedCql}</code>
                     </div>
                 `;
                 
+                // Construir cada tarjeta de libro moderna
                 data.results.items.forEach((book, index) => {
-                    const itemNumber = currentStart + index;
                     htmlResponse += `
                         <div class="book-card">
-                            <div class="book-title">${itemNumber}. ${escapeHtml(book.title)}</div>
-                            <div class="book-footer">
-                                <div class="book-meta">
-                                    <span>👤 ${escapeHtml(book.author)}</span>
-                                    <span>📅 ${escapeHtml(book.date)}</span>
-                                </div>
-                                <a href="${escapeHtml(book.url)}" target="_blank" class="book-link">Ver en la BNE ↗</a>
+                            <div class="book-title">${index + 1}. ${escapeHtml(book.title)}</div>
+                            <div class="book-meta">
+                                <span>👤 ${escapeHtml(book.author)}</span>
+                                <span>📅 ${escapeHtml(book.date)}</span>
                             </div>
                         </div>
                     `;
                 });
 
-                const prevStart = Math.max(1, currentStart - pageSize);
-                const nextStart = currentStart + pageSize;
-                const hasPrev = currentStart > 1;
-                const hasNext = currentEnd < total;
-
-                htmlResponse += `
-                    <div class="pagination-container">
-                        <button class="page-btn" ${hasPrev ? '' : 'disabled'} onclick="sendMessage(${prevStart})">← Anteriores</button>
-                        <span>Pág. ${Math.ceil(currentStart / pageSize)} / ${Math.ceil(total / pageSize)}</span>
-                        <button class="page-btn" ${hasNext ? '' : 'disabled'} onclick="sendMessage(${nextStart})">Siguientes →</button>
-                    </div>
-                `;
-
                 appendMessage(htmlResponse, 'assistant', true);
+                chatHistory.push({ role: 'assistant', text: `Se han devuelto ${data.results.total} resultados para la consulta CQL: ${data.generatedCql}` });
                 
             } else {
                 appendMessage("No se han encontrado registros con esos criterios en la BNE.", 'assistant');
+                chatHistory.push({ role: 'assistant', text: "No se encontraron registros." });
             }
         } catch (error) {
             removeMessage(loadingId);
             appendMessage("Error de conexión con el servicio backend.", 'assistant');
         }
-    }
-
-    function saveStateToLocalStorage() {
-        localStorage.setItem('bne_chat_history', JSON.stringify(chatHistory));
-        localStorage.setItem('bne_last_items', JSON.stringify(lastFetchedItems));
-        localStorage.setItem('bne_chat_dom', document.getElementById('messages').innerHTML);
-    }
-
-    function exportCSV() {
-        if (!lastFetchedItems || lastFetchedItems.length === 0) return;
-        
-        let csvContent = "data:text/csv;charset=utf-8,Titulo,Autor,Fecha,URL\r\n";
-        lastFetchedItems.forEach(item => {
-            const row = [
-                `"${item.title.replace(/"/g, '""')}"`,
-                `"${item.author.replace(/"/g, '""')}"`,
-                `"${item.date.replace(/"/g, '""')}"`,
-                `"${item.url}"`
-            ].join(",");
-            csvContent += row + "\r\n";
-        });
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "bne_resultados.csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
-    function exportBibTeX() {
-        if (!lastFetchedItems || lastFetchedItems.length === 0) return;
-
-        let bibContent = "";
-        lastFetchedItems.forEach((item, index) => {
-            const citeKey = `bne_ref_${index + 1}_${Date.now().toString().slice(-4)}`;
-            bibContent += `@book{${citeKey},\n`;
-            bibContent += `  title={${item.title}},\n`;
-            bibContent += `  author={${item.author}},\n`;
-            bibContent += `  year={${item.date}},\n`;
-            bibContent += `  url={${item.url}}\n`;
-            bibContent += `}\n\n`;
-        });
-
-        const blob = new Blob([bibContent], { type: 'text/bib;charset=utf-8;' });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.setAttribute("download", "bne_referencias.bib");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
-    function resetChat() {
-        chatHistory = [];
-        lastFetchedItems = [];
-        activeYearFilter = "";
-        localStorage.removeItem('bne_chat_history');
-        localStorage.removeItem('bne_last_items');
-        localStorage.removeItem('bne_chat_dom');
-        localStorage.removeItem('bne_active_filter');
-        
-        updateFilterUI("");
-        document.getElementById('messages').innerHTML = `
-            <div class="message assistant">¡Chat reiniciado! Dime qué libro, revista o autor buscas en la BNE.</div>
-        `;
     }
 
     function appendMessage(content, sender, isHtml = false) {
@@ -549,12 +273,7 @@
         const id = 'msg_' + Date.now() + Math.random();
         msgDiv.id = id;
         messagesDiv.appendChild(msgDiv);
-        scrollToBottom();
-        
-        if (sender === 'assistant') {
-            saveStateToLocalStorage();
-        }
-        
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
         return id;
     }
 
@@ -563,15 +282,11 @@
         if (el) el.remove();
     }
 
-    function scrollToBottom() {
-        const messagesDiv = document.getElementById('messages');
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
-
     function handleKeyPress(e) {
-        if (e.key === 'Enter') sendMessage(1);
+        if (e.key === 'Enter') sendMessage();
     }
 
+    // Utilidad básica de seguridad contra XSS para textos inyectados
     function escapeHtml(text) {
         const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
         return text.replace(/[&<>"']/g, function(m) { return map[m]; });
