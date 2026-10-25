@@ -3,87 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asistente BNE - Buscador Bibliográfico</title>
+    <title>Asistente BNE - Catálogo Bibliográfico</title>
     <style>
         body { font-family: system-ui, -apple-system, sans-serif; background: #f4f4f9; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .chat-container { width: 100%; max-width: 600px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 80vh; overflow: hidden; }
-        .chat-header { background: #1a365d; color: white; padding: 16px; font-weight: bold; text-align: center; }
+        .chat-container { width: 100%; max-width: 650px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 85vh; overflow: hidden; }
+        .chat-header { background: #1a365d; color: white; padding: 16px; font-weight: bold; text-align: center; font-size: 16px; }
         .chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        .message { padding: 12px 16px; border-radius: 8px; max-width: 80%; line-height: 1.4; }
+        .message { padding: 12px 16px; border-radius: 8px; max-width: 85%; line-height: 1.4; font-size: 14px; }
         .message.user { background: #ebf8ff; color: #2b6cb0; align-self: flex-end; }
         .message.assistant { background: #edf2f7; color: #2d3748; align-self: flex-start; }
         .chat-input-area { display: flex; border-top: 1px solid #e2e8f0; padding: 12px; background: #fff; }
         .chat-input-area input { flex: 1; padding: 10px 14px; border: 1px solid #cbd5e0; border-radius: 6px; outline: none; font-size: 14px; }
         .chat-input-area button { background: #3182ce; color: white; border: none; padding: 0 20px; margin-left: 8px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         .chat-input-area button:hover { background: #2b6cb0; }
+        code { background: #e2e8f0; padding: 2px 4px; border-radius: 4px; font-size: 12px; }
     </style>
 </head>
 <body>
 
 <div class="chat-container">
-    <div class="chat-header">Asistente Virtual BNE (Catálogo Bibliográfico)</div>
+    <div class="chat-header">Asistente Virtual BNE (Búsqueda Bibliográfica con IA)</div>
     <div id="messages" class="chat-messages">
-        <div class="message assistant">¡Hola! Dime qué libro, revista o autor buscas en la Biblioteca Nacional de España y te ayudaré a localizarlo.</div>
+        <div class="message assistant">¡Hola! Dime qué libro, revista o autor buscas en la Biblioteca Nacional de España. Puedes refinar la búsqueda en cualquier momento (ej. "muéstrame solo los de 1920").</div>
     </div>
     <div class="chat-input-area">
-        <input type="text" id="userInput" placeholder="Ej. Revistas de historia de Asturias..." onkeypress="handleKeyPress(event)">
+        <input type="text" id="userInput" placeholder="Escribe tu búsqueda o refínala..." onkeypress="handleKeyPress(event)">
         <button onclick="sendMessage()">Enviar</button>
     </div>
 </div>
 
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbyoPM8W85zv2ki_ts0eukz4Ro6bsoBAq9WH5a2wXuGLHKhPWTQAtE3J_toKmQO9ZO8n7A/exec";
+    // REEMPLAZA CON TU URL DE WEB APP DE GOOGLE APPS SCRIPT
+    const GAS_URL = "TU_URL_DE_WEB_APP_DE_GOOGLE_APPS_SCRIPT";
+
+    // Historial para mantener el contexto conversacional
+    let chatHistory = [];
 
     async function sendMessage() {
         const input = document.getElementById('userInput');
         const text = input.value.trim();
         if (!text) return;
 
+        // 1. Mostrar mensaje del usuario y añadirlo al historial
         appendMessage(text, 'user');
+        chatHistory.push({ role: 'user', text: text });
         input.value = '';
 
-        // Mostrar indicador de carga
-        const loadingId = appendMessage("Consultando el catálogo de la BNE...", 'assistant');
+        const loadingId = appendMessage("Analizando contexto y consultando la BNE...", 'assistant');
 
         try {
-            const response = await fetch(`${GAS_URL}?q=${encodeURIComponent(text)}`);
-            const data = await response.json();
+            const response = await fetch(GAS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ messages: chatHistory })
+            });
             
+            const data = await response.json();
             removeMessage(loadingId);
             
-            // Renderizado visual de resultados en formato de tarjetas de libros
-            if (data.success && data.results && data.results.items && data.results.items.length > 0) {
-                let htmlResponse = `Se han encontrado ${data.results.total} resultados:<br><br>`;
+            if (data.success && data.results.items && data.results.items.length > 0) {
+                let responseText = `Encontrados ${data.results.total} registros (CQL: <code>${data.generatedCql}</code>):<br><br>`;
                 
                 data.results.items.forEach((book, index) => {
-                    htmlResponse += `<b>${index + 1}. ${book.title}</b><br>`;
-                    htmlResponse += `👤 <em>Autor:</em> ${book.author}<br>`;
-                    htmlResponse += `📅 <em>Fecha:</em> ${book.date}<br><hr style="border:0; border-top:1px solid #e2e8f0; margin:8px 0;">`;
+                    responseText += `<b>${index + 1}. ${book.title}</b><br>`;
+                    responseText += `👤 <em>Autor:</em> ${book.author}<br>`;
+                    responseText += `📅 <em>Fecha:</em> ${book.date}<br><hr style="border:0; border-top:1px solid #cbd5e0; margin:8px 0;">`;
                 });
+
+                appendMessage(responseText, 'assistant');
                 
-                appendMessage(htmlResponse, 'assistant', true); // Se pasa true para renderizar HTML
+                // Guardar la respuesta del asistente en el historial para mantener el hilo lógico
+                chatHistory.push({ role: 'assistant', text: `Se han devuelto ${data.results.total} resultados para la consulta CQL: ${data.generatedCql}` });
+                
             } else {
-                appendMessage("No se han encontrado registros bibliográficos para esa búsqueda en la BNE.", 'assistant');
+                appendMessage("No se han encontrado registros con esos criterios en la BNE.", 'assistant');
+                chatHistory.push({ role: 'assistant', text: "No se encontraron registros." });
             }
         } catch (error) {
             removeMessage(loadingId);
-            appendMessage("Error de conexión con el servicio de Apps Script.", 'assistant');
+            appendMessage("Error de conexión con el servicio backend.", 'assistant');
         }
     }
 
-    // Se ha añadido el parámetro opcional `isHtml` para renderizar código HTML en la respuesta
-    function appendMessage(text, sender, isHtml = false) {
+    function appendMessage(htmlContent, sender) {
         const messagesDiv = document.getElementById('messages');
         const msgDiv = document.createElement('div');
         msgDiv.className = `message ${sender}`;
-        
-        if (isHtml) {
-            msgDiv.innerHTML = text;
-        } else {
-            msgDiv.innerText = text;
-        }
-
-        const id = 'msg_' + Date.now();
+        msgDiv.innerHTML = htmlContent;
+        const id = 'msg_' + Date.now() + Math.random();
         msgDiv.id = id;
         messagesDiv.appendChild(msgDiv);
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
