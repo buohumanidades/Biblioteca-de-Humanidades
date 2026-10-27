@@ -308,9 +308,16 @@
                     librosAgrupadosMap.forEach(libro => {
                         const safeTitulo = escapeHTML(libro.titulo);
                         const safeAutor = escapeHTML(libro.autor);
+                        
+                        // Creación de la URL para el catálogo OPAC. Busca usando título + autor.
+                        const terminoBusqueda = encodeURIComponent(`${libro.titulo} ${libro.autor}`);
+                        const opacUrl = `https://buoabsys.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH&xsqf99=${terminoBusqueda}`;
 
+                        // Las etiquetas ahora son enlaces a una nueva pestaña
                         const etiquetasSignaturas = libro.signaturas.map(sig => 
-                            `<span class="bg-[#f0f0f0] border border-gray-200 px-2 py-1 rounded font-mono text-[11px] font-bold text-gray-700">📍 ${escapeHTML(sig)}</span>`
+                            `<a href="${opacUrl}" target="_blank" rel="noopener noreferrer" title="Buscar '${safeTitulo}' en OPAC" class="bg-[#f0f0f0] border border-gray-200 px-2 py-1 rounded font-mono text-[11px] font-bold text-[#008069] hover:bg-green-50 hover:border-green-300 transition-colors cursor-pointer inline-flex items-center gap-1 no-underline">
+                                📍 ${escapeHTML(sig)}
+                            </a>`
                         ).join('');
 
                         htmlTarjetas += `
