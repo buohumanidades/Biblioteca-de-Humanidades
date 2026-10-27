@@ -313,19 +313,37 @@
                         const etiquetasSignaturas = libro.signaturas.map(sig => {
                             let queryParaOpac = '';
                             
-                            // Verificar si la signatura empieza con "HG" (ignorando mayúsculas/minúsculas y espacios extra)
                             if (sig.trim().toUpperCase().startsWith('HG')) {
-                                // Si es HG, buscar SOLO POR TÍTULO limpio
+                                // 1. Extraemos el título original
                                 queryParaOpac = libro.titulo;
+                                
+                                // 2. Protegemos las ñ/Ñ sustituyéndolas por una clave temporal
+                                queryParaOpac = queryParaOpac.replace(/ñ/g, '__ENYE__').replace(/Ñ/g, '__ENYEMAY__');
+                                
+                                // 3. Quitamos todos los acentos y marcas diacríticas
                                 queryParaOpac = queryParaOpac.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); 
-                                queryParaOpac = queryParaOpac.replace(/[^a-zA-Z0-9\s]/g, ' '); 
+                                
+                                // 4. Restauramos las ñ/Ñ
+                                queryParaOpac = queryParaOpac.replace(/__ENYE__/g, 'ñ').replace(/__ENYEMAY__/g, 'Ñ');
+                                
+                                // 5. Eliminamos caracteres especiales (dejamos letras, números, espacios y ñ/Ñ)
+                                queryParaOpac = queryParaOpac.replace(/[^a-zA-Z0-9\sñÑ]/g, ' '); 
+                                
+                                // 6. Definimos un listado de palabras vacías (artículos, preposiciones, etc.)
+                                const stopwords = ['el','la','los','las','un','una','unos','unas','a','ante','bajo','cabe','con','contra','de','desde','en','entre','hacia','hasta','para','por','segun','sin','so','sobre','tras','y','e','ni','que','o','u','al','del','su','sus'];
+                                
+                                // Creamos una expresión regular para buscar esas palabras completas, sin importar mayúsculas
+                                const stopRegex = new RegExp('\\b(' + stopwords.join('|') + ')\\b', 'gi');
+                                queryParaOpac = queryParaOpac.replace(stopRegex, ' ');
+                                
+                                // 7. Limpiamos dobles espacios resultantes
                                 queryParaOpac = queryParaOpac.replace(/\s+/g, ' ').trim();
+                                
                             } else {
-                                // Si NO es HG, buscar directamente POR LA SIGNATURA
+                                // Si NO es HG, la búsqueda va directamente por la propia signatura
                                 queryParaOpac = sig.trim();
                             }
                             
-                            // Crear la URL segura con la búsqueda condicionada
                             const searchParams = new URLSearchParams();
                             searchParams.append('ACC', 'DOSEARCH');
                             searchParams.append('xsqf99', queryParaOpac);
@@ -384,3 +402,5 @@
     </script>
 </body>
 </html>
+```<FollowUp></FollowUp>
+<ElicitationsGroup></ElicitationsGroup>
