@@ -309,25 +309,32 @@
                         const safeTitulo = escapeHTML(libro.titulo);
                         const safeAutor = escapeHTML(libro.autor);
                         
-                        // LIMPIEZA DE BÚSQUEDA PARA ABSYSNET (Prevención de fallos por UTF-8/ISO-8859-1)
-                        let queryLimpia = `${libro.titulo} ${libro.autor}`;
-                        // 1. Quitar todos los acentos (el catálogo los ignora para buscar, pero por URL lo rompen)
-                        queryLimpia = queryLimpia.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); 
-                        // 2. Sustituir caracteres no alfanuméricos por espacios (comas, dos puntos, barras...)
-                        queryLimpia = queryLimpia.replace(/[^\w\s]/gi, ' '); 
-                        // 3. Limpiar espacios dobles o bordes
-                        queryLimpia = queryLimpia.replace(/\s+/g, ' ').trim(); 
-                        
-                        // Encodificar y forzar "+" en lugar de "%20" como haría un formulario estándar
-                        const terminoBusqueda = encodeURIComponent(queryLimpia).replace(/%20/g, '+');
-                        
-                        const opacUrl = `https://buoabsys.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH&xsqf99=${terminoBusqueda}`;
+                        // Evaluar cada signatura de forma individual para generar su URL
+                        const etiquetasSignaturas = libro.signaturas.map(sig => {
+                            let queryParaOpac = '';
+                            
+                            // Verificar si la signatura empieza con "HG" (ignorando mayúsculas/minúsculas y espacios extra)
+                            if (sig.trim().toUpperCase().startsWith('HG')) {
+                                // Si es HG, buscar SOLO POR TÍTULO limpio
+                                queryParaOpac = libro.titulo;
+                                queryParaOpac = queryParaOpac.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); 
+                                queryParaOpac = queryParaOpac.replace(/[^a-zA-Z0-9\s]/g, ' '); 
+                                queryParaOpac = queryParaOpac.replace(/\s+/g, ' ').trim();
+                            } else {
+                                // Si NO es HG, buscar directamente POR LA SIGNATURA
+                                queryParaOpac = sig.trim();
+                            }
+                            
+                            // Crear la URL segura con la búsqueda condicionada
+                            const searchParams = new URLSearchParams();
+                            searchParams.append('ACC', 'DOSEARCH');
+                            searchParams.append('xsqf99', queryParaOpac);
+                            const opacUrl = `https://buoabsys.cpd.uniovi.es/cgi-bin/abnetopac?${searchParams.toString()}`;
 
-                        const etiquetasSignaturas = libro.signaturas.map(sig => 
-                            `<a href="${opacUrl}" target="_blank" rel="noopener noreferrer" title="Buscar '${safeTitulo}' en OPAC" class="bg-[#f0f0f0] border border-gray-200 px-2 py-1 rounded font-mono text-[11px] font-bold text-[#008069] hover:bg-green-50 hover:border-green-300 transition-colors cursor-pointer inline-flex items-center gap-1 no-underline">
+                            return `<a href="${opacUrl}" target="_blank" rel="noopener noreferrer" title="Buscar en OPAC" class="bg-[#f0f0f0] border border-gray-200 px-2 py-1 rounded font-mono text-[11px] font-bold text-[#008069] hover:bg-green-50 hover:border-green-300 transition-colors cursor-pointer inline-flex items-center gap-1 no-underline">
                                 📍 ${escapeHTML(sig)}
-                            </a>`
-                        ).join('');
+                            </a>`;
+                        }).join('');
 
                         htmlTarjetas += `
                             <div class="flex w-full mt-1.5 space-x-3 max-w-[92%] sm:max-w-lg md:max-w-xl">
@@ -348,9 +355,10 @@
                     scrollToBottom();
                 }
             } catch (error) {
+                console.error("Error en handleSend:", error);
                 removeTypingIndicator();
                 setLoadingState(false);
-                addMessage("⚠️ Error de conexión con el servidor. Comprueba tu conexión o la URL de Google Apps Script.", false);
+                addMessage("⚠️ Error de conexión o formato de datos. Revisa la consola (F12) para ver los detalles del problema.", false);
             }
         }
 
