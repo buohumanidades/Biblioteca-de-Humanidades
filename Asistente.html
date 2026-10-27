@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Asistente de Biblioteca</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Librería ligera para renderizar el Markdown que devuelve Ollama -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -55,48 +57,58 @@
             0%, 80%, 100% { transform: scale(0); }
             40% { transform: scale(1); }
         }
+        /* Estilos para el contenido Markdown de Ollama */
+        .markdown-body p { margin-bottom: 0.4rem; }
+        .markdown-body p:last-child { margin-bottom: 0; }
+        .markdown-body ul { list-style-type: disc; padding-left: 1.2rem; margin-bottom: 0.4rem; }
+        .markdown-body ol { list-style-type: decimal; padding-left: 1.2rem; margin-bottom: 0.4rem; }
+        .markdown-body strong { font-weight: 700; color: #111827; }
     </style>
 </head>
 <body class="flex justify-center items-center h-screen m-0 p-0 overflow-hidden sm:py-6">
 
-    <!-- Formato móvil intacto (w-full h-full) y más ancho en formato ordenador (sm:max-w-xl md:max-w-2xl lg:max-w-3xl) -->
-    <div class="w-full h-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl sm:h-[850px] sm:max-h-full flex flex-col bg-white sm:rounded-xl sm:shadow-2xl overflow-hidden relative">
+    <div class="w-full h-full sm:max-w-md sm:h-[850px] sm:max-h-full flex flex-col bg-white sm:rounded-xl sm:shadow-2xl overflow-hidden relative">
         
         <header class="bg-[#008069] text-white flex items-center px-4 py-3 shadow-md z-10 flex-shrink-0">
-            <button type="button" class="mr-2 hover:bg-white/20 p-1 rounded-full transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-            </button>
-            
-            <div class="h-10 w-10 bg-white rounded-full flex items-center justify-center overflow-hidden mr-3">
+            <div class="h-10 w-10 bg-white rounded-full flex items-center justify-center overflow-hidden mr-3 flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#008069]" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clip-rule="evenodd" />
                 </svg>
             </div>
             
-            <div class="flex-1 cursor-pointer">
+            <div class="flex-1 min-w-0">
                 <h1 class="text-base font-semibold whitespace-nowrap overflow-hidden text-ellipsis">Asistente de Biblioteca</h1>
                 <p class="text-xs text-green-100" id="status-text">en línea</p>
             </div>
             
-            <div class="flex gap-4 items-center">
-                <button type="button" class="hover:bg-white/20 p-1 rounded-full transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+            <div class="flex gap-2 items-center">
+                <!-- Botón para limpiar memoria e iniciar nueva consulta temática -->
+                <button id="reset-btn" title="Nueva consulta (Borrar memoria)" class="hover:bg-white/20 p-2 rounded-full transition flex items-center gap-1 text-xs bg-white/10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
+                    <span class="hidden sm:inline">Nueva consulta</span>
                 </button>
             </div>
         </header>
 
-        <main id="chat-container" class="flex-1 overflow-y-auto chat-bg p-4 flex flex-col gap-3 relative pb-20">
-            <div class="flex justify-center my-2">
+        <main id="chat-container" class="flex-1 overflow-y-auto chat-bg p-4 flex flex-col gap-3 relative pb-24">
+            <div class="flex justify-center my-1">
                 <span class="text-xs text-gray-500 bg-[#f4f4f4] px-3 py-1 rounded-lg shadow-sm">Hoy</span>
             </div>
 
-            <div class="flex w-full mt-2 space-x-3 max-w-[85%] sm:max-w-md md:max-w-lg">
-                <div class="relative bg-white p-2 rounded-lg rounded-tl-none shadow-sm text-sm text-gray-800 message-in">
-                    <p>¡Hola! Soy el asistente virtual de la biblioteca. 📚 ¿En qué puedo ayudarte hoy? Puedes preguntarme por títulos, autores o temáticas.</p>
+            <!-- Mensaje de bienvenida con ejemplo interactivo -->
+            <div class="flex w-full mt-1 space-x-3 max-w-[85%]">
+                <div class="relative bg-white p-3 rounded-lg rounded-tl-none shadow-sm text-sm text-gray-800 message-in">
+                    <p>¡Hola! Soy el asistente virtual de la biblioteca. 📚</p>
+                    <p class="mt-1">Puedes describirme una temática específica, pedir que filtre resultados o profundizar en un libro concreto.</p>
+                    <div class="mt-2 pt-2 border-t border-gray-100">
+                        <span class="text-[11px] text-gray-500 block mb-1">Prueba un ejemplo:</span>
+                        <button onclick="sendQuickPrompt('Busco libros sobre la revolución industrial en Asturias, preferiblemente relacionados con el transporte.')" 
+                                class="text-left text-xs bg-[#f0fdf4] hover:bg-[#dcfce7] text-[#008069] border border-[#bbf7d0] rounded-lg px-2.5 py-1.5 transition block w-full">
+                            💡 "Revolución industrial en Asturias y transporte"
+                        </button>
+                    </div>
                     <span class="text-[10px] text-gray-400 float-right mt-1 ml-2 text-right" id="initial-time"></span>
                 </div>
             </div>
@@ -104,24 +116,12 @@
 
         <footer class="bg-[#f0f0f0] p-2 flex items-end gap-2 absolute bottom-0 w-full z-10">
             <div class="flex-1 bg-white rounded-3xl flex items-center px-4 py-2 shadow-sm min-h-[44px]">
-                <button type="button" class="text-gray-400 hover:text-gray-600 mr-2 focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </button>
-                
-                <input type="text" id="chat-input" placeholder="Escribe un mensaje" 
-                       class="flex-1 bg-transparent focus:outline-none text-sm py-1 w-full"
+                <input type="text" id="chat-input" placeholder="Describe un tema, autor o afina tu búsqueda..." 
+                       class="flex-1 bg-transparent focus:outline-none text-sm py-1 w-full disabled:opacity-50"
                        autocomplete="off">
-                
-                <button type="button" class="text-gray-400 hover:text-gray-600 ml-2 focus:outline-none transform -rotate-45">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                    </svg>
-                </button>
             </div>
             
-            <button type="button" id="send-btn" class="bg-[#00a884] text-white rounded-full h-11 w-11 flex items-center justify-center flex-shrink-0 hover:bg-[#008069] transition shadow-sm focus:outline-none">
+            <button id="send-btn" class="bg-[#00a884] text-white rounded-full h-11 w-11 flex items-center justify-center flex-shrink-0 hover:bg-[#008069] transition shadow-sm focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
                 </svg>
@@ -133,10 +133,12 @@
         const chatContainer = document.getElementById('chat-container');
         const chatInput = document.getElementById('chat-input');
         const sendBtn = document.getElementById('send-btn');
+        const resetBtn = document.getElementById('reset-btn');
         const statusText = document.getElementById('status-text');
 
-        let historialConversacion = [];
-        let titulosMostradosGlobal = [];
+        // Memoria conversacional para que el RAG sea interactivo
+        let chatHistory = [];
+        let lastRetrievedBooks = [];
 
         function getCurrentTime() {
             const now = new Date();
@@ -146,38 +148,31 @@
         document.getElementById('initial-time').innerText = getCurrentTime();
 
         function scrollToBottom() {
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
         }
 
-        function normalizarClave(texto) {
-            let base = String(texto || '').split(/[:\/]/)[0].replace(/\([^)]*\)/g, '');
-            let limpia = base
-                .toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^\w\s]/g, ' ')
-                .replace(/\s+/g, ' ')
-                .trim();
-            return limpia.length >= 5 ? limpia : String(texto || '').toLowerCase().trim();
+        // Evita inyecciones HTML en el input del usuario
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag]));
+        }
+
+        function setLoadingState(isLoading) {
+            chatInput.disabled = isLoading;
+            sendBtn.disabled = isLoading;
+            if (!isLoading) chatInput.focus();
         }
 
         function addMessage(text, isUser = false) {
             const time = getCurrentTime();
             const messageDiv = document.createElement('div');
             
-            historialConversacion.push({
-                rol: isUser ? "Usuario" : "Asistente",
-                texto: text
-            });
-            if (historialConversacion.length > 6) {
-                historialConversacion.shift();
-            }
-
             if (isUser) {
-                messageDiv.className = "flex w-full mt-2 space-x-3 max-w-[85%] sm:max-w-md md:max-w-lg ml-auto justify-end";
+                messageDiv.className = "flex w-full mt-2 space-x-3 max-w-[85%] ml-auto justify-end";
                 messageDiv.innerHTML = `
-                    <div class="relative bg-[#dcf8c6] p-2 rounded-lg rounded-tr-none shadow-sm text-sm text-gray-800 message-out">
-                        <p class="break-words">${text}</p>
+                    <div class="relative bg-[#dcf8c6] p-2.5 rounded-lg rounded-tr-none shadow-sm text-sm text-gray-800 message-out">
+                        <p class="whitespace-pre-wrap break-words">${escapeHTML(text)}</p>
                         <span class="text-[10px] text-gray-500 float-right mt-1 ml-2 text-right flex items-center gap-1">
                             ${time}
                             <svg viewBox="0 0 16 15" width="16" height="15" class="text-gray-400 fill-current checkmarks">
@@ -187,10 +182,12 @@
                     </div>
                 `;
             } else {
-                messageDiv.className = "flex w-full mt-2 space-x-3 max-w-[85%] sm:max-w-md md:max-w-lg";
+                // Renderizamos Markdown usando marked.js para las respuestas del asistente
+                const formattedHTML = marked.parse(text);
+                messageDiv.className = "flex w-full mt-2 space-x-3 max-w-[85%]";
                 messageDiv.innerHTML = `
-                    <div class="relative bg-white p-2 rounded-lg rounded-tl-none shadow-sm text-sm text-gray-800 message-in">
-                        <p class="break-words">${text}</p>
+                    <div class="relative bg-white p-3 rounded-lg rounded-tl-none shadow-sm text-sm text-gray-800 message-in">
+                        <div class="markdown-body break-words">${formattedHTML}</div>
                         <span class="text-[10px] text-gray-400 float-right mt-1 ml-2 text-right">${time}</span>
                     </div>
                 `;
@@ -204,15 +201,75 @@
                 setTimeout(() => {
                     checkmarks.classList.remove('text-gray-400');
                     checkmarks.classList.add('text-blue-500');
-                }, 800);
+                }, 600);
             }
         }
 
+        function renderBookCards(libros) {
+            lastRetrievedBooks = libros;
+            const containerDiv = document.createElement('div');
+            containerDiv.className = "flex flex-col gap-2 w-full max-w-[88%] pl-1 mt-1";
+
+            libros.forEach((libro) => {
+                const titulo = libro.titulo || libro.Titulo || libro.Título || 'Sin título';
+                const autor = libro.autor || libro.Autor || 'Sin autor';
+                const signatura = libro.signatura || libro.Signatura || 'S/N';
+                const materia = libro.materia || libro.Materia || '';
+
+                const card = document.createElement('div');
+                card.className = "bg-white p-3 rounded-lg shadow-sm border-l-4 border-[#00a884] text-sm text-gray-800 transition hover:shadow-md";
+                
+                // Usamos escapeHTML en los atributos para evitar errores con comillas en títulos
+                const safeTitulo = escapeHTML(titulo);
+                const safeSignatura = escapeHTML(signatura);
+
+                card.innerHTML = `
+                    <strong class="text-gray-900 block leading-snug">${safeTitulo}</strong>
+                    <span class="text-xs text-gray-600 block mt-0.5">${escapeHTML(autor)}</span>
+                    ${materia ? `<span class="inline-block bg-green-50 text-[#008069] text-[10px] px-2 py-0.5 rounded mt-1.5 border border-green-100">${escapeHTML(materia)}</span>` : ''}
+                    
+                    <div class="mt-2.5 pt-2 border-t border-gray-100 flex justify-between items-center gap-2 flex-wrap">
+                        <span class="bg-[#f0f0f0] border border-gray-200 px-2 py-1 rounded font-mono text-[11px] font-bold text-gray-700">
+                            📍 ${safeSignatura}
+                        </span>
+                        <div class="flex gap-1.5">
+                            <button onclick="askAboutBook('${safeTitulo.replace(/&#39;/g, "\\'")}', '${safeSignatura}', 'detalles')" 
+                                    class="text-[11px] bg-gray-100 hover:bg-[#00a884] hover:text-white text-gray-700 px-2 py-1 rounded transition font-medium">
+                                💬 ¿De qué trata?
+                            </button>
+                            <button onclick="askAboutBook('${safeTitulo.replace(/&#39;/g, "\\'")}', '${safeSignatura}', 'similares')" 
+                                    class="text-[11px] bg-gray-100 hover:bg-[#00a884] hover:text-white text-gray-700 px-2 py-1 rounded transition font-medium">
+                                🔍 Similares
+                            </button>
+                        </div>
+                    </div>
+                `;
+                containerDiv.appendChild(card);
+            });
+
+            chatContainer.appendChild(containerDiv);
+            scrollToBottom();
+        }
+
+        // Permite al usuario "darle un libro" al asistente haciendo clic en su tarjeta
+        function askAboutBook(titulo, signatura, accion) {
+            if (accion === 'detalles') {
+                sendQuickPrompt(`Háblame más a fondo del libro "${titulo}" (${signatura}) y cómo se relaciona con lo que busco.`);
+            } else if (accion === 'similares') {
+                sendQuickPrompt(`¿Qué otros libros hay en el catálogo que sean similares a "${titulo}" (${signatura})?`);
+            }
+        }
+
+        function sendQuickPrompt(promptText) {
+            chatInput.value = promptText;
+            handleSend();
+        }
+
         function showTypingIndicator() {
-            statusText.innerText = "escribiendo...";
+            statusText.innerText = "buscando en el catálogo y redactando...";
             const typingDiv = document.createElement('div');
             typingDiv.id = "typing-indicator";
-            typingDiv.className = "flex w-full mt-2 space-x-3 max-w-[85%] sm:max-w-md md:max-w-lg";
+            typingDiv.className = "flex w-full mt-2 space-x-3 max-w-xs";
             typingDiv.innerHTML = `
                 <div class="relative bg-white p-3 rounded-lg rounded-tl-none shadow-sm text-sm text-gray-500 message-in flex items-center justify-center gap-1">
                     <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
@@ -236,101 +293,54 @@
 
             addMessage(texto, true);
             chatInput.value = '';
-            
+            setLoadingState(true);
             showTypingIndicator();
             
             try {
-                const respuesta = await fetch('https://script.google.com/macros/s/AKfycbwPQ8TCivmIH_zTkFnNk8kt9g4o9n4kcwCfwDhZTEexX3CL1RCypmF0j3flagF_3dTTDA/exec', {
+                const respuesta = await fetch('http://localhost:5000/api/chat', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         mensaje: texto,
-                        historial: historialConversacion,
-                        excluidos: titulosMostradosGlobal
+                        historial: chatHistory.slice(-6), // Enviamos los últimos 6 turnos de memoria
+                        libros_en_contexto: lastRetrievedBooks // Libros que el usuario está viendo ahora mismo
                     })
                 });
                 
                 const datos = await respuesta.json();
                 removeTypingIndicator();
+                setLoadingState(false);
                 
-                if (datos.texto) {
-                    addMessage(datos.texto, false);
-                }
+                addMessage(datos.texto, false);
+
+                // Actualizamos la memoria conversacional
+                chatHistory.push({ role: 'user', content: texto });
+                chatHistory.push({ role: 'assistant', content: datos.texto });
                 
-                if (datos.libros && Array.isArray(datos.libros) && datos.libros.length > 0) {
-                    const librosAgrupadosMap = new Map();
-
-                    datos.libros.forEach(libro => {
-                        const titulo = String(libro.titulo || libro.Titulo || libro.Título || 'Sin título').trim();
-                        const autor = String(libro.autor || libro.Autor || 'Sin autor').trim();
-                        
-                        let listaSignaturas = [];
-                        if (Array.isArray(libro.signaturas) && libro.signaturas.length > 0) {
-                            listaSignaturas = libro.signaturas.map(s => String(s).trim()).filter(Boolean);
-                        } else {
-                            const sigRaw = String(libro.signatura || libro.Signatura || 'S/N');
-                            listaSignaturas = sigRaw.split(/\s*\|\|\|\s*/).map(s => s.trim()).filter(Boolean);
-                        }
-
-                        const claveTitulo = normalizarClave(titulo);
-                        
-                        if (!titulosMostradosGlobal.includes(claveTitulo)) {
-                            titulosMostradosGlobal.push(claveTitulo);
-                        }
-
-                        if (!librosAgrupadosMap.has(claveTitulo)) {
-                            librosAgrupadosMap.set(claveTitulo, {
-                                titulo: titulo,
-                                autor: autor,
-                                signaturas: [...listaSignaturas]
-                            });
-                        } else {
-                            const libroExistente = librosAgrupadosMap.get(claveTitulo);
-                            listaSignaturas.forEach(sig => {
-                                if (!libroExistente.signaturas.some(s => s.toLowerCase() === sig.toLowerCase())) {
-                                    libroExistente.signaturas.push(sig);
-                                }
-                            });
-                        }
-                    });
-
-                    let htmlTarjetas = '';
-                    librosAgrupadosMap.forEach(libro => {
-                        const etiquetasSignaturas = libro.signaturas.map(sig => 
-                            `<span class="bg-[#f0f0f0] border border-gray-200 px-2 py-1 rounded font-mono text-[11px] font-bold text-gray-700">📍 ${sig}</span>`
-                        ).join('');
-
-                        htmlTarjetas += `
-                            <div class="flex w-full mt-1 space-x-3 max-w-[85%] sm:max-w-md md:max-w-lg">
-                                <div class="relative bg-white p-3 rounded-lg shadow-sm border-l-4 border-[#00a884] text-sm text-gray-800 w-full ml-2">
-                                    <strong class="text-gray-900 block break-words" title="${libro.titulo}">${libro.titulo}</strong>
-                                    <span class="text-xs text-gray-600 block break-words mt-0.5" title="${libro.autor}">${libro.autor}</span>
-                                    <div class="mt-2 flex justify-between items-end gap-2">
-                                        <div class="flex flex-wrap gap-1.5">
-                                            ${etiquetasSignaturas}
-                                        </div>
-                                        <span class="text-[10px] text-gray-400 flex-shrink-0">${getCurrentTime()}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    });
-
-                    chatContainer.insertAdjacentHTML('beforeend', htmlTarjetas);
-                    scrollToBottom();
+                if (datos.libros && datos.libros.length > 0) {
+                    renderBookCards(datos.libros);
                 }
             } catch (error) {
                 removeTypingIndicator();
-                addMessage("Error de conexión con el servidor en la nube. Verifica tu URL de Google Apps Script.", false);
+                setLoadingState(false);
+                addMessage("Error de conexión. Asegúrate de que Flask (puerto 5000) y Ollama estén activos.", false);
             }
         }
 
+        // Reiniciar la memoria cuando el usuario quiera buscar otro tema desde cero
+        resetBtn.addEventListener('click', () => {
+            chatHistory = [];
+            lastRetrievedBooks = [];
+            const divider = document.createElement('div');
+            divider.className = "flex justify-center my-3";
+            divider.innerHTML = `<span class="text-[11px] text-[#008069] bg-green-50 border border-green-200 px-3 py-1 rounded-full shadow-sm">🔄 Memoria reiniciada. ¿Qué nueva temática buscamos?</span>`;
+            chatContainer.appendChild(divider);
+            scrollToBottom();
+        });
+
         sendBtn.addEventListener('click', handleSend);
-        chatInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                handleSend();
-            }
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSend();
         });
 
         window.onload = scrollToBottom;
