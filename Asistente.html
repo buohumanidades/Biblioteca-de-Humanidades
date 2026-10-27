@@ -192,4 +192,187 @@
                         <span class="text-[10px] text-gray-500 float-right mt-1 ml-2 text-right flex items-center gap-1">
                             ${time}
                             <svg viewBox="0 0 16 15" width="16" height="15" class="text-blue-500 fill-current">
-                                <path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.3
+                                <path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"></path>
+                            </svg>
+                        </span>
+                    </div>
+                `;
+            } else {
+                const formattedHTML = marked.parse(text);
+                messageDiv.className = "flex w-full mt-2 space-x-3 max-w-[88%] sm:max-w-lg md:max-w-xl";
+                messageDiv.innerHTML = `
+                    <div class="relative bg-white p-3 rounded-lg rounded-tl-none shadow-sm text-sm text-gray-800 message-in">
+                        <div class="markdown-body break-words">${formattedHTML}</div>
+                        <span class="text-[10px] text-gray-400 float-right mt-1 ml-2 text-right">${time}</span>
+                    </div>
+                `;
+            }
+            
+            chatContainer.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function showTypingIndicator() {
+            statusText.innerText = "buscando en el catálogo...";
+            const typingDiv = document.createElement('div');
+            typingDiv.id = "typing-indicator";
+            typingDiv.className = "flex w-full mt-2 space-x-3 max-w-[85%] sm:max-w-md md:max-w-lg";
+            typingDiv.innerHTML = `
+                <div class="relative bg-white p-3 rounded-lg rounded-tl-none shadow-sm text-sm text-gray-500 message-in flex items-center justify-center gap-1">
+                    <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                    <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                    <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                </div>
+            `;
+            chatContainer.appendChild(typingDiv);
+            scrollToBottom();
+        }
+
+        function removeTypingIndicator() {
+            statusText.innerText = "en línea";
+            const typingDiv = document.getElementById('typing-indicator');
+            if (typingDiv) typingDiv.remove();
+        }
+
+        function sendQuickPrompt(promptText) {
+            chatInput.value = promptText;
+            handleSend();
+        }
+
+        async function handleSend() {
+            const texto = chatInput.value.trim();
+            if (!texto) return;
+
+            addMessage(texto, true);
+            chatInput.value = '';
+            setLoadingState(true);
+            showTypingIndicator();
+            
+            try {
+                const respuesta = await fetch(GAS_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ 
+                        mensaje: texto,
+                        historial: historialConversacion,
+                        excluidos: titulosMostradosGlobal
+                    })
+                });
+                
+                const datos = await respuesta.json();
+                removeTypingIndicator();
+                setLoadingState(false);
+                
+                if (datos.texto) {
+                    addMessage(datos.texto, false);
+                }
+                
+                if (datos.libros && Array.isArray(datos.libros) && datos.libros.length > 0) {
+                    const librosAgrupadosMap = new Map();
+
+                    datos.libros.forEach(libro => {
+                        const titulo = String(libro.titulo || libro.Titulo || libro.Título || 'Sin título').trim();
+                        const autor = String(libro.autor || libro.Autor || 'Sin autor').trim();
+                        
+                        let listaSignaturas = [];
+                        if (Array.isArray(libro.signaturas) && libro.signaturas.length > 0) {
+                            listaSignaturas = libro.signaturas.map(s => String(s).trim()).filter(Boolean);
+                        } else {
+                            const sigRaw = String(libro.signatura || libro.Signatura || 'S/N');
+                            listaSignaturas = sigRaw.split(/\s*\|\|\|\s*/).map(s => s.trim()).filter(Boolean);
+                        }
+
+                        const claveTitulo = normalizarClave(titulo);
+                        
+                        if (!titulosMostradosGlobal.includes(claveTitulo)) {
+                            titulosMostradosGlobal.push(claveTitulo);
+                        }
+
+                        if (!librosAgrupadosMap.has(claveTitulo)) {
+                            librosAgrupadosMap.set(claveTitulo, {
+                                titulo: titulo,
+                                autor: autor,
+                                signaturas: [...listaSignaturas]
+                            });
+                        } else {
+                            const libroExistente = librosAgrupadosMap.get(claveTitulo);
+                            listaSignaturas.forEach(sig => {
+                                if (!libroExistente.signaturas.some(s => s.toLowerCase() === sig.toLowerCase())) {
+                                    libroExistente.signaturas.push(sig);
+                                }
+                            });
+                        }
+                    });
+
+                    let htmlTarjetas = '';
+                    librosAgrupadosMap.forEach(libro => {
+                        const safeTitulo = escapeHTML(libro.titulo);
+                        const safeAutor = escapeHTML(libro.autor);
+                        
+                        // LIMPIEZA DE BÚSQUEDA PARA ABSYSNET (Prevención de fallos por UTF-8/ISO-8859-1)
+                        let queryLimpia = `${libro.titulo} ${libro.autor}`;
+                        // 1. Quitar todos los acentos (el catálogo los ignora para buscar, pero por URL lo rompen)
+                        queryLimpia = queryLimpia.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); 
+                        // 2. Sustituir caracteres no alfanuméricos por espacios (comas, dos puntos, barras...)
+                        queryLimpia = queryLimpia.replace(/[^\w\s]/gi, ' '); 
+                        // 3. Limpiar espacios dobles o bordes
+                        queryLimpia = queryLimpia.replace(/\s+/g, ' ').trim(); 
+                        
+                        // Encodificar y forzar "+" en lugar de "%20" como haría un formulario estándar
+                        const terminoBusqueda = encodeURIComponent(queryLimpia).replace(/%20/g, '+');
+                        
+                        const opacUrl = `https://buoabsys.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH&xsqf99=${terminoBusqueda}`;
+
+                        const etiquetasSignaturas = libro.signaturas.map(sig => 
+                            `<a href="${opacUrl}" target="_blank" rel="noopener noreferrer" title="Buscar '${safeTitulo}' en OPAC" class="bg-[#f0f0f0] border border-gray-200 px-2 py-1 rounded font-mono text-[11px] font-bold text-[#008069] hover:bg-green-50 hover:border-green-300 transition-colors cursor-pointer inline-flex items-center gap-1 no-underline">
+                                📍 ${escapeHTML(sig)}
+                            </a>`
+                        ).join('');
+
+                        htmlTarjetas += `
+                            <div class="flex w-full mt-1.5 space-x-3 max-w-[92%] sm:max-w-lg md:max-w-xl">
+                                <div class="relative bg-white p-3.5 rounded-lg shadow-sm border-l-4 border-[#00a884] text-sm text-gray-800 w-full ml-1">
+                                    <strong class="text-gray-900 block break-words leading-snug" title="${safeTitulo}">${safeTitulo}</strong>
+                                    <span class="text-xs text-gray-600 block break-words mt-1" title="${safeAutor}">${safeAutor}</span>
+                                    <div class="mt-3 pt-2.5 border-t border-gray-100 flex justify-between items-center gap-2 flex-wrap">
+                                        <div class="flex flex-wrap gap-1.5">
+                                            ${etiquetasSignaturas}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    chatContainer.insertAdjacentHTML('beforeend', htmlTarjetas);
+                    scrollToBottom();
+                }
+            } catch (error) {
+                removeTypingIndicator();
+                setLoadingState(false);
+                addMessage("⚠️ Error de conexión con el servidor. Comprueba tu conexión o la URL de Google Apps Script.", false);
+            }
+        }
+
+        resetBtn.addEventListener('click', () => {
+            historialConversacion = [];
+            titulosMostradosGlobal = [];
+            const divider = document.createElement('div');
+            divider.className = "flex justify-center my-3";
+            divider.innerHTML = `<span class="text-[11px] text-[#008069] bg-green-50 border border-green-200 px-3 py-1 rounded-full shadow-sm">🔄 Memoria reiniciada. ¿Qué nueva temática buscamos?</span>`;
+            chatContainer.appendChild(divider);
+            scrollToBottom();
+        });
+
+        sendBtn.addEventListener('click', handleSend);
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSend();
+            }
+        });
+
+        window.onload = scrollToBottom;
+    </script>
+</body>
+</html>
