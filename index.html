@@ -6,6 +6,8 @@
     <title>Biblioteca de Humanidades · Campus de El Milán · Universidad de Oviedo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Librería para generar el PDF desde el navegador -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -404,7 +406,7 @@
                 </div>
             </header>
 
-            <!-- Contenedor de Mensajes (pb-6 y min-h-0 para evitar solapamientos) -->
+            <!-- Contenedor de Mensajes -->
             <main id="chat-container" class="flex-1 min-h-0 overflow-y-auto chat-bg p-4 sm:p-6 pb-6 flex flex-col gap-3 relative">
                 <div class="flex justify-center my-2">
                     <span class="text-[11px] font-mono uppercase tracking-widest text-stone-600 bg-stone-200/80 border border-stone-300 px-3 py-1">Hoy · Consulta en Catálogo</span>
@@ -426,7 +428,7 @@
                 </div>
             </main>
 
-            <!-- Pie de Entrada de Texto (flex-shrink-0, sin absolute bottom-0) -->
+            <!-- Pie de Entrada de Texto -->
             <footer class="bg-stone-900 p-3 flex items-center gap-2.5 w-full z-10 border-t border-stone-800 flex-shrink-0">
                 <div class="flex-1 bg-stone-800 border border-stone-700 focus-within:border-sand flex items-center px-4 py-2 transition-colors min-h-[46px]">
                     <input type="text" id="chat-input" placeholder="Describe un tema, autor o haz una pregunta..." 
@@ -569,6 +571,8 @@
 
         let historialConversacion = [];
         let titulosMostradosGlobal = [];
+        let ultimosLibrosGenerados = []; // Memoria global para el PDF
+        let ultimoTemaBuscado = "";      // Tema para el título del PDF
 
         function getCurrentTime() {
             const now = new Date();
@@ -577,7 +581,6 @@
 
         document.getElementById('initial-time').innerText = getCurrentTime();
 
-        // scrollToBottom mejorado con requestAnimationFrame
         function scrollToBottom() {
             requestAnimationFrame(() => {
                 chatContainer.scrollTo({
@@ -676,9 +679,59 @@
             handleSend();
         }
 
+        // Función encargada de generar y descargar el PDF con la bibliografía actual
+        function generarPDF() {
+            if (!ultimosLibrosGenerados || ultimosLibrosGenerados.length === 0) return;
+            
+            // Creamos un contenedor temporal invisible y le damos diseño de documento formal
+            const div = document.createElement('div');
+            div.style.padding = '40px';
+            div.style.fontFamily = 'Georgia, serif';
+            div.style.color = '#1a1817';
+            
+            let html = `
+                <div style="text-align: center; border-bottom: 1px solid #c5a059; padding-bottom: 20px; margin-bottom: 30px;">
+                    <h1 style="margin: 0; font-size: 24px; font-weight: normal; text-transform: uppercase; letter-spacing: 2px;">Biblioteca de Humanidades</h1>
+                    <h2 style="margin: 10px 0 0 0; font-size: 16px; color: #555; font-weight: normal;">Universidad de Oviedo</h2>
+                </div>
+                <div style="margin-bottom: 30px;">
+                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Bibliografía Recomendada</h3>
+                    <p style="margin: 0; font-size: 14px;"><strong>Consulta temática:</strong> "${escapeHTML(ultimoTemaBuscado)}"</p>
+                    <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">Generado el ${new Date().toLocaleDateString()}</p>
+                </div>
+            `;
+            
+            ultimosLibrosGenerados.forEach((libro, index) => {
+                html += `
+                    <div style="margin-bottom: 25px; padding: 15px; border: 1px solid #e5e5e5; background-color: #faf8f5;">
+                        <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1a1817;">${index + 1}. ${escapeHTML(libro.titulo)}</h3>
+                        <p style="margin: 0 0 4px 0; font-size: 14px;"><strong>Autor:</strong> ${escapeHTML(libro.autor)}</p>
+                        ${libro.materia ? `<p style="margin: 0 0 4px 0; font-size: 13px; color: #555;"><strong>Materia:</strong> ${escapeHTML(libro.materia)}</p>` : ''}
+                        <p style="margin: 8px 0 0 0; font-size: 13px;"><strong>Ubicación/Signaturas:</strong> ${escapeHTML(libro.signaturas.join(' / '))}</p>
+                    </div>
+                `;
+            });
+            
+            div.innerHTML = html;
+            
+            // Opciones de configuración para html2pdf
+            const opt = {
+              margin:       10,
+              filename:     'Bibliografia_Recomendada.pdf',
+              image:        { type: 'jpeg', quality: 0.98 },
+              html2canvas:  { scale: 2 },
+              jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            // Genera y descarga el PDF
+            html2pdf().set(opt).from(div).save();
+        }
+
         async function handleSend() {
             const texto = chatInput.value.trim();
             if (!texto) return;
+            
+            ultimoTemaBuscado = texto; // Guardamos el texto para el título del PDF
 
             addMessage(texto, true);
             chatInput.value = '';
@@ -744,6 +797,9 @@
                         }
                     });
 
+                    // Guardamos la agrupación en la variable global para el PDF
+                    ultimosLibrosGenerados = Array.from(librosAgrupadosMap.values());
+
                     let htmlTarjetas = '';
                     librosAgrupadosMap.forEach(libro => {
                         const safeTitulo = escapeHTML(libro.titulo);
@@ -782,7 +838,6 @@
                                 queryParaOpac = sigLimpia;
                             }
                             
-                            // Lógica de ubicación física flotante (tooltip) actualizada con soporte para H y L seguidas de número
                             let textoUbicacion = "Biblioteca de Humanidades (Campus de El Milán)";
                             const primerCaracter = sigUpper.charAt(0);
                             const segundoCaracter = sigUpper.charAt(1);
@@ -830,6 +885,16 @@
                         `;
                     });
 
+                    // Añadimos el botón de Descargar PDF justo debajo de las tarjetas
+                    htmlTarjetas += `
+                        <div class="flex w-full mt-3 space-x-3 max-w-[92%] sm:max-w-lg md:max-w-xl justify-end">
+                            <button type="button" onclick="generarPDF()" class="bg-stone-800 text-stone-100 hover:bg-sand hover:text-stone-900 border border-stone-700 hover:border-sand px-4 py-2 text-[11px] font-mono font-semibold uppercase tracking-wider transition-colors flex items-center gap-2 shadow-sm">
+                                <i class="fa-solid fa-file-pdf text-[13px]"></i>
+                                Descargar Bibliografía (PDF)
+                            </button>
+                        </div>
+                    `;
+
                     chatContainer.insertAdjacentHTML('beforeend', htmlTarjetas);
                     scrollToBottom();
                 }
@@ -845,6 +910,8 @@
         resetBtn.addEventListener('click', () => {
             historialConversacion = [];
             titulosMostradosGlobal = [];
+            ultimosLibrosGenerados = []; // Vaciamos la memoria del PDF
+            ultimoTemaBuscado = "";
             chatContainer.innerHTML = '';
             
             const divFecha = document.createElement('div');
@@ -889,3 +956,4 @@
     </script>
 </body>
 </html>
+```eof
