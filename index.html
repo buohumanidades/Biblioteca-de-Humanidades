@@ -404,8 +404,8 @@
                 </div>
             </header>
 
-            <!-- Contenedor de Mensajes -->
-            <main id="chat-container" class="flex-1 overflow-y-auto chat-bg p-4 sm:p-6 flex flex-col gap-3 relative pb-24">
+            <!-- Contenedor de Mensajes (Modificado con pb-6 y min-h-0 para evitar solapamientos) -->
+            <main id="chat-container" class="flex-1 min-h-0 overflow-y-auto chat-bg p-4 sm:p-6 pb-6 flex flex-col gap-3 relative">
                 <div class="flex justify-center my-2">
                     <span class="text-[11px] font-mono uppercase tracking-widest text-stone-600 bg-stone-200/80 border border-stone-300 px-3 py-1">Hoy · Consulta en Catálogo</span>
                 </div>
@@ -416,9 +416,9 @@
                         
                         <div class="mt-3 pt-2.5 border-t border-stone-200">
                             <span class="text-[11px] font-mono uppercase tracking-wider text-stone-500 block mb-1.5">Prueba una consulta temática:</span>
-                            <button type="button" onclick="sendQuickPrompt('Libros relacionados con la industria en Asturias y preferentemente con el acero')" 
+                            <button type="button" onclick="sendQuickPrompt('Libros de arte relacionados con Asturias')" 
                                     class="text-left text-xs font-mono bg-stone-100 hover:bg-stone-900 text-stone-900 hover:text-sand border border-stone-300 hover:border-stone-900 px-3 py-2 transition block w-full font-medium">
-                                💡 "Industria en Asturias y acero"
+                                💡 "Arte en Asturias"
                             </button>
                         </div>
                         <span class="text-[10px] font-mono text-stone-400 float-right mt-1.5 ml-2 text-right" id="initial-time"></span>
@@ -426,8 +426,8 @@
                 </div>
             </main>
 
-            <!-- Pie de Entrada de Texto -->
-            <footer class="bg-stone-900 p-3 flex items-center gap-2.5 absolute bottom-0 w-full z-10 border-t border-stone-800">
+            <!-- Pie de Entrada de Texto (Modificado con flex-shrink-0, sin absolute bottom-0) -->
+            <footer class="bg-stone-900 p-3 flex items-center gap-2.5 w-full z-10 border-t border-stone-800 flex-shrink-0">
                 <div class="flex-1 bg-stone-800 border border-stone-700 focus-within:border-sand flex items-center px-4 py-2 transition-colors min-h-[46px]">
                     <input type="text" id="chat-input" placeholder="Describe un tema, autor o haz una pregunta..." 
                            class="flex-1 bg-transparent text-stone-100 placeholder:text-stone-400 focus:outline-none text-sm py-1 w-full disabled:opacity-50 font-sans"
@@ -577,8 +577,14 @@
 
         document.getElementById('initial-time').innerText = getCurrentTime();
 
+        // [MODIFICACIÓN] scrollToBottom mejorado con requestAnimationFrame
         function scrollToBottom() {
-            chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
+            requestAnimationFrame(() => {
+                chatContainer.scrollTo({
+                    top: chatContainer.scrollHeight,
+                    behavior: 'smooth'
+                });
+            });
         }
 
         function normalizarClave(texto) {
@@ -704,6 +710,7 @@
                     datos.libros.forEach(libro => {
                         const titulo = String(libro.titulo || libro.Titulo || libro.Título || 'Sin título').trim();
                         const autor = String(libro.autor || libro.Autor || 'Sin autor').trim();
+                        const materia = String(libro.materia || '').trim();
                         
                         let listaSignaturas = [];
                         if (Array.isArray(libro.signaturas) && libro.signaturas.length > 0) {
@@ -723,10 +730,12 @@
                             librosAgrupadosMap.set(claveTitulo, {
                                 titulo: titulo,
                                 autor: autor,
+                                materia: materia,
                                 signaturas: [...listaSignaturas]
                             });
                         } else {
                             const libroExistente = librosAgrupadosMap.get(claveTitulo);
+                            if (!libroExistente.materia && materia) libroExistente.materia = materia;
                             listaSignaturas.forEach(sig => {
                                 if (!libroExistente.signaturas.some(s => s.toLowerCase() === sig.toLowerCase())) {
                                     libroExistente.signaturas.push(sig);
@@ -739,38 +748,54 @@
                     librosAgrupadosMap.forEach(libro => {
                         const safeTitulo = escapeHTML(libro.titulo);
                         const safeAutor = escapeHTML(libro.autor);
+                        const safeMateria = escapeHTML(libro.materia || '');
+                        
+                        const badgeMateria = safeMateria
+                            ? `<span class="inline-block text-[10px] font-mono uppercase tracking-wider text-sand bg-stone-900 px-2 py-0.5 mb-1.5">${safeMateria}</span>`
+                            : '';
                         
                         const etiquetasSignaturas = libro.signaturas.map(sig => {
+                            const sigLimpia = sig.trim();
+
+                            if (sigLimpia.includes('No disponible')) {
+                                return `<span class="bg-stone-200/70 border border-stone-300 px-2.5 py-1 font-mono text-[11px] text-stone-500 inline-flex items-center gap-1.5">
+                                    ${escapeHTML(sigLimpia)}
+                                </span>`;
+                            }
+
                             let queryParaOpac = '';
-                            
-                            if (sig.trim().toUpperCase().startsWith('HG')) {
+                            const esHG = sigLimpia.toUpperCase().startsWith('HG');
+
+                            if (esHG) {
                                 queryParaOpac = libro.titulo;
                                 queryParaOpac = queryParaOpac.replace(/ñ/g, '__ENYE__').replace(/Ñ/g, '__ENYEMAY__');
                                 queryParaOpac = queryParaOpac.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); 
                                 queryParaOpac = queryParaOpac.replace(/__ENYE__/g, 'ñ').replace(/__ENYEMAY__/g, 'Ñ');
                                 queryParaOpac = queryParaOpac.replace(/[^a-zA-Z0-9\sñÑ]/g, ' '); 
                                 
-                                const stopwords = ['el','la','los','las','un','una','unos','unas','a','ante','bajo','cabe','con','contra','de','desde','en','entre','hacia','hasta','para','por','segun','sin','so','sobre','tras','y','e','ni','que','o','u','al','del','su','sus'];
+                                const stopwords = ['el','la','los','las','un','una','unos','unas','a','ante','bajo','cabe','con','contra','de','desde','durante','en','entre','hacia','hasta','mediante','para','por','segun','sin','so','sobre','tras','y','e','ni','que','o','u','al','del','su','sus','lo','como','mas','pero'];
                                 const stopRegex = new RegExp('\\b(' + stopwords.join('|') + ')\\b', 'gi');
                                 queryParaOpac = queryParaOpac.replace(stopRegex, ' ');
                                 queryParaOpac = queryParaOpac.replace(/\s+/g, ' ').trim();
                             } else {
-                                queryParaOpac = sig.trim();
+                                queryParaOpac = sigLimpia;
                             }
                             
                             const searchParams = new URLSearchParams();
                             searchParams.append('ACC', 'DOSEARCH');
                             searchParams.append('xsqf99', queryParaOpac);
                             const opacUrl = `https://buoabsys.cpd.uniovi.es/cgi-bin/abnetopac?${searchParams.toString()}`;
+                            const tooltip = safeMateria ? `${safeMateria} · Ver en OPAC` : 'Buscar ejemplar en OPAC';
 
-                            return `<a href="${opacUrl}" target="_blank" rel="noopener noreferrer" title="Buscar ejemplar en OPAC" class="bg-stone-100 border border-stone-300 px-2.5 py-1 font-mono text-[11px] font-semibold text-stone-900 hover:bg-stone-900 hover:text-sand hover:border-stone-900 transition-colors cursor-pointer inline-flex items-center gap-1.5 no-underline">
-                                📍 ${escapeHTML(sig)}
+                            return `<a href="${opacUrl}" target="_blank" rel="noopener noreferrer" title="${tooltip}" class="bg-stone-100 border ${esHG ? 'border-sand/80 text-stone-900' : 'border-stone-300 text-stone-700'} px-2.5 py-1 font-mono text-[11px] font-semibold hover:bg-stone-900 hover:text-sand hover:border-stone-900 transition-colors cursor-pointer inline-flex items-center gap-1.5 no-underline">
+                                📍 ${escapeHTML(sigLimpia)}
                             </a>`;
                         }).join('');
 
                         htmlTarjetas += `
                             <div class="flex w-full mt-1.5 space-x-3 max-w-[92%] sm:max-w-lg md:max-w-xl">
                                 <div class="relative bg-stone-50 p-4 shadow-sm border border-stone-200 border-l-4 border-l-sand text-sm text-stone-800 w-full ml-1">
+                                    ${badgeMateria}
                                     <strong class="text-stone-900 block break-words leading-snug font-serif text-lg" title="${safeTitulo}">${safeTitulo}</strong>
                                     <span class="text-xs font-mono text-stone-600 block break-words mt-1" title="${safeAutor}">${safeAutor}</span>
                                     <div class="mt-3 pt-2.5 border-t border-stone-200 flex justify-between items-center gap-2 flex-wrap">
