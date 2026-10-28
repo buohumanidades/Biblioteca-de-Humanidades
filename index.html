@@ -683,7 +683,6 @@
         function generarPDF() {
             if (!ultimosLibrosGenerados || ultimosLibrosGenerados.length === 0) return;
             
-            // Creamos un contenedor temporal invisible y le damos diseño de documento formal
             const div = document.createElement('div');
             div.style.padding = '40px';
             div.style.fontFamily = 'Georgia, serif';
@@ -714,7 +713,6 @@
             
             div.innerHTML = html;
             
-            // Opciones de configuración para html2pdf
             const opt = {
               margin:       10,
               filename:     'Bibliografia_Recomendada.pdf',
@@ -723,7 +721,6 @@
               jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
             
-            // Genera y descarga el PDF
             html2pdf().set(opt).from(div).save();
         }
 
@@ -731,7 +728,7 @@
             const texto = chatInput.value.trim();
             if (!texto) return;
             
-            ultimoTemaBuscado = texto; // Guardamos el texto para el título del PDF
+            ultimoTemaBuscado = texto;
 
             addMessage(texto, true);
             chatInput.value = '';
@@ -797,7 +794,6 @@
                         }
                     });
 
-                    // Guardamos la agrupación en la variable global para el PDF
                     ultimosLibrosGenerados = Array.from(librosAgrupadosMap.values());
 
                     let htmlTarjetas = '';
@@ -841,10 +837,19 @@
                             let textoUbicacion = "Biblioteca de Humanidades (Campus de El Milán)";
                             const primerCaracter = sigUpper.charAt(0);
                             const segundoCaracter = sigUpper.charAt(1);
+                            const tercerCaracter = sigUpper.charAt(2);
                             const esHLDepositoONumero = (primerCaracter === 'H' || primerCaracter === 'L') && /[0-9]/.test(segundoCaracter);
 
                             if (sigUpper.startsWith('HG')) {
-                                textoUbicacion = "📍 Libre Acceso · Estanterías en Salas de Lectura / Plantas";
+                                if (['0', '1', '2', '3', '5', '6'].includes(tercerCaracter)) {
+                                    textoUbicacion = "📍 Libre Acceso · Filosofía y Ciencias (1ª Planta)";
+                                } else if (['7', '9'].includes(tercerCaracter)) {
+                                    textoUbicacion = "📍 Libre Acceso · Arte e Historia (2ª Planta)";
+                                } else if (tercerCaracter === '8') {
+                                    textoUbicacion = "📍 Libre Acceso · Literatura y Lingüística (3ª Planta)";
+                                } else {
+                                    textoUbicacion = "📍 Libre Acceso · Salas de Lectura";
+                                }
                             } else if (sigUpper.startsWith('HR')) {
                                 textoUbicacion = "📍 Sala de Referencia · Planta Baja";
                             } else if (sigUpper.startsWith('HI')) {
@@ -885,7 +890,6 @@
                         `;
                     });
 
-                    // Añadimos el botón de Descargar PDF justo debajo de las tarjetas
                     htmlTarjetas += `
                         <div class="flex w-full mt-3 space-x-3 max-w-[92%] sm:max-w-lg md:max-w-xl justify-end">
                             <button type="button" onclick="generarPDF()" class="bg-stone-800 text-stone-100 hover:bg-sand hover:text-stone-900 border border-stone-700 hover:border-sand px-4 py-2 text-[11px] font-mono font-semibold uppercase tracking-wider transition-colors flex items-center gap-2 shadow-sm">
@@ -906,11 +910,10 @@
             }
         }
 
-        // Reinicio completo del asistente al pulsar "Nueva consulta"
         resetBtn.addEventListener('click', () => {
             historialConversacion = [];
             titulosMostradosGlobal = [];
-            ultimosLibrosGenerados = []; // Vaciamos la memoria del PDF
+            ultimosLibrosGenerados = []; 
             ultimoTemaBuscado = "";
             chatContainer.innerHTML = '';
             
@@ -956,4 +959,3 @@
     </script>
 </body>
 </html>
-```eof
