@@ -782,8 +782,12 @@
                                 queryParaOpac = sigLimpia;
                             }
                             
-                            // Lógica de ubicación física flotante (tooltip)
+                            // Lógica de ubicación física flotante (tooltip) actualizada con soporte para H y L seguidas de número
                             let textoUbicacion = "Biblioteca de Humanidades (Campus de El Milán)";
+                            const primerCaracter = sigUpper.charAt(0);
+                            const segundoCaracter = sigUpper.charAt(1);
+                            const esHLDepositoONumero = (primerCaracter === 'H' || primerCaracter === 'L') && /[0-9]/.test(segundoCaracter);
+
                             if (sigUpper.startsWith('HG')) {
                                 textoUbicacion = "📍 Libre Acceso · Estanterías en Salas de Lectura / Plantas";
                             } else if (sigUpper.startsWith('HR')) {
@@ -792,8 +796,8 @@
                                 textoUbicacion = "📍 Fondo de Estudios Árabes e Islámicos";
                             } else if (sigUpper.startsWith('HT') || sigUpper.includes('TESIS')) {
                                 textoUbicacion = "📍 Sección de Tesis Doctorales";
-                            } else if (sigUpper.startsWith('HE') || sigUpper.startsWith('F') || sigUpper.includes('GF')) {
-                                textoUbicacion = "📍 Fondo de Depósito (Solicitar en Mostrador)";
+                            } else if (sigUpper.startsWith('HE') || sigUpper.startsWith('F') || sigUpper.includes('GF') || esHLDepositoONumero) {
+                                textoUbicacion = "📍 Depósito general de la biblioteca";
                             } else if (sigUpper.startsWith('HMONT') || sigUpper.startsWith('HMSR')) {
                                 textoUbicacion = "📍 Planta 1ª · Sala Especial / Fondos Particulares";
                             }
