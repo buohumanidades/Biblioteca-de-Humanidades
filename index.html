@@ -758,13 +758,14 @@
                             const sigLimpia = sig.trim();
 
                             if (sigLimpia.includes('No disponible')) {
-                                return `<span class="bg-stone-200/70 border border-stone-300 px-2.5 py-1 font-mono text-[11px] text-stone-500 inline-flex items-center gap-1.5">
+                                return `<span class="bg-stone-200/70 border border-stone-300 px-2.5 py-1 font-mono text-[11px] text-stone-500 inline-flex items-center gap-1.5 cursor-help" title="Esta obra recomendada no forma parte del fondo físico actual de la biblioteca">
                                     ${escapeHTML(sigLimpia)}
                                 </span>`;
                             }
 
                             let queryParaOpac = '';
-                            const esHG = sigLimpia.toUpperCase().startsWith('HG');
+                            const sigUpper = sigLimpia.toUpperCase();
+                            const esHG = sigUpper.startsWith('HG');
 
                             if (esHG) {
                                 queryParaOpac = libro.titulo;
@@ -781,13 +782,30 @@
                                 queryParaOpac = sigLimpia;
                             }
                             
+                            // Lógica de ubicación física flotante (tooltip)
+                            let textoUbicacion = "Biblioteca de Humanidades (Campus de El Milán)";
+                            if (sigUpper.startsWith('HG')) {
+                                textoUbicacion = "📍 Libre Acceso · Estanterías en Salas de Lectura / Plantas";
+                            } else if (sigUpper.startsWith('HR')) {
+                                textoUbicacion = "📍 Sala de Referencia · Planta Baja";
+                            } else if (sigUpper.startsWith('HI')) {
+                                textoUbicacion = "📍 Fondo de Estudios Árabes e Islámicos";
+                            } else if (sigUpper.startsWith('HT') || sigUpper.includes('TESIS')) {
+                                textoUbicacion = "📍 Sección de Tesis Doctorales";
+                            } else if (sigUpper.startsWith('HE') || sigUpper.startsWith('F') || sigUpper.includes('GF')) {
+                                textoUbicacion = "📍 Fondo de Depósito (Solicitar en Mostrador)";
+                            } else if (sigUpper.startsWith('HMONT') || sigUpper.startsWith('HMSR')) {
+                                textoUbicacion = "📍 Planta 1ª · Sala Especial / Fondos Particulares";
+                            }
+                            
+                            const tooltipTexto = `${textoUbicacion} | Clic para consultar en OPAC`;
+
                             const searchParams = new URLSearchParams();
                             searchParams.append('ACC', 'DOSEARCH');
                             searchParams.append('xsqf99', queryParaOpac);
                             const opacUrl = `https://buoabsys.cpd.uniovi.es/cgi-bin/abnetopac?${searchParams.toString()}`;
-                            const tooltip = safeMateria ? `${safeMateria} · Ver en OPAC` : 'Buscar ejemplar en OPAC';
 
-                            return `<a href="${opacUrl}" target="_blank" rel="noopener noreferrer" title="${tooltip}" class="bg-stone-100 border ${esHG ? 'border-sand/80 text-stone-900' : 'border-stone-300 text-stone-700'} px-2.5 py-1 font-mono text-[11px] font-semibold hover:bg-stone-900 hover:text-sand hover:border-stone-900 transition-colors cursor-pointer inline-flex items-center gap-1.5 no-underline">
+                            return `<a href="${opacUrl}" target="_blank" rel="noopener noreferrer" title="${escapeHTML(tooltipTexto)}" class="bg-stone-100 border ${esHG ? 'border-sand/80 text-stone-900' : 'border-stone-300 text-stone-700'} px-2.5 py-1 font-mono text-[11px] font-semibold hover:bg-stone-900 hover:text-sand hover:border-stone-900 transition-colors cursor-pointer inline-flex items-center gap-1.5 no-underline shadow-sm">
                                 📍 ${escapeHTML(sigLimpia)}
                             </a>`;
                         }).join('');
@@ -819,7 +837,7 @@
             }
         }
 
-        // [MODIFICACIÓN] Reinicio completo del asistente al pulsar "Nueva consulta"
+        // Reinicio completo del asistente al pulsar "Nueva consulta"
         resetBtn.addEventListener('click', () => {
             historialConversacion = [];
             titulosMostradosGlobal = [];
