@@ -252,7 +252,7 @@
         <div class="max-w-7xl mx-auto px-6 mb-16">
             <div class="flex flex-col md:flex-row md:items-end justify-between">
                 <div>
-                    <p class="text-xs font-mono text-sand tracking-widest uppercase mb-2">O R G A N I Z A C I Ó N</p>
+                    <p class="text-xs font-mono text-sand tracking-widest uppercase mb-2">O R G A N I Z A C I ক্ষমতায়N</p>
                     <h2 class="editorial-title text-4xl sm:text-6xl font-light text-stone-900">Bibliografía y Colecciones</h2>
                 </div>
             </div>
@@ -559,7 +559,7 @@
         });
 
         /* ==========================================
-           LÓGICA DEL ASISTENTE VIRTUAL (Asistente.html)
+           LÓGICA DEL ASISTENTE VIRTUAL
            ========================================== */
         const GAS_URL = "https://script.google.com/macros/s/AKfycbwPQ8TCivmIH_zTkFnNk8kt9g4o9n4kcwCfwDhZTEexX3CL1RCypmF0j3flagF_3dTTDA/exec";
 
@@ -684,17 +684,14 @@
             handleSend();
         }
 
-        // GENERACIÓN DEL PDF CORREGIDA CON CÓDIGO QR EN TEXTO DIRECTO
         function generarPDF(boton) {
             if (!ultimosLibrosGenerados || ultimosLibrosGenerados.length === 0) return;
             
-            // Estado de carga en el botón
             const textoOriginal = boton.innerHTML;
             boton.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin text-[13px]"></i> Generando PDF...`;
             boton.disabled = true;
             boton.classList.add('opacity-50', 'cursor-not-allowed');
             
-            // Creamos el HTML en memoria
             let html = `
                 <div style="padding: 40px; font-family: Georgia, serif; color: #1a1817; background-color: #ffffff;">
                     <div style="text-align: center; border-bottom: 1px solid #c5a059; padding-bottom: 20px; margin-bottom: 30px;">
@@ -719,7 +716,6 @@
                 `;
             });
             
-            // Añadimos el código QR al final del documento
             html += `
                     <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px dashed #ccc;">
                         <p style="font-size: 13px; color: #555; margin-bottom: 12px; font-family: 'Plus Jakarta Sans', sans-serif;">Escanea el código QR para acceder al catálogo general (OPAC)</p>
@@ -736,14 +732,11 @@
               jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
             
-            // html2pdf genera y descarga el archivo automáticamente a partir de la variable html
             html2pdf().set(opt).from(html).save().then(() => {
-                // Restauramos el botón a su estado original
                 boton.innerHTML = textoOriginal;
                 boton.disabled = false;
                 boton.classList.remove('opacity-50', 'cursor-not-allowed');
             }).catch(() => {
-                // Por si acaso hay algún error, también lo restauramos
                 boton.innerHTML = textoOriginal;
                 boton.disabled = false;
                 boton.classList.remove('opacity-50', 'cursor-not-allowed');
@@ -823,6 +816,14 @@
                     });
 
                     ultimosLibrosGenerados = Array.from(librosAgrupadosMap.values());
+
+                    // Verificamos si realmente se encontró algún libro físico en la biblioteca
+                    let encontradosEnCatalogo = false;
+                    librosAgrupadosMap.forEach(libro => {
+                        if (!libro.signaturas[0].includes('No disponible')) {
+                            encontradosEnCatalogo = true;
+                        }
+                    });
 
                     let htmlTarjetas = '';
                     librosAgrupadosMap.forEach(libro => {
@@ -918,7 +919,6 @@
                         `;
                     });
 
-                    // Botón para generar el PDF, pasamos 'this' para poder ponerlo en modo de carga
                     htmlTarjetas += `
                         <div class="flex w-full mt-3 space-x-3 max-w-[92%] sm:max-w-lg md:max-w-xl justify-end">
                             <button type="button" onclick="generarPDF(this)" class="bg-stone-800 text-stone-100 hover:bg-sand hover:text-stone-900 border border-stone-700 hover:border-sand px-4 py-2 text-[11px] font-mono font-semibold uppercase tracking-wider transition-all flex items-center gap-2 shadow-sm">
@@ -929,6 +929,28 @@
                     `;
 
                     chatContainer.insertAdjacentHTML('beforeend', htmlTarjetas);
+
+                    // Si no se encontró nada localmente, mostramos botones con temas similares basados en los sinónimos
+                    if (!encontradosEnCatalogo && datos.sinonimos && datos.sinonimos.length > 0) {
+                        let botonesSinonimos = datos.sinonimos.slice(0, 3).map(sin => {
+                            return `<button type="button" onclick="sendQuickPrompt('Libros sobre ${escapeHTML(sin)}')" 
+                                    class="text-left text-xs font-mono bg-stone-100 hover:bg-stone-900 text-stone-900 hover:text-sand border border-stone-300 hover:border-stone-900 px-3 py-2 transition block w-full font-medium mb-1.5">
+                                💡 Explorar: "${escapeHTML(sin)}"
+                            </button>`;
+                        }).join('');
+
+                        let htmlSugerencias = `
+                            <div class="flex w-full mt-3 space-x-3 max-w-[90%] sm:max-w-lg md:max-w-xl">
+                                <div class="relative bg-stone-100 border border-sand/40 p-4 shadow-sm text-sm text-stone-800 message-in w-full">
+                                    <p class="leading-relaxed mb-3"><strong>No he localizado ejemplares físicos exactos</strong> en la biblioteca para esta búsqueda específica, aunque he dejado bibliografía externa recomendada arriba. ¿Te interesaría explorar estas temáticas similares en el catálogo?</p>
+                                    <div class="border-t border-sand/30 pt-2.5">
+                                        ${botonesSinonimos}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        chatContainer.insertAdjacentHTML('beforeend', htmlSugerencias);
+                    }
                 }
 
                 if (respuestaElemento) {
