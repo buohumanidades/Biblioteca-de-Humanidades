@@ -404,7 +404,7 @@
                 </div>
             </header>
 
-            <!-- Contenedor de Mensajes (Modificado con pb-6 y min-h-0 para evitar solapamientos) -->
+            <!-- Contenedor de Mensajes (pb-6 y min-h-0 para evitar solapamientos) -->
             <main id="chat-container" class="flex-1 min-h-0 overflow-y-auto chat-bg p-4 sm:p-6 pb-6 flex flex-col gap-3 relative">
                 <div class="flex justify-center my-2">
                     <span class="text-[11px] font-mono uppercase tracking-widest text-stone-600 bg-stone-200/80 border border-stone-300 px-3 py-1">Hoy · Consulta en Catálogo</span>
@@ -426,7 +426,7 @@
                 </div>
             </main>
 
-            <!-- Pie de Entrada de Texto (Modificado con flex-shrink-0, sin absolute bottom-0) -->
+            <!-- Pie de Entrada de Texto (flex-shrink-0, sin absolute bottom-0) -->
             <footer class="bg-stone-900 p-3 flex items-center gap-2.5 w-full z-10 border-t border-stone-800 flex-shrink-0">
                 <div class="flex-1 bg-stone-800 border border-stone-700 focus-within:border-sand flex items-center px-4 py-2 transition-colors min-h-[46px]">
                     <input type="text" id="chat-input" placeholder="Describe un tema, autor o haz una pregunta..." 
@@ -577,7 +577,7 @@
 
         document.getElementById('initial-time').innerText = getCurrentTime();
 
-        // [MODIFICACIÓN] scrollToBottom mejorado con requestAnimationFrame
+        // scrollToBottom mejorado con requestAnimationFrame
         function scrollToBottom() {
             requestAnimationFrame(() => {
                 chatContainer.scrollTo({
@@ -819,13 +819,35 @@
             }
         }
 
+        // [MODIFICACIÓN] Reinicio completo del asistente al pulsar "Nueva consulta"
         resetBtn.addEventListener('click', () => {
             historialConversacion = [];
             titulosMostradosGlobal = [];
-            const divider = document.createElement('div');
-            divider.className = "flex justify-center my-3";
-            divider.innerHTML = `<span class="text-[11px] font-mono text-stone-900 bg-sand/20 border border-sand px-3 py-1 shadow-sm">🔄 Memoria reiniciada. ¿Qué nueva temática buscamos?</span>`;
-            chatContainer.appendChild(divider);
+            chatContainer.innerHTML = '';
+            
+            const divFecha = document.createElement('div');
+            divFecha.className = "flex justify-center my-2";
+            divFecha.innerHTML = `<span class="text-[11px] font-mono uppercase tracking-widest text-stone-600 bg-stone-200/80 border border-stone-300 px-3 py-1">Hoy · Consulta en Catálogo</span>`;
+            chatContainer.appendChild(divFecha);
+            
+            const horaActual = getCurrentTime();
+            const divBienvenida = document.createElement('div');
+            divBienvenida.className = "flex w-full mt-2 space-x-3 max-w-[90%] sm:max-w-lg md:max-w-xl";
+            divBienvenida.innerHTML = `
+                <div class="relative bg-stone-50 border border-stone-200 p-4 shadow-sm text-sm text-stone-800 message-in">
+                    <p class="leading-relaxed">¡Hola! Soy el asistente virtual de la <strong>Biblioteca de Humanidades</strong>. 📚 ¿En qué puedo ayudarte hoy? Puedes preguntarme por títulos, autores o temáticas.</p>
+                    
+                    <div class="mt-3 pt-2.5 border-t border-stone-200">
+                        <span class="text-[11px] font-mono uppercase tracking-wider text-stone-500 block mb-1.5">Prueba una consulta temática:</span>
+                        <button type="button" onclick="sendQuickPrompt('Libros de arte relacionados con Asturias')" 
+                                class="text-left text-xs font-mono bg-stone-100 hover:bg-stone-900 text-stone-900 hover:text-sand border border-stone-300 hover:border-stone-900 px-3 py-2 transition block w-full font-medium">
+                            💡 "Arte en Asturias"
+                        </button>
+                    </div>
+                    <span class="text-[10px] font-mono text-stone-400 float-right mt-1.5 ml-2 text-right">${horaActual}</span>
+                </div>
+            `;
+            chatContainer.appendChild(divBienvenida);
             scrollToBottom();
         });
 
