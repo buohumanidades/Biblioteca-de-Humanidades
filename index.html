@@ -187,7 +187,7 @@
         </div>
     </section>
 
-    <!-- Sección Buscador -->
+    <!-- Sección Buscador + Acceso Destacado al Asistente -->
     <section id="buscar" class="py-16 bg-stone-900 text-stone-100 grid-line-b">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-6 border-b border-stone-800">
@@ -374,7 +374,7 @@
         </div>
     </div>
 
-    <!-- NUEVO: MODAL LOCALIZADOR MAPA (Heredado de resultados.html) -->
+    <!-- NUEVO: MODAL LOCALIZADOR MAPA -->
     <div id="modalLocalizador" class="fixed inset-0 z-[3000] bg-stone-900/80 backdrop-blur-md flex justify-center items-center opacity-0 pointer-events-none transition-all duration-300">
         <div class="bg-stone-50 w-full h-full md:w-11/12 md:h-[90vh] max-w-5xl flex flex-col p-4 md:p-6 relative transform translate-y-8 transition-transform duration-300 modal-content border border-stone-200 shadow-2xl">
             <div class="flex justify-between items-center mb-4 pb-4 border-b border-stone-200">
@@ -567,7 +567,7 @@
             modal.querySelector('.modal-asistente-content').classList.remove('modal-content-active');
         }
         
-        // MODAL DEL MAPA LOCALIZADOR (Añadido nuevo)
+        // MODAL DEL MAPA LOCALIZADOR
         function abrirLocalizadorSuperpuesto(signatura, titulo, autor, fecha) {
             if (!signatura || signatura === 'S/S') return;
 
@@ -963,12 +963,9 @@
                             const safeTituloJS = libro.titulo.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                             const safeAutorJS = libro.autor.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                             
-                            const searchParams = new URLSearchParams();
-                            searchParams.append('ACC', 'DOSEARCH');
-                            searchParams.append('xsqf99', queryParaOpac);
-                            const opacUrl = `https://buoabsys.cpd.uniovi.es/cgi-bin/abnetopac?${searchParams.toString()}`;
+                            // Corrección del enlace OPAC para que funcione siempre
+                            const opacUrl = "https://buoabsys.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH&xsqf99=" + encodeURIComponent(queryParaOpac);
 
-                            // Tooltip personalizado flotante interactivo (Tailwind)
                             return `
                             <div class="relative group inline-flex items-center">
                                 <a href="${opacUrl}" target="_blank" rel="noopener noreferrer" class="bg-stone-100 border ${esHG ? 'border-sand/80 text-stone-900' : 'border-stone-300 text-stone-700'} px-2.5 py-1 font-mono text-[11px] font-semibold hover:bg-stone-900 hover:text-sand hover:border-stone-900 transition-colors cursor-pointer inline-flex items-center gap-1.5 no-underline shadow-sm">
