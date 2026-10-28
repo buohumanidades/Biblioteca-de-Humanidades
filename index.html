@@ -654,7 +654,7 @@
                 scrollToBottom();
             }
             
-            return messageDiv; // Retornamos el elemento para poder calcular su posición luego
+            return messageDiv;
         }
 
         function showTypingIndicator() {
@@ -684,32 +684,28 @@
             handleSend();
         }
 
-        // GENERACIÓN DEL PDF CORREGIDA (Se adjunta al DOM invisiblemente para evitar cortes)
-        function generarPDF() {
+        // GENERACIÓN DEL PDF CORREGIDA CON CÓDIGO QR EN TEXTO DIRECTO
+        function generarPDF(boton) {
             if (!ultimosLibrosGenerados || ultimosLibrosGenerados.length === 0) return;
             
-            const div = document.createElement('div');
-            div.style.width = '800px'; 
-            div.style.padding = '40px';
-            div.style.fontFamily = 'Georgia, serif';
-            div.style.color = '#1a1817';
-            div.style.backgroundColor = '#ffffff';
-            div.style.position = 'absolute';
-            div.style.left = '-9999px'; 
-            div.style.top = '0';
+            // Estado de carga en el botón
+            const textoOriginal = boton.innerHTML;
+            boton.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin text-[13px]"></i> Generando PDF...`;
+            boton.disabled = true;
+            boton.classList.add('opacity-50', 'cursor-not-allowed');
             
-            document.body.appendChild(div);
-            
+            // Creamos el HTML en memoria
             let html = `
-                <div style="text-align: center; border-bottom: 1px solid #c5a059; padding-bottom: 20px; margin-bottom: 30px;">
-                    <h1 style="margin: 0; font-size: 24px; font-weight: normal; text-transform: uppercase; letter-spacing: 2px;">Biblioteca de Humanidades</h1>
-                    <h2 style="margin: 10px 0 0 0; font-size: 16px; color: #555; font-weight: normal;">Universidad de Oviedo</h2>
-                </div>
-                <div style="margin-bottom: 30px;">
-                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Bibliografía Recomendada</h3>
-                    <p style="margin: 0; font-size: 14px;"><strong>Consulta temática:</strong> "${escapeHTML(ultimoTemaBuscado)}"</p>
-                    <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">Generado el ${new Date().toLocaleDateString()}</p>
-                </div>
+                <div style="padding: 40px; font-family: Georgia, serif; color: #1a1817; background-color: #ffffff;">
+                    <div style="text-align: center; border-bottom: 1px solid #c5a059; padding-bottom: 20px; margin-bottom: 30px;">
+                        <h1 style="margin: 0; font-size: 24px; font-weight: normal; text-transform: uppercase; letter-spacing: 2px;">Biblioteca de Humanidades</h1>
+                        <h2 style="margin: 10px 0 0 0; font-size: 16px; color: #555; font-weight: normal;">Universidad de Oviedo</h2>
+                    </div>
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="margin: 0 0 5px 0; font-size: 18px;">Bibliografía Recomendada</h3>
+                        <p style="margin: 0; font-size: 14px;"><strong>Consulta temática:</strong> "${escapeHTML(ultimoTemaBuscado)}"</p>
+                        <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">Generado el ${new Date().toLocaleDateString()}</p>
+                    </div>
             `;
             
             ultimosLibrosGenerados.forEach((libro, index) => {
@@ -723,19 +719,34 @@
                 `;
             });
             
-            div.innerHTML = html;
+            // Añadimos el código QR al final del documento
+            html += `
+                    <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px dashed #ccc;">
+                        <p style="font-size: 13px; color: #555; margin-bottom: 12px; font-family: 'Plus Jakarta Sans', sans-serif;">Escanea el código QR para acceder al catálogo general (OPAC)</p>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https%3A%2F%2Fbuoabsys.cpd.uniovi.es%2Fcgi-bin%2Fabnetopac%3FACC%3D101" style="width: 100px; height: 100px; margin: 0 auto; display: block;" crossorigin="anonymous" />
+                    </div>
+                </div>
+            `;
             
             const opt = {
               margin:       10,
               filename:     'Bibliografia_Recomendada.pdf',
               image:        { type: 'jpeg', quality: 0.98 },
               html2canvas:  { scale: 2, useCORS: true },
-              jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-              pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+              jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
             
-            html2pdf().set(opt).from(div).save().then(() => {
-                document.body.removeChild(div);
+            // html2pdf genera y descarga el archivo automáticamente a partir de la variable html
+            html2pdf().set(opt).from(html).save().then(() => {
+                // Restauramos el botón a su estado original
+                boton.innerHTML = textoOriginal;
+                boton.disabled = false;
+                boton.classList.remove('opacity-50', 'cursor-not-allowed');
+            }).catch(() => {
+                // Por si acaso hay algún error, también lo restauramos
+                boton.innerHTML = textoOriginal;
+                boton.disabled = false;
+                boton.classList.remove('opacity-50', 'cursor-not-allowed');
             });
         }
 
@@ -907,9 +918,10 @@
                         `;
                     });
 
+                    // Botón para generar el PDF, pasamos 'this' para poder ponerlo en modo de carga
                     htmlTarjetas += `
                         <div class="flex w-full mt-3 space-x-3 max-w-[92%] sm:max-w-lg md:max-w-xl justify-end">
-                            <button type="button" onclick="generarPDF()" class="bg-stone-800 text-stone-100 hover:bg-sand hover:text-stone-900 border border-stone-700 hover:border-sand px-4 py-2 text-[11px] font-mono font-semibold uppercase tracking-wider transition-colors flex items-center gap-2 shadow-sm">
+                            <button type="button" onclick="generarPDF(this)" class="bg-stone-800 text-stone-100 hover:bg-sand hover:text-stone-900 border border-stone-700 hover:border-sand px-4 py-2 text-[11px] font-mono font-semibold uppercase tracking-wider transition-all flex items-center gap-2 shadow-sm">
                                 <i class="fa-solid fa-file-pdf text-[13px]"></i>
                                 Descargar Bibliografía (PDF)
                             </button>
@@ -919,7 +931,6 @@
                     chatContainer.insertAdjacentHTML('beforeend', htmlTarjetas);
                 }
 
-                // SCROLL AL INICIO DE LA RESPUESTA DEL ASISTENTE, NO AL FINAL DE TODO
                 if (respuestaElemento) {
                     requestAnimationFrame(() => {
                         chatContainer.scrollTo({
