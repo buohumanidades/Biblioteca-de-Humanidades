@@ -187,7 +187,7 @@
         </div>
     </section>
 
-    <!-- Sección Buscador + Acceso Destacado al Asistente -->
+    <!-- Sección Buscador -->
     <section id="buscar" class="py-16 bg-stone-900 text-stone-100 grid-line-b">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-6 border-b border-stone-800">
@@ -252,7 +252,7 @@
         <div class="max-w-7xl mx-auto px-6 mb-16">
             <div class="flex flex-col md:flex-row md:items-end justify-between">
                 <div>
-                    <p class="text-xs font-mono text-sand tracking-widest uppercase mb-2">O R G A N I Z A C I ক্ষমতায়N</p>
+                    <p class="text-xs font-mono text-sand tracking-widest uppercase mb-2">O R G A N I Z A C I Ó N</p>
                     <h2 class="editorial-title text-4xl sm:text-6xl font-light text-stone-900">Bibliografía y Colecciones</h2>
                 </div>
             </div>
@@ -374,9 +374,25 @@
         </div>
     </div>
 
+    <!-- NUEVO: MODAL LOCALIZADOR MAPA (Heredado de resultados.html) -->
+    <div id="modalLocalizador" class="fixed inset-0 z-[3000] bg-stone-900/80 backdrop-blur-md flex justify-center items-center opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-stone-50 w-full h-full md:w-11/12 md:h-[90vh] max-w-5xl flex flex-col p-4 md:p-6 relative transform translate-y-8 transition-transform duration-300 modal-content border border-stone-200 shadow-2xl">
+            <div class="flex justify-between items-center mb-4 pb-4 border-b border-stone-200">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="font-mono text-xs text-stone-700 font-bold uppercase tracking-widest">UBICACIÓN EN BIBLIOTECA</span>
+                </div>
+                <button type="button" onclick="cerrarModalLocalizador()" class="text-stone-500 hover:text-stone-900 px-3 py-1.5 border border-stone-300 hover:border-stone-900 transition-colors flex items-center justify-center" title="Cerrar ventana">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <iframe id="iframeLocalizador" src="" class="w-full flex-1 border border-stone-200 bg-white"></iframe>
+        </div>
+    </div>
+
     <!-- MODAL SUPERPUESTO DEL ASISTENTE VIRTUAL -->
-    <div id="modalAsistente" onclick="cerrarAsistente(event)" class="fixed inset-0 z-[2500] bg-stone-900/80 backdrop-blur-sm flex justify-center items-center p-0 sm:p-4 opacity-0 pointer-events-none transition-all duration-300">
-        <div class="w-full h-full sm:max-w-2xl lg:max-w-3xl sm:h-[85vh] sm:max-h-[820px] flex flex-col bg-stone-50 border border-sand/50 shadow-2xl overflow-hidden relative transform translate-y-8 scale-95 transition-all duration-300 modal-asistente-content" onclick="event.stopPropagation()">
+    <div id="modalAsistente" class="fixed inset-0 z-[2500] bg-stone-900/80 backdrop-blur-sm flex justify-center items-center p-0 sm:p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="w-full h-full sm:max-w-2xl lg:max-w-3xl sm:h-[85vh] sm:max-h-[820px] flex flex-col bg-stone-50 border border-sand/50 shadow-2xl overflow-hidden relative transform translate-y-8 scale-95 transition-all duration-300 modal-asistente-content">
             
             <!-- Cabecera Editorial del Asistente -->
             <header class="bg-stone-900 text-stone-100 flex items-center px-5 py-4 border-b border-sand/40 z-10 flex-shrink-0">
@@ -550,16 +566,53 @@
             modal.classList.remove('modal-active');
             modal.querySelector('.modal-asistente-content').classList.remove('modal-content-active');
         }
+        
+        // MODAL DEL MAPA LOCALIZADOR (Añadido nuevo)
+        function abrirLocalizadorSuperpuesto(signatura, titulo, autor, fecha) {
+            if (!signatura || signatura === 'S/S') return;
+
+            let fichero = signatura.replace(/\/AST$/i, "").replace(/\/COMIC$/i, "");
+            if (!fichero.endsWith("/4")) fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
+
+            let sig = "";
+            let ultimoIndiceBarra = fichero.lastIndexOf("/");
+            if (ultimoIndiceBarra !== -1) {
+                let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
+                if (parteDerecha === "4") sig = "HG/4";
+                else sig = fichero.substring(0, ultimoIndiceBarra);
+            } else {
+                sig = fichero;
+            }
+
+            const url = "localizador.html?sig=" + encodeURIComponent(sig) + 
+                        "&orig=" + encodeURIComponent(signatura) + 
+                        "&titulo=" + encodeURIComponent(titulo || '') +
+                        "&autor=" + encodeURIComponent(autor || '') +
+                        "&fecha=" + encodeURIComponent(fecha || '');
+            
+            document.getElementById('iframeLocalizador').src = url;
+            const modal = document.getElementById('modalLocalizador');
+            modal.classList.add('modal-active');
+            modal.querySelector('.modal-content').classList.add('modal-content-active');
+        }
+
+        function cerrarModalLocalizador() {
+            const modal = document.getElementById('modalLocalizador');
+            modal.classList.remove('modal-active');
+            modal.querySelector('.modal-content').classList.remove('modal-content-active');
+            setTimeout(() => { document.getElementById('iframeLocalizador').src = ''; }, 300);
+        }
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
+                cerrarModalLocalizador();
                 cerrarAsistente();
                 cerrarModalGrados();
             }
         });
 
         /* ==========================================
-           LÓGICA DEL ASISTENTE VIRTUAL
+           LÓGICA DEL ASISTENTE VIRTUAL (Asistente.html)
            ========================================== */
         const GAS_URL = "https://script.google.com/macros/s/AKfycbwPQ8TCivmIH_zTkFnNk8kt9g4o9n4kcwCfwDhZTEexX3CL1RCypmF0j3flagF_3dTTDA/exec";
 
@@ -692,17 +745,28 @@
             boton.disabled = true;
             boton.classList.add('opacity-50', 'cursor-not-allowed');
             
+            const div = document.createElement('div');
+            div.style.width = '800px'; 
+            div.style.padding = '40px';
+            div.style.fontFamily = 'Georgia, serif';
+            div.style.color = '#1a1817';
+            div.style.backgroundColor = '#ffffff';
+            div.style.position = 'absolute';
+            div.style.left = '-9999px'; 
+            div.style.top = '0';
+            
+            document.body.appendChild(div);
+            
             let html = `
-                <div style="padding: 40px; font-family: Georgia, serif; color: #1a1817; background-color: #ffffff;">
-                    <div style="text-align: center; border-bottom: 1px solid #c5a059; padding-bottom: 20px; margin-bottom: 30px;">
-                        <h1 style="margin: 0; font-size: 24px; font-weight: normal; text-transform: uppercase; letter-spacing: 2px;">Biblioteca de Humanidades</h1>
-                        <h2 style="margin: 10px 0 0 0; font-size: 16px; color: #555; font-weight: normal;">Universidad de Oviedo</h2>
-                    </div>
-                    <div style="margin-bottom: 30px;">
-                        <h3 style="margin: 0 0 5px 0; font-size: 18px;">Bibliografía Recomendada</h3>
-                        <p style="margin: 0; font-size: 14px;"><strong>Consulta temática:</strong> "${escapeHTML(ultimoTemaBuscado)}"</p>
-                        <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">Generado el ${new Date().toLocaleDateString()}</p>
-                    </div>
+                <div style="text-align: center; border-bottom: 1px solid #c5a059; padding-bottom: 20px; margin-bottom: 30px;">
+                    <h1 style="margin: 0; font-size: 24px; font-weight: normal; text-transform: uppercase; letter-spacing: 2px;">Biblioteca de Humanidades</h1>
+                    <h2 style="margin: 10px 0 0 0; font-size: 16px; color: #555; font-weight: normal;">Universidad de Oviedo</h2>
+                </div>
+                <div style="margin-bottom: 30px;">
+                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Bibliografía Recomendada</h3>
+                    <p style="margin: 0; font-size: 14px;"><strong>Consulta temática:</strong> "${escapeHTML(ultimoTemaBuscado)}"</p>
+                    <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">Generado el ${new Date().toLocaleDateString()}</p>
+                </div>
             `;
             
             ultimosLibrosGenerados.forEach((libro, index) => {
@@ -724,19 +788,24 @@
                 </div>
             `;
             
+            div.innerHTML = html;
+            
             const opt = {
               margin:       10,
               filename:     'Bibliografia_Recomendada.pdf',
               image:        { type: 'jpeg', quality: 0.98 },
               html2canvas:  { scale: 2, useCORS: true },
-              jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+              jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+              pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
             };
             
-            html2pdf().set(opt).from(html).save().then(() => {
+            html2pdf().set(opt).from(div).save().then(() => {
+                document.body.removeChild(div);
                 boton.innerHTML = textoOriginal;
                 boton.disabled = false;
                 boton.classList.remove('opacity-50', 'cursor-not-allowed');
             }).catch(() => {
+                if(document.body.contains(div)) document.body.removeChild(div);
                 boton.innerHTML = textoOriginal;
                 boton.disabled = false;
                 boton.classList.remove('opacity-50', 'cursor-not-allowed');
@@ -816,9 +885,8 @@
                     });
 
                     ultimosLibrosGenerados = Array.from(librosAgrupadosMap.values());
-
-                    // Verificamos si realmente se encontró algún libro físico en la biblioteca
                     let encontradosEnCatalogo = false;
+                    
                     librosAgrupadosMap.forEach(libro => {
                         if (!libro.signaturas[0].includes('No disponible')) {
                             encontradosEnCatalogo = true;
@@ -890,17 +958,34 @@
                             } else if (sigUpper.startsWith('HMONT') || sigUpper.startsWith('HMSR')) {
                                 textoUbicacion = "📍 Planta 1ª · Sala Especial / Fondos Particulares";
                             }
-                            
-                            const tooltipTexto = `${textoUbicacion} | Clic para consultar en OPAC`;
 
+                            const safeSigJS = sigLimpia.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                            const safeTituloJS = libro.titulo.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                            const safeAutorJS = libro.autor.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                            
                             const searchParams = new URLSearchParams();
                             searchParams.append('ACC', 'DOSEARCH');
                             searchParams.append('xsqf99', queryParaOpac);
                             const opacUrl = `https://buoabsys.cpd.uniovi.es/cgi-bin/abnetopac?${searchParams.toString()}`;
 
-                            return `<a href="${opacUrl}" target="_blank" rel="noopener noreferrer" title="${escapeHTML(tooltipTexto)}" class="bg-stone-100 border ${esHG ? 'border-sand/80 text-stone-900' : 'border-stone-300 text-stone-700'} px-2.5 py-1 font-mono text-[11px] font-semibold hover:bg-stone-900 hover:text-sand hover:border-stone-900 transition-colors cursor-pointer inline-flex items-center gap-1.5 no-underline shadow-sm">
-                                📍 ${escapeHTML(sigLimpia)}
-                            </a>`;
+                            // Tooltip personalizado flotante interactivo (Tailwind)
+                            return `
+                            <div class="relative group inline-flex items-center">
+                                <a href="${opacUrl}" target="_blank" rel="noopener noreferrer" class="bg-stone-100 border ${esHG ? 'border-sand/80 text-stone-900' : 'border-stone-300 text-stone-700'} px-2.5 py-1 font-mono text-[11px] font-semibold hover:bg-stone-900 hover:text-sand hover:border-stone-900 transition-colors cursor-pointer inline-flex items-center gap-1.5 no-underline shadow-sm">
+                                    📍 ${escapeHTML(sigLimpia)}
+                                </a>
+                                
+                                <div class="absolute bottom-full left-0 pb-2 hidden group-hover:block z-[3000]">
+                                    <div class="w-60 bg-stone-900 text-stone-100 text-[11px] p-3 rounded shadow-xl border border-stone-700 flex flex-col">
+                                        <span class="mb-2 font-sans leading-tight text-stone-300 font-medium">Ubicación física: ${escapeHTML(textoUbicacion)}</span>
+                                        <button type="button" onclick="abrirLocalizadorSuperpuesto('${safeSigJS}', '${safeTituloJS}', '${safeAutorJS}', '')" class="bg-sand text-stone-900 font-bold py-1.5 px-2 rounded-sm text-center hover:bg-stone-100 transition-colors w-full flex items-center justify-center gap-1.5 shadow-sm">
+                                            <i class="fa-solid fa-map-location-dot"></i> Ver plano interactivo
+                                        </button>
+                                    </div>
+                                    <div class="absolute bottom-[3px] left-4 border-[6px] border-transparent border-t-stone-900"></div>
+                                </div>
+                            </div>
+                            `;
                         }).join('');
 
                         htmlTarjetas += `
@@ -930,7 +1015,6 @@
 
                     chatContainer.insertAdjacentHTML('beforeend', htmlTarjetas);
 
-                    // Si no se encontró nada localmente, mostramos botones con temas similares basados en los sinónimos
                     if (!encontradosEnCatalogo && datos.sinonimos && datos.sinonimos.length > 0) {
                         let botonesSinonimos = datos.sinonimos.slice(0, 3).map(sin => {
                             return `<button type="button" onclick="sendQuickPrompt('Libros sobre ${escapeHTML(sin)}')" 
