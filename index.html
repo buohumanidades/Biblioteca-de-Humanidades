@@ -101,7 +101,7 @@
     <!-- Barra Superior Informativa -->
     <div class="w-full bg-stone-900 text-stone-100 text-[10px] md:text-xs font-mono py-2.5 px-6 flex justify-between items-center border-b border-stone-800">
         <div class="flex items-center space-x-4">
-            <span class="inline-flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>HORARIO: 8 a 20 horas</span>
+            <span class="inline-flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-50 mr-2 animate-pulse"></span>HORARIO: 8 a 20 horas</span>
             <span class="hidden md:inline text-stone-500">|</span>
             <span class="hidden md:inline text-stone-400">UNIVERSIDAD DE OVIEDO</span>
         </div>
@@ -962,9 +962,16 @@
                             const safeSigJS = sigLimpia.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                             const safeTituloJS = libro.titulo.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                             const safeAutorJS = libro.autor.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                            
+
                             // Corrección del enlace OPAC para que funcione siempre
                             const opacUrl = "https://buoabsys.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH&xsqf99=" + encodeURIComponent(queryParaOpac);
+
+                            // Lógica condicional para el contenido del tooltip (al pasar el ratón)
+                            const contenidoTooltip = esHG 
+                                ? `<button type="button" onclick="abrirLocalizadorSuperpuesto('${safeSigJS}', '${safeTituloJS}', '${safeAutorJS}', '')" class="bg-sand text-stone-900 font-bold py-1.5 px-2 rounded-sm text-center hover:bg-stone-100 transition-colors w-full flex items-center justify-center gap-1.5 shadow-sm">
+                                       <i class="fa-solid fa-map-location-dot"></i> Ver plano interactivo
+                                   </button>`
+                                : `<span class="font-sans leading-tight text-stone-300 font-medium block">Ubicación física: ${escapeHTML(textoUbicacion)}</span>`;
 
                             return `
                             <div class="relative group inline-flex items-center">
@@ -973,11 +980,8 @@
                                 </a>
                                 
                                 <div class="absolute bottom-full left-0 pb-2 hidden group-hover:block z-[3000]">
-                                    <div class="w-60 bg-stone-900 text-stone-100 text-[11px] p-3 rounded shadow-xl border border-stone-700 flex flex-col">
-                                        <span class="mb-2 font-sans leading-tight text-stone-300 font-medium">Ubicación física: ${escapeHTML(textoUbicacion)}</span>
-                                        <button type="button" onclick="abrirLocalizadorSuperpuesto('${safeSigJS}', '${safeTituloJS}', '${safeAutorJS}', '')" class="bg-sand text-stone-900 font-bold py-1.5 px-2 rounded-sm text-center hover:bg-stone-100 transition-colors w-full flex items-center justify-center gap-1.5 shadow-sm">
-                                            <i class="fa-solid fa-map-location-dot"></i> Ver plano interactivo
-                                        </button>
+                                    <div class="w-60 bg-stone-900 text-stone-100 text-[11px] p-3 rounded shadow-xl border border-stone-700 flex flex-col justify-center min-h-[44px]">
+                                        ${contenidoTooltip}
                                     </div>
                                     <div class="absolute bottom-[3px] left-4 border-[6px] border-transparent border-t-stone-900"></div>
                                 </div>
