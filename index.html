@@ -966,12 +966,20 @@
                             // Corrección del enlace OPAC para que funcione siempre
                             const opacUrl = "https://buoabsys.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH&xsqf99=" + encodeURIComponent(queryParaOpac);
 
+                            // Texto de ayuda unificado para indicar la acción hacia el OPAC
+                            const avisoOpac = `
+                                <div class="mt-2.5 pt-2 border-t border-stone-700 flex items-start gap-1.5 text-stone-400">
+                                    <i class="fa-solid fa-arrow-pointer mt-[2px] text-[10px]"></i>
+                                    <span class="text-[10px] leading-tight font-sans">Haz clic en la signatura para consultar disponibilidad en el catálogo OPAC.</span>
+                                </div>
+                            `;
+
                             // Lógica condicional para el contenido del tooltip (al pasar el ratón)
                             const contenidoTooltip = esHG 
                                 ? `<button type="button" onclick="abrirLocalizadorSuperpuesto('${safeSigJS}', '${safeTituloJS}', '${safeAutorJS}', '')" class="bg-sand text-stone-900 font-bold py-1.5 px-2 rounded-sm text-center hover:bg-stone-100 transition-colors w-full flex items-center justify-center gap-1.5 shadow-sm">
                                        <i class="fa-solid fa-map-location-dot"></i> Ver plano interactivo
-                                   </button>`
-                                : `<span class="font-sans leading-tight text-stone-300 font-medium block">Ubicación física: ${escapeHTML(textoUbicacion)}</span>`;
+                                   </button>` + avisoOpac
+                                : `<span class="font-sans leading-tight text-stone-300 font-medium block">Ubicación física: ${escapeHTML(textoUbicacion)}</span>` + avisoOpac;
 
                             return `
                             <div class="relative group inline-flex items-center">
@@ -1106,3 +1114,6 @@
     </script>
 </body>
 </html>
+```<ElicitationsGroup>
+<FollowUp>¿Te gustaría que modifique los colores del aviso OPAC o que añada alguna otra aclaración en el texto de ayuda del tooltip?</FollowUp>
+</ElicitationsGroup>
