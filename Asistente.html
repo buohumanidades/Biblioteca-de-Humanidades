@@ -148,13 +148,16 @@
             chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
         }
 
+        // Normalización idéntica a la del backend (protegiendo la ñ para evitar desajustes)
         function normalizarClave(texto) {
             let base = String(texto || '').split(/[:\/]/)[0].replace(/\([^)]*\)/g, '');
             let limpia = base
                 .toLowerCase()
+                .replace(/ñ/g, '__enye__')
                 .normalize('NFD')
                 .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^\w\s]/g, ' ')
+                .replace(/__enye__/g, 'ñ')
+                .replace(/[^a-z0-9ñ\s]/g, ' ')
                 .replace(/\s+/g, ' ')
                 .trim();
             return limpia.length >= 5 ? limpia : String(texto || '').toLowerCase().trim();
@@ -180,7 +183,7 @@
                 rol: isUser ? "Usuario" : "Asistente",
                 texto: text
             });
-            if (historialConversacion.length > 6) {
+            if (historialConversacion.length > 8) {
                 historialConversacion.shift();
             }
 
@@ -243,6 +246,9 @@
             const texto = chatInput.value.trim();
             if (!texto) return;
 
+            // 1. Guardar copia del historial ANTES de añadir el mensaje nuevo para no enviarlo duplicado
+            const historialPrevio = [...historialConversacion];
+
             addMessage(texto, true);
             chatInput.value = '';
             setLoadingState(true);
@@ -254,7 +260,7 @@
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({ 
                         mensaje: texto,
-                        historial: historialConversacion,
+                        historial: historialPrevio,
                         excluidos: titulosMostradosGlobal
                     })
                 });
@@ -304,43 +310,35 @@
                         }
                     });
 
+                    // Añadir resumen de títulos mostrados al historial en memoria para que la IA sepa qué recomendó en segundas preguntas
+                    const titulosPresentados = Array.from(librosAgrupadosMap.values())
+                        .map(l => `"${l.titulo}" (${l.autor})`)
+                        .join('; ');
+                    if (historialConversacion.length > 0 && historialConversacion[historialConversacion.length - 1].rol === "Asistente") {
+                        historialConversacion[historialConversacion.length - 1].texto += ` [Libros aportados: ${titulosPresentados}]`;
+                    }
+
                     let htmlTarjetas = '';
                     librosAgrupadosMap.forEach(libro => {
                         const safeTitulo = escapeHTML(libro.titulo);
                         const safeAutor = escapeHTML(libro.autor);
                         
-                        // Evaluar cada signatura de forma individual para generar su URL
                         const etiquetasSignaturas = libro.signaturas.map(sig => {
                             let queryParaOpac = '';
+                            const esHG = sig.trim().toUpperCase().startsWith('HG');
                             
-                            if (sig.trim().toUpperCase().startsWith('HG')) {
-                                // 1. Extraemos el título original
+                            if (esHG) {
                                 queryParaOpac = libro.titulo;
-                                
-                                // 2. Protegemos las ñ/Ñ sustituyéndolas por una clave temporal
                                 queryParaOpac = queryParaOpac.replace(/ñ/g, '__ENYE__').replace(/Ñ/g, '__ENYEMAY__');
-                                
-                                // 3. Quitamos todos los acentos y marcas diacríticas
                                 queryParaOpac = queryParaOpac.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); 
-                                
-                                // 4. Restauramos las ñ/Ñ
                                 queryParaOpac = queryParaOpac.replace(/__ENYE__/g, 'ñ').replace(/__ENYEMAY__/g, 'Ñ');
-                                
-                                // 5. Eliminamos caracteres especiales (dejamos letras, números, espacios y ñ/Ñ)
                                 queryParaOpac = queryParaOpac.replace(/[^a-zA-Z0-9\sñÑ]/g, ' '); 
                                 
-                                // 6. Definimos un listado de palabras vacías (artículos, preposiciones, etc.)
                                 const stopwords = ['el','la','los','las','un','una','unos','unas','a','ante','bajo','cabe','con','contra','de','desde','en','entre','hacia','hasta','para','por','segun','sin','so','sobre','tras','y','e','ni','que','o','u','al','del','su','sus'];
-                                
-                                // Creamos una expresión regular para buscar esas palabras completas, sin importar mayúsculas
                                 const stopRegex = new RegExp('\\b(' + stopwords.join('|') + ')\\b', 'gi');
                                 queryParaOpac = queryParaOpac.replace(stopRegex, ' ');
-                                
-                                // 7. Limpiamos dobles espacios resultantes
                                 queryParaOpac = queryParaOpac.replace(/\s+/g, ' ').trim();
-                                
                             } else {
-                                // Si NO es HG, la búsqueda va directamente por la propia signatura
                                 queryParaOpac = sig.trim();
                             }
                             
