@@ -148,7 +148,7 @@
             chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
         }
 
-        // Normalización idéntica a la del backend (protegiendo la ñ para evitar desajustes)
+        // Normalización idéntica a la del backend (protegiendo la ñ)
         function normalizarClave(texto) {
             let base = String(texto || '').split(/[:\/]/)[0].replace(/\([^)]*\)/g, '');
             let limpia = base
@@ -246,7 +246,7 @@
             const texto = chatInput.value.trim();
             if (!texto) return;
 
-            // 1. Guardar copia del historial ANTES de añadir el mensaje nuevo para no enviarlo duplicado
+            // 1. Guardar copia del historial ANTES de insertar el mensaje actual para evitar duplicarlo
             const historialPrevio = [...historialConversacion];
 
             addMessage(texto, true);
@@ -310,7 +310,7 @@
                         }
                     });
 
-                    // Añadir resumen de títulos mostrados al historial en memoria para que la IA sepa qué recomendó en segundas preguntas
+                    // Añadir resumen de títulos mostrados al historial en memoria para mantener el contexto
                     const titulosPresentados = Array.from(librosAgrupadosMap.values())
                         .map(l => `"${l.titulo}" (${l.autor})`)
                         .join('; ');
@@ -324,10 +324,12 @@
                         const safeAutor = escapeHTML(libro.autor);
                         
                         const etiquetasSignaturas = libro.signaturas.map(sig => {
+                            const textoSig = sig.trim();
+                            const esNoDisponible = textoSig.includes('No disponible');
+                            const esHG = textoSig.toUpperCase().startsWith('HG');
                             let queryParaOpac = '';
-                            const esHG = sig.trim().toUpperCase().startsWith('HG');
                             
-                            if (esHG) {
+                            if (esHG || esNoDisponible) {
                                 queryParaOpac = libro.titulo;
                                 queryParaOpac = queryParaOpac.replace(/ñ/g, '__ENYE__').replace(/Ñ/g, '__ENYEMAY__');
                                 queryParaOpac = queryParaOpac.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); 
@@ -339,7 +341,7 @@
                                 queryParaOpac = queryParaOpac.replace(stopRegex, ' ');
                                 queryParaOpac = queryParaOpac.replace(/\s+/g, ' ').trim();
                             } else {
-                                queryParaOpac = sig.trim();
+                                queryParaOpac = textoSig;
                             }
                             
                             const searchParams = new URLSearchParams();
@@ -347,8 +349,14 @@
                             searchParams.append('xsqf99', queryParaOpac);
                             const opacUrl = `https://buoabsys.cpd.uniovi.es/cgi-bin/abnetopac?${searchParams.toString()}`;
 
+                            if (esNoDisponible) {
+                                return `<a href="${opacUrl}" target="_blank" rel="noopener noreferrer" title="Comprobar si existe en otras bibliotecas de la Universidad (BUO)" class="bg-amber-50 border border-amber-200 px-2 py-1 rounded font-mono text-[11px] font-bold text-amber-700 hover:bg-amber-100 transition-colors cursor-pointer inline-flex items-center gap-1 no-underline">
+                                    🌐 No en Humanidades (Consultar en BUO)
+                                </a>`;
+                            }
+
                             return `<a href="${opacUrl}" target="_blank" rel="noopener noreferrer" title="Buscar en OPAC" class="bg-[#f0f0f0] border border-gray-200 px-2 py-1 rounded font-mono text-[11px] font-bold text-[#008069] hover:bg-green-50 hover:border-green-300 transition-colors cursor-pointer inline-flex items-center gap-1 no-underline">
-                                📍 ${escapeHTML(sig)}
+                                📍 ${escapeHTML(textoSig)}
                             </a>`;
                         }).join('');
 
