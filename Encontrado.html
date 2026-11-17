@@ -2,7 +2,7 @@
 <html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ubicación del Libro · Biblioteca de Humanidades</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,7 +13,7 @@
             theme: { 
                 extend: { 
                     colors: { 
-                        stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' }, 
+                        stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC5', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' }, 
                         sand: '#C5A059' 
                     }, 
                     fontFamily: { 
@@ -127,7 +127,9 @@
     </main>
 
     <!-- SCRIPTS LÓGICA -->
+    <script src="js/utils.js"></script>
     <script>
+        const { escapeHTML } = window.BUOUtils;
         const params = new URLSearchParams(window.location.search);
         
         const sigBuscada = params.get('sig'); 
@@ -150,11 +152,11 @@
         document.getElementById('header-signatura').textContent = sigOriginal || 'S/S';
         document.getElementById('header-titulo').textContent = valTitulo;
 
-        // Mostrar autor y fecha si existen
+        // Mostrar autor y fecha si existen (escapados para prevenir XSS)
         if (valAutor || valFecha) {
             let textoExtra = '';
-            if (valAutor && valAutor !== 'Desconocido') textoExtra += `<i class="fa-solid fa-pen-nib mr-1"></i> ${valAutor} `;
-            if (valFecha) textoExtra += `<span class="ml-2 px-1.5 py-0.5 bg-stone-200 rounded-sm"><i class="fa-regular fa-calendar mr-1"></i>${valFecha}</span>`;
+            if (valAutor && valAutor !== 'Desconocido') textoExtra += `<i class="fa-solid fa-pen-nib mr-1"></i> ${escapeHTML(valAutor)} `;
+            if (valFecha) textoExtra += `<span class="ml-2 px-1.5 py-0.5 bg-stone-200 rounded-sm"><i class="fa-regular fa-calendar mr-1"></i>${escapeHTML(valFecha)}</span>`;
             
             const contAutorFecha = document.getElementById('header-autor-fecha');
             contAutorFecha.innerHTML = textoExtra;
@@ -221,7 +223,7 @@
             document.getElementById('txt-estanteria').textContent = valEstanteria;
         }
 
-        if (valMapa) {
+        if (valMapa && /^[a-zA-Z0-9._/-]+\.(?:jpg|jpeg|png|webp|gif|svg)$/i.test(valMapa) && !valMapa.includes('..')) {
             const contenedorMapa = document.getElementById('contenedor-mapa');
             const imgMapa = document.getElementById('img-mapa');
             const indicador = document.getElementById('indicador-posicion');
@@ -229,12 +231,15 @@
             contenedorMapa.classList.remove('hidden');
             imgMapa.src = valMapa;
 
-            if (valPosX !== null && valPosY !== null && valPosX !== '' && valPosY !== '') {
+            const posXNum = parseFloat(valPosX);
+            const posYNum = parseFloat(valPosY);
+            if (Number.isFinite(posXNum) && Number.isFinite(posYNum)) {
                 indicador.classList.remove('hidden');
-                indicador.style.left = valPosX + '%';
-                indicador.style.top = valPosY + '%';
+                indicador.style.left = posXNum + '%';
+                indicador.style.top = posYNum + '%';
                 
-                const tamano = valTamPunto ? valTamPunto + 'px' : '20px';
+                const tamNum = parseFloat(valTamPunto);
+                const tamano = Number.isFinite(tamNum) && tamNum > 0 ? tamNum + 'px' : '20px';
                 indicador.style.width = tamano;
                 indicador.style.height = tamano;
             }

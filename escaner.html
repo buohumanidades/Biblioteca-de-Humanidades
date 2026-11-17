@@ -388,7 +388,7 @@
     </div>
 
     <div class="bottom-action-container">
-        <a href="Signatura.html" class="btn-new-search-bottom">
+        <a href="index.html#buscar" class="btn-new-search-bottom">
             🔄 Nueva búsqueda
         </a>
     </div>
@@ -507,6 +507,7 @@
             return 0;
         }
 
+        let scanTimerId = null;
         function scanLoop() {
             if (!isScanning) return;
             
@@ -514,7 +515,9 @@
                 processFrame(); 
             }
             
-            requestAnimationFrame(scanLoop);
+            scanTimerId = setTimeout(() => {
+                if (isScanning) requestAnimationFrame(scanLoop);
+            }, 200);
         }
 
         btnStart.addEventListener('click', async () => {
@@ -557,6 +560,10 @@
 
         function stopCamera() {
             isScanning = false;
+            if (scanTimerId) {
+                clearTimeout(scanTimerId);
+                scanTimerId = null;
+            }
             if (stream) {
                 stream.getTracks().forEach(track => track.stop());
                 video.srcObject = null;
