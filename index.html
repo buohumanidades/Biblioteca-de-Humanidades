@@ -10,6 +10,7 @@
     <script src="js/utils.js"></script>
     <script src="js/signaturas.js"></script>
     <script src="js/buscador.js"></script>
+    <script src="js/aprendizaje.js"></script>
     <script src="js/asistente.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -408,9 +409,10 @@
                         <span class="text-[10px] font-mono uppercase tracking-widest text-sand font-semibold">BIBLIOTECA DE HUMANIDADES</span>
                     </div>
                     <h2 class="editorial-title text-2xl font-light text-stone-100 truncate">Asistente Bibliográfico</h2>
-                    <p class="text-[11px] font-mono text-emerald-400 flex items-center gap-1.5 mt-0.5">
+                    <p class="text-[11px] font-mono text-emerald-400 flex items-center gap-1.5 mt-0.5 flex-wrap">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                         <span id="status-text">en línea</span>
+                        <button type="button" id="learning-pill" class="hidden text-[10px] font-mono text-stone-300 bg-stone-800 border border-stone-700 px-2 py-0.5 hover:border-sand hover:text-sand transition ml-1" title="Preferencias aprendidas localmente (clic para reiniciar)"></button>
                     </p>
                 </div>
                 
@@ -424,6 +426,18 @@
                     </button>
                 </div>
             </header>
+
+            <!-- Panel colapsable de aprendizaje local -->
+            <div id="learning-panel" class="hidden bg-stone-800 text-stone-200 px-5 py-3 border-b border-sand/30 text-xs font-mono flex-shrink-0">
+                <div class="flex items-center justify-between gap-2 flex-wrap">
+                    <span id="learning-panel-summary"></span>
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="btn-reset-aprendizaje" class="bg-stone-900 hover:bg-rose-700 text-stone-200 hover:text-white border border-stone-600 px-2.5 py-1 text-[10px] uppercase tracking-wider transition">Reiniciar memoria local</button>
+                        <button type="button" id="btn-cerrar-aprendizaje" class="text-stone-400 hover:text-sand px-1.5 py-0.5 text-[11px]" title="Cerrar panel">✕</button>
+                    </div>
+                </div>
+                <div id="learning-panel-lagunas" class="mt-2 text-[11px] text-stone-400 hidden"></div>
+            </div>
 
             <!-- Contenedor de Mensajes -->
             <main id="chat-container" class="flex-1 min-h-0 overflow-y-auto chat-bg p-4 sm:p-6 pb-6 flex flex-col gap-3 relative">
@@ -565,7 +579,10 @@
             modal.classList.add('modal-active');
             modal.querySelector('.modal-asistente-content').classList.add('modal-content-active');
             if (window.BUOAsistente) {
-                window.BUOAsistente.precargarBaseDatos().catch(() => {});
+                window.BUOAsistente.precargarBaseDatos(GAS_URL).catch(() => {});
+            }
+            if (typeof actualizarBadgeAprendizaje === 'function') {
+                actualizarBadgeAprendizaje();
             }
             setTimeout(() => {
                 const input = document.getElementById('chat-input');
@@ -624,6 +641,57 @@
         let titulosMostradosGlobal = [];
         let ultimosLibrosGenerados = []; 
         let ultimoTemaBuscado = "";      
+        let ultimasKeywordsConsulta = [];
+        const respuestasRegistradas = new Map();
+
+        function actualizarBadgeAprendizaje() {
+            const pill = document.getElementById('learning-pill');
+            const summary = document.getElementById('learning-panel-summary');
+            const lagunasEl = document.getElementById('learning-panel-lagunas');
+            if (!pill || !window.BUOAprendizaje) return;
+            const res = window.BUOAprendizaje.getResumenAprendizaje();
+            const total = res.relacionesAprendidas + res.lagunasDetectadas.length;
+            if (total > 0) {
+                pill.textContent = `🧠 ${res.relacionesAprendidas} aprendidos · ${res.lagunasDetectadas.length} lagunas`;
+                pill.classList.remove('hidden');
+                if (summary) {
+                    summary.textContent = `Preferencias libro↔término guardadas: ${res.relacionesAprendidas} · Consultas sin resultados: ${res.lagunasDetectadas.length}`;
+                }
+                if (lagunasEl) {
+                    if (res.lagunasDetectadas.length > 0) {
+                        const ultimas = res.lagunasDetectadas.slice(-3).map(l => `"${escapeHTML(l.consulta)}" (${l.veces})`).join(', ');
+                        lagunasEl.innerHTML = `<span class="text-amber-300">Últimas lagunas detectadas:</span> ${ultimas}`;
+                        lagunasEl.classList.remove('hidden');
+                    } else {
+                        lagunasEl.innerHTML = '';
+                        lagunasEl.classList.add('hidden');
+                    }
+                }
+            } else {
+                pill.textContent = '';
+                pill.classList.add('hidden');
+                const panel = document.getElementById('learning-panel');
+                if (panel) panel.classList.add('hidden');
+            }
+        }
+
+        const learningPillBtn = document.getElementById('learning-pill');
+        const learningPanelEl = document.getElementById('learning-panel');
+        if (learningPillBtn && learningPanelEl) {
+            learningPillBtn.addEventListener('click', () => {
+                actualizarBadgeAprendizaje();
+                learningPanelEl.classList.toggle('hidden');
+            });
+        }
+        document.getElementById('btn-cerrar-aprendizaje')?.addEventListener('click', () => {
+            learningPanelEl?.classList.add('hidden');
+        });
+        document.getElementById('btn-reset-aprendizaje')?.addEventListener('click', () => {
+            if (!window.BUOAprendizaje) return;
+            window.BUOAprendizaje.limpiarAprendizajeLocal();
+            learningPanelEl?.classList.add('hidden');
+            actualizarBadgeAprendizaje();
+        });
 
         function getCurrentTime() {
             const now = new Date();
@@ -925,6 +993,19 @@
                 }
 
                 doc.save('Bibliografia_Recomendada.pdf');
+                if (window.BUOAprendizaje && ultimosLibrosGenerados.length > 0) {
+                    ultimosLibrosGenerados.slice(0, 5).forEach(l => {
+                        window.BUOAprendizaje.registrarInteraccionLibro({
+                            keywords: ultimasKeywordsConsulta,
+                            titulo: l.titulo,
+                            signatura: (l.signaturas && l.signaturas[0]) || '',
+                            accion: 'pdf',
+                            delta: 2.0,
+                            gasUrl: GAS_URL
+                        });
+                    });
+                    actualizarBadgeAprendizaje();
+                }
             } catch (e) {
                 console.error('Error generando PDF:', e);
                 alert("No se pudo generar el PDF. Revisa la consola para más detalles.");
@@ -956,7 +1037,7 @@
             const sigLimpia = String(sig || '').trim();
             if (!sigLimpia || sigLimpia.includes('No disponible')) {
                 const opacFallback = construirOpacUrlLibro(libro.titulo, 'No disponible');
-                return `<a href="${opacFallback}" target="_blank" rel="noopener noreferrer" class="bg-amber-50 border border-amber-300 px-2.5 py-1 font-mono text-[11px] text-amber-900 hover:bg-amber-100 inline-flex items-center gap-1.5 no-underline" title="Esta obra recomendada no figura en el fondo físico local; compruébala en el OPAC general de la BUO">
+                return `<a href="${opacFallback}" target="_blank" rel="noopener noreferrer" data-titulo="${escapeHTML(libro.titulo)}" data-signatura="Referencia externa" class="link-opac-chat bg-amber-50 border border-amber-300 px-2.5 py-1 font-mono text-[11px] text-amber-900 hover:bg-amber-100 inline-flex items-center gap-1.5 no-underline" title="Esta obra recomendada no figura en el fondo físico local; compruébala en el OPAC general de la BUO">
                     🌐 Referencia externa (Consultar en BUO)
                 </a>`;
             }
@@ -982,7 +1063,7 @@
 
             return `
             <div class="relative group inline-flex flex-wrap items-center gap-1.5">
-                <a href="${opacUrl}" target="_blank" rel="noopener noreferrer" class="bg-stone-100 border ${esHG ? 'border-sand/80 text-stone-900' : 'border-stone-300 text-stone-700'} px-2.5 py-1 font-mono text-[11px] font-semibold hover:bg-stone-900 hover:text-sand hover:border-stone-900 transition-colors cursor-pointer inline-flex items-center gap-1.5 no-underline shadow-sm">
+                <a href="${opacUrl}" target="_blank" rel="noopener noreferrer" data-titulo="${escapeHTML(libro.titulo)}" data-signatura="${escapeHTML(sigLimpia)}" class="link-opac-chat bg-stone-100 border ${esHG ? 'border-sand/80 text-stone-900' : 'border-stone-300 text-stone-700'} px-2.5 py-1 font-mono text-[11px] font-semibold hover:bg-stone-900 hover:text-sand hover:border-stone-900 transition-colors cursor-pointer inline-flex items-center gap-1.5 no-underline shadow-sm">
                     📍 ${escapeHTML(sigLimpia)}
                 </a>
                 ${botonMapaMovil}
@@ -1006,10 +1087,23 @@
                 const orig = boton.innerHTML;
                 boton.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> Citas copiadas';
                 setTimeout(() => { boton.innerHTML = orig; }, 1800);
+                if (window.BUOAprendizaje && ultimosLibrosGenerados.length > 0) {
+                    ultimosLibrosGenerados.slice(0, 5).forEach(l => {
+                        window.BUOAprendizaje.registrarInteraccionLibro({
+                            keywords: ultimasKeywordsConsulta,
+                            titulo: l.titulo,
+                            signatura: (l.signaturas && l.signaturas[0]) || '',
+                            accion: 'citas',
+                            delta: 1.5,
+                            gasUrl: GAS_URL
+                        });
+                    });
+                    actualizarBadgeAprendizaje();
+                }
             }).catch(() => {});
         }
 
-        async function consultarBackendIA(texto, historialPrevio) {
+        async function consultarBackendIA(texto, historialPrevio, resLocal) {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 8500);
             try {
@@ -1020,7 +1114,9 @@
                     body: JSON.stringify({
                         mensaje: texto,
                         historial: historialPrevio,
-                        excluidos: titulosMostradosGlobal
+                        excluidos: titulosMostradosGlobal,
+                        candidatosCatalogo: resLocal ? resLocal.candidatosParaRAG : [],
+                        keywords: resLocal ? resLocal.keywordsUsadas : []
                     })
                 });
                 if (!respuesta.ok) return null;
@@ -1081,7 +1177,7 @@
             return Array.from(librosAgrupadosMap.values());
         }
 
-        function renderizarBloqueInvestigacionYRefinamiento(resLocal, datosIA) {
+        function renderizarBloqueInvestigacionYRefinamiento(resLocal, datosIA, idRespuesta) {
             const g = resLocal ? resLocal.guiasInvestigacion : null;
             const filtros = resLocal ? resLocal.filtrosActivos : {};
             const sinonimosExtra = Array.from(new Set([
@@ -1151,6 +1247,17 @@
                     </div>`;
             }
 
+            if (idRespuesta) {
+                html += `
+                    <div class="flex items-center justify-between gap-2 w-full mt-2 max-w-[92%] sm:max-w-lg md:max-w-xl bg-stone-50 border border-stone-200 px-3 py-2 ml-1 flex-wrap">
+                        <span class="text-[11px] font-mono text-stone-600">¿Te han sido útiles estos resultados?</span>
+                        <div class="flex items-center gap-1.5" data-feedback-group="${escapeHTML(idRespuesta)}">
+                            <button type="button" class="btn-voto-respuesta text-[11px] font-mono bg-white hover:bg-emerald-700 hover:text-white text-stone-800 border border-stone-300 px-2.5 py-1 transition" data-respuesta-id="${escapeHTML(idRespuesta)}" data-voto="up">👍 Útil</button>
+                            <button type="button" class="btn-voto-respuesta text-[11px] font-mono bg-white hover:bg-rose-700 hover:text-white text-stone-800 border border-stone-300 px-2.5 py-1 transition" data-respuesta-id="${escapeHTML(idRespuesta)}" data-voto="down">👎 Mejorar</button>
+                        </div>
+                    </div>`;
+            }
+
             return html;
         }
 
@@ -1167,16 +1274,30 @@
             showTypingIndicator();
             
             try {
-                // 1. Buscar primero en las bases de datos locales reales y en paralelo consultar al backend IA (con timeout seguro)
-                const [resLocal, datosIA] = await Promise.all([
-                    window.BUOAsistente
-                        ? window.BUOAsistente.procesarConsultaLocal(texto, opciones).catch(err => {
-                            console.error('Fallo en búsqueda local:', err);
-                            return null;
-                        })
-                        : Promise.resolve(null),
-                    consultarBackendIA(texto, historialPrevio)
-                ]);
+                // 1. Buscar primero en el catálogo local real (con pesos aprendidos) para alimentar el RAG
+                const resLocal = window.BUOAsistente
+                    ? await window.BUOAsistente.procesarConsultaLocal(texto, { ...opciones, gasUrl: GAS_URL }).catch(err => {
+                        console.error('Fallo en búsqueda local:', err);
+                        return null;
+                    })
+                    : null;
+
+                ultimasKeywordsConsulta = resLocal ? resLocal.keywordsUsadas : [];
+
+                // 2. Consultar al backend IA enviando los candidatos reales del catálogo (RAG)
+                const datosIA = await consultarBackendIA(texto, historialPrevio, resLocal);
+
+                // 3. Si hubo pocos resultados locales (< 3) y la IA aportó sinónimos o keywords nuevas, segunda pasada automática
+                if (resLocal && resLocal.librosLocales.length < 3 && datosIA &&
+                    ((Array.isArray(datosIA.sinonimos) && datosIA.sinonimos.length > 0) ||
+                     (Array.isArray(datosIA.keywords_sugeridas) && datosIA.keywords_sugeridas.length > 0)) &&
+                    window.BUOAsistente?.ampliarBusquedaConSugerenciasIA) {
+                    const ampliacion = await window.BUOAsistente.ampliarBusquedaConSugerenciasIA(datosIA, { gasUrl: GAS_URL }).catch(() => null);
+                    if (ampliacion && ampliacion.librosLocales && ampliacion.librosLocales.length > 0) {
+                        resLocal.librosLocales = [...resLocal.librosLocales, ...ampliacion.librosLocales].slice(0, 8);
+                        resLocal.totalCoincidencias += ampliacion.librosLocales.length;
+                    }
+                }
 
                 removeTypingIndicator();
                 setLoadingState(false);
@@ -1271,10 +1392,17 @@
                     chatContainer.insertAdjacentHTML('beforeend', htmlTarjetas);
                 }
 
-                const htmlBloqueExtra = renderizarBloqueInvestigacionYRefinamiento(resLocal, datosIA);
+                const idRespuesta = 'resp-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6);
+                respuestasRegistradas.set(idRespuesta, {
+                    keywords: resLocal ? [...resLocal.keywordsUsadas] : [],
+                    libros: librosCombinados
+                });
+
+                const htmlBloqueExtra = renderizarBloqueInvestigacionYRefinamiento(resLocal, datosIA, idRespuesta);
                 if (htmlBloqueExtra) {
                     chatContainer.insertAdjacentHTML('beforeend', htmlBloqueExtra);
                 }
+                actualizarBadgeAprendizaje();
 
                 if (respuestaElemento) {
                     requestAnimationFrame(() => {
@@ -1300,6 +1428,8 @@
             titulosMostradosGlobal = [];
             ultimosLibrosGenerados = []; 
             ultimoTemaBuscado = "";
+            ultimasKeywordsConsulta = [];
+            respuestasRegistradas.clear();
             if (window.BUOAsistente) window.BUOAsistente.reiniciarEstado();
             chatContainer.innerHTML = '';
             
@@ -1338,14 +1468,59 @@
         });
 
         chatContainer.addEventListener('click', (e) => {
+            const linkOpac = e.target.closest('.link-opac-chat');
+            if (linkOpac && window.BUOAprendizaje) {
+                window.BUOAprendizaje.registrarInteraccionLibro({
+                    keywords: ultimasKeywordsConsulta,
+                    titulo: linkOpac.dataset.titulo || '',
+                    signatura: linkOpac.dataset.signatura || '',
+                    accion: 'opac',
+                    delta: 2.5,
+                    gasUrl: GAS_URL
+                });
+                actualizarBadgeAprendizaje();
+                return;
+            }
             const btnPlano = e.target.closest('.btn-ver-plano-chat');
             if (btnPlano) {
+                if (window.BUOAprendizaje) {
+                    window.BUOAprendizaje.registrarInteraccionLibro({
+                        keywords: ultimasKeywordsConsulta,
+                        titulo: btnPlano.dataset.titulo || '',
+                        signatura: btnPlano.dataset.signatura || '',
+                        accion: 'plano',
+                        delta: 3.0,
+                        gasUrl: GAS_URL
+                    });
+                    actualizarBadgeAprendizaje();
+                }
                 abrirLocalizadorSuperpuesto(
                     btnPlano.dataset.signatura || '',
                     btnPlano.dataset.titulo || '',
                     btnPlano.dataset.autor || '',
                     btnPlano.dataset.fecha || ''
                 );
+                return;
+            }
+            const btnVoto = e.target.closest('.btn-voto-respuesta');
+            if (btnVoto && window.BUOAprendizaje) {
+                const idResp = btnVoto.dataset.respuestaId || '';
+                const esPositivo = btnVoto.dataset.voto === 'up';
+                const meta = respuestasRegistradas.get(idResp) || { keywords: ultimasKeywordsConsulta, libros: ultimosLibrosGenerados };
+                window.BUOAprendizaje.registrarVotoRespuesta({
+                    idRespuesta: idResp,
+                    keywords: meta.keywords,
+                    libros: meta.libros,
+                    esPositivo,
+                    gasUrl: GAS_URL
+                });
+                const grupo = btnVoto.closest('[data-feedback-group]');
+                if (grupo) {
+                    grupo.innerHTML = esPositivo
+                        ? '<span class="text-[11px] font-mono text-emerald-700 font-medium">✓ ¡Gracias! Priorizaremos estas obras en búsquedas similares.</span>'
+                        : '<span class="text-[11px] font-mono text-amber-700 font-medium">✓ Tomo nota para ajustar futuras recomendaciones.</span>';
+                }
+                actualizarBadgeAprendizaje();
                 return;
             }
             const btnRefinar = e.target.closest('.btn-refinar-chat');

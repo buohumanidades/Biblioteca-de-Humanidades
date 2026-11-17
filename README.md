@@ -16,6 +16,10 @@ Aplicación web estática (GitHub Pages) para localizar libros, consultar biblio
   - `js/utils.js`: normalización de texto, `escapeHTML` y sanitización con DOMPurify.
   - `js/signaturas.js`: extracción de signatura base, comparación natural (`numeric: true`) y resolución directa de mapas con caché en memoria.
   - `js/buscador.js`: carga paralela vía `manifest.json` y algoritmo de búsqueda en 4 niveles.
+  - `js/asistente.js`: motor bibliotecario local en lenguaje natural (IDF, apellidos del catálogo, sinónimos, filtros, CDU y guías de investigación).
+  - `js/aprendizaje.js`: aprendizaje continuo en cliente (`localStorage`) y sincronización opcional con Google Apps Script (feedback implícito/explícito, re-ranking dinámico y lagunas de búsqueda).
+- `data/sinonimos.json`: diccionario editable de sinónimos bibliográficos y equivalencias de fechas/siglas (`"36"`, `"98"`, `"27"`, `"asturianu"`, etc.) sin tocar JavaScript.
+- `scripts/google_apps_script_asistente_rag.gs`: plantilla actualizada para Google Apps Script con RAG sobre los candidatos reales del catálogo, modelos activos (Gemini / Groq) y registro colectivo en Google Sheets (`Feedback`, `Lagunas`, `Sinonimos`).
 
 ## Actualización de datos del catálogo
 
