@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script>
-        tailwind.config = { theme: { extend: { colors: { stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' }, sand: '#C5A059' }, fontFamily: { serif: ['Cormorant Garamond', 'serif'], sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+        tailwind.config = { theme: { extend: { colors: { stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC5', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' }, sand: '#C5A059' }, fontFamily: { serif: ['Cormorant Garamond', 'serif'], sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
     </script>
     <style>
         body { background-color: #F4F0E8; color: #1A1817; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
@@ -37,7 +37,7 @@
 
     <!-- BANNER HERO -->
     <section class="grid-line-b bg-stone-900 text-stone-100 relative overflow-hidden">
-        <img src="libro.jpg" onerror="this.src='https://via.placeholder.com/1300x400?text=Libros'" alt="Libros" class="absolute inset-0 w-full h-full object-cover opacity-20 filter grayscale">
+        <img src="libro.jpg" onerror="this.style.display='none'" alt="Libros" class="absolute inset-0 w-full h-full object-cover opacity-20 filter grayscale">
         <div class="max-w-7xl mx-auto px-6 py-16 relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
             <div>
                 <span class="text-xs font-mono text-sand font-semibold uppercase tracking-widest block mb-4">[ BIBLIOGRAFÍA RECOMENDADA ]</span>
@@ -48,7 +48,7 @@
             </div>
             <div class="text-left md:text-right">
                 <span id="titleCursoText" class="block font-serif text-3xl text-sand">PRIMER CURSO</span>
-                <span id="titleTrimestreText" class="block font-mono text-sm text-stone-400 uppercase tracking-widest mt-1">Primer Trimestre</span>
+                <span id="titleTrimestreText" class="block font-mono text-sm text-stone-400 uppercase tracking-widest mt-1">Primer Semestre</span>
             </div>
         </div>
     </section>
@@ -138,7 +138,13 @@
     <!-- ========================================== -->
     <!-- MOTOR LÓGICO Y DE DATOS                    -->
     <!-- ========================================== -->
+    <!-- MOTOR LÓGICO Y DE DATOS                    -->
+    <!-- ========================================== -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/signaturas.js"></script>
     <script>
+        const { escapeHTML, normalizarPalabras } = window.BUOUtils;
+        const { extraerSignaturaBase } = window.BUOSignaturas;
         // Variables globales
         let cursoActual = 1;
         let trimestreActual = 1;
@@ -146,66 +152,76 @@
         let datosGuias = null;
 
         let promesaCargaLibros = null;
-        let libroCount = 0;
 
-        // Detectar archivos libros*.json en el nivel superior (../)
-        async function detectarArchivosLibros() {
-            let count = 0;
-            while (true) {
-                const filename = `../libros${count + 1}.json`;
-                try {
-                    const response = await fetch(filename, { method: 'HEAD' });
-                    if (response.ok) count++;
-                    else break;
-                } catch { break; }
+        function extraerLibroNormalizado(item) {
+            if (Array.isArray(item)) {
+                return {
+                    titulo: item[1] || '',
+                    signatura: item[3] || '',
+                    _palabrasTitulo: normalizarPalabras(item[1] || '')
+                };
             }
-            return count;
+            const titulo = item.titulo || item.Titulo || '';
+            return {
+                titulo,
+                signatura: item.signatura || item.Signatura || '',
+                _palabrasTitulo: normalizarPalabras(titulo)
+            };
         }
 
         function cargarTodosLosLibros() {
             if (promesaCargaLibros !== null) { return promesaCargaLibros; }
             promesaCargaLibros = (async () => {
-                let librosTemp = [];
-                libroCount = await detectarArchivosLibros();
-                for (let i = 1; i <= libroCount; i++) {
-                    try {
-                        const response = await fetch(`../libros${i}.json`);
-                        if (response.ok) {
-                            const data = await response.json();
-                            librosTemp = librosTemp.concat(data);
+                let rutas = ['libros1.json', 'libros2.json', 'libros3.json'];
+                try {
+                    const manRes = await fetch('../manifest.json');
+                    if (manRes.ok) {
+                        const manifest = await manRes.json();
+                        if (Array.isArray(manifest.libros) && manifest.libros.length > 0) {
+                            rutas = manifest.libros;
                         }
-                    } catch (error) { console.error(`Error cargando ../libros${i}.json:`, error); }
+                    }
+                } catch (e) {}
+
+                const respuestas = await Promise.all(
+                    rutas.map(ruta =>
+                        fetch(`../${ruta}`)
+                            .then(r => (r.ok ? r.json() : []))
+                            .catch(() => [])
+                    )
+                );
+
+                const librosTemp = [];
+                for (const data of respuestas) {
+                    if (Array.isArray(data)) {
+                        for (const item of data) {
+                            librosTemp.push(extraerLibroNormalizado(item));
+                        }
+                    }
                 }
                 return librosTemp;
             })();
             return promesaCargaLibros;
         }
 
-        function normalizarParaComparacion(texto) {
-            if (!texto) return [];
-            let limpio = texto.replace(/<[^>]*>?/gm, '');
-            limpio = limpio.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            limpio = limpio.replace(/[^a-z0-9\s]/g, " ");
-            return limpio.split(" ").filter(p => p.trim().length > 0);
-        }
-
         async function buscarEnBiblioteca(tituloObra) {
             const libros = await cargarTodosLosLibros();
             if (libros.length === 0) return [];
-            const palabrasObra = normalizarParaComparacion(tituloObra);
+            const palabrasObra = normalizarPalabras(tituloObra);
             if (palabrasObra.length === 0) return [];
 
             const mapaEjemplares = new Map();
+            const esLargo = palabrasObra.length > 9;
+            const claveObra = esLargo ? palabrasObra.slice(0, 9).join(" ") : palabrasObra.join(" ");
+
             for (const libro of libros) {
-                const palabrasLibro = normalizarParaComparacion(libro.titulo);
+                const palabrasLibro = libro._palabrasTitulo;
                 let coincide = false;
                 
-                if (palabrasObra.length > 9) {
-                    const primeras9Obra = palabrasObra.slice(0, 9).join(" ");
-                    const primeras9Libro = palabrasLibro.slice(0, 9).join(" ");
-                    if (primeras9Obra === primeras9Libro) { coincide = true; }
+                if (esLargo) {
+                    if (palabrasLibro.length >= 9 && palabrasLibro.slice(0, 9).join(" ") === claveObra) { coincide = true; }
                 } else {
-                    if (palabrasObra.length === palabrasLibro.length && palabrasObra.join(" ") === palabrasLibro.join(" ")) { coincide = true; }
+                    if (palabrasObra.length === palabrasLibro.length && palabrasLibro.join(" ") === claveObra) { coincide = true; }
                 }
                 
                 if (coincide) {
@@ -221,25 +237,18 @@
         }
 
         function localizarLibroDirecto(signatura, titulo) {
-            let sigOriginal = signatura.trim();
-            if (!sigOriginal.startsWith("HG")) {
+            const sigOriginal = String(signatura || '').trim();
+            if (!sigOriginal.toUpperCase().startsWith("HG")) {
                 mostrarModalMensajes(`Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSignatura: ${sigOriginal}.\n\nTe ayudamos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.`);
                 return;
             }
-            let sig = sigOriginal.replace(/\/AST$/i, "").replace(/\/COMIC$/i, "");
-            if (!sig.endsWith("/4")) sig = sig.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
-            
-            const ultimoBarra = sig.lastIndexOf("/");
-            const sigFinal = ultimoBarra !== -1 
-                ? (sig.substring(ultimoBarra + 1) === "4" ? "HG/4" : sig.substring(0, ultimoBarra)) 
-                : sig;
-                
+            const sigFinal = extraerSignaturaBase(sigOriginal);
             window.open("../localizador.html?sig=" + encodeURIComponent(sigFinal) + "&orig=" + encodeURIComponent(sigOriginal) + "&titulo=" + encodeURIComponent(titulo || ''), "_blank");
         }
 
         async function cargarDatos() {
             if (!datosGrado) {
-                const response = await fetch('grado3.json');
+                const response = await fetch('grado3.json?v=2');
                 if (!response.ok) { throw new Error('No se pudo cargar el fichero grado3.json'); }
                 datosGrado = await response.json();
             }
@@ -338,7 +347,7 @@
                     aLink.className = "hover:text-sand transition-colors font-medium cursor-pointer";
                     aLink.target = "_blank"; 
                     aLink.href = urlGuiaDocente;
-                    aLink.innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-stone-400 mr-2"></i> ${nombreAsignatura}`;
+                    aLink.innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-stone-400 mr-2"></i> ${escapeHTML(nombreAsignatura)}`;
                     tdAsig.appendChild(aLink);
 
                     // CREDITOS
@@ -400,16 +409,13 @@
                 <div class="text-center py-12 flex flex-col items-center justify-center">
                     <i class="fa-solid fa-spinner fa-spin text-4xl text-sand mb-4"></i>
                     <p class="font-mono text-xs text-stone-700 uppercase tracking-widest font-semibold">Procesando textos recomendados para:</p>
-                    <p class="font-serif text-xl text-stone-800 mt-1">${nombreAsignatura}</p>
+                    <p class="font-serif text-xl text-stone-800 mt-1">${escapeHTML(nombreAsignatura)}</p>
                 </div>`;
             
             modal.classList.add('modal-active');
             modalContent.classList.add('modal-content-active');
 
             try {
-                // Pequeña pausa fluida opcional para asegurar que el indicador visual aparezca siempre de forma uniforme en cualquier clic
-                await new Promise(resolve => setTimeout(resolve, 350));
-
                 const data = await cargarDatos();
                 const items = data.filter(item => 
                     item.ASIGNATURA && 
@@ -432,8 +438,12 @@
                     let titulo = item["Obra/Título"] || "";
                     let autor = item["AUTOR"] || "";
 
-                    if (titulo && textoCompleto.includes(titulo)) {
-                        textoCompleto = textoCompleto.replace(titulo, '<strong class="text-stone-900 font-semibold">' + titulo + '</strong>');
+                    let textoSeguroHTML = escapeHTML(textoCompleto);
+                    if (titulo) {
+                        const safeTitulo = escapeHTML(titulo);
+                        if (textoSeguroHTML.includes(safeTitulo)) {
+                            textoSeguroHTML = textoSeguroHTML.replace(safeTitulo, `<strong class="text-stone-900 font-semibold">${safeTitulo}</strong>`);
+                        }
                     }
 
                     let terminoBusqueda = autor ? (autor.trim() + ' "' + titulo.trim() + '"') : ('"' + titulo.trim() + '"');
@@ -441,7 +451,7 @@
                     
                     const titleDiv = document.createElement("div");
                     titleDiv.className = "font-serif text-lg text-stone-600 leading-relaxed mb-5";
-                    titleDiv.innerHTML = textoCompleto;
+                    titleDiv.innerHTML = textoSeguroHTML;
                     divItem.appendChild(titleDiv);
 
                     const dynamicContainer = document.createElement("div");
@@ -449,8 +459,11 @@
                     divItem.appendChild(dynamicContainer);
                     contenedorLista.appendChild(divItem);
 
-                    if (titulo) {
-                        buscarEnBiblioteca(titulo).then(coincidencias => {
+                    const promesaDisponibilidad = Array.isArray(item.disponibilidad)
+                        ? Promise.resolve(item.disponibilidad)
+                        : (titulo ? buscarEnBiblioteca(titulo) : Promise.resolve([]));
+
+                    promesaDisponibilidad.then(coincidencias => {
                             let html = "";
                             if (coincidencias.length > 0) {
                                 const totalEjemplares = coincidencias.reduce((sum, c) => sum + c.ejemplares, 0);
@@ -463,11 +476,13 @@
                                     <div class="flex flex-wrap gap-2 mt-2">`;
                                             
                                 coincidencias.forEach(c => {
-                                    const tituloSeguro = (c.titulo || '').replace(/'/g, "\\'");
+                                    const safeSig = escapeHTML(c.signatura || '');
+                                    const safeTit = escapeHTML(c.titulo || '');
+                                    const safeEj = Number(c.ejemplares) || 1;
                                     html += `
-                                        <button class="inline-flex items-center bg-stone-900 text-sand px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider hover:bg-sand hover:text-stone-900 transition-colors" onclick="localizarLibroDirecto('${c.signatura}', '${tituloSeguro}')" title="Haz clic para generar ruta">
-                                            <i class="fa-solid fa-location-dot mr-2"></i> ${c.signatura} 
-                                            <span class="bg-stone-100 text-stone-900 px-1.5 py-0.5 ml-2 font-bold">${c.ejemplares}</span>
+                                        <button type="button" class="btn-localizar-sig inline-flex items-center bg-stone-900 text-sand px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider hover:bg-sand hover:text-stone-900 transition-colors" data-signatura="${safeSig}" data-titulo="${safeTit}" title="Haz clic para generar ruta">
+                                            <i class="fa-solid fa-location-dot mr-2"></i> ${safeSig} 
+                                            <span class="bg-stone-100 text-stone-900 px-1.5 py-0.5 ml-2 font-bold">${safeEj}</span>
                                         </button>`;
                                 });
                                 html += `</div></div>`;
@@ -487,7 +502,6 @@
                         }).catch(err => {
                             dynamicContainer.innerHTML = `<div class="text-red-700 font-mono text-[10px] uppercase tracking-widest">Error al buscar disponibilidad.</div>`;
                         });
-                    }
                 });
 
             } catch (error) {
@@ -525,6 +539,14 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
+            const modalListaCuerpo = document.getElementById("modalListaCuerpo");
+            if (modalListaCuerpo) {
+                modalListaCuerpo.addEventListener("click", (e) => {
+                    const btn = e.target.closest(".btn-localizar-sig");
+                    if (!btn) return;
+                    localizarLibroDirecto(btn.dataset.signatura || "", btn.dataset.titulo || "");
+                });
+            }
             actualizarAsignaturas();
         });
     </script>
