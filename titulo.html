@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script>
-        tailwind.config = { theme: { extend: { colors: { stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' }, sand: '#C5A059' }, fontFamily: { serif: ['Cormorant Garamond', 'serif'], sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+        tailwind.config = { theme: { extend: { colors: { stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC5', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' }, sand: '#C5A059' }, fontFamily: { serif: ['Cormorant Garamond', 'serif'], sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
     </script>
     <style>
         body { background-color: #F4F0E8; color: #1A1817; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
@@ -34,7 +34,7 @@
     </header>
 
     <section class="grid-line-b bg-stone-900 text-stone-100 relative overflow-hidden">
-        <img src="imagenes/buobh.png" onerror="this.src='https://via.placeholder.com/1300x400?text=Biblioteca'" alt="Biblioteca" class="absolute inset-0 w-full h-full object-cover opacity-20 filter">
+        <img src="imagenes/buobh.webp" onerror="this.style.display='none'" alt="Biblioteca" class="absolute inset-0 w-full h-full object-cover opacity-20 filter">
         <div class="max-w-7xl mx-auto px-6 py-16 md:py-24 relative z-10 text-center">
             <span class="text-xs font-mono text-sand font-semibold uppercase tracking-widest block mb-4">[ BÚSQUEDA DIRECTA ]</span>
             <h1 class="editorial-title text-4xl md:text-6xl font-light mb-6">Búsqueda por Título.</h1>
@@ -90,6 +90,8 @@
         </div>
     </div>
 
+    <script src="js/utils.js"></script>
+    <script src="js/signaturas.js"></script>
     <script>
         let accionAlCerrarAlerta = null;
 
@@ -121,37 +123,63 @@
         }
 
         function normalizarTexto(texto) {
-            return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            return String(texto || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         }
 
         function procesarLocalizacion(event, signaturaStr) {
             event.stopPropagation();
-            let signatura = signaturaStr ? signaturaStr.trim() : "";
+            const signatura = signaturaStr ? signaturaStr.trim() : "";
 
             if (signatura === "" || signatura === "HG") {
                 mostrarAlerta("No se ha encontrado una signatura válida para este libro.");
                 return;
             }
-            if (!signatura.startsWith("HG")) {
+            if (!signatura.toUpperCase().startsWith("HG")) {
                 mostrarAlerta("Recuerda que los libros que se encuentran en las salas comienzan por HG.\n\nSi tu signatura: " + signatura + " es correcta, te ayudaremos a localizar el libro. Pregunta en el mostrador al personal de biblioteca.");
                 return; 
             }
 
-            let fichero = signatura.replace(/\/AST$/i, "").replace(/\/COMIC$/i, "");
-            if (!fichero.endsWith("/4")) fichero = fichero.replace(/(?<![a-zA-Z])CR(?![a-zA-Z]).*/i, "CR");
-
-            let sig = "";
-            let ultimoIndiceBarra = fichero.lastIndexOf("/");
-
-            if (ultimoIndiceBarra !== -1) {
-                let parteDerecha = fichero.substring(ultimoIndiceBarra + 1);
-                if (parteDerecha === "4") sig = "HG/4";
-                else sig = fichero.substring(0, ultimoIndiceBarra);
-            } else {
-                sig = fichero;
-            }
-
+            const sig = window.BUOSignaturas.extraerSignaturaBase(signatura);
             window.open("localizador.html?sig=" + encodeURIComponent(sig) + "&orig=" + encodeURIComponent(signatura), "_blank");
+        }
+
+        let librosTituloCache = null;
+
+        async function obtenerLibrosTitulo() {
+            if (librosTituloCache) return librosTituloCache;
+
+            let rutas = ['Grados/libros_1.json', 'Grados/libros_2.json'];
+            try {
+                const manRes = await fetch('manifest.json');
+                if (manRes.ok) {
+                    const manifest = await manRes.json();
+                    if (Array.isArray(manifest.gradosLibros) && manifest.gradosLibros.length > 0) {
+                        rutas = manifest.gradosLibros;
+                    }
+                }
+            } catch (e) {}
+
+            const respuestas = await Promise.all(rutas.map(url => fetch(url).then(r => {
+                if (!r.ok) throw new Error(`Error cargando ${url}`);
+                return r.json();
+            })));
+
+            const normalizados = [];
+            for (const bloque of respuestas) {
+                for (const item of bloque) {
+                    const signatura = Array.isArray(item) ? (item[0] || '') : (item.signatura || '');
+                    const titulo = Array.isArray(item) ? (item[1] || '') : (item.titulo || '');
+                    if (titulo) {
+                        normalizados.push({
+                            signatura,
+                            titulo,
+                            _tituloNorm: normalizarTexto(titulo)
+                        });
+                    }
+                }
+            }
+            librosTituloCache = normalizados;
+            return librosTituloCache;
         }
 
         async function localizarPorTitulo(event) {
@@ -172,36 +200,24 @@
 
             const queryNormalizada = normalizarTexto(tituloInput);
             let librosEncontrados = [];
-            let archivoIndice = 1;
-            let seguirBuscando = true;
 
             try {
-                while (seguirBuscando) {
-                    let respuesta = await fetch(`Grados/libros_${archivoIndice}.json`);
-                    
-                    if (!respuesta.ok) { seguirBuscando = false; break; }
-                    
-                    let libros = await respuesta.json();
-                    for (let libro of libros) {
-                        if (libro.titulo) {
-                            const tituloLibroNormalizado = normalizarTexto(libro.titulo);
-                            if (tituloLibroNormalizado.includes(queryNormalizada)) {
-                                librosEncontrados.push(libro);
-                                if (librosEncontrados.length > 20) {
-                                    botonLocalizar.innerHTML = contenidoOriginalBoton;
-                                    botonLocalizar.style.pointerEvents = 'auto';
-                                    botonLocalizar.style.opacity = '1';
-                                    
-                                    mostrarAlerta(
-                                        "Se han encontrado demasiados resultados. Por favor, refina el título para realizar una búsqueda más concreta.\n\nTe reenvío al catálogo general para que valores los resultados.",
-                                        buscarEnCatalogo
-                                    );
-                                    return; 
-                                }
-                            }
+                const libros = await obtenerLibrosTitulo();
+                for (let libro of libros) {
+                    if (libro._tituloNorm.includes(queryNormalizada)) {
+                        librosEncontrados.push(libro);
+                        if (librosEncontrados.length > 20) {
+                            botonLocalizar.innerHTML = contenidoOriginalBoton;
+                            botonLocalizar.style.pointerEvents = 'auto';
+                            botonLocalizar.style.opacity = '1';
+                            
+                            mostrarAlerta(
+                                "Se han encontrado demasiados resultados. Por favor, refina el título para realizar una búsqueda más concreta.\n\nTe reenvío al catálogo general para que valores los resultados.",
+                                buscarEnCatalogo
+                            );
+                            return; 
                         }
                     }
-                    archivoIndice++;
                 }
 
                 botonLocalizar.innerHTML = contenidoOriginalBoton;
@@ -252,7 +268,7 @@
                 const divSignatura = document.createElement("div");
                 divSignatura.className = "inline-flex items-center gap-2 bg-stone-100 text-stone-600 px-3 py-1 font-mono text-xs font-bold w-max rounded-sm";
                 const textoSignatura = libro.signatura ? libro.signatura : "No disponible";
-                divSignatura.innerHTML = `<i class="fa-solid fa-bookmark text-sand"></i> ${textoSignatura}`;
+                divSignatura.innerHTML = `<i class="fa-solid fa-bookmark text-sand"></i> ${window.BUOUtils.escapeHTML(textoSignatura)}`;
 
                 // Localizacion
                 const divLocalizacion = document.createElement("div");
