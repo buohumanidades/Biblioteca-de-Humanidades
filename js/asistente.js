@@ -418,16 +418,33 @@
         }
     }
 
-    function precargarBaseDatos() {
+    let conocimientoColectivoPedido = false;
+
+    function precargarBaseDatos(gasUrl) {
+        if (gasUrl && !conocimientoColectivoPedido && global.BUOAprendizaje) {
+            conocimientoColectivoPedido = true;
+            global.BUOAprendizaje.cargarConocimientoColectivo(gasUrl).catch(() => {});
+        }
         if (promesaBaseDatos) return promesaBaseDatos;
 
         promesaBaseDatos = (async () => {
             const { limpiarTexto } = global.BUOUtils;
-            const [libros, todasCdu, grado3] = await Promise.all([
+            const [libros, todasCdu, grado3, sinonimosJson] = await Promise.all([
                 global.BUOBuscador.cargarCatalogoLibros(''),
                 fetch('todassignaturas.json').then(r => (r.ok ? r.json() : [])).catch(() => []),
-                fetch('Grados/grado3.json?v=2').then(r => (r.ok ? r.json() : [])).catch(() => [])
+                fetch('Grados/grado3.json?v=2').then(r => (r.ok ? r.json() : [])).catch(() => []),
+                fetch('data/sinonimos.json').then(r => (r.ok ? r.json() : {})).catch(() => ({}))
             ]);
+
+            const sinonimosExternos = {};
+            const fuenteSyns = (sinonimosJson && sinonimosJson.sinonimosPalabra && typeof sinonimosJson.sinonimosPalabra === 'object')
+                ? sinonimosJson.sinonimosPalabra
+                : {};
+            Object.entries(fuenteSyns).forEach(([clave, lista]) => {
+                const claveNorm = limpiarTexto(clave);
+                if (!claveNorm || !Array.isArray(lista)) return;
+                sinonimosExternos[claveNorm] = lista.map(s => limpiarTexto(s)).filter(Boolean);
+            });
 
             const docFreq = new Map();
             const apellidosCatalogo = new Set();
@@ -503,7 +520,8 @@
                 docFreq,
                 apellidosCatalogo,
                 mapaCdu,
-                indiceGrado
+                indiceGrado,
+                sinonimosExternos
             };
         })();
 
@@ -622,6 +640,10 @@
         const { limpiarTexto } = global.BUOUtils;
         const kwSet = new Set(keywords);
         const N = db.totalLibros || 1;
+        const synsExternos = (db && db.sinonimosExternos) ? db.sinonimosExternos : {};
+        const synsColectivos = (global.BUOAprendizaje && global.BUOAprendizaje.getSinonimosColectivos)
+            ? global.BUOAprendizaje.getSinonimosColectivos()
+            : {};
 
         return keywords.map(kw => {
             const esApellidoCatalogo = db.apellidosCatalogo.has(kw) && !NO_APELLIDOS.has(kw);
@@ -629,8 +651,12 @@
             const freq = db.docFreq.get(kw) || 40;
             const idf = Math.max(0.8, Math.log((N + 1) / (freq + 1)));
 
-            // Sinónimos propios de esta keyword que NO sean ya otra keyword del usuario
-            const rawSyns = SINONIMOS_PALABRA[kw] || [];
+            // Sinónimos propios de esta keyword combinando base interna, data/sinonimos.json y hoja colectiva
+            const rawSyns = [
+                ...(SINONIMOS_PALABRA[kw] || []),
+                ...(synsExternos[kw] || []),
+                ...(synsColectivos[kw] || [])
+            ];
             const sinonimos = [];
             for (const s of rawSyns) {
                 const sn = limpiarTexto(s);
@@ -719,6 +745,11 @@
         const enGrado = db.indiceGrado && db.indiceGrado.has(tituloNorm) ? 1 : 0;
         if (enGrado) puntos += 4;
 
+        // Re-ranking adaptativo según utilidad aprendida en consultas previas
+        if (global.BUOAprendizaje && global.BUOAprendizaje.obtenerBonusAprendido) {
+            puntos += global.BUOAprendizaje.obtenerBonusAprendido(tituloNorm, ctx.keywords);
+        }
+
         return {
             cubiertos,
             aciertosDirectos,
@@ -790,7 +821,7 @@
 
     async function procesarConsultaLocal(textoUsuario, opciones = {}) {
         const { limpiarTexto } = global.BUOUtils;
-        const db = await precargarBaseDatos();
+        const db = await precargarBaseDatos(opciones.gasUrl || '');
 
         const textoOriginal = String(textoUsuario || '').trim();
         const textoNorm = limpiarTexto(textoOriginal);
@@ -916,16 +947,34 @@
             if (agrupados.size >= 40) break;
         }
 
-        const seleccionados = Array.from(agrupados.values()).slice(0, 8);
+        const agrupadosTodos = Array.from(agrupados.values());
+        const seleccionados = agrupadosTodos.slice(0, 8);
         seleccionados.forEach(l => {
             const clave = global.normalizarClave ? global.normalizarClave(l.titulo) : limpiarTexto(l.titulo);
             estado.excluidos.add(clave);
         });
 
+        const candidatosParaRAG = agrupadosTodos.slice(0, 15).map(l => ({
+            titulo: l.titulo,
+            autor: l.autor,
+            fecha: l.fecha,
+            signaturas: l.signaturas.slice(0, 3),
+            enGrado: l.enGrado
+        }));
+
+        if (candidatos.length === 0 && !esSoloPeticionMas && textoOriginal && global.BUOAprendizaje) {
+            global.BUOAprendizaje.registrarLagunaBusqueda({
+                consulta: textoOriginal,
+                keywords: estado.keywords,
+                gasUrl: opciones.gasUrl || ''
+            });
+        }
+
         const guiasInvestigacion = construirGuiasInvestigacion(ctxBusqueda, candidatos.length);
 
         return {
             librosLocales: seleccionados,
+            candidatosParaRAG,
             totalCoincidencias: candidatos.length,
             esRefinamiento,
             esSoloPeticionMas,
@@ -935,6 +984,99 @@
             sinonimos: estado.sinonimos.slice(0, 4),
             cdusDescriptores: contextoSemantico.cdusDescriptores,
             guiasInvestigacion
+        };
+    }
+
+    async function ampliarBusquedaConSugerenciasIA(sugerencias = {}, opciones = {}) {
+        const { limpiarTexto } = global.BUOUtils;
+        const db = await precargarBaseDatos(opciones.gasUrl || '');
+
+        const crudos = [
+            ...(Array.isArray(sugerencias.keywords_sugeridas) ? sugerencias.keywords_sugeridas : []),
+            ...(Array.isArray(sugerencias.sinonimos) ? sugerencias.sinonimos : [])
+        ];
+
+        const baseSet = new Set(estado.keywords);
+        const terminosAmpliados = [];
+        for (const item of crudos) {
+            const palabras = limpiarTexto(item).split(/\s+/);
+            for (const p of palabras) {
+                if (p.length >= 3 && !STOPWORDS_ESPANOL.has(p) && !baseSet.has(p) && !terminosAmpliados.includes(p)) {
+                    terminosAmpliados.push(p);
+                }
+                if (terminosAmpliados.length >= 6) break;
+            }
+            if (terminosAmpliados.length >= 6) break;
+        }
+
+        if (terminosAmpliados.length === 0) {
+            return { librosLocales: [], terminosAmpliados: [] };
+        }
+
+        const gruposExtra = construirGruposConcepto(terminosAmpliados, new Set(), db);
+        const ctxExtra = {
+            fraseLimpia: limpiarTexto(terminosAmpliados.join(' ')),
+            keywords: terminosAmpliados,
+            cdus: estado.cdus || []
+        };
+
+        const candidatos = [];
+        for (let i = 0; i < db.libros.length; i++) {
+            const libro = db.libros[i];
+            if (estado.filtros.soloHG && !libro._esHG) continue;
+            if (estado.filtros.anioDesde && (!libro._anio || libro._anio < estado.filtros.anioDesde)) continue;
+            if (estado.filtros.anioHasta && (!libro._anio || libro._anio > estado.filtros.anioHasta)) continue;
+
+            const evalRes = evaluarLibroComoBibliotecario(libro, gruposExtra, ctxExtra, db);
+            if (evalRes) {
+                candidatos.push({ libro, evalRes });
+            }
+        }
+
+        candidatos.sort((a, b) => {
+            const ea = a.evalRes;
+            const eb = b.evalRes;
+            if (eb.cubiertos !== ea.cubiertos) return eb.cubiertos - ea.cubiertos;
+            if (Math.abs(eb.puntos - ea.puntos) > 0.01) return eb.puntos - ea.puntos;
+            return eb.anio - ea.anio;
+        });
+
+        const agrupados = new Map();
+        for (const { libro, evalRes } of candidatos) {
+            const clave = global.normalizarClave ? global.normalizarClave(libro.titulo) : libro._tNorm;
+            if (estado.excluidos.has(clave)) continue;
+
+            if (!agrupados.has(clave)) {
+                const asigs = db.indiceGrado.get(libro._tNorm);
+                agrupados.set(clave, {
+                    titulo: libro.titulo || 'Sin título',
+                    autor: libro.autor || 'Sin autor',
+                    fecha: libro.fecha || '',
+                    materia: asigs
+                        ? `Bibliografía de Grado (${Array.from(asigs)[0]})`
+                        : (libro._esHG ? 'Libre Acceso en Sala' : 'Catálogo Humanidades'),
+                    signaturas: [libro.signatura],
+                    coincidenciasKeywords: `${evalRes.cubiertos}/${gruposExtra.length} (ampliado)`,
+                    enGrado: Boolean(asigs)
+                });
+            } else {
+                const existente = agrupados.get(clave);
+                if (libro.signatura && !existente.signaturas.some(s => s.toLowerCase() === libro.signatura.toLowerCase())) {
+                    existente.signaturas.push(libro.signatura);
+                }
+            }
+            if (agrupados.size >= 6) break;
+        }
+
+        const extraSeleccionados = Array.from(agrupados.values());
+        extraSeleccionados.forEach(l => {
+            const clave = global.normalizarClave ? global.normalizarClave(l.titulo) : limpiarTexto(l.titulo);
+            estado.excluidos.add(clave);
+        });
+
+        return {
+            librosLocales: extraSeleccionados,
+            terminosAmpliados
         };
     }
 
@@ -976,6 +1118,7 @@
     global.BUOAsistente = {
         precargarBaseDatos,
         procesarConsultaLocal,
+        ampliarBusquedaConSugerenciasIA,
         generarTextoRespuestaLocal,
         describirPlantaSignatura,
         reiniciarEstado: crearEstadoInicial,

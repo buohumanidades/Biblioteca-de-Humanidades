@@ -1,0 +1,20 @@
+{
+  "_comentario": "Diccionario editable de sinónimos, abreviaturas estudiantiles y equivalencias temáticas para el Asistente Virtual. Puedes añadir entradas sin tocar el código JS.",
+  "sinonimosPalabra": {
+    "36": ["guerra civil", "1936"],
+    "98": ["generacion del 98", "unamuno", "valle inclan", "azorin", "baroja"],
+    "27": ["generacion del 27", "lorca", "alberti", "cernuda", "salinas"],
+    "posguerra": ["franquismo", "exilio", "dictadura"],
+    "exilio": ["republicano", "posguerra", "destierro"],
+    "ilustracion": ["ilustrado", "siglo xviii", "luces", "enciclopedia"],
+    "antiguedad": ["mundo clasico", "grecia", "roma", "antiguo"],
+    "existencialismo": ["existencia", "sartre", "heidegger", "camus", "kierkegaard"],
+    "fenomenologia": ["husserl", "heidegger", "merleau ponty"],
+    "hermeneutica": ["interpretacion", "gadamer", "ricoeur"],
+    "asturianu": ["asturiano", "bable", "asturias"],
+    "bable": ["asturiano", "asturianu", "asturias"],
+    "romances": ["romancero", "baladas", "tradicion oral"],
+    "mitos": ["mitologia", "mito", "leyendas", "dioses"],
+    "feminismos": ["feminismo", "mujer", "mujeres", "genero", "igualdad"]
+  }
+}
