@@ -120,7 +120,7 @@
                         <svg aria-hidden="true" class="w-4 h-4 text-stone-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                         <input type="text" id="input-busqueda" placeholder="Buscar por título, autor o signatura (ej. HG860, Cervantes, Arendt)..."
                             aria-label="Buscar por título, autor o signatura"
-                            class="w-full bg-stone-800/90 border border-stone-700 text-stone-100 pl-11 pr-10 py-3.5 sm:py-4 text-sm sm:text-base focus:outline-none focus:border-sand font-sans transition-colors placeholder:text-stone-400">
+                            class="w-full bg-stone-800/90 border border-stone-700 text-stone-100 pl-11 pr-10 py-3.5 sm:py-4 text-base focus:outline-none focus:border-sand font-sans transition-colors placeholder:text-stone-400">
                         <button type="button" id="btn-limpiar-busqueda" onclick="limpiarInputBusqueda()" aria-label="Limpiar búsqueda"
                             class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-sand p-1 transition-colors">
                             <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -182,7 +182,7 @@
                 <div class="flex items-center justify-between sm:justify-end gap-2 font-mono text-xs">
                     <label for="select-orden" class="text-stone-600 whitespace-nowrap">Ordenar:</label>
                     <select id="select-orden" onchange="cambiarOrdenResultados()"
-                        class="bg-white border border-stone-300 text-stone-900 px-3 py-1.5 text-xs focus:outline-none focus:border-stone-900">
+                        class="bg-white border border-stone-300 text-stone-900 px-3 py-1.5 text-base md:text-xs focus:outline-none focus:border-stone-900">
                         <option value="relevancia">Relevancia y Sala (HG primero)</option>
                         <option value="reciente">Año (más reciente)</option>
                         <option value="titulo">Título (A–Z)</option>

@@ -273,7 +273,7 @@
                                         <svg aria-hidden="true" class="w-4 h-4 text-stone-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                                         <input type="text" id="input-busqueda-index" placeholder="Título, autor, materia o signatura (ej. HG946)..."
                                             aria-label="Buscar libro por título, autor o signatura"
-                                            class="w-full bg-stone-800/90 border border-stone-700 text-stone-100 pl-11 pr-10 py-3.5 sm:py-4 text-sm sm:text-base focus:outline-none focus:border-sand font-sans transition-colors placeholder:text-stone-400" required>
+                                            class="w-full bg-stone-800/90 border border-stone-700 text-stone-100 pl-11 pr-10 py-3.5 sm:py-4 text-base focus:outline-none focus:border-sand font-sans transition-colors placeholder:text-stone-400" required>
                                         <button type="button" id="btn-limpiar-busqueda" onclick="limpiarCampoBusqueda()" aria-label="Limpiar búsqueda"
                                             class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-sand p-1 transition-colors">
                                             <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -616,7 +616,7 @@
                     <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
             </div>
-            <iframe id="iframeLocalizador" title="Plano interactivo de estantería" src="" class="w-full flex-1 border border-stone-200 bg-white"></iframe>
+            <iframe id="iframeLocalizador" title="Plano interactivo de estantería" src="about:blank" class="w-full flex-1 border border-stone-200 bg-white"></iframe>
         </div>
     </div>
 
@@ -699,7 +699,7 @@
             <footer class="bg-stone-900 p-3 flex items-center gap-2.5 w-full z-10 border-t border-stone-800 flex-shrink-0 safe-bottom">
                 <div class="flex-1 bg-stone-800 border border-stone-700 focus-within:border-sand flex items-center px-4 py-2 transition-colors min-h-[46px]">
                     <input type="text" id="chat-input" placeholder="Describe un tema, autor o haz una pregunta..." 
-                           class="flex-1 bg-transparent text-stone-100 placeholder:text-stone-400 focus:outline-none text-sm py-1 w-full disabled:opacity-50 font-sans"
+                           class="flex-1 bg-transparent text-stone-100 placeholder:text-stone-400 focus:outline-none text-base py-1 w-full disabled:opacity-50 font-sans"
                            autocomplete="off">
                 </div>
                 
@@ -949,7 +949,10 @@
             const modal = document.getElementById('modalLocalizador');
             modal.classList.remove('modal-active');
             modal.querySelector('.modal-content').classList.remove('modal-content-active');
-            setTimeout(() => { document.getElementById('iframeLocalizador').src = ''; }, 300);
+            setTimeout(() => {
+                const fr = document.getElementById('iframeLocalizador');
+                if (fr) fr.src = 'about:blank';
+            }, 300);
             actualizarEstadoOverlay();
         }
 

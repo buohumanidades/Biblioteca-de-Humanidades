@@ -2,40 +2,191 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Procesando Búsqueda...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Localizador de Estantería · Biblioteca de Humanidades</title>
+    <meta name="description" content="Resolución de signaturas y plano de ubicación de libros en la Biblioteca de Humanidades (Universidad de Oviedo).">
+    <meta name="theme-color" content="#1A1817">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f6f7; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: #2c3e50; }
-        .loader-container { text-align: center; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); max-width: 400px; width: 90%; }
-        .spinner { border: 5px solid #ecf0f1; border-top: 5px solid #2980b9; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        h2 { font-family: 'Romana Moderna', Georgia, serif; color: #1a252f; margin-bottom: 10px; font-size: 1.5em; }
-        p { color: #7f8c8d; font-size: 0.95em; line-height: 1.4; }
-        .icono-aviso { font-size: 3em; margin-bottom: 10px; }
+        :root {
+            --stone-50: #FAF8F5;
+            --stone-100: #F4F0E8;
+            --stone-200: #E6DFC5;
+            --stone-300: #D5CBBF;
+            --stone-600: #57534E;
+            --stone-800: #2A2725;
+            --stone-900: #1A1817;
+            --sand: #C5A059;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: var(--stone-100);
+            color: var(--stone-900);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100dvh;
+            margin: 0;
+            padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+        }
+        .loader-container {
+            text-align: center;
+            background: var(--stone-50);
+            padding: 32px 24px;
+            border: 1px solid var(--stone-300);
+            border-top: 4px solid var(--sand);
+            box-shadow: 0 18px 40px -15px rgba(26, 24, 23, 0.14);
+            max-width: 480px;
+            width: 100%;
+        }
+        .brand-kicker {
+            font-family: 'Space Grotesk', ui-monospace, monospace;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: var(--stone-600);
+            margin-bottom: 18px;
+        }
+        .spinner {
+            border: 4px solid var(--stone-200);
+            border-top: 4px solid var(--sand);
+            border-radius: 50%;
+            width: 46px;
+            height: 46px;
+            animation: spin 0.9s linear infinite;
+            margin: 0 auto 18px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        h2 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            color: var(--stone-900);
+            margin: 0 0 10px;
+            font-size: clamp(1.65rem, 4vw, 2.1rem);
+            font-weight: 400;
+            line-height: 1.1;
+        }
+        p {
+            color: var(--stone-600);
+            font-size: 0.95rem;
+            line-height: 1.55;
+            margin: 0 0 18px;
+        }
+        .icono-aviso {
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #FEF3C7;
+            border: 1px solid #F59E0B;
+            color: #92400E;
+        }
+        .sig-pill {
+            display: inline-block;
+            font-family: 'Space Grotesk', ui-monospace, monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            background: var(--stone-900);
+            color: var(--sand);
+            padding: 6px 12px;
+            margin-bottom: 14px;
+            user-select: all;
+            word-break: break-word;
+        }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-family: 'Space Grotesk', ui-monospace, monospace;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 12px 16px;
+            min-height: 44px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+            border: 1px solid var(--stone-900);
+        }
+        .btn-primary {
+            background: var(--stone-900);
+            color: var(--sand);
+            flex: 1 1 200px;
+        }
+        .btn-primary:hover {
+            background: var(--sand);
+            color: var(--stone-900);
+            border-color: var(--sand);
+        }
+        .btn-secondary {
+            background: #ffffff;
+            color: var(--stone-900);
+            border-color: var(--stone-300);
+            flex: 1 1 120px;
+        }
+        .btn-secondary:hover {
+            border-color: var(--stone-900);
+            background: var(--stone-100);
+        }
+        a:focus-visible, button:focus-visible {
+            outline: 2px solid var(--sand);
+            outline-offset: 2px;
+        }
+        @media (max-width: 480px) {
+            .loader-container { padding: 26px 18px; }
+            .btn { flex: 1 1 100%; width: 100%; }
+        }
     </style>
 </head>
-<body class="antialiased selection:bg-sand selection:text-stone-900">
-    <div class="loader-container" id="contenedor-principal">
-        <div class="spinner"></div>
-        <h2>Buscando ubicación...</h2>
-        <p>Comprobando los datos en la base de datos de la biblioteca.</p>
-    </div>
+<body>
+    <main class="loader-container" id="contenedor-principal">
+        <div class="brand-kicker">B . U . O · Humanidades</div>
+        <div class="spinner" aria-hidden="true"></div>
+        <h2>Buscando ubicación…</h2>
+        <p>Comprobando la signatura en el plano interactivo de la biblioteca.</p>
+    </main>
 
     <script src="js/utils.js"></script>
     <script src="js/signaturas.js"></script>
     <script src="js/buscador.js"></script>
     <script>
-    const { escapeHTML } = window.BUOUtils;
+    const { escapeHTML, construirUrlOpac } = window.BUOUtils;
     const { normalizarSigBusqueda, obtenerDatosUbicacion, buscarRegistroSignatura, construirUrlDestino } = window.BUOSignaturas;
     const { ejecutarAlgoritmoBusqueda } = window.BUOBuscador;
 
     const params = new URLSearchParams(window.location.search);
     const sigBuscada = normalizarSigBusqueda(params.get('sig'));
     const sigOriginal = params.get('orig');
-    const valTitulo = params.get('titulo');
+    const valTitulo = params.get('titulo') || '';
     const valAutor = params.get('autor') || '';
     const valFecha = params.get('fecha') || '';
-    const signaturaClicada = sigOriginal || sigBuscada || 'Desconocida';
+    const signaturaClicada = sigOriginal || sigBuscada || '';
+
+    function volverAtras() {
+        if (window.history.length > 1 && document.referrer && document.referrer.startsWith(window.location.origin)) {
+            window.history.back();
+        } else {
+            window.location.href = 'index.html';
+        }
+    }
 
     // CASO 1: Búsqueda por Título o Autor
     if (!sigBuscada && valTitulo) {
@@ -43,17 +194,18 @@
             .then(({ arrDatos, arrPlanos }) => {
                 const { resultados } = ejecutarAlgoritmoBusqueda(arrDatos, valTitulo);
                 if (resultados.length > 0) {
-                    const datosEncontrados = resultados[0];
+                    const sigMatch = (resultados[0].signatura || '').trim();
+                    const registroOriginal = arrDatos.find(x => (x.signatura || x.signaturas || '').trim() === sigMatch) || resultados[0];
                     window.location.href = construirUrlDestino(
-                        datosEncontrados,
+                        registroOriginal,
                         arrPlanos,
-                        datosEncontrados.signatura || datosEncontrados.signaturas || '',
-                        datosEncontrados.signatura || datosEncontrados.signaturas || '',
+                        registroOriginal.signatura || registroOriginal.signaturas || '',
+                        registroOriginal.signatura || registroOriginal.signaturas || '',
                         { titulo: valTitulo, autor: valAutor, fecha: valFecha },
                         ''
                     );
                 } else {
-                    mostrarAvisoPersonal({ signaturas: valTitulo, descripcion: `con el texto "${valTitulo}"` });
+                    mostrarAvisoPersonal({ signaturas: valTitulo, descripcion: `para "${valTitulo}"` });
                 }
             })
             .catch(error => {
@@ -84,16 +236,36 @@
                 mostrarAvisoPersonal({ signaturas: signaturaClicada });
             });
     } else {
-        mostrarAvisoPersonal({ signaturas: signaturaClicada });
+        mostrarAvisoPersonal({ signaturas: signaturaClicada || 'Sin signatura especificada', sinDatos: !signaturaClicada && !valTitulo });
     }
 
     function mostrarAvisoPersonal(datos) {
         const contenedor = document.getElementById('contenedor-principal');
         const descripcionTexto = datos.descripcion ? ` ${escapeHTML(datos.descripcion)}` : '';
+        const opacUrl = construirUrlOpac(valTitulo, signaturaClicada || datos.signaturas);
+        const mensaje = datos.sinDatos
+            ? 'No se ha especificado una signatura o título para localizar en el plano.'
+            : `El ejemplar con signatura <strong>${escapeHTML(datos.signaturas)}</strong>${descripcionTexto} no está ubicado en las estanterías de Libre Acceso (salas HG). Acude al mostrador de préstamo para solicitarlo o comprueba su estado en el catálogo.`;
+
         contenedor.innerHTML = `
-            <div class="icono-aviso">ℹ️</div>
+            <div class="brand-kicker">B . U . O · Humanidades</div>
+            <div class="icono-aviso" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            </div>
             <h2>Aviso de ubicación</h2>
-            <p>La búsqueda de <strong>${escapeHTML(datos.signaturas)}</strong>${descripcionTexto} no se encuentra disponible en las SALAS. Acuda al personal de la biblioteca para solicitarlo.</p>
+            ${datos.signaturas ? `<div class="sig-pill">${escapeHTML(datos.signaturas)}</div>` : ''}
+            <p>${mensaje}</p>
+            <div class="actions">
+                <a href="${escapeHTML(opacUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                    Consultar en OPAC BUO ↗
+                </a>
+                <button type="button" onclick="volverAtras()" class="btn btn-secondary">
+                    ← Volver
+                </button>
+                <a href="index.html" target="_top" class="btn btn-secondary">
+                    Ir a la portada
+                </a>
+            </div>
         `;
     }
     </script>
