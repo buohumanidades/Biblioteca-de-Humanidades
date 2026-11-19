@@ -2,176 +2,310 @@
 <html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Ubicación del Libro · Biblioteca de Humanidades</title>
-    <!-- Tailwind CSS -->
+    <meta name="description" content="Plano interactivo de estantería y ficha de localización en la Biblioteca de Humanidades de la Universidad de Oviedo.">
+    <meta name="theme-color" content="#1A1817">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script>
-        tailwind.config = { 
-            theme: { 
-                extend: { 
-                    colors: { 
-                        stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC5', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' }, 
-                        sand: '#C5A059' 
-                    }, 
-                    fontFamily: { 
-                        serif: ['Cormorant Garamond', 'serif'], 
-                        sans: ['Plus Jakarta Sans', 'sans-serif'], 
-                        mono: ['Space Grotesk', 'monospace'] 
-                    } 
-                } 
-            } 
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC5', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' },
+                            sand: '#C5A059'
+                        },
+                        fontFamily: {
+                            serif: ['Cormorant Garamond', 'serif'],
+                            sans: ['Plus Jakarta Sans', 'sans-serif'],
+                            mono: ['Space Grotesk', 'monospace']
+                        }
+                    }
+                }
+            };
         }
     </script>
     <style>
-        body { 
-            background-color: #FAF8F5; 
-            color: #1A1817; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            height: 100dvh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-            margin: 0; 
-            padding: 0; 
+        body {
+            background-color: #FAF8F5;
+            color: #1A1817;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
         }
-        .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 0.95; }
+        @media (min-width: 768px) and (min-height: 640px) {
+            body {
+                height: 100dvh;
+                overflow: hidden;
+            }
+        }
+        .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 1.05; }
         .grid-line-b { border-bottom: 1px solid rgba(26, 24, 23, 0.12); }
 
-        /* Animación punto rojo */
         @keyframes parpadeo {
-            0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 0.3; transform: translate(-50%, -50%) scale(1.3); }
+            0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.75), 0 0 12px rgba(239, 68, 68, 0.9); }
+            55% { transform: translate(-50%, -50%) scale(1.18); box-shadow: 0 0 0 12px rgba(239, 68, 68, 0), 0 0 18px rgba(239, 68, 68, 0.95); }
         }
         .punto-rojo {
             position: absolute;
             background-color: #ef4444;
-            border: 2px solid #ffffff;
+            border: 2.5px solid #ffffff;
             border-radius: 50%;
-            box-shadow: 0 0 12px rgba(239, 68, 68, 0.85);
-            animation: parpadeo 1.5s ease-in-out infinite;
+            animation: parpadeo 1.6s ease-out infinite;
             pointer-events: none;
             transform: translate(-50%, -50%);
+            z-index: 20;
+        }
+        a:focus-visible, button:focus-visible {
+            outline: 2px solid #C5A059;
+            outline-offset: 2px;
         }
     </style>
 </head>
-<body class="antialiased selection:bg-stone-800 selection:text-stone-50">
+<body class="antialiased selection:bg-sand selection:text-stone-900">
 
-    <!-- CABECERA PRINCIPAL (Blanca) -->
-    <header class="bg-white/90 backdrop-blur-md grid-line-b shrink-0 z-10 shadow-sm">
-        <div class="max-w-full mx-auto px-4 py-2 flex flex-col w-full">
-            <span id="header-signatura" class="text-base font-mono font-bold tracking-widest text-stone-900 uppercase truncate" title="Signatura">
-                CARGANDO...
-            </span>
-            <span id="header-titulo" class="text-xs md:text-sm text-stone-600 font-sans font-medium truncate" title="Título del Libro">
-                Cargando título...
-            </span>
-            <!-- Nuevo contenedor para Autor y Fecha -->
-            <span id="header-autor-fecha" class="text-[10px] md:text-xs text-stone-500 font-sans mt-0.5 truncate" style="display:none;"></span>
+    <!-- Cabecera Ficha del Libro + Acciones Rápidas -->
+    <header class="bg-white/95 backdrop-blur-md grid-line-b shrink-0 z-10 shadow-sm">
+        <div class="max-w-full mx-auto px-3 sm:px-5 py-2.5 sm:py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                    <span id="header-signatura" class="text-sm sm:text-base font-mono font-bold tracking-wider bg-stone-900 text-sand px-2.5 py-0.5 select-all" title="Signatura del ejemplar">
+                        CARGANDO...
+                    </span>
+                    <span id="badge-acceso" class="text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 border border-stone-300 bg-stone-100 text-stone-700">
+                        BIBLIOTECA DE HUMANIDADES
+                    </span>
+                </div>
+                <h1 id="header-titulo" class="text-sm sm:text-base text-stone-900 font-semibold leading-snug line-clamp-2" title="Título del libro">
+                    Cargando título...
+                </h1>
+                <p id="header-autor-fecha" class="hidden text-[11px] sm:text-xs text-stone-600 font-sans mt-0.5 flex-wrap items-center gap-x-3 gap-y-1"></p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 shrink-0">
+                <button type="button" id="btn-copiar-sig" onclick="copiarSignaturaActual()"
+                    class="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-1.5 border border-stone-300 bg-stone-50 text-stone-800 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-100 transition-colors">
+                    <svg aria-hidden="true" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    <span id="txt-copiar-sig">Copiar signatura</span>
+                </button>
+                <a id="link-opac" href="https://buoabsys.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH" target="_blank" rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 text-[11px] font-mono font-semibold px-3 py-1.5 bg-sand text-stone-900 hover:bg-stone-900 hover:text-sand border border-sand transition-colors"
+                    title="Comprobar si el libro está disponible o prestado en el catálogo OPAC BUO">
+                    <span>Disponibilidad OPAC</span>
+                    <span aria-hidden="true">↗</span>
+                </a>
+                <button type="button" id="btn-volver" onclick="volverAtras()"
+                    class="hidden items-center gap-1 text-[11px] font-mono px-2.5 py-1.5 border border-stone-300 bg-white text-stone-700 hover:border-stone-900 hover:text-stone-900 transition-colors">
+                    ← Volver
+                </button>
+            </div>
         </div>
     </header>
 
-    <!-- CONTENEDOR DE LA APLICACIÓN (Pantalla completa ampliada) -->
-    <main class="flex-1 flex flex-col max-w-full mx-auto w-full px-2 md:px-4 py-2 gap-2 overflow-hidden">
-        
-        <!-- BANDA HORIZONTAL NEGRA DE UBICACIÓN -->
-        <div class="w-full flex flex-col md:flex-row justify-between shadow-lg rounded-sm border-l-4 border-sand bg-stone-900 shrink-0 text-stone-100 p-3 md:p-4 gap-3">
-            
-            <!-- Bloque Izquierdo: Piso, Zona, Sector -->
-            <div class="flex-1 flex flex-col md:flex-row gap-3 md:gap-6 border-b md:border-b-0 md:border-r border-stone-700 pb-3 md:pb-0 md:pr-6">
-                
-                <div class="flex flex-row md:flex-col gap-3 md:gap-1">
-                    <!-- PLANTA -->
-                    <div class="flex flex-col min-w-[70px]">
-                        <span class="text-[9px] md:text-[10px] font-mono text-stone-400 uppercase tracking-widest">Piso</span>
-                        <span id="txt-planta" class="font-serif text-base md:text-xl text-white">--</span>
-                    </div>
+    <!-- Contenido Principal -->
+    <main class="flex-1 min-h-0 flex flex-col max-w-full mx-auto w-full px-2 sm:px-4 py-2 sm:py-3 gap-2.5 md:overflow-hidden">
 
-                    <!-- SALA -->
-                    <div class="flex flex-col">
-                        <span class="text-[9px] md:text-[10px] font-mono text-stone-400 uppercase tracking-widest">Zona</span>
-                        <span id="txt-sala" class="font-serif text-base md:text-xl text-white">--</span>
-                    </div>
+        <!-- BANDA HORIZONTAL DE UBICACIÓN (Ruta en 4 pasos) -->
+        <section aria-label="Ruta de ubicación física" class="w-full grid grid-cols-2 lg:grid-cols-12 shadow-md rounded-sm border-l-4 border-sand bg-stone-900 shrink-0 text-stone-100 p-3 sm:p-4 gap-3 sm:gap-4">
+            <!-- 1. Piso -->
+            <div class="lg:col-span-2 flex flex-col justify-center">
+                <span class="text-[9px] sm:text-[10px] font-mono text-stone-400 uppercase tracking-widest">1. Piso</span>
+                <span id="txt-planta" class="font-serif text-lg sm:text-xl text-white leading-tight mt-0.5">--</span>
+            </div>
+
+            <!-- 2. Zona / Sala -->
+            <div class="lg:col-span-3 flex flex-col justify-center">
+                <span class="text-[9px] sm:text-[10px] font-mono text-stone-400 uppercase tracking-widest">2. Zona</span>
+                <span id="txt-sala" class="font-serif text-lg sm:text-xl text-white leading-tight mt-0.5">--</span>
+            </div>
+
+            <!-- 3. Sector -->
+            <div class="col-span-2 lg:col-span-3 flex flex-col justify-center lg:border-r lg:border-stone-700 lg:pr-4">
+                <span class="text-[9px] sm:text-[10px] font-mono text-stone-400 uppercase tracking-widest">3. Sector</span>
+                <span id="txt-ubicacion" class="font-serif text-lg sm:text-xl text-white break-words leading-tight mt-0.5">--</span>
+            </div>
+
+            <!-- 4. Estantería Exacta + Descripción CDU -->
+            <div class="col-span-2 lg:col-span-4 flex flex-col justify-center lg:items-end bg-stone-800/70 lg:bg-transparent p-2.5 lg:p-0 border border-stone-700/80 lg:border-0">
+                <div class="flex flex-wrap items-center lg:justify-end gap-2 mb-0.5">
+                    <span class="text-[9px] sm:text-[10px] font-mono uppercase tracking-widest font-bold text-sand">4. Estantería</span>
+                    <span id="display-signatura" class="hidden bg-sand text-stone-900 text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm"></span>
                 </div>
+                <span id="txt-estanteria" class="font-serif text-xl sm:text-2xl font-bold text-sand leading-tight lg:text-right">--</span>
+                <span id="txt-cdu-descripcion" class="hidden text-[11px] font-sans text-stone-300 lg:text-right leading-snug mt-0.5"></span>
+            </div>
+        </section>
 
-                <!-- UBICACIÓN (Sector) -->
-                <div class="flex flex-col flex-1">
-                    <span class="text-[9px] md:text-[10px] font-mono text-stone-400 uppercase tracking-widest">Sector</span>
-                    <span id="txt-ubicacion" class="font-serif text-lg md:text-2xl text-white break-words leading-tight">--</span>
+        <!-- ZONA DEL MAPA INTERACTIVO (Con alineación exacta al tamaño de imagen y zoom) -->
+        <section id="contenedor-mapa" class="hidden flex-1 min-h-[300px] w-full flex-col rounded-sm shadow-lg bg-white border border-stone-200 overflow-hidden">
+            <!-- Barra superior del visor de plano -->
+            <div class="flex flex-wrap items-center justify-between gap-2 px-3 py-2 bg-stone-50 border-b border-stone-200 text-[11px] font-mono shrink-0">
+                <div class="flex items-center gap-2 text-stone-700">
+                    <span class="inline-block w-3 h-3 rounded-full bg-red-500 border-2 border-white shadow ring-1 ring-red-400 flex-shrink-0"></span>
+                    <span>El círculo rojo señala la zona de la estantería</span>
+                </div>
+                <div class="flex items-center gap-1" role="group" aria-label="Controles de zoom del plano">
+                    <button type="button" onclick="ajustarZoom(-0.5)" aria-label="Alejar plano"
+                        class="w-7 h-7 flex items-center justify-center border border-stone-300 bg-white text-stone-800 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-100 transition-colors font-bold">−</button>
+                    <button type="button" id="btn-zoom-reset" onclick="restablecerZoom()"
+                        class="px-2.5 h-7 flex items-center justify-center border border-stone-300 bg-white text-stone-800 hover:border-stone-900 transition-colors">Ajustar</button>
+                    <button type="button" onclick="ajustarZoom(0.5)" aria-label="Acercar plano"
+                        class="w-7 h-7 flex items-center justify-center border border-stone-300 bg-white text-stone-800 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-100 transition-colors font-bold">+</button>
                 </div>
             </div>
 
-            <!-- Bloque Derecho: Destino Exacto y Estantería (Descripción de todassignaturas.json) -->
-            <div class="md:w-1/3 flex flex-col items-start md:items-end justify-center">
-                <div class="flex flex-row md:flex-col items-center md:items-end gap-2 md:gap-1 mb-1 w-full md:w-auto">
-                    <span class="text-[9px] md:text-[10px] font-mono uppercase tracking-widest font-bold text-sand opacity-80">CDU</span>
-                    <div id="display-signatura" class="bg-sand text-stone-900 text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm hidden"></div>
-                </div>
-                <div class="text-left md:text-right">
-                    <span id="txt-estanteria" class="font-serif text-lg md:text-2xl font-bold text-sand leading-tight">--</span>
+            <!-- Visor scrollable con escenario exacto sobre la imagen -->
+            <div id="mapa-viewport" class="flex-1 min-h-0 w-full overflow-auto flex p-2 sm:p-3 bg-stone-100/70">
+                <div id="mapa-stage" class="relative m-auto shrink-0 border border-stone-300 shadow-md bg-white">
+                    <img id="img-mapa" src="" alt="Plano de estanterías de la Biblioteca de Humanidades" class="w-full h-full block select-none">
+                    <div id="indicador-posicion" class="punto-rojo hidden" aria-hidden="true"></div>
                 </div>
             </div>
+        </section>
 
-        </div> <!-- Fin Banda Horizontal -->
-
-        <!-- ZONA DEL MAPA DE UBICACIÓN (Maximizado para ocupar todo el espacio restante) -->
-        <div id="contenedor-mapa" class="flex-1 w-full relative rounded-sm shadow-xl bg-white border border-stone-200 hidden flex items-center justify-center p-1 overflow-hidden">
-            <div class="relative w-full h-full flex justify-center items-center">
-                <img id="img-mapa" src="" alt="Plano de ubicación" class="max-w-full max-h-full object-contain block">
-                <div id="indicador-posicion" class="punto-rojo hidden"></div>
+        <!-- PANEL ALTERNATIVO CUANDO NO HAY PLANO (Depósito, Mostrador o sin mapa) -->
+        <section id="panel-sin-mapa" class="hidden flex-1 min-h-[260px] w-full items-center justify-center p-4 sm:p-8 bg-white border border-stone-200 rounded-sm shadow-sm">
+            <div class="max-w-lg w-full text-center space-y-4">
+                <div class="w-12 h-12 mx-auto rounded-full bg-stone-100 border border-stone-300 flex items-center justify-center text-sand">
+                    <svg aria-hidden="true" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                </div>
+                <div>
+                    <h2 id="titulo-sin-mapa" class="editorial-title text-2xl sm:text-3xl text-stone-900 mb-2">
+                        Ejemplar fuera de Libre Acceso (HG)
+                    </h2>
+                    <p id="texto-sin-mapa" class="text-sm text-stone-600 leading-relaxed">
+                        Los libros situados directamente en las estanterías abiertas al público comienzan por <strong>HG</strong>. Para consultar este ejemplar, anota su signatura y solicítalo al personal en el mostrador.
+                    </p>
+                </div>
+                <div class="flex flex-wrap justify-center gap-2.5 pt-2 font-mono text-xs">
+                    <button type="button" onclick="copiarSignaturaActual()" class="px-4 py-2.5 border border-stone-300 bg-stone-50 text-stone-900 hover:border-stone-900 transition-colors">
+                        Copiar signatura
+                    </button>
+                    <a id="link-opac-fallback" href="https://buoabsys.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH" target="_blank" rel="noopener noreferrer"
+                        class="px-4 py-2.5 bg-stone-900 text-sand hover:bg-sand hover:text-stone-900 font-semibold transition-colors">
+                        Consultar disponibilidad OPAC ↗
+                    </a>
+                </div>
             </div>
-        </div>
+        </section>
 
     </main>
 
-    <!-- SCRIPTS LÓGICA -->
     <script src="js/utils.js"></script>
     <script>
-        const { escapeHTML } = window.BUOUtils;
+        const { escapeHTML, construirUrlOpac, copiarTexto } = window.BUOUtils;
         const params = new URLSearchParams(window.location.search);
-        
-        const sigBuscada = params.get('sig'); 
-        const sigOriginal = params.get('orig') || sigBuscada; 
-        const valPlanta = params.get('planta');
-        const valSala = params.get('sala');
-        const valUbicacion = params.get('ubicacion');
-        const valEstanteria = params.get('estanteria');
-        
-        // Recogemos Título, Autor y Fecha
-        const valTitulo = params.get('titulo') || 'Sin título especificado';
-        const valAutor = params.get('autor');
-        const valFecha = params.get('fecha');
 
-        const valMapa = params.get('mapa');
+        const sigBuscada = params.get('sig') || '';
+        const sigOriginal = params.get('orig') || sigBuscada;
+        const valPlanta = params.get('planta') || '';
+        const valSala = params.get('sala') || '';
+        const valUbicacion = params.get('ubicacion') || '';
+        const valEstanteria = params.get('estanteria') || '';
+
+        const valTitulo = params.get('titulo') || 'Sin título especificado';
+        const valAutor = params.get('autor') || '';
+        const valFecha = params.get('fecha') || '';
+
+        const valMapa = params.get('mapa') || '';
         const valPosX = params.get('pos_x');
         const valPosY = params.get('pos_y');
         const valTamPunto = params.get('tam_punto');
 
-        document.getElementById('header-signatura').textContent = sigOriginal || 'S/S';
-        document.getElementById('header-titulo').textContent = valTitulo;
+        const sigMostrada = sigOriginal || 'S/S';
+        const esHG = sigMostrada.trim().toUpperCase().startsWith('HG');
 
-        // Mostrar autor y fecha si existen (escapados para prevenir XSS)
-        if (valAutor || valFecha) {
-            let textoExtra = '';
-            if (valAutor && valAutor !== 'Desconocido') textoExtra += `<i class="fa-solid fa-pen-nib mr-1"></i> ${escapeHTML(valAutor)} `;
-            if (valFecha) textoExtra += `<span class="ml-2 px-1.5 py-0.5 bg-stone-200 rounded-sm"><i class="fa-regular fa-calendar mr-1"></i>${escapeHTML(valFecha)}</span>`;
-            
-            const contAutorFecha = document.getElementById('header-autor-fecha');
-            contAutorFecha.innerHTML = textoExtra;
-            contAutorFecha.style.display = 'block';
+        document.getElementById('header-signatura').textContent = sigMostrada;
+        document.getElementById('header-titulo').textContent = valTitulo;
+        document.getElementById('header-titulo').title = valTitulo;
+
+        // Botón Volver únicamente cuando se abre como página independiente (fuera de iframe)
+        if (window.self === window.top) {
+            const btnVolver = document.getElementById('btn-volver');
+            btnVolver.classList.remove('hidden');
+            btnVolver.classList.add('inline-flex');
         }
 
+        function volverAtras() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Badge de acceso en cabecera
+        const badgeAcceso = document.getElementById('badge-acceso');
+        if (esHG) {
+            badgeAcceso.textContent = 'Libre Acceso · En Sala';
+            badgeAcceso.className = 'text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 bg-emerald-900/10 text-emerald-900 border border-emerald-700/30';
+        } else if (sigMostrada === 'S/S') {
+            badgeAcceso.textContent = 'Sin signatura local';
+        } else {
+            badgeAcceso.textContent = 'Depósito / Mostrador';
+            badgeAcceso.className = 'text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 bg-amber-900/10 text-amber-900 border border-amber-700/30';
+        }
+
+        // Enlace directo OPAC
+        const opacUrl = construirUrlOpac(valTitulo, sigOriginal);
+        document.getElementById('link-opac').href = opacUrl;
+        document.getElementById('link-opac-fallback').href = opacUrl;
+
+        // Autor y fecha con SVG inline (sin depender de CDN externo)
+        if (valAutor || valFecha) {
+            const partes = [];
+            if (valAutor && valAutor !== 'Desconocido' && valAutor !== 'Autor no especificado') {
+                partes.push(`<span class="inline-flex items-center gap-1"><svg aria-hidden="true" class="w-3 h-3 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${escapeHTML(valAutor)}</span>`);
+            }
+            if (valFecha) {
+                partes.push(`<span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-stone-200/80 text-stone-800 font-mono text-[10px] rounded-sm border border-stone-300"><svg aria-hidden="true" class="w-3 h-3 text-stone-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${escapeHTML(valFecha)}</span>`);
+            }
+            if (partes.length > 0) {
+                const contAutorFecha = document.getElementById('header-autor-fecha');
+                contAutorFecha.innerHTML = partes.join('');
+                contAutorFecha.classList.remove('hidden');
+                contAutorFecha.classList.add('flex');
+            }
+        }
+
+        async function copiarSignaturaActual() {
+            const ok = await copiarTexto(sigMostrada);
+            if (!ok) return;
+            const txtBtn = document.getElementById('txt-copiar-sig');
+            const btn = document.getElementById('btn-copiar-sig');
+            if (txtBtn && btn) {
+                txtBtn.textContent = 'Copiada ✓';
+                btn.classList.add('border-emerald-600', 'text-emerald-800');
+                setTimeout(() => {
+                    txtBtn.textContent = 'Copiar signatura';
+                    btn.classList.remove('border-emerald-600', 'text-emerald-800');
+                }, 1800);
+            }
+        }
+
+        // Poblar banda de ubicación física preservando la estantería exacta
         if (valPlanta) document.getElementById('txt-planta').textContent = valPlanta;
         if (valSala) document.getElementById('txt-sala').textContent = valSala;
         if (valUbicacion) document.getElementById('txt-ubicacion').textContent = valUbicacion;
+        if (valEstanteria) {
+            document.getElementById('txt-estanteria').textContent = valEstanteria;
+        } else if (!esHG && sigMostrada !== 'S/S') {
+            document.getElementById('txt-estanteria').textContent = 'Mostrador de préstamo';
+        }
 
-        // Cargar todassignaturas.json para buscar la descripción basándonos en display-signatura (sigBuscada)
+        // Mostrar CDU y añadir su descripción temática sin sobrescribir #txt-estanteria
         if (sigBuscada) {
             const badge = document.getElementById('display-signatura');
             badge.textContent = sigBuscada;
-            badge.style.display = 'inline-block';
+            badge.classList.remove('hidden');
 
             fetch('todassignaturas.json')
                 .then(res => {
@@ -179,19 +313,19 @@
                     return res.json();
                 })
                 .then(data => {
-                    let sigUpper = sigBuscada.trim().toUpperCase();
+                    const sigUpper = sigBuscada.trim().toUpperCase();
                     let descripcionEncontrada = '';
 
-                    let matchExacto = data.find(item => (item.signaturas || '').trim().toUpperCase() === sigUpper);
+                    const matchExacto = data.find(item => (item.signaturas || '').trim().toUpperCase() === sigUpper);
                     if (matchExacto) {
                         descripcionEncontrada = matchExacto.descripcion || '';
                     } else {
-                        let candidatos = data.filter(item => {
-                            let itemSig = (item.signaturas || '').trim().toUpperCase();
+                        const candidatos = data.filter(item => {
+                            const itemSig = (item.signaturas || '').trim().toUpperCase();
                             if (!itemSig) return false;
                             if (sigUpper === itemSig) return true;
                             if (sigUpper.startsWith(itemSig)) {
-                                let nextChar = sigUpper.charAt(itemSig.length);
+                                const nextChar = sigUpper.charAt(itemSig.length);
                                 if (/[0-9]/.test(nextChar) && /[0-9]/.test(itemSig.slice(-1))) {
                                     return false;
                                 }
@@ -199,50 +333,161 @@
                             }
                             return false;
                         });
-
                         candidatos.sort((a, b) => (b.signaturas || '').trim().length - (a.signaturas || '').trim().length);
-
                         if (candidatos.length > 0) {
                             descripcionEncontrada = candidatos[0].descripcion || '';
                         }
                     }
 
                     if (descripcionEncontrada) {
-                        document.getElementById('txt-estanteria').textContent = descripcionEncontrada;
-                    } else if (valEstanteria) {
-                        document.getElementById('txt-estanteria').textContent = valEstanteria;
-                    } else {
-                        document.getElementById('txt-estanteria').textContent = '--';
+                        const cduEl = document.getElementById('txt-cdu-descripcion');
+                        cduEl.textContent = `Materia: ${descripcionEncontrada}`;
+                        cduEl.classList.remove('hidden');
+                        if (!valEstanteria && document.getElementById('txt-estanteria').textContent === '--') {
+                            document.getElementById('txt-estanteria').textContent = descripcionEncontrada;
+                        }
                     }
                 })
-                .catch(err => {
-                    console.error("Error:", err);
-                    if (valEstanteria) document.getElementById('txt-estanteria').textContent = valEstanteria;
-                });
-        } else if (valEstanteria) {
-            document.getElementById('txt-estanteria').textContent = valEstanteria;
+                .catch(err => console.warn("No se pudo cargar todassignaturas.json:", err));
         }
 
-        if (valMapa && /^[a-zA-Z0-9._/-]+\.(?:jpg|jpeg|png|webp|gif|svg)$/i.test(valMapa) && !valMapa.includes('..')) {
+        // Control preciso del mapa + alineación de coordenadas sobre dimensiones reales de la imagen
+        let zoomActual = 1;
+        let tieneCoordenadas = false;
+        let posXNum = NaN;
+        let posYNum = NaN;
+        let tamBasePunto = 20;
+
+        function ajustarEscenarioMapa(centrarEnPunto = false) {
+            const viewport = document.getElementById('mapa-viewport');
+            const stage = document.getElementById('mapa-stage');
+            const img = document.getElementById('img-mapa');
+            const indicador = document.getElementById('indicador-posicion');
+            if (!viewport || !stage || !img) return;
+
+            const natW = img.naturalWidth || 1442;
+            const natH = img.naturalHeight || 736;
+            const ratio = natW / natH;
+
+            const style = getComputedStyle(viewport);
+            const padX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+            const padY = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+            const availW = Math.max(240, viewport.clientWidth - padX);
+            const availH = Math.max(160, viewport.clientHeight - padY);
+
+            let baseW = availW;
+            let baseH = baseW / ratio;
+            if (baseH > availH) {
+                baseH = availH;
+                baseW = baseH * ratio;
+            }
+
+            const finalW = Math.round(baseW * zoomActual);
+            const finalH = Math.round(baseH * zoomActual);
+
+            stage.style.width = finalW + 'px';
+            stage.style.height = finalH + 'px';
+
+            if (tieneCoordenadas && indicador) {
+                const tamEscalado = Math.max(14, Math.min(28, Math.round((finalW / 920) * tamBasePunto)));
+                indicador.style.width = tamEscalado + 'px';
+                indicador.style.height = tamEscalado + 'px';
+            }
+
+            const btnReset = document.getElementById('btn-zoom-reset');
+            if (btnReset) {
+                btnReset.textContent = zoomActual === 1 ? 'Ajustar' : `${Math.round(zoomActual * 100)}%`;
+            }
+
+            if (centrarEnPunto && tieneCoordenadas && zoomActual > 1) {
+                const padLeft = parseFloat(style.paddingLeft) || 0;
+                const padTop = parseFloat(style.paddingTop) || 0;
+                requestAnimationFrame(() => {
+                    const targetX = padLeft + (posXNum / 100) * finalW - viewport.clientWidth / 2;
+                    const targetY = padTop + (posYNum / 100) * finalH - viewport.clientHeight / 2;
+                    viewport.scrollTo({
+                        left: Math.max(0, targetX),
+                        top: Math.max(0, targetY),
+                        behavior: 'smooth'
+                    });
+                });
+            }
+        }
+
+        function ajustarZoom(delta) {
+            zoomActual = Math.min(2.5, Math.max(1, Number((zoomActual + delta).toFixed(1))));
+            ajustarEscenarioMapa(delta > 0);
+        }
+
+        function restablecerZoom() {
+            zoomActual = 1;
+            ajustarEscenarioMapa(false);
+        }
+
+        function mostrarPanelSinMapa(motivoError = false) {
+            const contenedorMapa = document.getElementById('contenedor-mapa');
+            const panelSinMapa = document.getElementById('panel-sin-mapa');
+            const tituloSinMapa = document.getElementById('titulo-sin-mapa');
+            const textoSinMapa = document.getElementById('texto-sin-mapa');
+
+            if (contenedorMapa) {
+                contenedorMapa.classList.add('hidden');
+                contenedorMapa.classList.remove('flex');
+            }
+            if (panelSinMapa) {
+                panelSinMapa.classList.remove('hidden');
+                panelSinMapa.classList.add('flex');
+            }
+
+            if (motivoError) {
+                tituloSinMapa.textContent = 'No se pudo cargar el plano visual';
+                textoSinMapa.innerHTML = `Puedes orientarte con la ruta superior (<strong>${escapeHTML(valPlanta || 'Sala')} · ${escapeHTML(valEstanteria || 'Consultar mostrador')}</strong>) o comprobar la disponibilidad en el OPAC.`;
+            } else if (esHG) {
+                tituloSinMapa.textContent = 'Plano no especificado para esta vista';
+                textoSinMapa.innerHTML = `Sigue la ruta superior o consulta el código <strong>${escapeHTML(sigMostrada)}</strong> en el buscador principal para abrir su mapa correspondiente.`;
+            } else if (sigMostrada === 'S/S') {
+                tituloSinMapa.textContent = 'Registro sin signatura física asignada';
+                textoSinMapa.innerHTML = 'Este registro no tiene tejuelo asignado localmente. Comprueba su disponibilidad, enlaces electrónicos u otros ejemplares en el <strong>OPAC general de la BUO</strong>.';
+            } else {
+                tituloSinMapa.textContent = 'Ejemplar en Depósito o Sección Especial';
+                textoSinMapa.innerHTML = `Las estanterías de Libre Acceso comienzan por <strong>HG</strong>. Para consultar o llevarte en préstamo <strong>${escapeHTML(sigMostrada)}</strong>, acude al mostrador de la biblioteca.`;
+            }
+        }
+
+        const esRutaMapaValida = Boolean(valMapa && /^[a-zA-Z0-9._/-]+\.(?:jpg|jpeg|png|webp|gif|svg)$/i.test(valMapa) && !valMapa.includes('..'));
+
+        if (esRutaMapaValida) {
             const contenedorMapa = document.getElementById('contenedor-mapa');
             const imgMapa = document.getElementById('img-mapa');
             const indicador = document.getElementById('indicador-posicion');
+            const viewport = document.getElementById('mapa-viewport');
 
             contenedorMapa.classList.remove('hidden');
-            imgMapa.src = valMapa;
+            contenedorMapa.classList.add('flex');
 
-            const posXNum = parseFloat(valPosX);
-            const posYNum = parseFloat(valPosY);
+            posXNum = parseFloat(valPosX);
+            posYNum = parseFloat(valPosY);
+            const tamNum = parseFloat(valTamPunto);
+            tamBasePunto = Number.isFinite(tamNum) && tamNum > 0 ? tamNum : 20;
+
             if (Number.isFinite(posXNum) && Number.isFinite(posYNum)) {
+                tieneCoordenadas = true;
                 indicador.classList.remove('hidden');
                 indicador.style.left = posXNum + '%';
                 indicador.style.top = posYNum + '%';
-                
-                const tamNum = parseFloat(valTamPunto);
-                const tamano = Number.isFinite(tamNum) && tamNum > 0 ? tamNum + 'px' : '20px';
-                indicador.style.width = tamano;
-                indicador.style.height = tamano;
             }
+
+            imgMapa.onload = () => ajustarEscenarioMapa(false);
+            imgMapa.onerror = () => mostrarPanelSinMapa(true);
+            imgMapa.src = valMapa;
+
+            if (typeof ResizeObserver !== 'undefined' && viewport) {
+                new ResizeObserver(() => ajustarEscenarioMapa(false)).observe(viewport);
+            }
+            window.addEventListener('resize', () => ajustarEscenarioMapa(false));
+            ajustarEscenarioMapa(false);
+        } else {
+            mostrarPanelSinMapa(false);
         }
     </script>
 </body>
