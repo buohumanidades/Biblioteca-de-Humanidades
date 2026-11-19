@@ -2,8 +2,10 @@
 <html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Biblioteca de Humanidades · Campus de El Milán · Universidad de Oviedo</title>
+    <meta name="description" content="Portal de la Biblioteca de Humanidades (Campus de El Milán, Universidad de Oviedo): busca libros en sala, consulta bibliografía de grados, explora materias CDU y pregunta al asistente bibliográfico IA.">
+    <meta name="theme-color" content="#1A1817">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="js/purify.min.js"></script>
@@ -17,36 +19,46 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC5', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' },
-                        sand: '#C5A059',
-                    },
-                    fontFamily: {
-                        serif: ['Cormorant Garamond', 'serif'],
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        mono: ['Space Grotesk', 'monospace'],
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC5', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' },
+                            sand: '#C5A059',
+                        },
+                        fontFamily: {
+                            serif: ['Cormorant Garamond', 'serif'],
+                            sans: ['Plus Jakarta Sans', 'sans-serif'],
+                            mono: ['Space Grotesk', 'monospace'],
+                        }
                     }
                 }
-            }
+            };
         }
     </script>
     <style>
         body { background-color: #F4F0E8; color: #1A1817; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
-        .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 0.95; }
+        .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 0.96; }
         .dot-spaced { letter-spacing: 0.35em; text-transform: uppercase; }
         .grid-line-r { border-right: 1px solid rgba(26, 24, 23, 0.12); }
         .grid-line-b { border-bottom: 1px solid rgba(26, 24, 23, 0.12); }
         .grid-line-t { border-top: 1px solid rgba(26, 24, 23, 0.12); }
-        .hover-lift { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease; }
-        .hover-lift:hover { transform: translateY(-4px); }
+        .hover-lift { transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease; }
+        .hover-lift:hover { transform: translateY(-3px); }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #F4F0E8; }
         ::-webkit-scrollbar-thumb { background: #1A1817; }
         .modal-active { opacity: 1 !important; pointer-events: auto !important; }
         .modal-content-active { transform: translateY(0) scale(1) !important; }
+        .drawer-open { opacity: 1 !important; pointer-events: auto !important; }
+        .drawer-panel-open { transform: translateX(0) !important; }
+        .safe-bottom { padding-bottom: max(0.5rem, env(safe-area-inset-bottom)); }
+        section[id], footer[id] { scroll-margin-top: 5rem; }
+        a:focus-visible, button:focus-visible, input:focus-visible {
+            outline: 2px solid #C5A059;
+            outline-offset: 2px;
+        }
 
         /* Estilos del Asistente Virtual integrado */
         .chat-bg {
@@ -100,274 +112,496 @@
         }
     </style>
 </head>
-<body class="antialiased selection:bg-stone-800 selection:text-stone-50">
+<body id="top" class="antialiased selection:bg-stone-800 selection:text-stone-50">
+    <a href="#contenido-principal" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[4000] focus:bg-sand focus:text-stone-900 focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:font-semibold">
+        Saltar al contenido principal
+    </a>
 
-    <!-- Barra Superior Informativa -->
-    <div class="w-full bg-stone-900 text-stone-100 text-[10px] md:text-xs font-mono py-2.5 px-6 flex justify-between items-center border-b border-stone-800">
-        <div class="flex items-center space-x-4">
-            <span class="inline-flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-50 mr-2 animate-pulse"></span>HORARIO: 8 a 20 horas</span>
-            <span class="hidden md:inline text-stone-500">|</span>
-            <span class="hidden md:inline text-stone-400">UNIVERSIDAD DE OVIEDO</span>
-        </div>
-        <div class="flex items-center space-x-4 md:space-x-6 text-stone-400">
-            <span title="Visitas globales">VISITAS: <span id="numVisitas" class="text-sand font-bold">...</span></span>
-            <span class="text-stone-600">/</span>
-            <span title="Búsquedas realizadas">BÚSQUEDAS: <span id="numEncontrado" class="text-emerald-400 font-bold">...</span></span>
+    <!-- Barra Superior Informativa con estado vivo de horario -->
+    <div class="w-full bg-stone-900 text-stone-100 text-[10px] sm:text-xs font-mono py-2 px-4 sm:px-6 border-b border-stone-800">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center gap-3 min-w-0">
+                <span class="inline-flex items-center gap-2 truncate" title="Horario lectivo habitual de lunes a viernes">
+                    <span id="estado-horario-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0"></span>
+                    <span id="estado-horario-texto" class="truncate">HORARIO L–V: 08:00 a 20:00 h</span>
+                </span>
+                <span class="hidden md:inline text-stone-600">|</span>
+                <span class="hidden md:inline text-stone-400">CAMPUS DE EL MILÁN · UNIOVI</span>
+            </div>
+            <div class="flex items-center gap-3 sm:gap-5 text-stone-400 flex-shrink-0">
+                <span title="Visitas globales">VISITAS: <span id="numVisitas" class="text-sand font-bold">...</span></span>
+                <span class="text-stone-700">/</span>
+                <span title="Búsquedas realizadas">BÚSQUEDAS: <span id="numEncontrado" class="text-emerald-400 font-bold">...</span></span>
+            </div>
         </div>
     </div>
 
     <!-- Header Navegación -->
-    <header class="sticky top-0 z-40 bg-stone-100/90 backdrop-blur-md grid-line-b">
-        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-            <div>
-                <a href="https://buo.uniovi.es/" target="_blank" class="block text-xs font-mono font-medium tracking-[0.3em] text-stone-800 uppercase hover:text-sand transition-colors">BUO</a>
-                <span class="text-[11px] text-stone-500 font-mono tracking-wider block mt-0.5">BIBLIOTECA DE LA UNIVERSIDAD DE OVIEDO</span>
+    <header class="sticky top-0 z-40 bg-stone-100/95 backdrop-blur-md grid-line-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 sm:py-4 flex justify-between items-center gap-4">
+            <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                    <a href="https://buo.uniovi.es/" target="_blank" rel="noopener noreferrer" class="text-xs font-mono font-semibold tracking-[0.28em] text-stone-900 uppercase hover:text-sand transition-colors">BUO</a>
+                    <span class="text-stone-400 text-xs hidden sm:inline">·</span>
+                    <span class="hidden sm:inline text-[11px] font-mono tracking-wider text-stone-500 uppercase">Campus de El Milán</span>
+                </div>
+                <span class="text-[11px] sm:text-xs text-stone-700 font-medium tracking-wide block mt-0.5 truncate">Biblioteca de Humanidades · Universidad de Oviedo</span>
             </div>
-            <nav class="hidden lg:flex items-center space-x-8 text-xs font-mono tracking-widest text-stone-800 uppercase">
-                <a href="#buscar" class="hover:text-sand transition-colors">01. Búsqueda</a>
-                <a href="#acervo" class="hover:text-sand transition-colors">02. Materias & Grados</a>
-                <a href="#espacio" class="hover:text-sand transition-colors">03. Instalaciones</a>
+
+            <!-- Navegación PC -->
+            <nav aria-label="Navegación principal" class="hidden lg:flex items-center space-x-7 text-xs font-mono tracking-widest text-stone-800 uppercase">
+                <a href="#buscar" onclick="enfocarBuscador(event)" class="hover:text-sand transition-colors">01. Buscar</a>
+                <a href="#acervo" class="hover:text-sand transition-colors">02. Materias</a>
+                <button type="button" onclick="abrirModalGrados(event)" class="hover:text-sand transition-colors uppercase tracking-widest">03. Grados</button>
+                <a href="#guia" class="hover:text-sand transition-colors">04. Guía 1.º</a>
+                <a href="#espacio" class="hover:text-sand transition-colors">05. Espacio</a>
             </nav>
-            <div class="flex items-center gap-2.5">
-                <button type="button" onclick="abrirAsistente(event)" class="inline-flex items-center space-x-2 text-xs font-mono px-4 py-2 bg-sand text-stone-900 font-semibold hover:bg-stone-900 hover:text-sand border border-sand transition-all uppercase tracking-wider shadow-sm">
-                    <span class="w-1.5 h-1.5 rounded-full bg-stone-900 animate-ping"></span>
-                    <i class="fa-solid fa-comments text-[11px]"></i>
-                    <span>Asistente IA</span>
-                </button>
-                <a href="#buscar" class="hidden sm:inline-flex items-center space-x-2 text-xs font-mono px-4 py-2 bg-stone-900 text-stone-100 hover:bg-sand hover:text-stone-900 transition-all uppercase tracking-wider">
-                    <i class="fa-solid fa-magnifying-glass text-[10px]"></i>
-                    <span>Localizar Libro</span>
+
+            <!-- Acciones Cabecera -->
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <a href="escaner.html" class="hidden xl:inline-flex items-center gap-1.5 text-xs font-mono px-3 py-2 border border-stone-300 bg-stone-50 text-stone-800 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-100 transition-all uppercase tracking-wider" title="Escanear tejuelos HG con la cámara">
+                    <i class="fa-solid fa-camera text-[11px] text-sand"></i>
+                    <span>Escáner</span>
                 </a>
+                <button type="button" onclick="abrirAsistente(event)" class="inline-flex items-center gap-2 text-xs font-mono px-3.5 sm:px-4 py-2 bg-sand text-stone-900 font-semibold hover:bg-stone-900 hover:text-sand border border-sand transition-all uppercase tracking-wider shadow-sm">
+                    <span class="w-1.5 h-1.5 rounded-full bg-stone-900 animate-ping hidden sm:inline-block"></span>
+                    <svg aria-hidden="true" class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <span class="hidden sm:inline">Asistente IA</span>
+                    <span class="sm:hidden">IA</span>
+                </button>
+                <button type="button" id="mobile-menu-btn" onclick="toggleMobileDrawer()" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="mobile-drawer"
+                    class="lg:hidden inline-flex items-center justify-center w-10 h-10 border border-stone-300 bg-stone-50 text-stone-900 hover:border-stone-900 transition-colors">
+                    <svg aria-hidden="true" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="relative min-h-[85vh] flex flex-col justify-between grid-line-b overflow-hidden">
-        <div class="w-full pt-12 pb-4 px-6 text-center grid-line-b">
-            <p class="text-xs md:text-sm font-mono dot-spaced text-stone-600 font-medium">B . I . B . L . I . O . T . E . C . A  ·  H . U . M . A . N . I . D . A . D . E . S</p>
-        </div>
+    <!-- Menú Lateral Móvil y Tablet (< lg) -->
+    <div id="mobile-drawer" role="dialog" aria-modal="true" aria-label="Menú de navegación" onclick="toggleMobileDrawer(false)"
+        class="fixed inset-0 z-[2200] bg-stone-900/75 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden">
+        <aside id="mobile-drawer-panel" onclick="event.stopPropagation()"
+            class="ml-auto w-[86%] max-w-sm h-full bg-stone-50 border-l border-stone-300 flex flex-col transform translate-x-full transition-transform duration-300 shadow-2xl">
+            <div class="bg-stone-900 text-stone-100 px-5 py-4 flex items-center justify-between border-b border-sand/40">
+                <div>
+                    <span class="text-[10px] font-mono text-sand uppercase tracking-[0.25em] block">Navegación rápida</span>
+                    <span class="font-serif text-xl text-stone-100">Biblioteca de Humanidades</span>
+                </div>
+                <button type="button" onclick="toggleMobileDrawer(false)" aria-label="Cerrar menú"
+                    class="w-9 h-9 flex items-center justify-center border border-stone-700 text-stone-300 hover:text-stone-900 hover:bg-sand transition-colors">
+                    <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
 
-        <div class="max-w-7xl mx-auto px-6 py-12 md:py-20 w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div class="lg:col-span-8">
-                <span class="text-xs font-mono text-sand font-semibold uppercase tracking-widest block mb-4">[ Campus de El Milán ]</span>
-                <h1 class="editorial-title text-5xl sm:text-7xl lg:text-8xl font-light text-stone-900 mb-8">
-                    Biblioteca <br><span class="italic font-normal text-stone-800">de</span> Humanidades.
-                </h1>
-                <p class="text-lg sm:text-xl font-light text-stone-700 max-w-2xl leading-relaxed">
-                    "Nuestras instalaciones albergan una extensa colección orientada a Filología, Geografía, Historia y Filosofía. Explora nuestras colecciones y guías docentes."
+            <div class="flex-1 overflow-y-auto p-5 space-y-6 font-mono text-xs">
+                <div>
+                    <span class="text-[10px] text-stone-500 uppercase tracking-widest block mb-2.5">Herramientas principales</span>
+                    <div class="space-y-2">
+                        <a href="#buscar" onclick="toggleMobileDrawer(false); enfocarBuscador();" class="flex items-center justify-between p-3 bg-stone-900 text-stone-100">
+                            <span><i class="fa-solid fa-magnifying-glass text-sand mr-2.5"></i>Buscar libro o signatura</span>
+                            <span>→</span>
+                        </a>
+                        <button type="button" onclick="toggleMobileDrawer(false); abrirAsistente(event);" class="w-full flex items-center justify-between p-3 bg-sand/20 border border-sand text-stone-900 font-semibold text-left">
+                            <span><i class="fa-solid fa-comments text-stone-900 mr-2.5"></i>Asistente Bibliográfico IA</span>
+                            <span>→</span>
+                        </button>
+                        <button type="button" onclick="toggleMobileDrawer(false); abrirModalGrados(event);" class="w-full flex items-center justify-between p-3 bg-white border border-stone-200 text-stone-900 text-left">
+                            <span><i class="fa-solid fa-graduation-cap text-sand mr-2.5"></i>Bibliografía por Grados</span>
+                            <span>→</span>
+                        </button>
+                        <a href="escaner.html" class="flex items-center justify-between p-3 bg-white border border-stone-200 text-stone-900">
+                            <span><i class="fa-solid fa-camera text-sand mr-2.5"></i>Escáner móvil de sala (HG)</span>
+                            <span>→</span>
+                        </a>
+                        <a href="titulo.html" class="flex items-center justify-between p-3 bg-white border border-stone-200 text-stone-900">
+                            <span><i class="fa-solid fa-heading text-sand mr-2.5"></i>Búsqueda directa por título</span>
+                            <span>→</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="text-[10px] text-stone-500 uppercase tracking-widest block mb-2.5">Explorar salas por materia</span>
+                    <div class="grid grid-cols-1 gap-1.5">
+                        <a href="8.html" class="p-2.5 border border-stone-200 bg-white text-stone-800 hover:border-stone-900">HG8 · Lengua y Literatura</a>
+                        <a href="9.html" class="p-2.5 border border-stone-200 bg-white text-stone-800 hover:border-stone-900">HG9 · Geografía e Historia</a>
+                        <a href="7.html" class="p-2.5 border border-stone-200 bg-white text-stone-800 hover:border-stone-900">HG7 · Arte y Arquitectura</a>
+                        <a href="1.html" class="p-2.5 border border-stone-200 bg-white text-stone-800 hover:border-stone-900">HG1-6 · Filosofía y CC.SS.</a>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="text-[10px] text-stone-500 uppercase tracking-widest block mb-2.5">Información y portales</span>
+                    <div class="space-y-1.5 text-stone-700">
+                        <a href="#guia" onclick="toggleMobileDrawer(false)" class="block py-2 border-b border-stone-200">04. Guía rápida para estudiantes</a>
+                        <a href="#espacio" onclick="toggleMobileDrawer(false)" class="block py-2 border-b border-stone-200">05. Dirección, contacto y horario</a>
+                        <a href="https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=101" target="_blank" rel="noopener noreferrer" class="block py-2 border-b border-stone-200">Catálogo General OPAC BUO ↗</a>
+                        <a href="https://digibuo.uniovi.es/dspace/" target="_blank" rel="noopener noreferrer" class="block py-2">Repositorio Institucional (RUO) ↗</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <main id="contenido-principal">
+        <!-- Hero + Buscador Principal "Above the Fold" -->
+        <section id="buscar" class="relative grid-line-b bg-stone-100 overflow-hidden">
+            <div class="w-full py-2.5 px-4 sm:px-6 text-center grid-line-b bg-stone-50/70">
+                <p class="text-[9px] sm:text-xs font-mono tracking-[0.15em] sm:tracking-[0.35em] uppercase text-stone-600 font-medium leading-relaxed">
+                    <span class="whitespace-nowrap">B . I . B . L . I . O . T . E . C . A</span>
+                    <span class="text-sand mx-1">·</span>
+                    <span class="whitespace-nowrap">H . U . M . A . N . I . D . A . D . E . S</span>
                 </p>
             </div>
-            
-            <div class="lg:col-span-4 bg-stone-900 text-stone-100 p-8 grid-line-t lg:grid-line-t-0 hover-lift relative group overflow-hidden">
-                <img src="imagenes/libros.jpg" onerror="this.style.display='none'" alt="Biblioteca" class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700">
-                <div class="relative z-10">
-                    <div class="text-xs font-mono text-sand mb-6 tracking-widest uppercase">/ EL ESPACIO</div>
-                    <blockquote class="editorial-title text-2xl font-light leading-snug mb-6 text-stone-200">
-                        "Preservamos la calma del papel y la profundidad del pensamiento analítico."
-                    </blockquote>
-                    <a href="#acervo" class="inline-block mt-4 text-xs font-mono border-b border-sand pb-1 hover:text-sand transition-colors">VER BIBLIOGRAFÍA →</a>
-                </div>
-            </div>
-        </div>
 
-        <div class="w-full grid grid-cols-2 md:grid-cols-4 grid-line-t font-mono text-xs">
-            <div class="p-6 grid-line-r flex flex-col justify-between">
-                <span class="text-stone-500 block mb-2">01 / UBICACIÓN</span>
-                <span class="font-medium text-stone-900">Campus de El Milán<br>C/ Tte. Alfonso Martínez</span>
-            </div>
-            <div class="p-6 grid-line-r flex flex-col justify-between">
-                <span class="text-stone-500 block mb-2">02 / COLECCIÓN</span>
-                <span class="font-medium text-stone-900">+250.000 Volúmenes<br>FONDOS HISTÓRICOS</span>
-            </div>
-            <div class="p-6 md:grid-line-r flex flex-col justify-between">
-                <span class="text-stone-500 block mb-2">03 / PUESTOS DE LECTURA</span>
-                <span class="font-medium text-stone-900">450 Plazas de Estudio<br>SALAS DE ESTUDIO Y SALA GRUPAL</span>
-            </div>
-            <div class="p-6 flex flex-col justify-between bg-stone-200/50">
-                <span class="text-stone-500 block mb-2">04 / ACCESO DIGITAL</span>
-                <a href="https://digibuo.uniovi.es/dspace/" target="_blank" class="font-semibold text-stone-900 hover:text-sand transition-colors">CONSULTAR CATÁLOGO RUO →</a>
-            </div>
-        </div>
-    </section>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 lg:py-14">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                    <!-- Columna Principal: Titular + Buscador Inmediato -->
+                    <div class="lg:col-span-7 flex flex-col justify-between gap-6">
+                        <div>
+                            <span class="text-[11px] font-mono text-sand font-semibold uppercase tracking-widest block mb-3">[ Campus de El Milán · Facultad de Filosofía y Letras ]</span>
+                            <h1 class="editorial-title text-4xl sm:text-6xl xl:text-7xl font-light text-stone-900 mb-4">
+                                Biblioteca <span class="italic font-normal text-stone-800">de</span> Humanidades.
+                            </h1>
+                            <p class="text-sm sm:text-base lg:text-lg font-light text-stone-700 max-w-2xl leading-relaxed">
+                                Encuentra libros en sala con su plano exacto, consulta la bibliografía recomendada de tu grado o pide orientación a nuestro asistente académico.
+                            </p>
+                        </div>
 
-    <!-- Sección Buscador + Acceso Destacado al Asistente -->
-    <section id="buscar" class="py-16 bg-stone-900 text-stone-100 grid-line-b">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-6 border-b border-stone-800">
-                <div>
-                    <span class="text-xs font-mono text-sand tracking-widest uppercase block mb-2">// BUSCADOR</span>
-                    <h2 class="editorial-title text-3xl md:text-5xl font-light">Encuentra libros, revistas y tesis doctorales</h2>
-                </div>
-                <p class="text-xs font-mono text-stone-400 mt-4 md:mt-0">CATÁLOGO DE LA BIBLIOTECA DE HUMANIDADES</p>
-            </div>
+                        <!-- Caja de Búsqueda Principal Integrada -->
+                        <div class="bg-stone-900 text-stone-100 p-5 sm:p-7 border border-stone-800 shadow-lg">
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                                <span class="text-[11px] font-mono text-sand tracking-widest uppercase font-semibold">// BUSCADOR DEL CATÁLOGO</span>
+                                <span class="hidden sm:inline text-[10px] font-mono text-stone-400">Pulsa <kbd class="px-1.5 py-0.5 bg-stone-800 border border-stone-700 text-stone-200">/</kbd> para escribir</span>
+                            </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-                <!-- Buscador Clásico -->
-                <form onsubmit="ejecutarBusqueda(event)" class="lg:col-span-8 flex flex-col justify-between">
-                    <div>
-                        <div class="flex flex-col sm:flex-row gap-2">
-                            <input type="text" id="input-busqueda-index" placeholder="Escribe signatura, título o palabra clave..." 
-                                class="w-full bg-stone-800/80 border border-stone-700 text-stone-100 px-6 py-5 text-sm md:text-base focus:outline-none focus:border-sand font-sans transition-colors placeholder:text-stone-500" required>
-                            <button type="submit" class="bg-sand text-stone-900 px-8 py-5 text-xs font-mono font-semibold uppercase tracking-widest hover:bg-stone-100 transition-colors whitespace-nowrap flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-magnifying-glass text-xs"></i>
-                                <span>BUSCAR AHORA</span>
+                            <form onsubmit="ejecutarBusqueda(event)">
+                                <div class="flex flex-col sm:flex-row gap-2.5">
+                                    <div class="relative flex-1">
+                                        <svg aria-hidden="true" class="w-4 h-4 text-stone-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                        <input type="text" id="input-busqueda-index" placeholder="Título, autor, materia o signatura (ej. HG946)..."
+                                            aria-label="Buscar libro por título, autor o signatura"
+                                            class="w-full bg-stone-800/90 border border-stone-700 text-stone-100 pl-11 pr-10 py-3.5 sm:py-4 text-sm sm:text-base focus:outline-none focus:border-sand font-sans transition-colors placeholder:text-stone-400" required>
+                                        <button type="button" id="btn-limpiar-busqueda" onclick="limpiarCampoBusqueda()" aria-label="Limpiar búsqueda"
+                                            class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-sand p-1 transition-colors">
+                                            <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                        </button>
+                                    </div>
+                                    <button type="submit" class="bg-sand text-stone-900 px-6 sm:px-7 py-3.5 sm:py-4 text-xs font-mono font-semibold uppercase tracking-widest hover:bg-stone-100 transition-colors whitespace-nowrap flex items-center justify-center gap-2">
+                                        <span>Buscar ahora</span>
+                                        <span aria-hidden="true">→</span>
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div class="mt-4 pt-3.5 border-t border-stone-800 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="text-stone-400 text-[11px]">EXPLORAR SALA:</span>
+                                    <button type="button" onclick="aplicarFiltroPopular('HG7')" class="px-2.5 py-1 bg-stone-800 hover:bg-sand hover:text-stone-900 text-stone-200 border border-stone-700 transition-colors">Arte (HG7)</button>
+                                    <button type="button" onclick="aplicarFiltroPopular('HG9')" class="px-2.5 py-1 bg-stone-800 hover:bg-sand hover:text-stone-900 text-stone-200 border border-stone-700 transition-colors">Historia (HG9)</button>
+                                    <button type="button" onclick="aplicarFiltroPopular('HG1')" class="px-2.5 py-1 bg-stone-800 hover:bg-sand hover:text-stone-900 text-stone-200 border border-stone-700 transition-colors">Filosofía (HG1)</button>
+                                    <button type="button" onclick="aplicarFiltroPopular('HG8')" class="px-2.5 py-1 bg-stone-800 hover:bg-sand hover:text-stone-900 text-stone-200 border border-stone-700 transition-colors">Literatura (HG8)</button>
+                                </div>
+                                <a href="titulo.html" class="text-[11px] text-sand hover:text-stone-100 underline underline-offset-4 transition-colors">
+                                    Búsqueda directa por título →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Sala Real + Tarjeta Interactiva Asistente IA -->
+                    <div id="hero-assistant-card" class="lg:col-span-5 flex flex-col border border-stone-300 bg-stone-900 text-stone-100 overflow-hidden shadow-lg">
+                        <!-- Imagen real de la sala de lectura -->
+                        <div class="relative h-44 sm:h-48 overflow-hidden border-b border-stone-800 group">
+                            <img src="sala.webp" onerror="this.src='imagenes/libros.jpg'; this.onerror=null;" alt="Sala de lectura de la Biblioteca de Humanidades en el Campus de El Milán"
+                                class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-stone-900 via-stone-900/40 to-transparent"></div>
+                            <div class="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-2">
+                                <div>
+                                    <span class="text-[10px] font-mono text-sand uppercase tracking-widest block">Plantas 1 y 2 · Libre Acceso</span>
+                                    <p class="font-serif text-xl sm:text-2xl text-stone-50 leading-tight">450 puestos de lectura y sala grupal</p>
+                                </div>
+                                <a href="#acervo" class="text-[10px] font-mono bg-stone-900/90 text-stone-100 border border-stone-600 px-2.5 py-1.5 hover:border-sand hover:text-sand transition-colors whitespace-nowrap">
+                                    Ver áreas →
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Tarjeta Destacada del Asistente Virtual -->
+                        <div class="p-5 sm:p-6 flex-1 flex flex-col justify-between bg-gradient-to-br from-stone-800/90 to-stone-900 relative">
+                            <div>
+                                <div class="flex items-center justify-between mb-2.5">
+                                    <span class="inline-flex items-center text-[10px] font-mono uppercase tracking-widest text-sand font-semibold">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>
+                                        ASISTENTE BIBLIOGRÁFICO IA
+                                    </span>
+                                    <span class="text-[10px] font-mono px-2 py-0.5 bg-sand/20 text-sand border border-sand/40">TFG / Trabajos</span>
+                                </div>
+                                <h2 class="editorial-title text-2xl sm:text-3xl font-light text-stone-100 mb-1.5">¿Buscas bibliografía para un tema?</h2>
+                                <p class="text-xs text-stone-300 font-light leading-relaxed mb-4">
+                                    Pregunta en lenguaje natural sobre autores, periodos o trabajos de clase. Te sugerimos libros de la sala, citas y enlaces al OPAC.
+                                </p>
+
+                                <div class="space-y-1.5 mb-4">
+                                    <span class="text-[10px] font-mono uppercase tracking-wider text-stone-400 block">Consultas de ejemplo en 1 clic:</span>
+                                    <button type="button" onclick="abrirYConsultarAsistente('Estoy haciendo un trabajo sobre el prerrománico asturiano')"
+                                        class="w-full text-left text-[11px] font-mono bg-stone-800/90 hover:bg-stone-700 text-stone-200 border border-stone-700 hover:border-sand px-3 py-2 transition-colors flex items-center justify-between gap-2">
+                                        <span class="truncate">💡 Prerrománico asturiano</span>
+                                        <i class="fa-solid fa-arrow-right text-[10px] text-sand"></i>
+                                    </button>
+                                    <button type="button" onclick="abrirYConsultarAsistente('Bibliografía de filosofía política de Hannah Arendt')"
+                                        class="w-full text-left text-[11px] font-mono bg-stone-800/90 hover:bg-stone-700 text-stone-200 border border-stone-700 hover:border-sand px-3 py-2 transition-colors flex items-center justify-between gap-2">
+                                        <span class="truncate">🎓 Filosofía política: Hannah Arendt</span>
+                                        <i class="fa-solid fa-arrow-right text-[10px] text-sand"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="button" onclick="abrirAsistente(event)"
+                                class="w-full py-3 px-4 bg-sand text-stone-900 hover:bg-stone-100 transition-colors font-mono text-xs font-semibold uppercase tracking-wider flex items-center justify-between">
+                                <span>Iniciar consulta guiada</span>
+                                <i class="fa-solid fa-comments"></i>
                             </button>
                         </div>
-                        <div class="flex flex-wrap gap-4 mt-4 text-xs font-mono text-stone-400">
-                            <span class="text-stone-500">FILTROS:</span>
-                            <button type="button" onclick="aplicarFiltroPopular('HG7')" class="hover:text-sand underline decoration-stone-600 underline-offset-4">Arte</button>
-                            <button type="button" onclick="aplicarFiltroPopular('HG9')" class="hover:text-sand underline decoration-stone-600 underline-offset-4">Historia</button>
-                            <button type="button" onclick="aplicarFiltroPopular('HG1')" class="hover:text-sand underline decoration-stone-600 underline-offset-4">Filosofía</button>
-                            <button type="button" onclick="aplicarFiltroPopular('HG8')" class="hover:text-sand underline decoration-stone-600 underline-offset-4">Literatura</button>
-                        </div>
                     </div>
-                </form>
+                </div>
+            </div>
 
-                <!-- Tarjeta Destacada del Asistente Virtual -->
-                <div role="button" tabindex="0" onclick="abrirAsistente(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();abrirAsistente(event);}" class="lg:col-span-4 border border-sand/60 bg-gradient-to-br from-stone-800/90 to-stone-900 p-6 flex flex-col justify-between cursor-pointer group hover:border-sand transition-all relative overflow-hidden">
-                    <div class="absolute -right-6 -bottom-6 text-sand/10 group-hover:text-sand/20 transition-colors pointer-events-none">
-                        <i class="fa-solid fa-book-open-reader text-8xl"></i>
+            <!-- Franja de Accesos Directos e Indicadores Clave -->
+            <div class="w-full grid grid-cols-2 lg:grid-cols-4 grid-line-t font-mono text-xs bg-stone-50/60">
+                <button type="button" onclick="abrirModalGrados(event)" class="p-4 sm:p-5 border-r border-b lg:border-b-0 border-stone-900/15 flex flex-col justify-between text-left hover:bg-stone-900 hover:text-stone-100 transition-colors group">
+                    <span class="text-stone-500 group-hover:text-sand block mb-1.5 text-[10px] sm:text-xs">01 / ESTUDIANTES</span>
+                    <span class="font-semibold text-stone-900 group-hover:text-stone-100 flex items-center justify-between gap-2">
+                        <span>Bibliografía de Grados</span>
+                        <i class="fa-solid fa-graduation-cap text-sand"></i>
+                    </span>
+                </button>
+                <a href="#acervo" class="p-4 sm:p-5 lg:border-r border-b lg:border-b-0 border-stone-900/15 flex flex-col justify-between hover:bg-stone-900 hover:text-stone-100 transition-colors group">
+                    <span class="text-stone-500 group-hover:text-sand block mb-1.5 text-[10px] sm:text-xs">02 / COLECCIÓN (+250.000 VOL.)</span>
+                    <span class="font-semibold text-stone-900 group-hover:text-stone-100 flex items-center justify-between gap-2">
+                        <span>Estanterías por Materias</span>
+                        <i class="fa-solid fa-layer-group text-sand"></i>
+                    </span>
+                </a>
+                <a href="escaner.html" class="p-4 sm:p-5 border-r border-stone-900/15 flex flex-col justify-between hover:bg-stone-900 hover:text-stone-100 transition-colors group">
+                    <span class="text-stone-500 group-hover:text-sand block mb-1.5 text-[10px] sm:text-xs">03 / MÓVIL EN SALA</span>
+                    <span class="font-semibold text-stone-900 group-hover:text-stone-100 flex items-center justify-between gap-2">
+                        <span>Escáner OCR de Signaturas</span>
+                        <i class="fa-solid fa-camera text-sand"></i>
+                    </span>
+                </a>
+                <a href="https://digibuo.uniovi.es/dspace/" target="_blank" rel="noopener noreferrer" class="p-4 sm:p-5 flex flex-col justify-between bg-stone-200/50 hover:bg-stone-900 hover:text-stone-100 transition-colors group">
+                    <span class="text-stone-500 group-hover:text-sand block mb-1.5 text-[10px] sm:text-xs">04 / ACCESO DIGITAL</span>
+                    <span class="font-semibold text-stone-900 group-hover:text-stone-100 flex items-center justify-between gap-2">
+                        <span>Repositorio RUO (TFG/Tesis)</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-sand"></i>
+                    </span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Sección Bibliografía y Colecciones -->
+        <section id="acervo" class="py-14 sm:py-20 bg-stone-100 grid-line-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 mb-10 sm:mb-14">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <div>
+                        <p class="text-xs font-mono text-sand tracking-widest uppercase mb-2">O R G A N I Z A C I Ó N</p>
+                        <h2 class="editorial-title text-4xl sm:text-5xl lg:text-6xl font-light text-stone-900">Bibliografía y Colecciones</h2>
                     </div>
+                    <p class="text-xs sm:text-sm text-stone-600 max-w-md font-light">
+                        Accede directamente a las lecturas de tu titulación, localiza las estanterías por área temática o entra en los portales de la BUO.
+                    </p>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+                <div class="bg-stone-50 p-7 sm:p-8 border border-stone-200 hover-lift flex flex-col justify-between group cursor-pointer relative overflow-hidden" onclick="abrirModalGrados(event)">
+                    <img src="imagenes/libros.jpg" onerror="this.style.display='none'" alt="" aria-hidden="true" class="absolute inset-0 w-full h-full object-cover opacity-[0.06] group-hover:opacity-10 transition-opacity pointer-events-none">
                     <div class="relative z-10">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="inline-flex items-center text-[10px] font-mono uppercase tracking-widest text-sand font-semibold">
-                                <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>
-                                ASISTENTE VIRTUAL
-                            </span>
-                            <span class="text-[10px] font-mono px-2 py-0.5 bg-sand/20 text-sand border border-sand/40">IA</span>
+                        <span class="text-xs font-mono text-sand font-semibold block mb-3">01. ESTUDIANTES</span>
+                        <h3 class="editorial-title text-3xl font-light text-stone-900 mb-3">Bibliografía Recomendada</h3>
+                        <p class="text-sm text-stone-600 leading-relaxed font-light mb-6">Consulta las guías docentes y la disponibilidad física en sala de los manuales recomendados por asignatura.</p>
+                    </div>
+                    <div class="relative z-10 text-xs font-mono font-semibold text-stone-900 group-hover:text-sand transition-colors uppercase tracking-wider pt-4 border-t border-stone-200 flex items-center justify-between">
+                        <span>CONSULTAR GRADOS</span>
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                </div>
+
+                <div class="bg-stone-50 p-7 sm:p-8 border border-stone-200 hover-lift flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-mono text-sand font-semibold block mb-3">02. COLECCIÓN GENERAL (CDU)</span>
+                        <h3 class="editorial-title text-3xl font-light text-stone-900 mb-4">Clasificación por Materias</h3>
+                        <div class="space-y-2 mt-3 font-mono text-xs">
+                            <a href="8.html" class="flex items-center justify-between p-3 border border-stone-200 bg-white text-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-colors">
+                                <span>LENGUA Y LITERATURA</span>
+                                <span class="text-[10px] text-sand">HG8 →</span>
+                            </a>
+                            <a href="9.html" class="flex items-center justify-between p-3 border border-stone-200 bg-white text-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-colors">
+                                <span>GEOGRAFÍA E HISTORIA</span>
+                                <span class="text-[10px] text-sand">HG9 →</span>
+                            </a>
+                            <a href="7.html" class="flex items-center justify-between p-3 border border-stone-200 bg-white text-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-colors">
+                                <span>ARTE Y ARQUITECTURA</span>
+                                <span class="text-[10px] text-sand">HG7 →</span>
+                            </a>
+                            <a href="1.html" class="flex items-center justify-between p-3 border border-stone-200 bg-white text-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-colors">
+                                <span>FILOSOFÍA Y CC.SS.</span>
+                                <span class="text-[10px] text-sand">HG1-6 →</span>
+                            </a>
                         </div>
-                        <h3 class="editorial-title text-2xl md:text-3xl font-light text-stone-100 mb-2">¿Buscas bibliografía?</h3>
-                        <p class="text-xs text-stone-400 font-light leading-relaxed mb-4">
-                            Consulta en lenguaje natural sobre autores, periodos históricos o temas específicos y localiza ejemplares en el OPAC.
+                    </div>
+                </div>
+
+                <div class="bg-stone-900 text-stone-100 p-7 sm:p-8 hover-lift flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-mono text-sand font-semibold block mb-3">03. RECURSOS Y HERRAMIENTAS</span>
+                        <h3 class="editorial-title text-3xl font-light text-stone-100 mb-3">Enlaces de Interés</h3>
+                        <p class="text-sm text-stone-400 leading-relaxed font-light mb-6">Acceso directo al catálogo general de la Universidad de Oviedo, recursos electrónicos y herramientas de sala.</p>
+                    </div>
+                    <div class="space-y-2.5 font-mono text-xs">
+                        <a href="https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=101" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-3 border border-stone-700 hover:bg-sand hover:text-stone-900 hover:border-sand transition-all">
+                            <span><i class="fa-solid fa-database mr-2"></i> ACCESO AL CATÁLOGO OPAC</span>
+                            <span>↗</span>
+                        </a>
+                        <a href="https://buo.uniovi.es/e-biblioteca" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-3 border border-stone-700 hover:bg-stone-100 hover:text-stone-900 hover:border-stone-100 transition-all">
+                            <span><i class="fa-solid fa-building-columns mr-2"></i> E-BIBLIOTECA UNIOVI</span>
+                            <span>↗</span>
+                        </a>
+                        <a href="escaner.html" class="flex items-center justify-between p-3 border border-stone-700 hover:bg-sand hover:text-stone-900 hover:border-sand transition-all">
+                            <span><i class="fa-solid fa-camera mr-2"></i> ESCÁNER MÓVIL DE SIGNATURAS</span>
+                            <span>→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 03: Guía Rápida para Estudiantes -->
+        <section id="guia" class="py-14 sm:py-16 bg-stone-50 grid-line-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+                    <div>
+                        <span class="text-xs font-mono text-sand tracking-widest uppercase block mb-2">// ORIENTACIÓN RÁPIDA</span>
+                        <h2 class="editorial-title text-3xl sm:text-5xl font-light text-stone-900">¿Primera vez en Humanidades?</h2>
+                    </div>
+                    <span class="text-xs font-mono text-stone-500 uppercase tracking-wider">Del buscador a la estantería en 3 pasos</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="p-6 border border-stone-200 bg-stone-100/60">
+                        <span class="text-xs font-mono text-sand font-bold block mb-2">PASO 01 · BUSCA</span>
+                        <h3 class="font-serif text-2xl text-stone-900 mb-2">Consulta por título o tema</h3>
+                        <p class="text-sm text-stone-600 font-light leading-relaxed">
+                            Si conoces el título o autor, usa el buscador principal. Si estás preparando un trabajo o TFG, describe el tema al <strong>Asistente IA</strong>.
                         </p>
                     </div>
-                    <div class="relative z-10 pt-3 border-t border-stone-700/80 flex items-center justify-between text-xs font-mono text-sand group-hover:text-stone-100 transition-colors">
-                        <span class="uppercase tracking-wider font-semibold">Iniciar consulta guiada</span>
-                        <i class="fa-solid fa-arrow-up-right-from-square group-hover:translate-x-1 transition-transform"></i>
+                    <div class="p-6 border border-stone-200 bg-stone-100/60">
+                        <span class="text-xs font-mono text-sand font-bold block mb-2">PASO 02 · SIGNATURA</span>
+                        <h3 class="font-serif text-2xl text-stone-900 mb-2">Fíjate si empieza por <span class="font-mono text-lg bg-stone-900 text-sand px-1.5 py-0.5">HG</span></h3>
+                        <p class="text-sm text-stone-600 font-light leading-relaxed">
+                            Los ejemplares con signatura <strong>HG</strong> están en las estanterías de Libre Acceso (Plantas 1 y 2). Si tiene otro código, solicítalo en mostrador.
+                        </p>
+                    </div>
+                    <div class="p-6 border border-stone-200 bg-stone-100/60">
+                        <span class="text-xs font-mono text-sand font-bold block mb-2">PASO 03 · UBICACIÓN</span>
+                        <h3 class="font-serif text-2xl text-stone-900 mb-2">Abre el plano o usa la cámara</h3>
+                        <p class="text-sm text-stone-600 font-light leading-relaxed">
+                            Pulsa en cualquier resultado para ver planta, sala y estantería exacta, y confirma si está disponible para préstamo en el <strong>OPAC</strong>.
+                        </p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Sección Bibliografía y Colecciones -->
-    <section id="acervo" class="py-20 bg-stone-100 grid-line-b">
-        <div class="max-w-7xl mx-auto px-6 mb-16">
-            <div class="flex flex-col md:flex-row md:items-end justify-between">
-                <div>
-                    <p class="text-xs font-mono text-sand tracking-widest uppercase mb-2">O R G A N I Z A C I Ó N</p>
-                    <h2 class="editorial-title text-4xl sm:text-6xl font-light text-stone-900">Bibliografía y Colecciones</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-stone-50 p-8 border border-stone-200 hover-lift flex flex-col justify-between group cursor-pointer" onclick="abrirModalGrados(event)">
-                <div>
-                    <span class="text-xs font-mono text-sand font-semibold block mb-4">01. ESTUDIANTES</span>
-                    <h3 class="editorial-title text-3xl font-light text-stone-900 mb-4">Bibliografía Recomendada</h3>
-                    <p class="text-sm text-stone-600 leading-relaxed font-light mb-6">Consulta las guías docentes y la bibliografía específica recomendada para los distintos Grados impartidos en la facultad.</p>
-                </div>
-                <div class="text-xs font-mono font-semibold text-stone-900 group-hover:text-sand transition-colors uppercase tracking-wider block pt-4 border-t border-stone-200 flex items-center justify-between">
-                    <span>CONSULTAR GRADOS</span>
-                    <i class="fa-solid fa-graduation-cap"></i>
-                </div>
-            </div>
-
-            <div class="bg-stone-50 p-8 border border-stone-200 hover-lift flex flex-col justify-between">
-                <div>
-                    <span class="text-xs font-mono text-sand font-semibold block mb-4">02. COLECCIÓN GENERAL</span>
-                    <h3 class="editorial-title text-3xl font-light text-stone-900 mb-4">Clasificación por Materias</h3>
-                    <div class="space-y-2 mt-4 font-mono text-xs">
-                        <a href="8.html" class="block p-3 border border-stone-200 hover:bg-stone-900 hover:text-stone-50 transition-colors">LENGUA Y LITERATURA →</a>
-                        <a href="9.html" class="block p-3 border border-stone-200 hover:bg-stone-900 hover:text-stone-50 transition-colors">GEOGRAFÍA E HISTORIA →</a>
-                        <a href="7.html" class="block p-3 border border-stone-200 hover:bg-stone-900 hover:text-stone-50 transition-colors">ARTE Y ARQUITECTURA →</a>
-                        <a href="1.html" class="block p-3 border border-stone-200 hover:bg-stone-900 hover:text-stone-50 transition-colors">FILOSOFÍA Y CC.SS. →</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-stone-900 text-stone-100 p-8 hover-lift flex flex-col justify-between">
-                <div>
-                    <span class="text-xs font-mono text-sand font-semibold block mb-4">03. RECURSOS DIGITALES</span>
-                    <h3 class="editorial-title text-3xl font-light text-stone-100 mb-4">Enlaces de Interés</h3>
-                    <p class="text-sm text-stone-400 leading-relaxed font-light mb-6">Acceso directo al catálogo general de la Universidad de Oviedo y a los recursos electrónicos de la biblioteca.</p>
-                </div>
-                <div class="space-y-3 font-mono text-xs">
-                    <a href="https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=101" target="_blank" class="block p-3 border border-stone-700 hover:bg-sand hover:text-stone-900 hover:border-sand transition-all">
-                        <i class="fa-solid fa-database mr-2"></i> ACCESO AL CATÁLOGO
-                    </a>
-                    <a href="https://buo.uniovi.es/e-biblioteca" target="_blank" class="block p-3 border border-stone-700 hover:bg-stone-100 hover:text-stone-900 hover:border-stone-100 transition-all">
-                        <i class="fa-solid fa-building-columns mr-2"></i> E-BIBLIOTECA
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
     <!-- Footer -->
-    <footer id="espacio" class="bg-stone-900 text-stone-100 pt-16 pb-12 font-mono text-xs">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="pb-12 border-b border-stone-800 text-center">
-                <span class="dot-spaced text-stone-400 text-sm block mb-4">U . N . I . V . E . R . S . I . D . A . D .  D . E .  O . V . I . E . D . O</span>
+    <footer id="espacio" class="bg-stone-900 text-stone-100 pt-14 pb-28 md:pb-12 font-mono text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="pb-10 border-b border-stone-800 text-center">
+                <span class="dot-spaced text-stone-400 text-xs sm:text-sm block mb-3">U . N . I . V . E . R . S . I . D . A . D .  D . E .  O . V . I . E . D . O</span>
                 <h2 class="editorial-title text-4xl sm:text-6xl text-stone-100 font-light font-serif">Biblioteca de Humanidades</h2>
                 <p class="text-stone-400 text-xs mt-3">CAMPUS DE EL MILÁN · OVIEDO, ASTURIAS</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 py-12 border-b border-stone-800 text-stone-400">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 py-10 border-b border-stone-800 text-stone-400">
                 <div>
-                    <span class="text-sand block mb-3 font-semibold uppercase">DIRECCIÓN</span>
-                    <p class="leading-relaxed">Campus de El Milán<br>Calle Teniente Alfonso Martínez, s/n<br>33011 Oviedo, Asturias</p>
+                    <span class="text-sand block mb-3 font-semibold uppercase">DIRECCIÓN Y HORARIO</span>
+                    <p class="leading-relaxed">Campus de El Milán<br>Calle Teniente Alfonso Martínez, s/n<br>33011 Oviedo, Asturias<br><span class="text-stone-300 block mt-2">Lunes a viernes: 08:00 – 20:00 h</span></p>
                 </div>
                 <div>
                     <span class="text-sand block mb-3 font-semibold uppercase">CONTACTO</span>
-                    <p class="leading-relaxed">Email: buobh@uniovi.es<br>Teléfono: +34 985 10 49 49<br>Atención al usuario</p>
+                    <ul class="space-y-2 leading-relaxed">
+                        <li><a href="mailto:buobh@uniovi.es" class="hover:text-sand transition-colors"><i class="fa-regular fa-envelope mr-2 text-sand"></i>buobh@uniovi.es</a></li>
+                        <li><a href="tel:+34985104949" class="hover:text-sand transition-colors"><i class="fa-solid fa-phone mr-2 text-sand"></i>+34 985 10 49 49</a></li>
+                        <li class="text-stone-500">Atención en mostrador y consulta</li>
+                    </ul>
                 </div>
                 <div>
                     <span class="text-sand block mb-3 font-semibold uppercase">ENLACES OFICIALES</span>
                     <ul class="space-y-2">
-                        <li><a href="https://www.uniovi.es" target="_blank" class="hover:text-stone-100">Portal: Universidad de Oviedo</a></li>
-                        <li><a href="https://uniovi.libguides.com/az/databases" target="_blank" class="hover:text-stone-100">Investigación: recursos y bases de datos</a></li>
-                        <li><a href="https://digibuo.uniovi.es/dspace/" target="_blank" class="hover:text-stone-100">Repositorio Institucional (RUO)</a></li>
+                        <li><a href="https://www.uniovi.es" target="_blank" rel="noopener noreferrer" class="hover:text-stone-100 transition-colors">Portal: Universidad de Oviedo ↗</a></li>
+                        <li><a href="https://uniovi.libguides.com/az/databases" target="_blank" rel="noopener noreferrer" class="hover:text-stone-100 transition-colors">Investigación: bases de datos ↗</a></li>
+                        <li><a href="https://digibuo.uniovi.es/dspace/" target="_blank" rel="noopener noreferrer" class="hover:text-stone-100 transition-colors">Repositorio Institucional (RUO) ↗</a></li>
                     </ul>
                 </div>
                 <div>
-                    <span class="text-sand block mb-3 font-semibold uppercase">FACULTADES</span>
-                    <p class="leading-relaxed">Facultad de Filosofía y Letras<br>Estudios de Grado, Máster y Doctorado</p>
+                    <span class="text-sand block mb-3 font-semibold uppercase">INSTALACIONES</span>
+                    <p class="leading-relaxed">Facultad de Filosofía y Letras<br>450 puestos de lectura, salas de estudio y sala de trabajo en grupo<br>Estudios de Grado, Máster y Doctorado</p>
                 </div>
             </div>
-            <div class="flex flex-col sm:flex-row justify-between items-center pt-8 text-stone-500 text-[11px]">
+            <div class="flex flex-col sm:flex-row justify-between items-center pt-8 text-stone-500 text-[11px] gap-3">
                 <span>© 2026 Universidad de Oviedo · Biblioteca de Humanidades</span>
-                <a href="#"><span class="mt-2 sm:mt-0 text-stone-400">INICIO</span></a>
+                <a href="#top" class="text-stone-300 hover:text-sand transition-colors uppercase tracking-widest">↑ Volver arriba</a>
             </div>
         </div>
     </footer>
 
-    <!-- BOTÓN FLOTANTE DE ACCESO AL ASISTENTE VIRTUAL -->
-    <button type="button" onclick="abrirAsistente(event)" aria-label="Abrir Asistente Virtual"
-        class="fixed bottom-6 right-6 z-[1500] bg-stone-900 text-stone-100 border-2 border-sand px-5 py-3.5 flex items-center gap-4 group hover:bg-sand hover:text-stone-900 transition-all duration-300 assistant-fab-glow">
-        <div class="relative flex items-center justify-center w-10 h-10 bg-stone-800 group-hover:bg-stone-900 text-sand transition-colors border border-sand/40">
-            <i class="fa-solid fa-book-open-reader text-lg"></i>
+    <!-- BOTÓN FLOTANTE DE ACCESO AL ASISTENTE VIRTUAL (SOLO ESCRITORIO / TABLET, AL HACER SCROLL) -->
+    <button id="assistant-fab" type="button" onclick="abrirAsistente(event)" aria-label="Abrir Asistente Virtual"
+        class="hidden md:flex fixed bottom-6 right-6 z-[1500] bg-stone-900 text-stone-100 border-2 border-sand px-4 py-3 items-center gap-3.5 group hover:bg-sand hover:text-stone-900 transition-all duration-300 assistant-fab-glow opacity-0 pointer-events-none">
+        <div class="relative flex items-center justify-center w-9 h-9 bg-stone-800 group-hover:bg-stone-900 text-sand transition-colors border border-sand/40">
+            <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
             <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-stone-900 animate-pulse"></span>
         </div>
         <div class="text-left pr-1">
-            <span class="block text-[10px] font-mono tracking-[0.2em] text-sand group-hover:text-stone-800 uppercase font-semibold">[ IA · CATÁLOGO ]</span>
-            <span class="editorial-title text-xl font-normal tracking-normal block leading-none mt-0.5">Asistente Virtual</span>
+            <span class="block text-[9px] font-mono tracking-[0.2em] text-sand group-hover:text-stone-800 uppercase font-semibold">[ IA · CATÁLOGO ]</span>
+            <span class="editorial-title text-lg font-normal tracking-normal block leading-none mt-0.5">Asistente Virtual</span>
         </div>
     </button>
 
+    <!-- BARRA DE ACCESO RÁPIDO INFERIOR (SOLO MÓVIL < md) -->
+    <nav id="mobile-bottom-bar" aria-label="Accesos rápidos móviles"
+        class="md:hidden fixed bottom-0 inset-x-0 z-[1500] bg-stone-900/95 backdrop-blur-md border-t border-sand/40 text-stone-200 grid grid-cols-4 font-mono text-[10px] safe-bottom shadow-2xl">
+        <a href="#buscar" onclick="enfocarBuscador(event)" class="flex flex-col items-center justify-center py-2 px-1 gap-1 hover:text-sand transition-colors">
+            <svg aria-hidden="true" class="w-4 h-4 text-sand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Buscar</span>
+        </a>
+        <button type="button" onclick="abrirAsistente(event)" class="flex flex-col items-center justify-center py-2 px-1 gap-1 bg-sand/15 text-sand font-semibold hover:bg-sand hover:text-stone-900 transition-colors">
+            <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Asistente</span>
+        </button>
+        <button type="button" onclick="abrirModalGrados(event)" class="flex flex-col items-center justify-center py-2 px-1 gap-1 hover:text-sand transition-colors">
+            <svg aria-hidden="true" class="w-4 h-4 text-sand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            <span>Grados</span>
+        </button>
+        <a href="escaner.html" class="flex flex-col items-center justify-center py-2 px-1 gap-1 hover:text-sand transition-colors">
+            <svg aria-hidden="true" class="w-4 h-4 text-sand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span>Escáner</span>
+        </a>
+    </nav>
+
     <!-- MODAL GRADOS -->
     <div id="modalGrados" role="dialog" aria-modal="true" aria-label="Artes y Humanidades" onclick="cerrarModalGrados(event)" class="fixed inset-0 z-[2000] bg-stone-900/80 backdrop-blur-sm flex justify-center items-center opacity-0 pointer-events-none transition-all duration-300">
-        <div class="bg-stone-50 w-11/12 max-w-2xl p-8 md:p-12 border border-stone-200 transform translate-y-8 transition-transform duration-300 modal-content relative" onclick="event.stopPropagation()">
-            <button onclick="cerrarModalGrados(event)" class="absolute top-6 right-6 text-stone-400 hover:text-stone-900 transition-colors text-xl">
-                <i class="fa-solid fa-xmark"></i>
+        <div class="bg-stone-50 w-11/12 max-w-2xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 md:p-12 border border-stone-200 transform translate-y-8 transition-transform duration-300 modal-content relative" onclick="event.stopPropagation()">
+            <button type="button" onclick="cerrarModalGrados(event)" aria-label="Cerrar selector de grados" class="absolute top-5 right-5 sm:top-6 sm:right-6 text-stone-500 hover:text-stone-900 transition-colors p-1.5">
+                <svg aria-hidden="true" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
-            <h2 class="editorial-title text-4xl font-light text-stone-900 mb-2">Artes y Humanidades</h2>
-            <p class="font-mono text-xs text-stone-500 mb-8 pb-4 border-b border-stone-200 uppercase tracking-widest">Selecciona una titulación</p>
-            <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-[11px] md:text-xs">
+            <h2 class="editorial-title text-3xl sm:text-4xl font-light text-stone-900 mb-2 pr-8">Artes y Humanidades</h2>
+            <p class="font-mono text-xs text-stone-500 mb-6 sm:mb-8 pb-4 border-b border-stone-200 uppercase tracking-widest">Selecciona una titulación</p>
+            <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 font-mono text-[11px] md:text-xs">
                 <li><span class="flex items-center justify-between gap-2 p-4 border border-stone-200/80 bg-stone-100/60 text-stone-400 cursor-not-allowed"><span>Estudios Clásicos y Románicos</span><span class="text-[9px] uppercase tracking-widest border border-stone-300 px-1.5 py-0.5 text-stone-500">Próximamente</span></span></li>
                 <li><span class="flex items-center justify-between gap-2 p-4 border border-stone-200/80 bg-stone-100/60 text-stone-400 cursor-not-allowed"><span>Estudios Ingleses</span><span class="text-[9px] uppercase tracking-widest border border-stone-300 px-1.5 py-0.5 text-stone-500">Próximamente</span></span></li>
-                <li><a href="Grados/grado3.html" class="block p-4 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all">Filosofía</a></li>
+                <li><a href="Grados/grado3.html" class="flex items-center justify-between gap-2 p-4 border border-stone-900 bg-stone-900 text-stone-50 hover:bg-sand hover:text-stone-900 hover:border-sand transition-all font-semibold"><span>Filosofía</span><span class="text-[10px] uppercase tracking-wider">Disponible →</span></a></li>
                 <li><span class="flex items-center justify-between gap-2 p-4 border border-stone-200/80 bg-stone-100/60 text-stone-400 cursor-not-allowed"><span>Geografía y Ordenación del Territorio</span><span class="text-[9px] uppercase tracking-widest border border-stone-300 px-1.5 py-0.5 text-stone-500">Próximamente</span></span></li>
                 <li><span class="flex items-center justify-between gap-2 p-4 border border-stone-200/80 bg-stone-100/60 text-stone-400 cursor-not-allowed"><span>Historia</span><span class="text-[9px] uppercase tracking-widest border border-stone-300 px-1.5 py-0.5 text-stone-500">Próximamente</span></span></li>
                 <li><span class="flex items-center justify-between gap-2 p-4 border border-stone-200/80 bg-stone-100/60 text-stone-400 cursor-not-allowed"><span>Historia del Arte</span><span class="text-[9px] uppercase tracking-widest border border-stone-300 px-1.5 py-0.5 text-stone-500">Próximamente</span></span></li>
@@ -379,29 +613,29 @@
     </div>
 
     <!-- NUEVO: MODAL LOCALIZADOR MAPA -->
-    <div id="modalLocalizador" role="dialog" aria-modal="true" aria-label="Ubicación en Biblioteca" class="fixed inset-0 z-[3000] bg-stone-900/80 backdrop-blur-md flex justify-center items-center opacity-0 pointer-events-none transition-all duration-300">
+    <div id="modalLocalizador" role="dialog" aria-modal="true" aria-label="Ubicación en Biblioteca" onclick="if (event.target === this) cerrarModalLocalizador()" class="fixed inset-0 z-[3000] bg-stone-900/80 backdrop-blur-md flex justify-center items-center opacity-0 pointer-events-none transition-all duration-300">
         <div class="bg-stone-50 w-full h-full md:w-11/12 md:h-[90vh] max-w-5xl flex flex-col p-4 md:p-6 relative transform translate-y-8 transition-transform duration-300 modal-content border border-stone-200 shadow-2xl">
             <div class="flex justify-between items-center mb-4 pb-4 border-b border-stone-200">
                 <div class="flex items-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span class="font-mono text-xs text-stone-700 font-bold uppercase tracking-widest">UBICACIÓN EN BIBLIOTECA</span>
                 </div>
-                <button type="button" onclick="cerrarModalLocalizador()" class="text-stone-500 hover:text-stone-900 px-3 py-1.5 border border-stone-300 hover:border-stone-900 transition-colors flex items-center justify-center" title="Cerrar ventana">
-                    <i class="fa-solid fa-xmark text-lg"></i>
+                <button type="button" onclick="cerrarModalLocalizador()" aria-label="Cerrar plano de ubicación" class="text-stone-500 hover:text-stone-900 p-2 border border-stone-300 hover:border-stone-900 transition-colors flex items-center justify-center" title="Cerrar ventana">
+                    <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
             </div>
-            <iframe id="iframeLocalizador" src="" class="w-full flex-1 border border-stone-200 bg-white"></iframe>
+            <iframe id="iframeLocalizador" title="Plano interactivo de estantería" src="" class="w-full flex-1 border border-stone-200 bg-white"></iframe>
         </div>
     </div>
 
     <!-- MODAL SUPERPUESTO DEL ASISTENTE VIRTUAL -->
-    <div id="modalAsistente" role="dialog" aria-modal="true" aria-label="Asistente Bibliográfico" class="fixed inset-0 z-[2500] bg-stone-900/80 backdrop-blur-sm flex justify-center items-center p-0 sm:p-4 opacity-0 pointer-events-none transition-all duration-300">
+    <div id="modalAsistente" role="dialog" aria-modal="true" aria-label="Asistente Bibliográfico" onclick="if (event.target === this) cerrarAsistente(event)" class="fixed inset-0 z-[2500] bg-stone-900/80 backdrop-blur-sm flex justify-center items-center p-0 sm:p-4 opacity-0 pointer-events-none transition-all duration-300">
         <div class="w-full h-full sm:max-w-2xl lg:max-w-3xl sm:h-[85vh] sm:max-h-[820px] flex flex-col bg-stone-50 border border-sand/50 shadow-2xl overflow-hidden relative transform translate-y-8 scale-95 transition-all duration-300 modal-asistente-content">
             
             <!-- Cabecera Editorial del Asistente -->
             <header class="bg-stone-900 text-stone-100 flex items-center px-5 py-4 border-b border-sand/40 z-10 flex-shrink-0">
                 <div class="h-10 w-10 bg-stone-800 border border-sand/50 flex items-center justify-center overflow-hidden mr-3.5 text-sand flex-shrink-0">
-                    <i class="fa-solid fa-book-open-reader text-base"></i>
+                    <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                 </div>
                 
                 <div class="flex-1 min-w-0">
@@ -421,8 +655,8 @@
                         <i class="fa-solid fa-rotate-right text-[11px] text-sand"></i>
                         <span class="hidden sm:inline">Nueva consulta</span>
                     </button>
-                    <button type="button" onclick="cerrarAsistente(event)" title="Cerrar asistente" class="w-9 h-9 flex items-center justify-center border border-stone-700 text-stone-400 hover:text-stone-900 hover:bg-sand hover:border-sand transition-colors">
-                        <i class="fa-solid fa-xmark text-base"></i>
+                    <button type="button" onclick="cerrarAsistente(event)" aria-label="Cerrar asistente" title="Cerrar asistente" class="w-9 h-9 flex items-center justify-center border border-stone-700 text-stone-300 hover:text-stone-900 hover:bg-sand hover:border-sand transition-colors">
+                        <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
                 </div>
             </header>
@@ -440,7 +674,7 @@
             </div>
 
             <!-- Contenedor de Mensajes -->
-            <main id="chat-container" class="flex-1 min-h-0 overflow-y-auto chat-bg p-4 sm:p-6 pb-6 flex flex-col gap-3 relative">
+            <div id="chat-container" role="log" aria-live="polite" class="flex-1 min-h-0 overflow-y-auto chat-bg p-4 sm:p-6 pb-6 flex flex-col gap-3 relative">
                 <div class="flex justify-center my-2">
                     <span class="text-[11px] font-mono uppercase tracking-widest text-stone-600 bg-stone-200/80 border border-stone-300 px-3 py-1">Hoy · Consulta en Catálogo</span>
                 </div>
@@ -467,10 +701,10 @@
                         <span class="text-[10px] font-mono text-stone-400 float-right mt-1.5 ml-2 text-right" id="initial-time"></span>
                     </div>
                 </div>
-            </main>
+            </div>
 
             <!-- Pie de Entrada de Texto -->
-            <footer class="bg-stone-900 p-3 flex items-center gap-2.5 w-full z-10 border-t border-stone-800 flex-shrink-0">
+            <footer class="bg-stone-900 p-3 flex items-center gap-2.5 w-full z-10 border-t border-stone-800 flex-shrink-0 safe-bottom">
                 <div class="flex-1 bg-stone-800 border border-stone-700 focus-within:border-sand flex items-center px-4 py-2 transition-colors min-h-[46px]">
                     <input type="text" id="chat-input" placeholder="Describe un tema, autor o haz una pregunta..." 
                            class="flex-1 bg-transparent text-stone-100 placeholder:text-stone-400 focus:outline-none text-sm py-1 w-full disabled:opacity-50 font-sans"
@@ -487,9 +721,103 @@
 
     <script>
         /* ==========================================
-           LÓGICA DE INDEX.HTML (BUSCADOR Y CONTADORES)
+           LÓGICA DE INDEX.HTML (BUSCADOR, NAVEGACIÓN Y CONTADORES)
            ========================================== */
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
+
+        function actualizarEstadoHorario() {
+            const dot = document.getElementById('estado-horario-dot');
+            const texto = document.getElementById('estado-horario-texto');
+            if (!dot || !texto) return;
+
+            try {
+                const ahora = new Date();
+                const partes = new Intl.DateTimeFormat('en-GB', {
+                    timeZone: 'Europe/Madrid',
+                    weekday: 'short',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                }).formatToParts(ahora);
+
+                const mapa = Object.fromEntries(partes.map(p => [p.type, p.value]));
+                const esFinDeSemana = mapa.weekday === 'Sat' || mapa.weekday === 'Sun';
+                const hora = parseInt(mapa.hour, 10);
+                const abierta = !esFinDeSemana && hora >= 8 && hora < 20;
+
+                if (abierta) {
+                    dot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0';
+                    texto.textContent = 'ABIERTA AHORA · L–V 08:00 a 20:00 h';
+                } else {
+                    dot.className = 'w-2 h-2 rounded-full bg-amber-400 flex-shrink-0';
+                    texto.textContent = 'CERRADA AHORA · HORARIO L–V 08:00 a 20:00 h';
+                }
+            } catch (e) {
+                dot.className = 'w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0';
+                texto.textContent = 'HORARIO L–V: 08:00 a 20:00 h';
+            }
+        }
+
+        function actualizarEstadoOverlay() {
+            const drawerAbierto = document.getElementById('mobile-drawer')?.classList.contains('drawer-open');
+            const gradosAbierto = document.getElementById('modalGrados')?.classList.contains('modal-active');
+            const asistenteAbierto = document.getElementById('modalAsistente')?.classList.contains('modal-active');
+            const localizadorAbierto = document.getElementById('modalLocalizador')?.classList.contains('modal-active');
+            const hayOverlay = Boolean(drawerAbierto || gradosAbierto || asistenteAbierto || localizadorAbierto);
+
+            document.body.style.overflow = hayOverlay ? 'hidden' : '';
+
+            const bottomBar = document.getElementById('mobile-bottom-bar');
+            if (bottomBar) {
+                bottomBar.classList.toggle('opacity-0', hayOverlay);
+                bottomBar.classList.toggle('pointer-events-none', hayOverlay);
+            }
+
+            const fab = document.getElementById('assistant-fab');
+            if (fab) {
+                const heroCard = document.getElementById('hero-assistant-card');
+                const heroVisible = heroCard ? heroCard.getBoundingClientRect().bottom > 140 : false;
+                const ocultarFab = hayOverlay || heroVisible;
+                fab.classList.toggle('opacity-0', ocultarFab);
+                fab.classList.toggle('pointer-events-none', ocultarFab);
+            }
+        }
+
+        function toggleMobileDrawer(forzarEstado) {
+            const drawer = document.getElementById('mobile-drawer');
+            const panel = document.getElementById('mobile-drawer-panel');
+            const btn = document.getElementById('mobile-menu-btn');
+            if (!drawer || !panel) return;
+
+            const abierto = typeof forzarEstado === 'boolean'
+                ? forzarEstado
+                : !drawer.classList.contains('drawer-open');
+
+            drawer.classList.toggle('drawer-open', abierto);
+            panel.classList.toggle('drawer-panel-open', abierto);
+            if (btn) btn.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+            actualizarEstadoOverlay();
+        }
+
+        function enfocarBuscador(event) {
+            const input = document.getElementById('input-busqueda-index');
+            if (!input) return;
+            if (event && event.currentTarget && event.currentTarget.getAttribute('href') === '#buscar') {
+                // Dejar que el navegador haga scroll suave y enfocar al instante
+            }
+            setTimeout(() => {
+                input.focus({ preventScroll: false });
+            }, 120);
+        }
+
+        function limpiarCampoBusqueda() {
+            const input = document.getElementById('input-busqueda-index');
+            const btn = document.getElementById('btn-limpiar-busqueda');
+            if (!input) return;
+            input.value = '';
+            if (btn) btn.classList.add('hidden');
+            input.focus();
+        }
 
         function ejecutarBusqueda(event) {
             if (event) event.preventDefault();
@@ -561,6 +889,7 @@
             const modal = document.getElementById('modalGrados');
             modal.classList.add('modal-active');
             modal.querySelector('.modal-content').classList.add('modal-content-active');
+            actualizarEstadoOverlay();
         }
 
         function cerrarModalGrados(e) {
@@ -568,6 +897,7 @@
             const modal = document.getElementById('modalGrados');
             modal.classList.remove('modal-active');
             modal.querySelector('.modal-content').classList.remove('modal-content-active');
+            actualizarEstadoOverlay();
         }
 
         /* ==========================================
@@ -578,6 +908,7 @@
             const modal = document.getElementById('modalAsistente');
             modal.classList.add('modal-active');
             modal.querySelector('.modal-asistente-content').classList.add('modal-content-active');
+            actualizarEstadoOverlay();
             if (window.BUOAsistente) {
                 window.BUOAsistente.precargarBaseDatos(GAS_URL).catch(() => {});
             }
@@ -591,11 +922,21 @@
             }, 150);
         }
 
+        function abrirYConsultarAsistente(promptText) {
+            abrirAsistente();
+            setTimeout(() => {
+                if (typeof sendQuickPrompt === 'function') {
+                    sendQuickPrompt(promptText);
+                }
+            }, 180);
+        }
+
         function cerrarAsistente(e) {
             if (e) e.preventDefault();
             const modal = document.getElementById('modalAsistente');
             modal.classList.remove('modal-active');
             modal.querySelector('.modal-asistente-content').classList.remove('modal-content-active');
+            actualizarEstadoOverlay();
         }
         
         // MODAL DEL MAPA LOCALIZADOR
@@ -606,6 +947,7 @@
             const iframe = document.getElementById('iframeLocalizador');
             modal.classList.add('modal-active');
             modal.querySelector('.modal-content').classList.add('modal-content-active');
+            actualizarEstadoOverlay();
 
             const url = await window.BUOSignaturas.resolverUrlLocalizador(signatura, titulo, autor, fecha, '');
             iframe.src = url;
@@ -616,13 +958,30 @@
             modal.classList.remove('modal-active');
             modal.querySelector('.modal-content').classList.remove('modal-content-active');
             setTimeout(() => { document.getElementById('iframeLocalizador').src = ''; }, 300);
+            actualizarEstadoOverlay();
         }
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
+                toggleMobileDrawer(false);
                 cerrarModalLocalizador();
                 cerrarAsistente();
                 cerrarModalGrados();
+            } else if (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                const hayOverlayAbierto =
+                    document.getElementById('mobile-drawer')?.classList.contains('drawer-open') ||
+                    document.getElementById('modalGrados')?.classList.contains('modal-active') ||
+                    document.getElementById('modalAsistente')?.classList.contains('modal-active') ||
+                    document.getElementById('modalLocalizador')?.classList.contains('modal-active');
+                const tag = (document.activeElement?.tagName || '').toLowerCase();
+                if (!hayOverlayAbierto && tag !== 'input' && tag !== 'textarea' && tag !== 'select') {
+                    const input = document.getElementById('input-busqueda-index');
+                    if (input) {
+                        e.preventDefault();
+                        input.focus();
+                        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
             }
         });
 
@@ -1067,12 +1426,18 @@
                     📍 ${escapeHTML(sigLimpia)}
                 </a>
                 ${botonMapaMovil}
-                <div class="absolute bottom-full left-0 pb-2 hidden group-hover:block z-[3000] pointer-events-none">
-                    <div class="w-60 bg-stone-900 text-stone-100 text-[11px] p-3 rounded shadow-xl border border-stone-700 flex flex-col justify-center min-h-[44px]">
-                        <span class="font-sans leading-tight text-stone-300 font-medium block">${escapeHTML(textoUbicacion)}</span>
-                        ${avisoOpac}
+                <span class="w-full sm:hidden text-[11px] font-sans text-stone-600 leading-snug mt-0.5 flex items-start gap-1">
+                    <i class="fa-solid fa-location-dot text-sand text-[10px] mt-[3px] flex-shrink-0"></i>
+                    <span>${escapeHTML(textoUbicacion)}</span>
+                </span>
+                <div class="hidden sm:block pointer-events-none">
+                    <div class="absolute bottom-full left-0 pb-2 hidden group-hover:block z-[3000] pointer-events-none">
+                        <div class="w-60 bg-stone-900 text-stone-100 text-[11px] p-3 rounded shadow-xl border border-stone-700 flex flex-col justify-center min-h-[44px]">
+                            <span class="font-sans leading-tight text-stone-300 font-medium block">${escapeHTML(textoUbicacion)}</span>
+                            ${avisoOpac}
+                        </div>
+                        <div class="absolute bottom-[3px] left-4 border-[6px] border-transparent border-t-stone-900"></div>
                     </div>
-                    <div class="absolute bottom-[3px] left-4 border-[6px] border-transparent border-t-stone-900"></div>
                 </div>
             </div>`;
         }
@@ -1548,10 +1913,34 @@
             }
         });
 
+        function sincronizarBotonLimpiar() {
+            const inputBusqueda = document.getElementById('input-busqueda-index');
+            const btnLimpiar = document.getElementById('btn-limpiar-busqueda');
+            if (!inputBusqueda || !btnLimpiar) return;
+            btnLimpiar.classList.toggle('hidden', inputBusqueda.value.length === 0);
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
+            actualizarEstadoHorario();
+            actualizarEstadoOverlay();
+            setInterval(actualizarEstadoHorario, 60000);
+
+            const inputBusqueda = document.getElementById('input-busqueda-index');
+            if (inputBusqueda) {
+                inputBusqueda.addEventListener('input', sincronizarBotonLimpiar);
+                sincronizarBotonLimpiar();
+            }
+
             incrementarVisitasIndex();
             refrescarTodosLosContadores();
             setInterval(refrescarTodosLosContadores, 60000);
+        });
+
+        window.addEventListener('scroll', actualizarEstadoOverlay, { passive: true });
+        window.addEventListener('resize', actualizarEstadoOverlay);
+        window.addEventListener('pageshow', () => {
+            sincronizarBotonLimpiar();
+            actualizarEstadoOverlay();
         });
     </script>
 </body>
