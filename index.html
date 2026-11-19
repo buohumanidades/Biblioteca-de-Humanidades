@@ -1170,7 +1170,7 @@
                 }
             };
 
-            // Primero el fondo real de la biblioteca, luego recomendaciones complementarias de la IA
+            // Primero el fondo de la biblioteca, luego recomendaciones complementarias de la IA
             (librosLocales || []).forEach(l => agregar(l, true));
             (librosIA || []).slice(0, 4).forEach(l => agregar(l, false));
 
