@@ -55,10 +55,13 @@
         .drawer-panel-open { transform: translateX(0) !important; }
         .safe-bottom { padding-bottom: max(0.5rem, env(safe-area-inset-bottom)); }
         section[id], footer[id] { scroll-margin-top: 5rem; }
-        a:focus-visible, button:focus-visible, input:focus-visible {
+        a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible {
             outline: 2px solid #C5A059;
             outline-offset: 2px;
         }
+        details.faq-item > summary { list-style: none; }
+        details.faq-item > summary::-webkit-details-marker { display: none; }
+        details.faq-item[open] .faq-chevron { transform: rotate(180deg); color: #C5A059; }
 
         /* Estilos del Asistente Virtual integrado */
         .chat-bg {
@@ -153,7 +156,7 @@
                 <a href="#buscar" onclick="enfocarBuscador(event)" class="hover:text-sand transition-colors">01. Buscar</a>
                 <a href="#acervo" class="hover:text-sand transition-colors">02. Materias</a>
                 <button type="button" onclick="abrirModalGrados(event)" class="hover:text-sand transition-colors uppercase tracking-widest">03. Grados</button>
-                <a href="#guia" class="hover:text-sand transition-colors">04. Guía 1.º</a>
+                <a href="#guia" class="hover:text-sand transition-colors">04. Guía y dudas</a>
                 <a href="#espacio" class="hover:text-sand transition-colors">05. Espacio</a>
             </nav>
 
@@ -225,7 +228,7 @@
                 <div>
                     <span class="text-[10px] text-stone-500 uppercase tracking-widest block mb-2.5">Información y portales</span>
                     <div class="space-y-1.5 text-stone-700">
-                        <a href="#guia" onclick="toggleMobileDrawer(false)" class="block py-2 border-b border-stone-200">04. Guía rápida para estudiantes</a>
+                        <a href="#guia" onclick="toggleMobileDrawer(false)" class="block py-2 border-b border-stone-200">04. Guía, dudas y sugerencias</a>
                         <a href="#espacio" onclick="toggleMobileDrawer(false)" class="block py-2 border-b border-stone-200">05. Dirección, contacto y horario</a>
                         <a href="https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=101" target="_blank" rel="noopener noreferrer" class="block py-2 border-b border-stone-200">Catálogo General OPAC BUO ↗</a>
                         <a href="https://digibuo.uniovi.es/dspace/" target="_blank" rel="noopener noreferrer" class="block py-2">Repositorio Institucional (RUO) ↗</a>
@@ -301,40 +304,45 @@
                         </div>
                     </div>
 
-                    <!-- Columna Derecha: Sala Real + Tarjeta Interactiva Asistente IA -->
-                    <div id="hero-assistant-card" class="lg:col-span-5 flex flex-col border border-stone-300 bg-stone-900 text-stone-100 overflow-hidden shadow-lg">
-                        <!-- Imagen real de la sala de lectura -->
-                        <div class="relative h-44 sm:h-48 overflow-hidden border-b border-stone-800 group">
-                            <img src="sala.webp" onerror="this.src='imagenes/libros.jpg'; this.onerror=null;" alt="Sala de lectura de la Biblioteca de Humanidades en el Campus de El Milán"
-                                class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700">
-                            <div class="absolute inset-0 bg-gradient-to-t from-stone-900 via-stone-900/40 to-transparent"></div>
-                            <div class="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-2">
-                                <div>
-                                    <span class="text-[10px] font-mono text-sand uppercase tracking-widest block">Plantas 1 y 2 · Libre Acceso</span>
-                                    <p class="font-serif text-xl sm:text-2xl text-stone-50 leading-tight">450 puestos de lectura y sala grupal</p>
+                    <!-- Columna Derecha: Dos bloques separados (Espacios físicos vs Asistente IA) -->
+                    <div class="lg:col-span-5 flex flex-col gap-4 justify-between">
+                        <!-- Bloque 1 Independiente: Espacios y Puestos de Lectura -->
+                        <div id="hero-space-card" class="bg-stone-50 border border-stone-300 shadow-sm overflow-hidden flex flex-col">
+                            <div class="relative h-32 sm:h-36 overflow-hidden border-b border-stone-200 group">
+                                <img src="sala.webp" onerror="this.src='imagenes/libros.jpg'; this.onerror=null;" alt="Sala de lectura de la Biblioteca de Humanidades en el Campus de El Milán"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                <span class="absolute top-3 left-3 bg-stone-900/90 text-sand text-[10px] font-mono uppercase tracking-widest px-2.5 py-1 border border-stone-700">
+                                    Espacios en El Milán
+                                </span>
+                            </div>
+                            <div class="p-4 bg-stone-50 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3">
+                                <div class="min-w-0">
+                                    <span class="text-[10px] font-mono text-sand font-semibold uppercase tracking-widest block mb-0.5">Plantas 1 y 2 · Libre Acceso</span>
+                                    <h2 class="font-serif text-xl text-stone-900 leading-tight font-normal">450 puestos de lectura y sala grupal</h2>
+                                    <p class="text-[11px] text-stone-600 font-light mt-0.5">Estudio individual, consulta en sala y trabajo en equipo.</p>
                                 </div>
-                                <a href="#acervo" class="text-[10px] font-mono bg-stone-900/90 text-stone-100 border border-stone-600 px-2.5 py-1.5 hover:border-sand hover:text-sand transition-colors whitespace-nowrap">
-                                    Ver áreas →
+                                <a href="#espacio" class="flex-shrink-0 text-[10px] font-mono bg-stone-900 text-stone-100 hover:bg-sand hover:text-stone-900 border border-stone-900 px-3 py-2 transition-colors whitespace-nowrap uppercase tracking-wider font-semibold">
+                                    Horario y sala →
                                 </a>
                             </div>
                         </div>
 
-                        <!-- Tarjeta Destacada del Asistente Virtual -->
-                        <div class="p-5 sm:p-6 flex-1 flex flex-col justify-between bg-gradient-to-br from-stone-800/90 to-stone-900 relative">
+                        <!-- Bloque 2 Independiente: Asistente Bibliográfico IA -->
+                        <div id="hero-assistant-card" class="flex-1 flex flex-col justify-between bg-stone-900 text-stone-100 border border-stone-800 border-t-2 border-t-sand p-4 sm:p-5 shadow-lg relative">
                             <div>
-                                <div class="flex items-center justify-between mb-2.5">
+                                <div class="flex items-center justify-between gap-2 mb-2">
                                     <span class="inline-flex items-center text-[10px] font-mono uppercase tracking-widest text-sand font-semibold">
                                         <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>
                                         ASISTENTE BIBLIOGRÁFICO IA
                                     </span>
                                     <span class="text-[10px] font-mono px-2 py-0.5 bg-sand/20 text-sand border border-sand/40">TFG / Trabajos</span>
                                 </div>
-                                <h2 class="editorial-title text-2xl sm:text-3xl font-light text-stone-100 mb-1.5">¿Buscas bibliografía para un tema?</h2>
-                                <p class="text-xs text-stone-300 font-light leading-relaxed mb-4">
+                                <h2 class="editorial-title text-2xl sm:text-3xl font-light text-stone-100 mb-1">¿Buscas bibliografía para un tema?</h2>
+                                <p class="text-xs text-stone-300 font-light leading-relaxed mb-3">
                                     Pregunta en lenguaje natural sobre autores, periodos o trabajos de clase. Te sugerimos libros de la sala, citas y enlaces al OPAC.
                                 </p>
 
-                                <div class="space-y-1.5 mb-4">
+                                <div class="space-y-1.5 mb-3">
                                     <span class="text-[10px] font-mono uppercase tracking-wider text-stone-400 block">Consultas de ejemplo en 1 clic:</span>
                                     <button type="button" onclick="abrirYConsultarAsistente('Estoy haciendo un trabajo sobre el prerrománico asturiano')"
                                         class="w-full text-left text-[11px] font-mono bg-stone-800/90 hover:bg-stone-700 text-stone-200 border border-stone-700 hover:border-sand px-3 py-2 transition-colors flex items-center justify-between gap-2">
@@ -350,7 +358,7 @@
                             </div>
 
                             <button type="button" onclick="abrirAsistente(event)"
-                                class="w-full py-3 px-4 bg-sand text-stone-900 hover:bg-stone-100 transition-colors font-mono text-xs font-semibold uppercase tracking-wider flex items-center justify-between">
+                                class="w-full py-2.5 px-4 bg-sand text-stone-900 hover:bg-stone-100 transition-colors font-mono text-xs font-semibold uppercase tracking-wider flex items-center justify-between">
                                 <span>Iniciar consulta guiada</span>
                                 <i class="fa-solid fa-comments"></i>
                             </button>
@@ -376,10 +384,10 @@
                     </span>
                 </a>
                 <a href="#guia" class="p-4 sm:p-5 border-r border-stone-900/15 flex flex-col justify-between hover:bg-stone-900 hover:text-stone-100 transition-colors group">
-                    <span class="text-stone-500 group-hover:text-sand block mb-1.5 text-[10px] sm:text-xs">03 / PRIMEROS PASOS</span>
+                    <span class="text-stone-500 group-hover:text-sand block mb-1.5 text-[10px] sm:text-xs">03 / GUÍA Y NORMATIVA</span>
                     <span class="font-semibold text-stone-900 group-hover:text-stone-100 flex items-center justify-between gap-2">
-                        <span>Cómo encontrar un libro</span>
-                        <i class="fa-solid fa-map-location-dot text-sand"></i>
+                        <span>Préstamo, dudas y sugerencias</span>
+                        <i class="fa-solid fa-circle-question text-sand"></i>
                     </span>
                 </a>
                 <a href="https://digibuo.uniovi.es/dspace/" target="_blank" rel="noopener noreferrer" class="p-4 sm:p-5 flex flex-col justify-between bg-stone-200/50 hover:bg-stone-900 hover:text-stone-100 transition-colors group">
@@ -469,38 +477,222 @@
             </div>
         </section>
 
-        <!-- Sección 03: Guía Rápida para Estudiantes -->
-        <section id="guia" class="py-14 sm:py-16 bg-stone-50 grid-line-b">
+        <!-- Sección 03: Guía, Dudas Frecuentes y Sugerencias -->
+        <section id="guia" class="py-14 sm:py-20 bg-stone-50 grid-line-b">
             <div class="max-w-7xl mx-auto px-4 sm:px-6">
                 <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
                     <div>
-                        <span class="text-xs font-mono text-sand tracking-widest uppercase block mb-2">// ORIENTACIÓN RÁPIDA</span>
-                        <h2 class="editorial-title text-3xl sm:text-5xl font-light text-stone-900">¿Primera vez en Humanidades?</h2>
+                        <span class="text-xs font-mono text-sand tracking-widest uppercase block mb-2">// ORIENTACIÓN, PRÉSTAMO Y PARTICIPACIÓN</span>
+                        <h2 class="editorial-title text-3xl sm:text-5xl font-light text-stone-900">Guía rápida, dudas y sugerencias</h2>
                     </div>
-                    <span class="text-xs font-mono text-stone-500 uppercase tracking-wider">Del buscador a la estantería en 3 pasos</span>
+                    <span class="text-xs font-mono text-stone-500 uppercase tracking-wider">Pasos en sala · Normativa BUO · Buzón de contacto</span>
                 </div>
 
+                <!-- Los 3 pasos esenciales -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="p-6 border border-stone-200 bg-stone-100/60">
                         <span class="text-xs font-mono text-sand font-bold block mb-2">PASO 01 · BUSCA</span>
                         <h3 class="font-serif text-2xl text-stone-900 mb-2">Consulta por título o tema</h3>
                         <p class="text-sm text-stone-600 font-light leading-relaxed">
-                            Si conoces el título o autor, usa el buscador principal. Si estás preparando un trabajo o TFG, describe el tema al <strong>Asistente IA</strong>.
+                            Si conoces el título o autor, usa el buscador principal. Si preparas un trabajo o TFG, describe el tema al <strong>Asistente IA</strong>.
                         </p>
                     </div>
                     <div class="p-6 border border-stone-200 bg-stone-100/60">
                         <span class="text-xs font-mono text-sand font-bold block mb-2">PASO 02 · SIGNATURA</span>
                         <h3 class="font-serif text-2xl text-stone-900 mb-2">Fíjate si empieza por <span class="font-mono text-lg bg-stone-900 text-sand px-1.5 py-0.5">HG</span></h3>
                         <p class="text-sm text-stone-600 font-light leading-relaxed">
-                            Los ejemplares con signatura <strong>HG</strong> están en las estanterías de Libre Acceso (Plantas 1 y 2). Si tiene otro código, solicítalo en mostrador.
+                            Las obras con signatura <strong>HG</strong> están en Libre Acceso (Plantas 1 y 2). Si llevan otro código, solicítalas en mostrador de depósito.
                         </p>
                     </div>
                     <div class="p-6 border border-stone-200 bg-stone-100/60">
-                        <span class="text-xs font-mono text-sand font-bold block mb-2">PASO 03 · UBICACIÓN</span>
-                        <h3 class="font-serif text-2xl text-stone-900 mb-2">Abre el plano interactivo</h3>
+                        <span class="text-xs font-mono text-sand font-bold block mb-2">PASO 03 · UBICACIÓN Y PRÉSTAMO</span>
+                        <h3 class="font-serif text-2xl text-stone-900 mb-2">Plano interactivo y OPAC</h3>
                         <p class="text-sm text-stone-600 font-light leading-relaxed">
-                            Pulsa en cualquier resultado para ver planta, sala y estantería exacta, y confirma si está disponible para préstamo en el <strong>OPAC</strong>.
+                            Abre el plano desde cualquier resultado y confirma disponibilidad en el <strong>OPAC</strong>. Recuerda llevar tu <strong>tarjeta universitaria</strong>.
                         </p>
+                    </div>
+                </div>
+
+                <!-- Sub-bloque: Dudas frecuentes (FAQ) + Canal de Dudas, Sugerencias y PDFs oficiales -->
+                <div class="mt-10 pt-10 border-t border-stone-200 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <!-- Preguntas Frecuentes basadas en los reglamentos -->
+                    <div class="lg:col-span-7 space-y-3">
+                        <div class="mb-4">
+                            <span class="text-[11px] font-mono text-sand font-semibold uppercase tracking-widest block mb-1">DUDAS FRECUENTES · NORMATIVA BUO</span>
+                            <h3 class="editorial-title text-2xl sm:text-3xl font-light text-stone-900">Preguntas sobre préstamo, reservas y sala</h3>
+                        </div>
+
+                        <details class="faq-item border border-stone-300 bg-white group" open>
+                            <summary class="flex items-center justify-between gap-4 p-4 sm:p-5 cursor-pointer select-none hover:bg-stone-100/60 transition-colors">
+                                <span class="font-serif text-xl sm:text-2xl text-stone-900 leading-snug">¿Cuántos libros puedo sacar en préstamo y cuántos días duran?</span>
+                                <span aria-hidden="true" class="faq-chevron flex-shrink-0 w-7 h-7 border border-stone-300 flex items-center justify-center text-stone-600 transition-transform duration-200">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                                </span>
+                            </summary>
+                            <div class="px-4 sm:px-5 pb-5 pt-1 text-sm text-stone-700 font-light leading-relaxed border-t border-stone-200/70 space-y-2.5">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 font-mono text-xs">
+                                    <div class="p-3 bg-stone-50 border border-stone-200">
+                                        <span class="text-sand font-semibold block text-[10px] uppercase">Estudiantes de Grado</span>
+                                        <strong class="text-stone-900 text-sm">6 ejemplares · 14 días</strong>
+                                    </div>
+                                    <div class="p-3 bg-stone-50 border border-stone-200">
+                                        <span class="text-sand font-semibold block text-[10px] uppercase">Máster y Doctorado</span>
+                                        <strong class="text-stone-900 text-sm">10 ejemplares · 30 días</strong>
+                                    </div>
+                                </div>
+                                <p>
+                                    El <strong>PDI</strong> dispone de 45 ejemplares durante 90 días; el <strong>PAS</strong> y otros investigadores con convenio, de 10 ejemplares durante 30 días; y personas externas autorizadas con tarjeta de lector BUO, de 3 ejemplares durante 14 días.
+                                </p>
+                                <p class="text-xs text-stone-600">
+                                    Es obligatorio presentar la <strong>tarjeta inteligente universitaria</strong> con fotografía. Los alumnos <strong>Erasmus</strong> y de intercambio deben devolver las obras antes de finalizar su estancia.
+                                </p>
+                            </div>
+                        </details>
+
+                        <details class="faq-item border border-stone-300 bg-white group">
+                            <summary class="flex items-center justify-between gap-4 p-4 sm:p-5 cursor-pointer select-none hover:bg-stone-100/60 transition-colors">
+                                <span class="font-serif text-xl sm:text-2xl text-stone-900 leading-snug">¿Cómo reservo un libro prestado y cuánto plazo tengo para recogerlo?</span>
+                                <span aria-hidden="true" class="faq-chevron flex-shrink-0 w-7 h-7 border border-stone-300 flex items-center justify-center text-stone-600 transition-transform duration-200">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                                </span>
+                            </summary>
+                            <div class="px-4 sm:px-5 pb-5 pt-2 text-sm text-stone-700 font-light leading-relaxed border-t border-stone-200/70 space-y-2">
+                                <p>
+                                    Solo se pueden reservar obras que estén <strong>actualmente prestadas</strong> (el <strong>OPAC</strong> muestra el estado de cada ejemplar y su fecha prevista de devolución).
+                                </p>
+                                <p>
+                                    Cada usuario puede tener un máximo de <strong>2 reservas</strong> simultáneas (y cada obra admite hasta 2 reservas). Cuando el libro se devuelva, tienes un máximo de <strong>2 días para retirarlo</strong> en la Biblioteca antes de que la reserva quede anulada.
+                                </p>
+                            </div>
+                        </details>
+
+                        <details class="faq-item border border-stone-300 bg-white group">
+                            <summary class="flex items-center justify-between gap-4 p-4 sm:p-5 cursor-pointer select-none hover:bg-stone-100/60 transition-colors">
+                                <span class="font-serif text-xl sm:text-2xl text-stone-900 leading-snug">¿Qué materiales NO salen en préstamo y se consultan solo en sala?</span>
+                                <span aria-hidden="true" class="faq-chevron flex-shrink-0 w-7 h-7 border border-stone-300 flex items-center justify-center text-stone-600 transition-transform duration-200">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                                </span>
+                            </summary>
+                            <div class="px-4 sm:px-5 pb-5 pt-2 text-sm text-stone-700 font-light leading-relaxed border-t border-stone-200/70">
+                                Quedan excluidos del préstamo domiciliario (consulta exclusiva en sala): las <strong>publicaciones periódicas</strong>, las <strong>obras de referencia</strong> (diccionarios, enciclopedias, directorios), las <strong>obras muy solicitadas con pocos ejemplares</strong>, los materiales especiales (mapas, grabados, microfichas), los manuscritos/incunables/raros, las obras <strong>anteriores a 1900</strong> y los fondos excluidos por donación o criterio de la Dirección.
+                            </div>
+                        </details>
+
+                        <details class="faq-item border border-stone-300 bg-white group">
+                            <summary class="flex items-center justify-between gap-4 p-4 sm:p-5 cursor-pointer select-none hover:bg-stone-100/60 transition-colors">
+                                <span class="font-serif text-xl sm:text-2xl text-stone-900 leading-snug">¿Qué ocurre si me retraso en devolver un libro o si se estropea?</span>
+                                <span aria-hidden="true" class="faq-chevron flex-shrink-0 w-7 h-7 border border-stone-300 flex items-center justify-center text-stone-600 transition-transform duration-200">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                                </span>
+                            </summary>
+                            <div class="px-4 sm:px-5 pb-5 pt-2 text-sm text-stone-700 font-light leading-relaxed border-t border-stone-200/70 space-y-2">
+                                <p>
+                                    <strong>Retraso:</strong> Cada día natural de demora conlleva <strong>1 día de inhabilitación</strong> para el servicio de préstamo. Además, mientras tengas algún ejemplar con fecha vencida no podrás retirar nuevos libros.
+                                </p>
+                                <p>
+                                    <strong>Pérdida o deterioro:</strong> Si un ejemplar se pierde o sufre roturas o marcas indelebles, deberás <strong>reponer otro documento idéntico</strong> (o similar propuesto por la Biblioteca si está agotado); el préstamo permanecerá suspendido hasta su reposición.
+                                </p>
+                            </div>
+                        </details>
+
+                        <details class="faq-item border border-stone-300 bg-white group">
+                            <summary class="flex items-center justify-between gap-4 p-4 sm:p-5 cursor-pointer select-none hover:bg-stone-100/60 transition-colors">
+                                <span class="font-serif text-xl sm:text-2xl text-stone-900 leading-snug">¿Qué hago si un libro que necesito no está en Humanidades?</span>
+                                <span aria-hidden="true" class="faq-chevron flex-shrink-0 w-7 h-7 border border-stone-300 flex items-center justify-center text-stone-600 transition-transform duration-200">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                                </span>
+                            </summary>
+                            <div class="px-4 sm:px-5 pb-5 pt-2 text-sm text-stone-700 font-light leading-relaxed border-t border-stone-200/70">
+                                Revisa en el <strong>Catálogo General OPAC</strong> si está en otra biblioteca de la Universidad de Oviedo o en versión digital en la <strong>e-Biblioteca</strong>. Si tampoco existe en la BUO, puedes solicitarlo a través del <strong>Préstamo Interbibliotecario</strong> o proponer su adquisición mediante el buzón de sugerencias.
+                            </div>
+                        </details>
+
+                        <details class="faq-item border border-stone-300 bg-white group">
+                            <summary class="flex items-center justify-between gap-4 p-4 sm:p-5 cursor-pointer select-none hover:bg-stone-100/60 transition-colors">
+                                <span class="font-serif text-xl sm:text-2xl text-stone-900 leading-snug">¿Qué normas rigen en los 450 puestos de lectura y la sala grupal?</span>
+                                <span aria-hidden="true" class="faq-chevron flex-shrink-0 w-7 h-7 border border-stone-300 flex items-center justify-center text-stone-600 transition-transform duration-200">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                                </span>
+                            </summary>
+                            <div class="px-4 sm:px-5 pb-5 pt-2 text-sm text-stone-700 font-light leading-relaxed border-t border-stone-200/70 space-y-2">
+                                <p>
+                                    Tienes derecho a utilizar espacios de estudio <strong>individual y de trabajo en grupo</strong>, recibir asesoramiento y formación básica, y presentar propuestas o sugerencias.
+                                </p>
+                                <p>
+                                    En las zonas de estudio individual debe mantenerse el <strong>silencio</strong> y evitar ruidos con teléfonos móviles u otros dispositivos (usa la <strong>sala grupal</strong> para trabajos en equipo). Está prohibido fumar y es deber de todos respetar el mobiliario, el equipamiento y los fondos.
+                                </p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- Columna Derecha: Buzón de Dudas/Sugerencias + Reglamentos PDF -->
+                    <div class="lg:col-span-5 flex flex-col gap-5">
+                        <!-- Canal Directo de Dudas, Compras y Sugerencias -->
+                        <div class="bg-stone-900 text-stone-100 p-6 border border-stone-800 border-t-2 border-t-sand shadow-lg">
+                            <span class="text-[10px] font-mono text-sand uppercase tracking-widest font-semibold block mb-1.5">// DUDAS, COMPRAS Y MEJORAS (ART. 14.g)</span>
+                            <h3 class="editorial-title text-2xl sm:text-3xl font-light text-stone-100 mb-2">¿Tienes dudas o sugerencias?</h3>
+                            <p class="text-xs text-stone-300 font-light leading-relaxed mb-4">
+                                Como usuario puedes <strong>sugerir nuevos servicios o la compra de libros</strong> y trasladar consultas o reclamaciones (atendidas por el equipo de la Biblioteca y su Comisión, con representación estudiantil).
+                            </p>
+
+                            <div class="space-y-3">
+                                <div>
+                                    <label for="tipo-sugerencia" class="block text-[10px] font-mono uppercase tracking-wider text-stone-400 mb-1">Tipo de consulta o propuesta</label>
+                                    <select id="tipo-sugerencia" class="w-full bg-stone-800 border border-stone-700 text-stone-100 px-3 py-2.5 text-base sm:text-xs font-mono focus:border-sand">
+                                        <option value="Sugerencia de adquisición de libro">Sugerir compra de un libro</option>
+                                        <option value="Duda sobre préstamo, reservas o carné">Duda sobre préstamo, reservas o carné</option>
+                                        <option value="Sugerencia de mejora o reclamación">Sugerencia de mejora de sala / reclamación</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label for="texto-sugerencia" class="block text-[10px] font-mono uppercase tracking-wider text-stone-400 mb-1">Mensaje, libro sugerido o duda (opcional)</label>
+                                    <textarea id="texto-sugerencia" rows="3" placeholder="Ej. Me gustaría sugerir la compra del manual..., o tengo una duda sobre..."
+                                        class="w-full bg-stone-800 border border-stone-700 text-stone-100 placeholder:text-stone-400 px-3 py-2.5 text-base sm:text-sm font-sans focus:border-sand"></textarea>
+                                </div>
+
+                                <div class="flex flex-col sm:flex-row gap-2">
+                                    <button type="button" onclick="enviarSugerenciaCorreo()" class="flex-1 py-2.5 px-4 bg-sand text-stone-900 hover:bg-stone-100 transition-colors font-mono text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2">
+                                        <span>Enviar a buobh@uniovi.es</span>
+                                        <span aria-hidden="true">→</span>
+                                    </button>
+                                    <button type="button" onclick="copiarSugerenciaTexto(this)" class="py-2.5 px-3.5 bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-700 hover:border-sand transition-colors font-mono text-xs uppercase tracking-wider whitespace-nowrap">
+                                        Copiar texto
+                                    </button>
+                                </div>
+
+                                <p id="sugerencia-feedback" class="hidden text-[11px] font-mono text-emerald-400 leading-snug"></p>
+                            </div>
+
+                            <div class="mt-4 pt-3.5 border-t border-stone-800 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-stone-400">
+                                <span><i class="fa-solid fa-phone text-sand mr-1.5"></i><a href="tel:+34985104949" class="hover:text-sand transition-colors">985 10 49 49</a> · Mostrador Planta 1</span>
+                                <button type="button" onclick="abrirAsistente(event)" class="text-sand hover:text-stone-100 underline underline-offset-4 transition-colors">
+                                    Pedir bibliografía al Asistente IA →
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Normativa Completa en PDF -->
+                        <div class="bg-white border border-stone-300 p-5 sm:p-6">
+                            <span class="text-[10px] font-mono text-sand font-semibold uppercase tracking-widest block mb-1">DOCUMENTACIÓN OFICIAL · BOPA</span>
+                            <h3 class="font-serif text-2xl text-stone-900 mb-3">Reglamentos completos en PDF</h3>
+                            <div class="space-y-2.5 font-mono text-xs">
+                                <a href="2013-11843.pdf" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between gap-3 p-3 border border-stone-200 bg-stone-50 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-colors group">
+                                    <div class="min-w-0">
+                                        <span class="font-semibold block">Reglamento de Préstamo (UniOvi)</span>
+                                        <span class="text-[10px] text-stone-500 group-hover:text-stone-300 block leading-snug mt-0.5">Plazos, cupos, reservas y sanciones · BOPA 26-VI-2013</span>
+                                    </div>
+                                    <span class="text-sand flex-shrink-0 font-semibold">PDF ↗</span>
+                                </a>
+                                <a href="2013-11845.pdf" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between gap-3 p-3 border border-stone-200 bg-stone-50 hover:border-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-colors group">
+                                    <div class="min-w-0">
+                                        <span class="font-semibold block">Organización y Funcionamiento BUO</span>
+                                        <span class="text-[10px] text-stone-500 group-hover:text-stone-300 block leading-snug mt-0.5">Servicios, derechos, deberes y Comisiones · BOPA 25-VI-2013</span>
+                                    </div>
+                                    <span class="text-sand flex-shrink-0 font-semibold">PDF ↗</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -825,6 +1017,73 @@
             if (input) {
                 input.value = filtro;
                 ejecutarBusqueda();
+            }
+        }
+
+        function construirTextoSugerencia() {
+            const tipo = document.getElementById('tipo-sugerencia')?.value || 'Duda o sugerencia';
+            const detalle = (document.getElementById('texto-sugerencia')?.value || '').trim();
+            const asunto = `[Biblioteca Humanidades] ${tipo}`;
+            const cuerpo = detalle
+                ? `Hola,\n\nMotivo: ${tipo}\n\nMensaje:\n${detalle}\n\nGracias.`
+                : `Hola,\n\nMotivo: ${tipo}\n\nEscribe aquí los detalles de tu consulta, el título/autor sugerido o tu propuesta:\n`;
+            return { asunto, cuerpo };
+        }
+
+        function enviarSugerenciaCorreo() {
+            const { asunto, cuerpo } = construirTextoSugerencia();
+            const feedback = document.getElementById('sugerencia-feedback');
+            if (feedback) {
+                feedback.textContent = 'Abriendo tu aplicación de correo para enviar a buobh@uniovi.es (si usas webmail, pulsa "Copiar texto").';
+                feedback.classList.remove('hidden', 'text-amber-300');
+                feedback.classList.add('text-emerald-400');
+            }
+            window.location.href = `mailto:buobh@uniovi.es?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+        }
+
+        function copiarSugerenciaTexto(boton) {
+            const { asunto, cuerpo } = construirTextoSugerencia();
+            const feedback = document.getElementById('sugerencia-feedback');
+            const textoCompleto = `Para: buobh@uniovi.es\nAsunto: ${asunto}\n\n${cuerpo}`;
+
+            const mostrarConfirmacion = (ok) => {
+                if (feedback) {
+                    feedback.textContent = ok
+                        ? '✓ Texto copiado al portapapeles listo para enviarlo a buobh@uniovi.es'
+                        : 'No se pudo copiar automáticamente; envía tu mensaje directamente a buobh@uniovi.es';
+                    feedback.classList.remove('hidden', 'text-emerald-400', 'text-amber-300');
+                    feedback.classList.add(ok ? 'text-emerald-400' : 'text-amber-300');
+                }
+                if (ok && boton) {
+                    const orig = boton.textContent;
+                    boton.textContent = '✓ Copiado';
+                    setTimeout(() => { boton.textContent = orig; }, 1800);
+                }
+            };
+
+            const copiarConTextareaFallback = () => {
+                try {
+                    const ta = document.createElement('textarea');
+                    ta.value = textoCompleto;
+                    ta.setAttribute('readonly', '');
+                    ta.style.position = 'fixed';
+                    ta.style.left = '-9999px';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    const ok = document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    mostrarConfirmacion(ok);
+                } catch (e) {
+                    mostrarConfirmacion(false);
+                }
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textoCompleto)
+                    .then(() => mostrarConfirmacion(true))
+                    .catch(copiarConTextareaFallback);
+            } else {
+                copiarConTextareaFallback();
             }
         }
 
