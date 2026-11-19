@@ -10,7 +10,6 @@ Aplicación web estática (GitHub Pages) para localizar libros, consultar biblio
 - `1.html`, `7.html`, `8.html`, `9.html`, `Encontradomateria.html`: navegación por grandes áreas temáticas (CDU).
 - `Grados/grado3.html` y `Grados/grado3.json`: bibliografía recomendada del Grado en Filosofía con disponibilidad física precalculada.
 - `titulo.html`: búsqueda rápida por título sobre `Grados/libros_1.json`–`Grados/libros_2.json`.
-- `escaner.html`: lector OCR experimental de signaturas `HG` con cámara y Tesseract.js.
 - `BNE.html`: asistente independiente de consulta sobre el catálogo de la BNE.
 - `js/`: módulos compartidos:
   - `js/utils.js`: normalización de texto, `escapeHTML` y sanitización con DOMPurify.
