@@ -14,6 +14,7 @@
     <script src="js/buscador.js"></script>
     <script src="js/aprendizaje.js"></script>
     <script src="js/asistente.js"></script>
+    <script src="js/horarios.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -706,7 +707,11 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 py-10 border-b border-stone-800 text-stone-400">
                 <div>
                     <span class="text-sand block mb-3 font-semibold uppercase">DIRECCIÓN Y HORARIO</span>
-                    <p class="leading-relaxed">Campus de El Milán<br>Calle Teniente Alfonso Martínez, s/n<br>33011 Oviedo, Asturias<br><span class="text-stone-300 block mt-2">Lunes a viernes: 08:00 – 20:00 h</span></p>
+                    <p class="leading-relaxed">
+                        Campus de El Milán<br>Calle Teniente Alfonso Martínez, s/n<br>33011 Oviedo, Asturias
+                        <span id="horario-footer-vigente" class="text-stone-200 block mt-2">Lunes a viernes: 08:00 a 20:00 h</span>
+                        <span id="horario-footer-proximo" class="hidden text-sand/90 text-[11px] block mt-1"></span>
+                    </p>
                 </div>
                 <div>
                     <span class="text-sand block mb-3 font-semibold uppercase">CONTACTO</span>
@@ -906,36 +911,12 @@
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
 
         function actualizarEstadoHorario() {
-            const dot = document.getElementById('estado-horario-dot');
-            const texto = document.getElementById('estado-horario-texto');
-            if (!dot || !texto) return;
-
-            try {
-                const ahora = new Date();
-                const partes = new Intl.DateTimeFormat('en-GB', {
-                    timeZone: 'Europe/Madrid',
-                    weekday: 'short',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false
-                }).formatToParts(ahora);
-
-                const mapa = Object.fromEntries(partes.map(p => [p.type, p.value]));
-                const esFinDeSemana = mapa.weekday === 'Sat' || mapa.weekday === 'Sun';
-                const hora = parseInt(mapa.hour, 10);
-                const abierta = !esFinDeSemana && hora >= 8 && hora < 20;
-
-                if (abierta) {
-                    dot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0';
-                    texto.textContent = 'ABIERTA AHORA · L–V 08:00 a 20:00 h';
-                } else {
-                    dot.className = 'w-2 h-2 rounded-full bg-amber-400 flex-shrink-0';
-                    texto.textContent = 'CERRADA AHORA · HORARIO L–V 08:00 a 20:00 h';
-                }
-            } catch (e) {
-                dot.className = 'w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0';
-                texto.textContent = 'HORARIO L–V: 08:00 a 20:00 h';
+            if (window.BUOHorarios && typeof window.BUOHorarios.aplicarEnPagina === 'function') {
+                window.BUOHorarios.aplicarEnPagina({ url: 'data/horarios.json' });
+                return;
             }
+            const texto = document.getElementById('estado-horario-texto');
+            if (texto) texto.textContent = 'HORARIO L–V: 08:00 a 20:00 h';
         }
 
         function actualizarEstadoOverlay() {

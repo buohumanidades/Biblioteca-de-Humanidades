@@ -288,7 +288,7 @@
             <div class="pb-8 border-b border-stone-800 text-center">
                 <span class="dot-spaced text-stone-400 text-[10px] sm:text-xs block mb-2">U . N . I . V . E . R . S . I . D . A . D .  D . E .  O . V . I . E . D . O</span>
                 <h2 class="editorial-title text-3xl sm:text-4xl text-stone-100 font-light font-serif">Biblioteca de Humanidades</h2>
-                <p class="text-stone-400 text-xs mt-2">CAMPUS DE EL MILÁN · L–V 08:00 – 20:00 h · buobh@uniovi.es</p>
+                <p class="text-stone-400 text-xs mt-2">CAMPUS DE EL MILÁN · <span id="horario-footer-vigente">L–V 08:00 a 20:00 h</span> · buobh@uniovi.es</p>
             </div>
             <div class="flex flex-col sm:flex-row justify-between items-center pt-6 text-stone-500 text-[11px] gap-3">
                 <span>© 2026 Universidad de Oviedo · Biblioteca de Humanidades</span>
@@ -304,6 +304,7 @@
     <script src="js/utils.js"></script>
     <script src="js/signaturas.js"></script>
     <script src="js/buscador.js"></script>
+    <script src="js/horarios.js"></script>
     <script>
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7egiu3-kyNvDc9KS6AWHcn1iEs3DD8_ty6DkeCHHeUdMghmnjyFSBMFqfwUWi9FN/exec";
         const { escapeHTML, limpiarTexto, construirUrlOpac, copiarTexto } = window.BUOUtils;
@@ -328,31 +329,9 @@
         let queryActual = '';
 
         function actualizarEstadoHorario() {
-            const dot = document.getElementById('estado-horario-dot');
-            const texto = document.getElementById('estado-horario-texto');
-            if (!dot || !texto) return;
-            try {
-                const ahora = new Date();
-                const partes = new Intl.DateTimeFormat('en-GB', {
-                    timeZone: 'Europe/Madrid',
-                    weekday: 'short',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false
-                }).formatToParts(ahora);
-                const mapa = Object.fromEntries(partes.map(p => [p.type, p.value]));
-                const esFinDeSemana = mapa.weekday === 'Sat' || mapa.weekday === 'Sun';
-                const hora = parseInt(mapa.hour, 10);
-                const abierta = !esFinDeSemana && hora >= 8 && hora < 20;
-
-                if (abierta) {
-                    dot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0';
-                    texto.textContent = 'ABIERTA AHORA · L–V 08:00 a 20:00 h';
-                } else {
-                    dot.className = 'w-2 h-2 rounded-full bg-amber-400 flex-shrink-0';
-                    texto.textContent = 'CERRADA AHORA · HORARIO L–V 08:00 a 20:00 h';
-                }
-            } catch (e) {}
+            if (window.BUOHorarios && typeof window.BUOHorarios.aplicarEnPagina === 'function') {
+                window.BUOHorarios.aplicarEnPagina({ url: 'data/horarios.json' });
+            }
         }
 
         async function registrarBusquedaEncontrada() {
