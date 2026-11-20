@@ -84,15 +84,12 @@
 
             <nav aria-label="Navegación de catálogo" class="hidden md:flex items-center space-x-6 text-xs font-mono tracking-wider text-stone-800 uppercase">
                 <a href="index.html" class="hover:text-sand transition-colors">Inicio</a>
-                <a href="titulo.html" class="hover:text-sand transition-colors">Por Título</a>
                 <a href="index.html#acervo" class="hover:text-sand transition-colors">Materias CDU</a>
+                <a href="index.html#guia" class="hover:text-sand transition-colors">Guía y dudas</a>
                 <a href="https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=101" target="_blank" rel="noopener noreferrer" class="hover:text-sand transition-colors">OPAC General ↗</a>
             </nav>
 
             <div class="flex items-center gap-2 flex-shrink-0">
-                <a href="titulo.html" class="hidden sm:inline-flex md:hidden items-center text-xs font-mono px-3 py-2 border border-stone-300 bg-stone-50 text-stone-800 hover:border-stone-900 transition-colors uppercase tracking-wider">
-                    Por título
-                </a>
                 <a href="index.html" class="inline-flex items-center gap-2 text-xs font-mono px-3.5 sm:px-4 py-2 bg-stone-900 text-stone-100 hover:bg-sand hover:text-stone-900 transition-all uppercase tracking-wider">
                     <svg aria-hidden="true" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
                     <span>Inicio</span>
@@ -179,11 +176,11 @@
                     </button>
                 </div>
 
-                <div class="flex items-center justify-between sm:justify-end gap-2 font-mono text-xs">
-                    <label for="select-orden" class="text-stone-600 whitespace-nowrap">Ordenar:</label>
+                <div class="flex items-center justify-between sm:justify-end gap-2 font-mono text-xs min-w-0">
+                    <label for="select-orden" class="text-stone-600 whitespace-nowrap flex-shrink-0">Ordenar:</label>
                     <select id="select-orden" onchange="cambiarOrdenResultados()"
-                        class="bg-white border border-stone-300 text-stone-900 px-3 py-1.5 text-base md:text-xs focus:outline-none focus:border-stone-900">
-                        <option value="relevancia">Relevancia y Sala (HG primero)</option>
+                        class="min-w-0 flex-1 md:flex-initial max-w-full bg-white border border-stone-300 text-stone-900 px-3 py-1.5 text-base md:text-xs focus:outline-none focus:border-stone-900">
+                        <option value="relevancia">Relevancia y Sala (HG)</option>
                         <option value="reciente">Año (más reciente)</option>
                         <option value="titulo">Título (A–Z)</option>
                         <option value="signatura">Signatura</option>
@@ -206,8 +203,8 @@
                 Escribe un título, autor o signatura en el buscador superior para comprobar si el ejemplar está en <strong>Libre Acceso (HG)</strong> con su plano de estantería o en <strong>Depósito</strong>.
             </p>
             <div class="flex flex-wrap justify-center gap-2.5 font-mono text-xs">
-                <a href="titulo.html" class="px-4 py-2.5 bg-stone-900 text-stone-100 hover:bg-sand hover:text-stone-900 transition-colors">Búsqueda directa por título →</a>
-                <a href="index.html#acervo" class="px-4 py-2.5 border border-stone-300 bg-white text-stone-900 hover:border-stone-900 transition-colors">Explorar por materias (CDU)</a>
+                <a href="index.html#acervo" class="px-4 py-2.5 bg-stone-900 text-stone-100 hover:bg-sand hover:text-stone-900 transition-colors">Explorar por materias (CDU) →</a>
+                <a href="https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=101" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 border border-stone-300 bg-white text-stone-900 hover:border-stone-900 transition-colors">Consultar en OPAC BUO ↗</a>
             </div>
         </div>
 
@@ -218,15 +215,15 @@
             <p id="texto-sin-resultados" class="text-sm text-stone-600 font-light max-w-xl mx-auto mb-6 leading-relaxed">
                 No hemos localizado ningún registro en <span class="font-semibold">Signatura</span>, <span class="font-semibold">Título</span> ni <span class="font-semibold">Autor</span> para tu consulta. Prueba con palabras clave más breves o consulta los recursos alternativos:
             </p>
-            <div class="flex flex-wrap justify-center gap-3 font-mono text-xs">
+            <div class="flex flex-wrap justify-center gap-2.5 font-mono text-xs">
                 <a id="btn-opac-sin-resultados" href="https://buoabsys.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH" target="_blank" rel="noopener noreferrer"
-                    class="px-5 py-3 bg-stone-900 text-sand hover:bg-sand hover:text-stone-900 font-semibold transition-colors">
-                    Buscar en OPAC General BUO ↗
+                    class="px-4 py-2.5 bg-stone-900 text-sand hover:bg-sand hover:text-stone-900 font-semibold transition-colors whitespace-nowrap">
+                    Buscar en OPAC BUO ↗
                 </a>
-                <a href="titulo.html" class="px-5 py-3 border border-stone-300 bg-white text-stone-900 hover:border-stone-900 transition-colors">
-                    Búsqueda por título exacto
+                <a href="index.html#acervo" class="px-4 py-2.5 border border-stone-300 bg-white text-stone-900 hover:border-stone-900 transition-colors whitespace-nowrap">
+                    Explorar materias (CDU)
                 </a>
-                <a href="index.html" class="px-5 py-3 border border-stone-300 bg-white text-stone-900 hover:border-stone-900 transition-colors">
+                <a href="index.html" class="px-4 py-2.5 border border-stone-300 bg-white text-stone-900 hover:border-stone-900 transition-colors whitespace-nowrap">
                     Preguntar al Asistente IA
                 </a>
             </div>
@@ -297,7 +294,7 @@
                 <span>© 2026 Universidad de Oviedo · Biblioteca de Humanidades</span>
                 <div class="flex items-center gap-4">
                     <a href="index.html" class="text-stone-300 hover:text-sand transition-colors">Portada</a>
-                    <a href="titulo.html" class="text-stone-300 hover:text-sand transition-colors">Por título</a>
+                    <a href="index.html#acervo" class="text-stone-300 hover:text-sand transition-colors">Materias CDU</a>
                     <a href="#top" class="text-stone-300 hover:text-sand transition-colors uppercase">↑ Arriba</a>
                 </div>
             </div>
