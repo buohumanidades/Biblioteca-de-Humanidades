@@ -7,24 +7,30 @@
   "zonaHoraria": "Europe/Madrid",
   "horarioHabitual": {
     "nombre": "Horario lectivo habitual",
-    "lunesAViernes": [["08:00", "20:00"]],
+    "lunesAViernes": [["08:30", "20:00"]],
     "sabado": [],
     "domingo": []
   },
   "periodosEspeciales": [
     {
-      "nombre": "Horario de verano (julio)",
-      "desde": "2026-07-01",
-      "hasta": "2026-07-31",
+      "nombre": "Horario de verano",
+      "desde": "2027-06-16",
+      "hasta": "2027-07-31",
       "cerrado": false,
-      "lunesAViernes": [["08:30", "14:30"]],
+      "lunesAViernes": [["08:30", "19:30"]],
       "sabado": [],
       "domingo": []
     },
     {
       "nombre": "Cierre de agosto",
-      "desde": "2026-08-01",
-      "hasta": "2026-08-31",
+      "desde": "2027-08-01",
+      "hasta": "2027-08-15",
+      "cerrado": true
+    },
+    {
+      "nombre": "Cierre de Navidad",
+      "desde": "2026-12-24",
+      "hasta": "2027-01-07",
       "cerrado": true
     },
     {
@@ -58,6 +64,7 @@
       { "fecha": "2026-04-27", "nombre": "Festividad Facultad de Filosofía y Letras (UniOvi)", "ambito": "uniovi" },
       { "fecha": "2026-05-26", "nombre": "Martes de Campo · La Balesquida (Oviedo)", "ambito": "oviedo" },
       { "fecha": "2026-11-02", "nombre": "Todos los Santos (traslado autonómico)", "ambito": "asturias" },
+      { "fecha": "2026-11-26", "nombre": "Santa Catalina de Alejandría", "ambito": "Uniovi" },
       { "fecha": "2026-12-07", "nombre": "Día de la Constitución (traslado autonómico)", "ambito": "asturias" }
     ],
     "2027": [
