@@ -11,12 +11,13 @@ Esta carpeta contiene el flujo completo en **3 pasos** para detectar títulos co
 
 ## Requisitos (solo para `buscarenopac.py`)
 
-`truncados.py` y `sustituir.py` solo usan Python estándar. Para ejecutar `buscarenopac.py` instala una sola vez:
+`truncados.py` y `sustituir.py` solo usan Python estándar. Para `buscarenopac.py` en modo HTTP rápido solo necesitas:
 
 ```powershell
-pip install playwright beautifulsoup4
-playwright install chromium
+pip install beautifulsoup4 requests
 ```
+
+*(Opcional: si alguna vez necesitases usar `--motor playwright`, instala también `pip install playwright` y `playwright install chromium`.)*
 
 ## Flujo de trabajo paso a paso
 
@@ -33,22 +34,23 @@ Genera `truncados.json`. Opciones útiles:
 
 ### Paso 2: Recuperar títulos completos desde el OPAC (`buscarenopac.py`)
 
-Conviene probar primero con 10 libros:
+Conviene probar primero con 20 libros:
 
 ```powershell
-python buscarenopac.py --limite 10
+python buscarenopac.py --limite 20
 ```
 
 Y luego lanzar el proceso completo:
 
 ```powershell
-python buscarenopac.py
+python buscarenopac.py --concurrencia 4
 ```
 
+- **Motor rápido automático (`--motor auto`):** usa peticiones HTTP directas con Keep-Alive y cookies (sin abrir navegador) y solo recurre a Playwright si el OPAC lo exigiera.
+- **Concurrencia y caché:** consulta varios libros en paralelo (`--concurrencia 4`, recomendado 3–6) y resuelve al instante los ejemplares repetidos en memoria sin volver a consultar el OPAC.
 - **No modifica** `truncados.json` ni `libros<N>.json`.
-- Guarda el progreso cada 20 libros en **`final.json`** (encontrados) y **`no_encontrados.json`** (sin coincidencia).
-- **Reanudación segura:** si pulsas `Ctrl+C` o se corta Internet, al volver a ejecutar `python buscarenopac.py` continúa donde se quedó sin repetir ni sobrescribir resultados.
-- Opciones útiles: `--pausa 2.5`, `--reintentar-fallidos`, `--guardar-html-error`, `--mostrar-navegador`.
+- **Reanudación segura:** guarda el progreso cada 20 libros en `final.json` y `no_encontrados.json` (mostrando velocidad y tiempo restante estimado). Si pulsas `Ctrl+C`, al volver a ejecutarlo continúa donde se quedó.
+- Opciones útiles: `--motor http|playwright|auto`, `--concurrencia 4`, `--pausa 0.35`, `--reintentar-fallidos`, `--guardar-html-error`.
 
 ### Paso 3: Simular y aplicar la sustitución (`sustituir.py`)
 
