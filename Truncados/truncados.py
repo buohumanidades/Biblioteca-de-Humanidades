@@ -163,9 +163,14 @@ def analizar_truncamiento(
     limite_corte: int = 60,
     incluir_exactos_limite: bool = True,
 ) -> str | None:
-    """Devuelve el motivo si el título parece truncado, o None si parece completo."""
+    """Devuelve el motivo si el título parece truncado, o None si parece completo.
+
+    Solo evalúa títulos cuya longitud esté entre min_len y limite_corte (por defecto 55..60).
+    Los títulos con más de limite_corte caracteres ya están completos y se ignoran.
+    """
     titulo_limpio = titulo.strip()
-    if len(titulo_limpio) < min_len:
+    longitud = len(titulo_limpio)
+    if longitud < min_len or longitud > limite_corte:
         return None
 
     # 1. Puntuación final abierta o paréntesis sin cerrar
@@ -198,7 +203,7 @@ def analizar_truncamiento(
         return "fragmento_corto"
 
     # 4. Alcanza exactamente el límite de truncamiento del catálogo (60 caracteres)
-    if incluir_exactos_limite and len(titulo_limpio) >= limite_corte:
+    if incluir_exactos_limite and longitud == limite_corte:
         return "limite_caracteres"
 
     return None
@@ -306,7 +311,7 @@ def construir_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--solo-heuristica",
         action="store_true",
-        help="No marca automáticamente todos los títulos de >= limite-corte; usa solo heurísticas lingüísticas.",
+        help="No marca automáticamente todos los títulos de exactamente limite-corte caracteres; usa solo heurísticas lingüísticas.",
     )
     parser.add_argument(
         "--sin-duplicados",
