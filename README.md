@@ -9,8 +9,6 @@ Aplicación web estática (GitHub Pages) para localizar libros, consultar biblio
 - `localizador.html` y `Encontrado.html`: resolución de signaturas/zonas (`signaturas.json`, `plano.json`, `todassignaturas.json`) y plano interactivo (`donde.jpg`).
 - `1.html`, `7.html`, `8.html`, `9.html`, `Encontradomateria.html`: navegación por grandes áreas temáticas (CDU).
 - `Grados/grado3.html` y `Grados/grado3.json`: bibliografía recomendada del Grado en Filosofía con disponibilidad física precalculada.
-- `titulo.html`: búsqueda rápida por título sobre `Grados/libros_1.json`–`Grados/libros_2.json`.
-- `escaner.html`: lector OCR experimental de signaturas `HG` con cámara y Tesseract.js.
 - `BNE.html`: asistente independiente de consulta sobre el catálogo de la BNE.
 - `js/`: módulos compartidos:
   - `js/utils.js`: normalización de texto, `escapeHTML` y sanitización con DOMPurify.
@@ -18,6 +16,8 @@ Aplicación web estática (GitHub Pages) para localizar libros, consultar biblio
   - `js/buscador.js`: carga paralela vía `manifest.json` y algoritmo de búsqueda en 4 niveles.
   - `js/asistente.js`: motor bibliotecario local en lenguaje natural (IDF, apellidos del catálogo, sinónimos, filtros, CDU y guías de investigación).
   - `js/aprendizaje.js`: aprendizaje continuo en cliente (`localStorage`) y sincronización opcional con Google Apps Script (feedback implícito/explícito, re-ranking dinámico y lagunas de búsqueda).
+  - `js/horarios.js`: motor de estado de apertura en tiempo real (`Europe/Madrid`) que lee `data/horarios.json`.
+- `data/horarios.json`: calendario editable de horarios habituales, periodos especiales (verano, Navidad, exámenes), festivos fijos y anuales (nacionales, Asturias, Oviedo y Universidad de Oviedo) y cierres/horarios puntuales.
 - `data/sinonimos.json`: diccionario editable de sinónimos bibliográficos y equivalencias de fechas/siglas (`"36"`, `"98"`, `"27"`, `"asturianu"`, etc.) sin tocar JavaScript.
 - `scripts/google_apps_script_asistente_rag.gs`: plantilla actualizada para Google Apps Script con RAG sobre los candidatos reales del catálogo, modelos activos (Gemini / Groq) y registro colectivo en Google Sheets (`Feedback`, `Lagunas`, `Sinonimos`).
 

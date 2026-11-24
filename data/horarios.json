@@ -1,0 +1,91 @@
+{
+  "_instrucciones": [
+    "Configuración de horarios, periodos especiales, festivos y cierres puntuales de la Biblioteca de Humanidades (Universidad de Oviedo).",
+    "Orden de prioridad al evaluar cada día: 1) excepcionesPuntuales, 2) festivosPorAnio, 3) festivosFijos, 4) periodosEspeciales, 5) horarioHabitual.",
+    "Fechas en formato YYYY-MM-DD (o MM-DD en festivosFijos). Horas en formato 24h HH:MM. Puedes añadir varias franjas si hay horario partido, por ejemplo [[\"08:30\",\"14:30\"],[\"16:00\",\"20:00\"]]."
+  ],
+  "zonaHoraria": "Europe/Madrid",
+  "horarioHabitual": {
+    "nombre": "Horario lectivo habitual",
+    "lunesAViernes": [["08:30", "20:00"]],
+    "sabado": [],
+    "domingo": []
+  },
+  "periodosEspeciales": [
+    {
+      "nombre": "Horario de verano",
+      "desde": "2027-06-16",
+      "hasta": "2027-07-31",
+      "cerrado": false,
+      "lunesAViernes": [["08:30", "19:30"]],
+      "sabado": [],
+      "domingo": []
+    },
+    {
+      "nombre": "Cierre de agosto",
+      "desde": "2027-08-01",
+      "hasta": "2027-08-15",
+      "cerrado": true
+    },
+    {
+      "nombre": "Cierre de Navidad",
+      "desde": "2026-12-24",
+      "hasta": "2027-01-07",
+      "cerrado": true
+    },
+    {
+      "nombre": "Horario reducido de Navidad",
+      "desde": "2026-12-23",
+      "hasta": "2026-12-31",
+      "cerrado": false,
+      "lunesAViernes": [["08:30", "14:30"]],
+      "sabado": [],
+      "domingo": []
+    }
+  ],
+  "festivosFijos": [
+    { "fecha": "01-01", "nombre": "Año Nuevo", "ambito": "nacional" },
+    { "fecha": "01-06", "nombre": "Epifanía del Señor (Reyes)", "ambito": "nacional" },
+    { "fecha": "05-01", "nombre": "Fiesta del Trabajo", "ambito": "nacional" },
+    { "fecha": "08-15", "nombre": "Asunción de la Virgen", "ambito": "nacional" },
+    { "fecha": "09-08", "nombre": "Día de Asturias", "ambito": "asturias" },
+    { "fecha": "09-21", "nombre": "San Mateo (Oviedo)", "ambito": "oviedo" },
+    { "fecha": "10-12", "nombre": "Fiesta Nacional de España", "ambito": "nacional" },
+    { "fecha": "11-01", "nombre": "Todos los Santos", "ambito": "nacional" },
+    { "fecha": "12-06", "nombre": "Día de la Constitución", "ambito": "nacional" },
+    { "fecha": "12-08", "nombre": "Inmaculada Concepción", "ambito": "nacional" },
+    { "fecha": "12-25", "nombre": "Natividad del Señor (Navidad)", "ambito": "nacional" }
+  ],
+  "festivosPorAnio": {
+    "2026": [
+      { "fecha": "2026-01-28", "nombre": "Santo Tomás de Aquino (Universidad de Oviedo)", "ambito": "uniovi" },
+      { "fecha": "2026-04-02", "nombre": "Jueves Santo", "ambito": "asturias" },
+      { "fecha": "2026-04-03", "nombre": "Viernes Santo", "ambito": "nacional" },
+      { "fecha": "2026-04-27", "nombre": "Festividad Facultad de Filosofía y Letras (UniOvi)", "ambito": "uniovi" },
+      { "fecha": "2026-05-26", "nombre": "Martes de Campo · La Balesquida (Oviedo)", "ambito": "oviedo" },
+      { "fecha": "2026-11-02", "nombre": "Todos los Santos (traslado autonómico)", "ambito": "asturias" },
+      { "fecha": "2026-11-27", "nombre": "Santa Catalina de Alejandría", "ambito": "Uniovi" },
+      { "fecha": "2026-12-07", "nombre": "Día de la Constitución (traslado autonómico)", "ambito": "asturias" }
+    ],
+    "2027": [
+      { "fecha": "2027-01-28", "nombre": "Santo Tomás de Aquino (Universidad de Oviedo)", "ambito": "uniovi" },
+      { "fecha": "2027-03-25", "nombre": "Jueves Santo", "ambito": "asturias" },
+      { "fecha": "2027-03-26", "nombre": "Viernes Santo", "ambito": "nacional" },
+      { "fecha": "2027-05-18", "nombre": "Martes de Campo · La Balesquida (Oviedo)", "ambito": "oviedo" }
+    ]
+  },
+  "excepcionesPuntuales": [
+    {
+      "fecha": "2026-12-24",
+      "nombre": "Nochebuena",
+      "cerrado": true,
+      "ambito": "biblioteca"
+    },
+    {
+      "fecha": "2026-12-31",
+      "nombre": "Nochevieja",
+      "cerrado": true,
+      "ambito": "biblioteca"
+    }
+  ]
+}

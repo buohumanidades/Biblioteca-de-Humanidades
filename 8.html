@@ -2,365 +2,317 @@
 <html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Materias: Lenguaje, Lingüística, Literatura · Biblioteca de Humanidades</title>
-    <!-- Tailwind CSS CDN -->
+    <meta name="description" content="Localiza la planta, sala y estantería de Lengua, Lingüística y Literatura (HG8) en la Biblioteca de Humanidades.">
+    <meta name="theme-color" content="#1A1817">
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        stone: {
-                            50: '#FAF8F5',
-                            100: '#F4F0E8',
-                            200: '#E6DFC5',
-                            300: '#D5CBBF',
-                            800: '#2A2725',
-                            900: '#1A1817',
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC5', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' },
+                            sand: '#C5A059'
                         },
-                        sand: '#C5A059',
-                    },
-                    fontFamily: {
-                        serif: ['Cormorant Garamond', 'serif'],
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        mono: ['Space Grotesk', 'monospace'],
+                        fontFamily: {
+                            serif: ['Cormorant Garamond', 'serif'],
+                            sans: ['Plus Jakarta Sans', 'sans-serif'],
+                            mono: ['Space Grotesk', 'monospace']
+                        }
                     }
                 }
-            }
+            };
         }
     </script>
     <style>
-        body {
-            background-color: #F4F0E8;
-            color: #1A1817;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            overflow-x: hidden;
-        }
-        .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 0.95; }
+        body { background-color: #F4F0E8; color: #1A1817; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+        .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 1.05; }
+        .dot-spaced { letter-spacing: 0.25em; text-transform: uppercase; }
         .grid-line-b { border-bottom: 1px solid rgba(26, 24, 23, 0.12); }
-        .hover-lift { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease; }
-        .hover-lift:hover { transform: translateY(-4px); }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #F4F0E8; }
-        ::-webkit-scrollbar-thumb { background: #1A1817; }
+        a:focus-visible, button:focus-visible { outline: 2px solid #C5A059; outline-offset: 2px; }
+        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #F4F0E8; } ::-webkit-scrollbar-thumb { background: #1A1817; }
     </style>
 </head>
-<body class="antialiased selection:bg-stone-800 selection:text-stone-50">
+<body id="top" class="antialiased selection:bg-stone-800 selection:text-stone-50 flex flex-col min-h-screen">
 
-    <!-- MAIN EDITORIAL HEADER -->
-    <header class="sticky top-0 z-40 bg-stone-100/90 backdrop-blur-md grid-line-b">
-        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-            <div>
-                <span class="block text-xs font-mono font-medium tracking-[0.3em] text-stone-800 uppercase">
-                    B . U . O
-                </span>
-                <span class="text-[11px] text-stone-500 font-mono tracking-wider block mt-0.5">
-                    CAMPUS DE EL MILÁN
-                </span>
+    <header class="sticky top-0 z-40 bg-stone-100/95 backdrop-blur-md grid-line-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 sm:py-4 flex justify-between items-center gap-3">
+            <div class="min-w-0">
+                <span class="block text-xs font-mono font-medium tracking-[0.3em] text-stone-800 uppercase">B . U . O</span>
+                <span class="text-[11px] text-stone-600 font-mono tracking-wider block mt-0.5 truncate">CAMPUS DE EL MILÁN · CDU HG8</span>
             </div>
-            
-            <a href="index.html" class="inline-flex items-center space-x-2 text-xs font-mono px-4 py-2 border border-stone-800 text-stone-800 hover:bg-stone-900 hover:text-stone-100 transition-all uppercase tracking-wider">
-                <i class="fa-solid fa-arrow-left text-[10px]"></i>
-                <span>Volver al inicio</span>
+            <a href="index.html" class="inline-flex items-center gap-2 text-xs font-mono px-3.5 sm:px-4 py-2 border border-stone-800 text-stone-800 hover:bg-stone-900 hover:text-stone-100 transition-all uppercase tracking-wider shrink-0">
+                <svg aria-hidden="true" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                <span class="hidden sm:inline">Volver al inicio</span>
+                <span class="sm:hidden">Inicio</span>
             </a>
         </div>
     </header>
 
-    <!-- HERO SECTION -->
     <section class="grid-line-b bg-stone-900 text-stone-100 relative overflow-hidden">
-        <img src="sala.webp" onerror="this.style.display='none'" alt="Biblioteca" class="absolute inset-0 w-full h-full object-cover opacity-20 filter grayscale">
-        
-        <div class="max-w-7xl mx-auto px-6 py-16 md:py-24 relative z-10">
-            <span class="text-xs font-mono text-sand font-semibold uppercase tracking-widest block mb-4">
-                [ COLECCIÓN GENERAL ]
-            </span>
-            <h1 class="editorial-title text-5xl md:text-7xl font-light mb-6">
+        <img src="sala.webp" onerror="this.style.display='none'" alt="Biblioteca de Humanidades" class="absolute inset-0 w-full h-full object-cover opacity-20 filter grayscale">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16 md:py-20 relative z-10">
+            <span class="text-xs font-mono text-sand font-semibold uppercase tracking-widest block mb-3">[ COLECCIÓN GENERAL ]</span>
+            <h1 class="editorial-title text-4xl sm:text-5xl md:text-7xl font-light mb-4 sm:mb-6">
                 Lenguaje, Lingüística <br>
-                <span class="italic font-normal text-stone-400">&</span> Literatura.
+                <span class="italic font-normal text-stone-400">&amp;</span> Literatura.
             </h1>
-            <p class="text-stone-400 font-mono text-xs uppercase tracking-widest max-w-xl leading-relaxed">
+            <p class="text-stone-300 font-mono text-xs uppercase tracking-widest max-w-xl leading-relaxed mb-6">
                 Selecciona una materia específica para consultar su ubicación exacta en la planta, sala y estantería correspondiente.
             </p>
+            <nav aria-label="Áreas temáticas CDU" class="flex flex-wrap gap-2 font-mono text-[11px]">
+                <a href="1.html" class="px-3 py-1.5 bg-stone-800/80 text-stone-200 border border-stone-700 hover:border-sand hover:text-sand transition-colors">HG1–6 · Filosofía y CC.SS.</a>
+                <a href="7.html" class="px-3 py-1.5 bg-stone-800/80 text-stone-200 border border-stone-700 hover:border-sand hover:text-sand transition-colors">HG7 · Arte y Arquitectura</a>
+                <span aria-current="page" class="px-3 py-1.5 bg-sand text-stone-900 border border-sand font-semibold">HG8 · Lengua y Literatura</span>
+                <a href="9.html" class="px-3 py-1.5 bg-stone-800/80 text-stone-200 border border-stone-700 hover:border-sand hover:text-sand transition-colors">HG9 · Geografía e Historia</a>
+            </nav>
         </div>
     </section>
 
-    <!-- MATERIAS GRID -->
-    <section class="py-16 md:py-24 max-w-7xl mx-auto px-6">
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            
-            <!-- TARJETA: ASTURIANA -->
-            <a href="#" onclick="abrirMateria('asturias'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lengua y Literatura</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Asturiana</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+    <main class="py-10 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 w-full flex-1">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
+
+            <a href="#" onclick="abrirMateria('asturias'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Lengua y Literatura</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Asturiana</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LIT ESPAÑOLA -->
-            <a href="#" onclick="abrirMateria('lit_espanola'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Española</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lit_espanola'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Literatura</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Española</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: GENERALIDADES -->
-            <a href="#" onclick="abrirMateria('generalidades'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Fundamentos</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Conocimientos de las lenguas</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('generalidades'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Fundamentos</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Conocimientos de las lenguas</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LINGÜÍSTICA -->
-            <a href="#" onclick="abrirMateria('linguistica'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Filología</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Lingüística general</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('linguistica'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Filología</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Lingüística general</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: DICCIONARIOS -->
-            <a href="#" onclick="abrirMateria('diccionarios'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full relative overflow-hidden">
+            <a href="#" onclick="abrirMateria('diccionarios'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full relative overflow-hidden">
                 <div class="absolute inset-0 bg-sand/10 group-hover:bg-transparent transition-colors"></div>
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block relative z-10">Referencia</span>
-                <div class="flex justify-between items-end relative z-10">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Diccionarios</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block relative z-10">Referencia</span>
+                <div class="flex justify-between items-end gap-2 relative z-10">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Diccionarios</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LENGUA INGLESA -->
-            <a href="#" onclick="abrirMateria('lengua_inglesa'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Inglesa</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lengua_inglesa'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Lenguas</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Inglesa</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LENGUAS GERMÁNICAS -->
-            <a href="#" onclick="abrirMateria('lenguas_germanicas'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Germánicas</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lenguas_germanicas'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Lenguas</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Germánicas</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LENGUAS ROMANCES -->
-            <a href="#" onclick="abrirMateria('lenguas_romances'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Romances</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lenguas_romances'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Lenguas</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Romances</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LENGUA ITALIANA -->
-            <a href="#" onclick="abrirMateria('lengua_italiana'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Italiana</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lengua_italiana'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Lenguas</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Italiana</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LENGUA ESPAÑOLA -->
-            <a href="#" onclick="abrirMateria('lengua_espanola'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Española</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lengua_espanola'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Lenguas</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Española</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LENGUA PORTUGUESA -->
-            <a href="#" onclick="abrirMateria('lengua_portuguesa'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Portuguesa</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lengua_portuguesa'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Lenguas</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Portuguesa</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LENGUA GALLEGA -->
-            <a href="#" onclick="abrirMateria('lengua_gallega'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Gallega</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lengua_gallega'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Lenguas</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Gallega</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LENGUAS CLÁSICAS -->
-            <a href="#" onclick="abrirMateria('lenguas_clasicas'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Clásicas en general</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lenguas_clasicas'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Lenguas</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Clásicas en general</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LENGUAS ESLAVAS -->
-            <a href="#" onclick="abrirMateria('lenguas_eslavas'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Eslavas y Bálticas</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lenguas_eslavas'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Lenguas</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Eslavas y Bálticas</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LENGUAS ORIENTALES -->
-            <a href="#" onclick="abrirMateria('lenguas_orientales'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Lenguas</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Orientales y Africanas</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lenguas_orientales'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Lenguas</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Orientales y Africanas</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LIT GENERAL -->
-            <a href="#" onclick="abrirMateria('lit_general'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">General</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lit_general'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Literatura</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">General</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LIT INGLESA -->
-            <a href="#" onclick="abrirMateria('lit_inglesa'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Inglesa</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lit_inglesa'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Literatura</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Inglesa</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LIT ALEMANA -->
-            <a href="#" onclick="abrirMateria('lit_alemana'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Alemana y Austriaca</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lit_alemana'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Literatura</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Alemana y Austriaca</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LIT HOLANDESA -->
-            <a href="#" onclick="abrirMateria('lit_holandesa'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Holandesa y Nórdica</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lit_holandesa'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Literatura</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Holandesa y Nórdica</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LIT FRANCESA -->
-            <a href="#" onclick="abrirMateria('lit_francesa'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Francesa y Provenzal</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lit_francesa'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Literatura</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Francesa y Provenzal</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LIT ITALIANA -->
-            <a href="#" onclick="abrirMateria('lit_italiana'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Italiana</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lit_italiana'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Literatura</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Italiana</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LIT RUMANA -->
-            <a href="#" onclick="abrirMateria('lit_rumana'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Rumana</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lit_rumana'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Literatura</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Rumana</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LIT HISPANOAMERICANA -->
-            <a href="#" onclick="abrirMateria('lit_hispanoamericana'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Hispanoamericana</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lit_hispanoamericana'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Literatura</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Hispanoamericana</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LIT PORTUGUESA -->
-            <a href="#" onclick="abrirMateria('lit_portuguesa'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Portuguesa, Brasileña y Gallega</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lit_portuguesa'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Literatura</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Portuguesa, Brasileña y Gallega</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LIT CLÁSICAS -->
-            <a href="#" onclick="abrirMateria('lit_clasicas'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Clásicas</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lit_clasicas'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Literatura</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Clásicas</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: LIT POLACA -->
-            <a href="#" onclick="abrirMateria('lit_polaca'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Polaca, Búlgara, Checa y Serbia</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lit_polaca'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Literatura</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Polaca, Búlgara, Checa y Serbia</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <!-- TARJETA: OTRAS LIT -->
-            <a href="#" onclick="abrirMateria('lit_otras'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Literatura</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Otras Literaturas</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('lit_otras'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Literatura</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Otras Literaturas</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
         </div>
-        
-    </section>
+    </main>
 
-    <!-- FOOTER WITH EDITORIAL SIGNATURE -->
-    <footer class="bg-stone-900 text-stone-100 pt-16 pb-12 font-mono text-xs border-t border-stone-800">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <span class="dot-spaced text-stone-400 text-sm block mb-4">
-                U . N . I . V . E . R . S . I . D . A . D .  D . E .  O . V . I . E . D . O
+    <footer class="bg-stone-900 text-stone-100 pt-12 pb-10 font-mono text-xs border-t border-stone-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+            <span class="dot-spaced text-stone-400 text-xs sm:text-sm block mb-3">
+                U . N . I . V . E . R . S . I . D . A . D . D . E . O . V . I . E . D . O
             </span>
-            <h2 class="editorial-title text-4xl sm:text-6xl text-stone-100 font-light font-serif">
+            <h2 class="editorial-title text-3xl sm:text-5xl text-stone-100 font-light font-serif">
                 Biblioteca de Humanidades
             </h2>
-            <div class="flex justify-center items-center pt-8 text-stone-500 text-[11px] mt-8 border-t border-stone-800">
-                <span>© 2026 Universidad de Oviedo</span>
+            <div class="flex flex-col sm:flex-row justify-between items-center pt-7 text-stone-500 text-[11px] mt-7 border-t border-stone-800 gap-3">
+                <span>© 2026 Universidad de Oviedo · Biblioteca de Humanidades</span>
+                <a href="#top" class="text-stone-300 hover:text-sand transition-colors uppercase tracking-widest">↑ Volver arriba</a>
             </div>
         </div>
     </footer>
 
-    <!-- Lógica de Enrutamiento Dinámico Exactamente Igual -->
     <script>
         const baseDatosMaterias = {
             "generalidades": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la derecha", ubicacion: "Estanterías de la izquierda", estanteria: "Estantería 16", signatura: "(HG800.7!.t852.) o (HG800.8!.t852.)", texto_materia: "Conocimientos de las lenguas" },
@@ -400,8 +352,8 @@
                     sala: datos.sala,
                     ubicacion: datos.ubicacion,
                     estanteria: datos.estanteria,
-                    orig: datos.signatura, 
-                    materia: datos.texto_materia 
+                    orig: datos.signatura,
+                    materia: datos.texto_materia
                 });
                 window.location.href = datos.html + "?" + paramsUrl.toString();
             }

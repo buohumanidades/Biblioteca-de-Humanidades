@@ -2,140 +2,170 @@
 <html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ubicación del Libro · Biblioteca de Humanidades</title>
-    <!-- Tailwind CSS CDN -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Ubicación por Materia · Biblioteca de Humanidades</title>
+    <meta name="description" content="Ruta exacta en planta, sala y estantería para cada materia CDU de la Biblioteca de Humanidades (Universidad de Oviedo).">
+    <meta name="theme-color" content="#1A1817">
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC5', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' },
-                        sand: '#C5A059',
-                    },
-                    fontFamily: {
-                        serif: ['Cormorant Garamond', 'serif'],
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        mono: ['Space Grotesk', 'monospace'],
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC5', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' },
+                            sand: '#C5A059'
+                        },
+                        fontFamily: {
+                            serif: ['Cormorant Garamond', 'serif'],
+                            sans: ['Plus Jakarta Sans', 'sans-serif'],
+                            mono: ['Space Grotesk', 'monospace']
+                        }
                     }
                 }
-            }
+            };
         }
     </script>
     <style>
-        /* Estilos base para ocupar exactamente el tamaño de la ventana y evitar doble scroll */
-        body { 
-            background-color: #F4F0E8; 
-            color: #1A1817; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            height: 100dvh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
+        body {
+            background-color: #F4F0E8;
+            color: #1A1817;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
+        }
+        @media (min-width: 768px) and (min-height: 640px) {
+            body {
+                height: 100dvh;
+                overflow: hidden;
+            }
         }
         .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 0.95; }
         .grid-line-b { border-bottom: 1px solid rgba(26, 24, 23, 0.12); }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .svg-spin { animation: spin 1s linear infinite; }
+        a:focus-visible, button:focus-visible {
+            outline: 2px solid #C5A059;
+            outline-offset: 2px;
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-stone-800 selection:text-stone-50">
 
     <!-- HEADER / BARRA SUPERIOR -->
-    <header class="bg-stone-100/90 backdrop-blur-md grid-line-b shrink-0 z-10">
-        <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center w-full">
-            <div>
-                <span class="block text-xs font-mono font-medium tracking-[0.3em] text-stone-800 uppercase">B . U . O</span>
-                <span class="text-[10px] md:text-[11px] text-stone-500 font-mono tracking-wider block mt-0.5">BIBLIOTECA DE HUMANIDADES</span>
+    <header class="bg-stone-100/95 backdrop-blur-md grid-line-b shrink-0 z-10 sticky top-0 md:static">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 sm:py-4 flex justify-between items-center gap-3 w-full">
+            <div class="min-w-0">
+                <span class="block text-xs font-mono font-medium tracking-[0.28em] text-stone-800 uppercase">B . U . O</span>
+                <span class="text-[10px] sm:text-[11px] text-stone-600 font-mono tracking-wider block mt-0.5 truncate">BIBLIOTECA DE HUMANIDADES</span>
             </div>
-            
-            <a href="javascript:history.back()" class="inline-flex items-center space-x-2 text-[10px] md:text-xs font-mono px-3 md:px-4 py-2 border border-stone-800 text-stone-800 hover:bg-stone-900 hover:text-stone-100 transition-all uppercase tracking-wider">
-                <i class="fa-solid fa-rotate-left"></i>
-                <span class="hidden sm:inline">Nueva Búsqueda</span>
-                <span class="sm:hidden">Volver</span>
-            </a>
+
+            <div class="flex items-center gap-2 shrink-0">
+                <button type="button" onclick="volverAtras()" class="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-mono px-3 sm:px-4 py-2 border border-stone-800 text-stone-800 hover:bg-stone-900 hover:text-stone-100 transition-all uppercase tracking-wider">
+                    <svg aria-hidden="true" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    <span class="hidden sm:inline">Cambiar materia</span>
+                    <span class="sm:hidden">Volver</span>
+                </button>
+                <a href="index.html" class="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-mono px-3 sm:px-4 py-2 bg-stone-900 text-stone-100 hover:bg-sand hover:text-stone-900 transition-all uppercase tracking-wider">
+                    <span>Inicio</span>
+                </a>
+            </div>
         </div>
     </header>
 
     <!-- CONTENIDO PRINCIPAL FLEXIBLE -->
-    <main class="flex-1 flex flex-col max-w-7xl mx-auto w-full px-3 md:px-6 py-4 overflow-hidden gap-4">
-        
+    <main class="flex-1 flex flex-col max-w-7xl mx-auto w-full px-3 sm:px-4 md:px-6 py-3 sm:py-4 md:overflow-hidden gap-3 sm:gap-4">
+
         <!-- TARJETA: RUTA DE UBICACIÓN -->
-        <div class="bg-stone-900 text-stone-100 border-l-4 border-sand shadow-lg shrink-0 rounded-r-sm">
-            <div class="flex flex-col md:flex-row md:items-stretch justify-between h-full">
-                
-                <!-- Pasos de la ruta (Planta, Sala, Zona) -->
-                <div class="p-5 md:p-8 flex flex-col md:flex-row gap-4 md:gap-8 items-start md:items-center flex-1">
-                    
+        <section aria-label="Ruta de ubicación por materia" class="bg-stone-900 text-stone-100 border-l-4 border-sand shadow-lg shrink-0 rounded-r-sm overflow-hidden">
+            <div class="flex flex-col md:flex-row md:items-stretch justify-between">
+
+                <!-- Pasos de la ruta (Planta, Sala, Sector) -->
+                <div class="p-4 sm:p-5 md:p-7 flex flex-col sm:flex-row sm:flex-wrap md:flex-nowrap gap-3 sm:gap-5 md:gap-7 items-start sm:items-center flex-1 min-w-0">
+
                     <!-- Paso 1 -->
-                    <div class="flex items-center gap-4">
-                        <i class="fa-solid fa-map-location-dot text-2xl text-stone-500 hidden md:block"></i>
-                        <div class="flex flex-col">
-                            <span class="text-[10px] font-mono text-stone-500 uppercase tracking-widest mb-1">Piso</span>
-                            <span id="txt-planta" class="font-serif text-xl md:text-2xl whitespace-nowrap">PLANTA 2</span>
+                    <div class="flex items-center gap-3 min-w-0">
+                        <svg aria-hidden="true" class="w-6 h-6 text-sand shrink-0 hidden md:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+                        <div class="flex flex-col min-w-0">
+                            <span class="text-[10px] font-mono text-stone-400 uppercase tracking-widest mb-0.5">1. Piso</span>
+                            <span id="txt-planta" class="font-serif text-xl sm:text-2xl text-stone-50">PLANTA 2</span>
                         </div>
                     </div>
 
-                    <i class="fa-solid fa-chevron-right text-stone-700 text-sm hidden md:block"></i>
-                    <i class="fa-solid fa-chevron-down text-stone-700 text-sm md:hidden ml-4 -my-1"></i>
+                    <svg aria-hidden="true" class="w-4 h-4 text-stone-600 shrink-0 hidden md:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
 
                     <!-- Paso 2 -->
-                    <div class="flex flex-col">
-                        <span class="text-[10px] font-mono text-stone-500 uppercase tracking-widest mb-1">Zona</span>
-                        <span id="txt-sala" class="font-serif text-xl md:text-2xl whitespace-nowrap">Sala de la derecha</span>
+                    <div class="flex flex-col min-w-0">
+                        <span class="text-[10px] font-mono text-stone-400 uppercase tracking-widest mb-0.5">2. Zona</span>
+                        <span id="txt-sala" class="font-serif text-xl sm:text-2xl text-stone-50">Sala de la derecha</span>
                     </div>
 
-                    <i class="fa-solid fa-chevron-right text-stone-700 text-sm hidden md:block"></i>
-                    <i class="fa-solid fa-chevron-down text-stone-700 text-sm md:hidden ml-4 -my-1"></i>
+                    <svg aria-hidden="true" class="w-4 h-4 text-stone-600 shrink-0 hidden md:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
 
                     <!-- Paso 3 -->
-                    <div class="flex flex-col">
-                        <span class="text-[10px] font-mono text-stone-500 uppercase tracking-widest mb-1">Sector</span>
-                        <span id="txt-ubicacion" class="font-serif text-xl md:text-2xl">Estanterías de la derecha</span>
+                    <div class="flex flex-col min-w-0">
+                        <span class="text-[10px] font-mono text-stone-400 uppercase tracking-widest mb-0.5">3. Sector</span>
+                        <span id="txt-ubicacion" class="font-serif text-xl sm:text-2xl text-stone-50 leading-snug">Estanterías de la derecha</span>
                     </div>
 
                 </div>
 
                 <!-- Destino Exacto -->
-                <div class="bg-sand text-stone-900 p-5 md:p-8 flex flex-col justify-center min-w-[280px]">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="text-[10px] font-mono uppercase tracking-widest font-bold">DESTINO EXACTO</span>
-                        <!-- Badge para Signatura (Oculto por defecto) -->
-                        <div id="display-signatura" class="bg-stone-900 text-sand text-[10px] font-mono font-bold px-2 py-1 hidden rounded-sm shadow-sm"></div>
+                <div class="bg-sand text-stone-900 p-4 sm:p-5 md:p-7 flex flex-col justify-center w-full md:w-auto md:min-w-[280px] shrink-0">
+                    <div class="flex flex-wrap justify-between items-start gap-2 mb-1.5">
+                        <span class="text-[10px] font-mono uppercase tracking-widest font-bold">4. Destino exacto</span>
+                        <div id="display-signatura" class="bg-stone-900 text-sand text-[10px] font-mono font-bold px-2 py-0.5 hidden rounded-sm shadow-sm break-all"></div>
                     </div>
-                    <span id="txt-estanteria" class="font-serif text-3xl font-bold mb-1">Estantería 3</span>
-                    <span id="txt-materia" class="text-[11px] font-mono uppercase tracking-wide opacity-80 leading-tight">Materia específica</span>
+                    <span id="txt-estanteria" class="font-serif text-2xl sm:text-3xl font-bold mb-1 leading-tight">Estantería 3</span>
+                    <span id="txt-materia" class="text-[11px] font-mono uppercase tracking-wide opacity-85 leading-snug">Materia específica</span>
                 </div>
 
             </div>
-        </div>
+        </section>
 
-        <!-- INFO TEXT -->
-        <div class="shrink-0 flex items-start md:items-center gap-3 bg-stone-200/50 p-4 border border-stone-200 text-xs md:text-sm text-stone-700">
-            <i class="fa-solid fa-circle-info text-sand mt-0.5 md:mt-0"></i>
-            <p>Para indicarte exactamente dónde se encuentra un libro, asegúrate de comprobar su disponibilidad y signatura en el catálogo inferior.</p>
+        <!-- BARRA INFORMATIVA + FALLBACK OPAC EXTERNO -->
+        <div class="shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-stone-200/70 p-3 sm:p-3.5 border border-stone-300 text-xs sm:text-sm text-stone-800">
+            <div class="flex items-start sm:items-center gap-2.5 min-w-0">
+                <svg aria-hidden="true" class="w-4 h-4 text-stone-900 shrink-0 mt-0.5 sm:mt-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <p class="leading-snug">Comprueba en el catálogo inferior si el ejemplar está disponible para préstamo o pide ayuda si no carga aquí.</p>
+            </div>
+            <a id="linkOpacMateria" href="https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=101" target="_blank" rel="noopener noreferrer"
+                class="inline-flex items-center justify-center gap-1.5 text-[11px] font-mono font-semibold uppercase tracking-wider px-3.5 py-2 bg-stone-900 text-sand hover:bg-sand hover:text-stone-900 transition-colors shrink-0 whitespace-nowrap">
+                <span>Abrir en OPAC BUO</span>
+                <span aria-hidden="true">↗</span>
+            </a>
         </div>
 
         <!-- IFRAME DEL CATÁLOGO -->
-        <div class="flex-1 w-full bg-white border border-stone-200 shadow-sm relative overflow-hidden rounded-sm">
-            <iframe id="iframeCatalogo" class="absolute inset-0 w-full h-full border-none bg-stone-50" title="Resultados en el catálogo de la biblioteca"></iframe>
+        <div class="flex-1 min-h-[460px] md:min-h-0 w-full bg-white border border-stone-200 shadow-sm relative overflow-hidden rounded-sm">
+            <div id="iframeLoader" class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-stone-50 text-stone-600 font-mono text-xs gap-3 p-6 text-center pointer-events-none">
+                <svg aria-hidden="true" class="w-7 h-7 text-sand svg-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                <span>Cargando catálogo OPAC BUO…</span>
+            </div>
+            <iframe id="iframeCatalogo" class="w-full h-full border-none bg-stone-50 min-h-[460px] md:min-h-0" title="Resultados en el catálogo de la biblioteca"></iframe>
         </div>
 
     </main>
 
-    <!-- LÓGICA DE JAVASCRIPT (Intacta, se encarga de rellenar los datos de la URL y del Iframe) -->
     <script>
+        function volverAtras() {
+            if (window.history.length > 1 && document.referrer && document.referrer.startsWith(window.location.origin)) {
+                window.history.back();
+            } else {
+                window.location.href = 'index.html#acervo';
+            }
+        }
+
         const params = new URLSearchParams(window.location.search);
-        
-        // Obtenemos los parámetros de la URL
+
         const sigBuscada = params.get('sig');
         const sigOriginal = params.get('orig') || sigBuscada;
         const valPlanta = params.get('planta');
@@ -144,32 +174,42 @@
         const valEstanteria = params.get('estanteria');
         const valMateria = params.get('materia');
 
-        // Insertar Textos dinámicos en los IDs correspondientes
         if (valPlanta) document.getElementById('txt-planta').textContent = valPlanta;
         if (valSala) document.getElementById('txt-sala').textContent = valSala;
         if (valUbicacion) document.getElementById('txt-ubicacion').textContent = valUbicacion;
         if (valEstanteria) document.getElementById('txt-estanteria').textContent = valEstanteria;
-        if (valMateria) document.getElementById('txt-materia').textContent = valMateria; 
+        if (valMateria) document.getElementById('txt-materia').textContent = valMateria;
 
-        // Mostrar Badge de signatura si existe
         if (sigBuscada) {
             const badge = document.getElementById('display-signatura');
             badge.textContent = sigBuscada;
-            badge.style.display = 'inline-block';
+            badge.classList.remove('hidden');
         }
 
         const iframe = document.getElementById('iframeCatalogo');
+        const iframeLoader = document.getElementById('iframeLoader');
+        const linkOpac = document.getElementById('linkOpacMateria');
 
-        // Buscar en el catálogo (AbsysNet) usando la cadena exacta
+        function ocultarLoaderIframe() {
+            if (iframeLoader) iframeLoader.classList.add('hidden');
+        }
+
+        if (iframe) {
+            iframe.addEventListener('load', ocultarLoaderIframe);
+        }
+
         if (sigOriginal) {
             const urlBase = "https://absysweb.cpd.uniovi.es/cgi-bin/abnetopac?ACC=DOSEARCH&xsqf99=";
             const urlFinal = urlBase + encodeURIComponent(sigOriginal);
+            if (linkOpac) linkOpac.href = urlFinal;
             iframe.src = urlFinal;
         } else {
+            ocultarLoaderIframe();
             iframe.srcdoc = `
-                <div style="font-family: 'Plus Jakarta Sans', sans-serif; height: 100%; display: flex; 
-                            align-items: center; justify-content: center; color: #7f8c8d; text-align: center; padding: 20px;">
-                    <p>No se ha detectado ninguna signatura general en la búsqueda.</p>
+                <div style="font-family: 'Plus Jakarta Sans', system-ui, sans-serif; height: 100%; display: flex; flex-direction: column;
+                            align-items: center; justify-content: center; color: #57534E; text-align: center; padding: 24px; background: #FAF8F5;">
+                    <p style="margin: 0 0 8px; font-weight: 600; color: #1A1817;">No se ha especificado una materia o signatura.</p>
+                    <p style="margin: 0; font-size: 14px;">Selecciona un área temática desde la portada para ver sus fondos en el catálogo.</p>
                 </div>
             `;
         }

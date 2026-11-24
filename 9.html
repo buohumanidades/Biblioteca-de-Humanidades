@@ -2,246 +2,291 @@
 <html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Materias: Geografía e Historia · Biblioteca de Humanidades</title>
+    <meta name="description" content="Localiza la planta, sala y estantería de Geografía, Arqueología e Historia (HG9) en la Biblioteca de Humanidades.">
+    <meta name="theme-color" content="#1A1817">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script>
-        tailwind.config = { theme: { extend: { colors: { stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFD9', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' }, sand: '#C5A059' }, fontFamily: { serif: ['Cormorant Garamond', 'serif'], sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['Space Grotesk', 'monospace'] } } } }
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            stone: { 50: '#FAF8F5', 100: '#F4F0E8', 200: '#E6DFC5', 300: '#D5CBBF', 800: '#2A2725', 900: '#1A1817' },
+                            sand: '#C5A059'
+                        },
+                        fontFamily: {
+                            serif: ['Cormorant Garamond', 'serif'],
+                            sans: ['Plus Jakarta Sans', 'sans-serif'],
+                            mono: ['Space Grotesk', 'monospace']
+                        }
+                    }
+                }
+            };
+        }
     </script>
     <style>
         body { background-color: #F4F0E8; color: #1A1817; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
-        .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 1.1; }
+        .editorial-title { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.02em; line-height: 1.05; }
+        .dot-spaced { letter-spacing: 0.25em; text-transform: uppercase; }
         .grid-line-b { border-bottom: 1px solid rgba(26, 24, 23, 0.12); }
+        a:focus-visible, button:focus-visible { outline: 2px solid #C5A059; outline-offset: 2px; }
         ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #F4F0E8; } ::-webkit-scrollbar-thumb { background: #1A1817; }
     </style>
 </head>
-<body class="antialiased selection:bg-stone-800 selection:text-stone-50">
+<body id="top" class="antialiased selection:bg-stone-800 selection:text-stone-50 flex flex-col min-h-screen">
 
-    <header class="sticky top-0 z-40 bg-stone-100/90 backdrop-blur-md grid-line-b">
-        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-            <div>
+    <header class="sticky top-0 z-40 bg-stone-100/95 backdrop-blur-md grid-line-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 sm:py-4 flex justify-between items-center gap-3">
+            <div class="min-w-0">
                 <span class="block text-xs font-mono font-medium tracking-[0.3em] text-stone-800 uppercase">B . U . O</span>
-                <span class="text-[11px] text-stone-500 font-mono tracking-wider block mt-0.5">CAMPUS DE EL MILÁN</span>
+                <span class="text-[11px] text-stone-600 font-mono tracking-wider block mt-0.5 truncate">CAMPUS DE EL MILÁN · CDU HG9</span>
             </div>
-            <a href="index.html" class="inline-flex items-center space-x-2 text-xs font-mono px-4 py-2 border border-stone-800 text-stone-800 hover:bg-stone-900 hover:text-stone-100 transition-all uppercase tracking-wider">
-                <i class="fa-solid fa-arrow-left text-[10px]"></i><span>Volver al inicio</span>
+            <a href="index.html" class="inline-flex items-center gap-2 text-xs font-mono px-3.5 sm:px-4 py-2 border border-stone-800 text-stone-800 hover:bg-stone-900 hover:text-stone-100 transition-all uppercase tracking-wider shrink-0">
+                <svg aria-hidden="true" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                <span class="hidden sm:inline">Volver al inicio</span>
+                <span class="sm:hidden">Inicio</span>
             </a>
         </div>
     </header>
 
     <section class="grid-line-b bg-stone-900 text-stone-100 relative overflow-hidden">
-        <img src="sala.webp" onerror="this.style.display='none'" alt="Biblioteca" class="absolute inset-0 w-full h-full object-cover opacity-20 filter grayscale">
-        <div class="max-w-7xl mx-auto px-6 py-16 md:py-24 relative z-10">
-            <span class="text-xs font-mono text-sand font-semibold uppercase tracking-widest block mb-4">[ COLECCIÓN GENERAL ]</span>
-            <h1 class="editorial-title text-5xl md:text-7xl font-light mb-6">Geografía <br><span class="italic font-normal text-stone-400">&</span> Historia.</h1>
-            <p class="text-stone-400 font-mono text-xs uppercase tracking-widest max-w-xl leading-relaxed">
+        <img src="sala.webp" onerror="this.style.display='none'" alt="Biblioteca de Humanidades" class="absolute inset-0 w-full h-full object-cover opacity-20 filter grayscale">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16 md:py-20 relative z-10">
+            <span class="text-xs font-mono text-sand font-semibold uppercase tracking-widest block mb-3">[ COLECCIÓN GENERAL ]</span>
+            <h1 class="editorial-title text-4xl sm:text-5xl md:text-7xl font-light mb-4 sm:mb-6">Geografía <br><span class="italic font-normal text-stone-400">&amp;</span> Historia.</h1>
+            <p class="text-stone-300 font-mono text-xs uppercase tracking-widest max-w-xl leading-relaxed mb-6">
                 Selecciona una materia específica para consultar su ubicación exacta en la planta, sala y estantería correspondiente.
             </p>
+            <nav aria-label="Áreas temáticas CDU" class="flex flex-wrap gap-2 font-mono text-[11px]">
+                <a href="1.html" class="px-3 py-1.5 bg-stone-800/80 text-stone-200 border border-stone-700 hover:border-sand hover:text-sand transition-colors">HG1–6 · Filosofía y CC.SS.</a>
+                <a href="7.html" class="px-3 py-1.5 bg-stone-800/80 text-stone-200 border border-stone-700 hover:border-sand hover:text-sand transition-colors">HG7 · Arte y Arquitectura</a>
+                <a href="8.html" class="px-3 py-1.5 bg-stone-800/80 text-stone-200 border border-stone-700 hover:border-sand hover:text-sand transition-colors">HG8 · Lengua y Literatura</a>
+                <span aria-current="page" class="px-3 py-1.5 bg-sand text-stone-900 border border-sand font-semibold">HG9 · Geografía e Historia</span>
+            </nav>
         </div>
     </section>
 
-    <section class="py-16 md:py-24 max-w-7xl mx-auto px-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            
-            <a href="#" onclick="abrirMateria('prehistoria'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Prehistoria y arqueología</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+    <main class="py-10 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 w-full flex-1">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
+
+            <a href="#" onclick="abrirMateria('prehistoria'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Prehistoria y arqueología</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <a href="#" onclick="abrirMateria('geografia'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Geografía</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Viajes y Cartografía</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('geografia'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Geografía</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Viajes y Cartografía</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <a href="#" onclick="abrirMateria('biografias'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Biografías y Heráldica</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('biografias'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Biografías y Heráldica</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <a href="#" onclick="abrirMateria('filosofia'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Diplomática, Archivística</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('filosofia'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Diplomática, Archivística</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <a href="#" onclick="abrirMateria('diccionarios'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Referencia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Diccionarios</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('diccionarios'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Referencia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Diccionarios</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <a href="#" onclick="abrirMateria('espana'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full relative overflow-hidden">
+            <a href="#" onclick="abrirMateria('espana'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full relative overflow-hidden">
                 <div class="absolute inset-0 bg-sand/10 group-hover:bg-transparent transition-colors"></div>
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block relative z-10">Historia Geográfica</span>
-                <div class="flex justify-between items-end relative z-10">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Historia de España</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block relative z-10">Historia Geográfica</span>
+                <div class="flex justify-between items-end gap-2 relative z-10">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Historia de España</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <a href="#" onclick="abrirMateria('asturias'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full relative overflow-hidden">
+            <a href="#" onclick="abrirMateria('asturias'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full relative overflow-hidden">
                 <div class="absolute inset-0 bg-stone-200/50 group-hover:bg-transparent transition-colors"></div>
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block relative z-10">Historia Geográfica</span>
-                <div class="flex justify-between items-end relative z-10">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Historia de Asturias</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block relative z-10">Historia Geográfica</span>
+                <div class="flex justify-between items-end gap-2 relative z-10">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Historia de Asturias</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <a href="#" onclick="abrirMateria('h_antigua'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Historia Antigua</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('h_antigua'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Historia Antigua</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <a href="#" onclick="abrirMateria('egipto'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Historia de Egipto</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('egipto'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Historia de Egipto</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <a href="#" onclick="abrirMateria('judio'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Historia del Pueblo Judío</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('judio'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Historia del Pueblo Judío</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <a href="#" onclick="abrirMateria('roma'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Historia de Roma Antigua</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('roma'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Historia de Roma Antigua</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <a href="#" onclick="abrirMateria('grecia'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Historia de Grecia Antigua</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('grecia'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Historia de Grecia Antigua</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <a href="#" onclick="abrirMateria('europa'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Historia de Europa</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('europa'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Historia de Europa</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
-            <a href="#" onclick="abrirMateria('inglaterra'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Inglaterra y Gran Bretaña</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+            <a href="#" onclick="abrirMateria('inglaterra'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Inglaterra y Gran Bretaña</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
-            
-            <a href="#" onclick="abrirMateria('alemania'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Alemania y Austria</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+
+            <a href="#" onclick="abrirMateria('alemania'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Alemania y Austria</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
-            
-            <a href="#" onclick="abrirMateria('francia'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Francia</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+
+            <a href="#" onclick="abrirMateria('francia'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Francia</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
-            
-            <a href="#" onclick="abrirMateria('italia'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Italia</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+
+            <a href="#" onclick="abrirMateria('italia'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Italia</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
-            
-            <a href="#" onclick="abrirMateria('rusia'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Rusia y Unión Soviética</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+
+            <a href="#" onclick="abrirMateria('rusia'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Rusia y Unión Soviética</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
-            
-            <a href="#" onclick="abrirMateria('bizancio'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Bizancio</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+
+            <a href="#" onclick="abrirMateria('bizancio'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Bizancio</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
-            
-            <a href="#" onclick="abrirMateria('asia'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Asia</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+
+            <a href="#" onclick="abrirMateria('asia'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Asia</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
-            
-            <a href="#" onclick="abrirMateria('africa'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">África</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+
+            <a href="#" onclick="abrirMateria('africa'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">África</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
-            
-            <a href="#" onclick="abrirMateria('america'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">América</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+
+            <a href="#" onclick="abrirMateria('america'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">América</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
-            
-            <a href="#" onclick="abrirMateria('latinoamerica'); return false;" class="group bg-stone-50 p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
-                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-3 block">Historia</span>
-                <div class="flex justify-between items-end">
-                    <h3 class="font-serif text-2xl text-stone-900 group-hover:text-stone-50">Latinoamérica</h3>
-                    <i class="fa-solid fa-arrow-right text-sand opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
+
+            <a href="#" onclick="abrirMateria('latinoamerica'); return false;" class="group bg-stone-50 p-5 sm:p-6 border border-stone-200 hover:border-stone-900 hover:bg-stone-900 transition-all duration-300 flex flex-col justify-between h-full">
+                <span class="text-[10px] font-mono text-stone-500 group-hover:text-stone-400 uppercase tracking-widest mb-2.5 block">Historia</span>
+                <div class="flex justify-between items-end gap-2">
+                    <h2 class="font-serif text-xl sm:text-2xl text-stone-900 group-hover:text-stone-50">Latinoamérica</h2>
+                    <svg aria-hidden="true" class="w-4 h-4 text-sand shrink-0 opacity-75 sm:opacity-35 sm:group-hover:opacity-100 sm:-translate-x-1 sm:group-hover:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </div>
             </a>
 
         </div>
-    </section>
+    </main>
+
+    <footer class="bg-stone-900 text-stone-100 pt-12 pb-10 font-mono text-xs border-t border-stone-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+            <span class="dot-spaced text-stone-400 text-xs sm:text-sm block mb-3">
+                U . N . I . V . E . R . S . I . D . A . D . D . E . O . V . I . E . D . O
+            </span>
+            <h2 class="editorial-title text-3xl sm:text-5xl text-stone-100 font-light font-serif">
+                Biblioteca de Humanidades
+            </h2>
+            <div class="flex flex-col sm:flex-row justify-between items-center pt-7 text-stone-500 text-[11px] mt-7 border-t border-stone-800 gap-3">
+                <span>© 2026 Universidad de Oviedo · Biblioteca de Humanidades</span>
+                <a href="#top" class="text-stone-300 hover:text-sand transition-colors uppercase tracking-widest">↑ Volver arriba</a>
+            </div>
+        </div>
+    </footer>
 
     <script>
         const baseDatosMaterias = {
             "prehistoria": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 11", signatura: "(HG90?!.t852.) no (HG90?!03!.t852.)", texto_materia: "Prehistoria y arqueología" },
             "geografia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 10 y 11", signatura: "(HG91?!.t852.) no (HG91?!03!.t852.)", texto_materia: "Geografía y cartografía" },
             "biografias": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8 y 9", signatura: "(HG929!.t852.)", texto_materia: "Biografías, heráldica, Genealogía" },
-            "filosofia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería ", signatura: "(HG930.*.t852.) no (HG930.*!03!.t852.)", texto_materia: "Filosófia de la historia, Diplomática, Cronología, Archivística,  Paleografía" },
+            "filosofia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 8", signatura: "(HG930.*.t852.) no (HG930.*!03!.t852.)", texto_materia: "Filosofía de la historia, Diplomática, Cronología, Archivística, Paleografía" },
             "diccionarios": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías del centro", estanteria: "Estantería 13", signatura: "(HG9*!03!.t852.)", texto_materia: "DICCIONARIOS" },
-            "h_antigua": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6", signatura: "(HG931!.t852.) no (HG931!03!.t852.)", texto_materia: "Historia antigua" },	
+            "h_antigua": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 6", signatura: "(HG931!.t852.) no (HG931!03!.t852.)", texto_materia: "Historia antigua" },
             "egipto": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5", signatura: "(HG932!.t852.)", texto_materia: "Historia de Egipto" },
             "judio": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5", signatura: "(HG933!.t852.)", texto_materia: "Historia del Pueblo Judío" },
             "roma": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 5", signatura: "(HG937!.t852.) no (HG937!03!.t852.)", texto_materia: "Historia de Roma antigua" },
@@ -258,13 +303,20 @@
             "asia": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1", signatura: "(HG95!.t852.)", texto_materia: "Historia de Asia" },
             "africa": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1", signatura: "(HG96!.t852.)", texto_materia: "Historia de África" },
             "america": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1", signatura: "(HG97!.t852.)", texto_materia: "Historia de América" },
-            "latinoamerica": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1", signatura: "(HG98!.t852.)", texto_materia: "Historia de Latinoamérica" } 
+            "latinoamerica": { html: "Encontradomateria.html", planta: "PLANTA 2", sala: "Sala de la izquierda", ubicacion: "Estanterías de la derecha", estanteria: "Estantería 1", signatura: "(HG98!.t852.)", texto_materia: "Historia de Latinoamérica" }
         };
 
         function abrirMateria(clave) {
             const datos = baseDatosMaterias[clave];
             if (datos) {
-                const paramsUrl = new URLSearchParams({ planta: datos.planta, sala: datos.sala, ubicacion: datos.ubicacion, estanteria: datos.estanteria, orig: datos.signatura, materia: datos.texto_materia });
+                const paramsUrl = new URLSearchParams({
+                    planta: datos.planta,
+                    sala: datos.sala,
+                    ubicacion: datos.ubicacion,
+                    estanteria: datos.estanteria,
+                    orig: datos.signatura,
+                    materia: datos.texto_materia
+                });
                 window.location.href = datos.html + "?" + paramsUrl.toString();
             }
         }

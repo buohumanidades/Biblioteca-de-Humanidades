@@ -70,6 +70,10 @@
                     }
                 }
             }
+            Object.defineProperty(todos, '_buoPreNormalizado', {
+                value: true,
+                enumerable: false
+            });
             return todos;
         })();
 
@@ -80,11 +84,16 @@
     function ejecutarAlgoritmoBusqueda(libros, textoIngresado) {
         const { STOP_WORDS, limpiarTexto } = global.BUOUtils;
         const textoLimpioBusqueda = String(textoIngresado || '').trim();
-        if (!textoLimpioBusqueda) return { tipo: 'vacio', resultados: [], total: 0 };
+        if (!textoLimpioBusqueda || !Array.isArray(libros)) {
+            return { tipo: 'vacio', resultados: [], total: 0 };
+        }
 
-        const librosNormalizados = libros.map(item =>
-            item && typeof item._tNorm === 'string' ? item : normalizarRegistroLibro(item)
-        ).filter(item => !item.signatura.toUpperCase().startsWith('EXP'));
+        const esPreNormalizado = Boolean(libros._buoPreNormalizado === true);
+        const librosNormalizados = esPreNormalizado
+            ? libros
+            : libros.map(item =>
+                item && typeof item._tNorm === 'string' ? item : normalizarRegistroLibro(item)
+            ).filter(item => !item.signatura.toUpperCase().startsWith('EXP'));
 
         const queryNorm = limpiarTexto(textoLimpioBusqueda);
         const palabrasQuery = queryNorm.split(/\s+/).filter(p => p.length > 0);

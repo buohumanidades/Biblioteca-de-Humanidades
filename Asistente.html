@@ -2,8 +2,10 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asistente de Biblioteca</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Asistente de Biblioteca · Biblioteca de Humanidades</title>
+    <meta name="description" content="Asistente virtual bibliográfico de la Biblioteca de Humanidades (Universidad de Oviedo) para localizar títulos, autores y temáticas.">
+    <meta name="theme-color" content="#008069">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="js/purify.min.js"></script>
@@ -63,27 +65,39 @@
         .markdown-body ul { list-style-type: disc; padding-left: 1.2rem; margin-bottom: 0.4rem; }
         .markdown-body ol { list-style-type: decimal; padding-left: 1.2rem; margin-bottom: 0.4rem; }
         .markdown-body strong { font-weight: 700; color: #111827; }
+        .safe-footer-pad {
+            padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+        }
+        a:focus-visible, button:focus-visible {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
     </style>
 </head>
-<body class="flex justify-center items-center h-screen m-0 p-0 overflow-hidden sm:py-6">
+<body class="flex justify-center items-center h-[100dvh] m-0 p-0 overflow-hidden sm:py-6">
 
     <div class="w-full h-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl sm:h-[850px] sm:max-h-full flex flex-col bg-white sm:rounded-xl sm:shadow-2xl overflow-hidden relative">
         
-        <header class="bg-[#008069] text-white flex items-center px-4 py-3 shadow-md z-10 flex-shrink-0">
-            <div class="h-10 w-10 bg-white rounded-full flex items-center justify-center overflow-hidden mr-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#008069]" viewBox="0 0 20 20" fill="currentColor">
+        <header class="bg-[#008069] text-white flex items-center px-3 sm:px-4 py-3 shadow-md z-10 flex-shrink-0 gap-2">
+            <a href="index.html" aria-label="Volver al inicio" class="hover:bg-white/20 px-2.5 py-1.5 rounded-lg transition text-xs bg-white/10 font-medium whitespace-nowrap flex items-center gap-1 shrink-0">
+                <span aria-hidden="true">←</span>
+                <span class="hidden sm:inline">Inicio</span>
+            </a>
+
+            <div class="h-9 w-9 sm:h-10 sm:w-10 bg-white rounded-full flex items-center justify-center overflow-hidden shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6 text-[#008069]" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path fill-rule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clip-rule="evenodd" />
                 </svg>
             </div>
             
-            <div class="flex-1 cursor-pointer">
-                <h1 class="text-base font-semibold whitespace-nowrap overflow-hidden text-ellipsis">Asistente de Biblioteca</h1>
+            <div class="flex-1 min-w-0">
+                <h1 class="text-sm sm:text-base font-semibold whitespace-nowrap overflow-hidden text-ellipsis">Asistente de Biblioteca</h1>
                 <p class="text-xs text-green-100" id="status-text">en línea</p>
             </div>
             
-            <div class="flex gap-2 items-center">
-                <button type="button" id="reset-btn" title="Nueva consulta (Borrar memoria)" class="hover:bg-white/20 px-2.5 py-1 rounded-lg transition flex items-center gap-1 text-xs bg-white/10">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="flex gap-2 items-center shrink-0">
+                <button type="button" id="reset-btn" title="Nueva consulta (Borrar memoria)" class="hover:bg-white/20 px-2.5 py-1.5 rounded-lg transition flex items-center gap-1 text-xs bg-white/10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
                     <span class="hidden sm:inline">Nueva consulta</span>
@@ -112,15 +126,16 @@
             </div>
         </main>
 
-        <footer class="bg-[#f0f0f0] p-2 flex items-end gap-2 absolute bottom-0 w-full z-10">
-            <div class="flex-1 bg-white rounded-3xl flex items-center px-4 py-2 shadow-sm min-h-[44px]">
-                <input type="text" id="chat-input" placeholder="Describe un tema, autor o haz una pregunta..." 
-                       class="flex-1 bg-transparent focus:outline-none text-sm py-1 w-full disabled:opacity-50"
+        <footer class="bg-[#f0f0f0] p-2 safe-footer-pad flex items-end gap-2 absolute bottom-0 w-full z-10">
+            <div class="flex-1 bg-white rounded-3xl flex items-center px-4 py-1.5 shadow-sm min-h-[44px]">
+                <input type="text" id="chat-input" aria-label="Describe un tema, autor o haz una pregunta"
+                       placeholder="Describe un tema, autor o haz una pregunta..." 
+                       class="flex-1 bg-transparent focus:outline-none text-base py-1 w-full disabled:opacity-50"
                        autocomplete="off">
             </div>
             
-            <button type="button" id="send-btn" class="bg-[#00a884] text-white rounded-full h-11 w-11 flex items-center justify-center flex-shrink-0 hover:bg-[#008069] transition shadow-sm focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+            <button type="button" id="send-btn" aria-label="Enviar consulta" class="bg-[#00a884] text-white rounded-full h-11 w-11 flex items-center justify-center flex-shrink-0 hover:bg-[#008069] transition shadow-sm focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
                 </svg>
             </button>
