@@ -1,50 +1,70 @@
 # Corrección de títulos truncados (`libros<N>.json`)
 
-Esta carpeta contiene las herramientas para **detectar títulos cortados a 60 caracteres** en los archivos `libros1.json`, `libros2.json`, `libros3.json`, etc. y **sustituirlos de forma segura** por sus títulos completos procedentes de `final.json`.
+Esta carpeta contiene el flujo completo en **3 pasos** para detectar títulos cortados a 60 caracteres en `libros1.json`–`libros3.json`, recuperar los títulos completos desde el OPAC de la Universidad de Oviedo y sustituirlos de forma segura.
 
 ## Archivos
 
 - `comun.py`: utilidades compartidas (soporte automático para formato compacto `[Autor, titulo, fecha, signatura]` y formato objeto `{"Autor", "titulo", "fecha", "signatura"}`, normalización de texto y escritura atómica).
-- `truncados.py`: analiza los archivos `libros<N>.json` y genera `truncados.json` con los registros cuyo título parece inacabado.
-- `sustituir.py`: lee `final.json` y actualiza los títulos en `libros<N>.json` protegiendo contra colisiones de signaturas compartidas (`HG`, `HA`, `LDP`, `HR`, etc.).
+- `truncados.py`: **Paso 1** — analiza `libros1.json`, `libros2.json`, `libros3.json` y genera `truncados.json`.
+- `buscarenopac.py`: **Paso 2** — consulta el OPAC (`absysweb.cpd.uniovi.es`, Biblioteca de Humanidades) para los registros de `truncados.json` y genera `final.json` (con autoguardado y reanudación segura).
+- `sustituir.py`: **Paso 3** — lee `final.json` y actualiza los títulos en `libros<N>.json` protegiendo contra colisiones de signaturas compartidas (`HG`, `HA`, `LDP`, `HR`, etc.).
+
+## Requisitos (solo para `buscarenopac.py`)
+
+`truncados.py` y `sustituir.py` solo usan Python estándar. Para ejecutar `buscarenopac.py` instala una sola vez:
+
+```powershell
+pip install playwright beautifulsoup4
+playwright install chromium
+```
 
 ## Flujo de trabajo paso a paso
 
-### Paso 1: Detectar títulos truncados
+### Paso 1: Detectar títulos truncados (`truncados.py`)
 
-Desde esta carpeta (detecta automáticamente `libros1.json`..`libros3.json` en la raíz del proyecto, o usa `--dir` si los tienes en otra ruta):
-
-```bash
-python truncados.py
+```powershell
+python truncados.py --sin-duplicados
 ```
 
-Opciones útiles:
-- `--dir <carpeta>`: indica una carpeta concreta donde están los `libros<N>.json`.
-- `--salida truncados.json`: ruta del archivo de salida.
-- `--sin-duplicados`: evita registros repetidos en `truncados.json`.
-- `--incluir-motivo`: añade `motivo_truncado` (`palabra_colgante`, `fragmento_corto`, `puntuacion_abierta`, `parentesis_sin_cerrar`, `limite_caracteres`) para facilitar la revisión.
-- `--solo-heuristica`: ignora la regla de límite exacto de 60 caracteres y aplica solo heurísticas lingüísticas.
+Genera `truncados.json`. Opciones útiles:
+- `--dir <carpeta>`: indica la carpeta donde están los `libros<N>.json` (si no están en la carpeta actual ni en la raíz del proyecto).
+- `--incluir-motivo`: añade `motivo_truncado` para revisar por qué se marcó cada título.
+- `--solo-heuristica`: aplica solo heurísticas lingüísticas (sin marcar automáticamente todos los títulos de 60 caracteres).
 
-### Paso 2: Obtener los títulos completos (`final.json`)
+### Paso 2: Recuperar títulos completos desde el OPAC (`buscarenopac.py`)
 
-Completa o enriquece los títulos a partir de `truncados.json` y guarda el resultado como `final.json` (se acepta tanto formato de lista de objetos como lista compacta).
+Conviene probar primero con 10 libros:
 
-### Paso 3: Simular la sustitución antes de modificar nada
-
-```bash
-python sustituir.py --final final.json --dry-run
+```powershell
+python buscarenopac.py --limite 10
 ```
 
-Esto muestra cuántos registros se actualizarán, ejemplos de `ANTES -> DESPUÉS` y posibles advertencias, **sin tocar ningún archivo**.
+Y luego lanzar el proceso completo:
 
-### Paso 4: Aplicar la sustitución
-
-```bash
-python sustituir.py --final final.json
+```powershell
+python buscarenopac.py
 ```
 
-Qué hace automáticamente por seguridad:
-1. **Copia de seguridad**: guarda los originales en `backups/<fecha_hora>/` antes de escribir (puede desactivarse con `--sin-backup`).
-2. **Cruce seguro sin colisiones**: busca en orden `(signatura, fecha, autor)` -> `(signatura, autor)` -> `signatura` (solo si no empieza por `HG`), y verifica que el título nuevo continúe el título truncado (tolerando tildes y puntuación eliminada). Si hay ambigüedad o el prefijo no coincide, no sobrescribe el registro y lo avisa.
-3. **Mantiene el formato original**: si los `libros<N>.json` están en formato compacto minificado, los vuelve a guardar exactamente en formato compacto minificado.
-4. **Escritura atómica**: escribe primero en un archivo temporal y lo reemplaza al final para evitar archivos corruptos si se interrumpe la ejecución.
+- **No modifica** `truncados.json` ni `libros<N>.json`.
+- Guarda el progreso cada 20 libros en **`final.json`** (encontrados) y **`no_encontrados.json`** (sin coincidencia).
+- **Reanudación segura:** si pulsas `Ctrl+C` o se corta Internet, al volver a ejecutar `python buscarenopac.py` continúa donde se quedó sin repetir ni sobrescribir resultados.
+- Opciones útiles: `--pausa 2.5`, `--reintentar-fallidos`, `--guardar-html-error`, `--mostrar-navegador`.
+
+### Paso 3: Simular y aplicar la sustitución (`sustituir.py`)
+
+Primero simula los cambios sin tocar ningún archivo:
+
+```powershell
+python sustituir.py --dry-run
+```
+
+Si todo se ve correcto, aplica la sustitución real:
+
+```powershell
+python sustituir.py
+```
+
+Medidas de seguridad automáticas:
+1. Crea copia de seguridad en `backups/<fecha_hora>/` antes de sobrescribir (desactivable con `--sin-backup`).
+2. Verifica que el título nuevo continúe el truncado y cruza por `(signatura, fecha, autor)` antes que solo por `signatura`, evitando corromper libros con signaturas compartidas (`HG`, `HA`, `LDP`, etc.).
+3. Mantiene el formato original (minificado compacto o indentado) y escribe de forma atómica.
