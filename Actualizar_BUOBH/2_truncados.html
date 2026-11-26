@@ -1,0 +1,2241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Detector de Títulos Truncados (libros*.json → truncados.json)</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --surface: #ffffff;
+      --surface-alt: #f8fafc;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-subtle: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-soft: #eff6ff;
+      --success: #059669;
+      --success-soft: #ecfdf5;
+      --success-border: #a7f3d0;
+      --warning: #d97706;
+      --warning-soft: #fffbeb;
+      --warning-border: #fde68a;
+      --danger: #dc2626;
+      --danger-soft: #fef2f2;
+      --danger-border: #fecaca;
+      --purple: #7c3aed;
+      --purple-soft: #f5f3ff;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.04);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 28px 20px 64px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .brand { max-width: 900px; }
+
+    .brand h1 {
+      margin: 0 0 6px;
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      box-shadow: var(--shadow);
+    }
+
+    .mode-badge .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+
+    .mode-badge.direct .dot { background: var(--success); }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 1.08rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 0.85rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .upload-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 820px) {
+      .upload-grid { grid-template-columns: 1fr; }
+    }
+
+    .dropzone {
+      border: 2px dashed var(--border-strong);
+      border-radius: var(--radius);
+      padding: 20px;
+      background: var(--surface-alt);
+      transition: border-color 0.15s, background-color 0.15s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .dropzone.dragover {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+    }
+
+    .dropzone h3 {
+      margin: 0 0 4px;
+      font-size: 0.98rem;
+      font-weight: 700;
+    }
+
+    .dropzone p {
+      margin: 0;
+      font-size: 0.86rem;
+      color: var(--text-muted);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover:not(:disabled) { background: #047857; }
+    .btn-outline { background: var(--surface); color: var(--text); border-color: var(--border-strong); }
+    .btn-outline:hover:not(:disabled) { background: var(--surface-alt); border-color: var(--text-subtle); }
+    .btn-sm { padding: 6px 11px; font-size: 0.8rem; }
+    .btn-xs { padding: 4px 8px; font-size: 0.76rem; }
+    .btn-lg { padding: 12px 24px; font-size: 0.98rem; }
+
+    input[type="file"].hidden-input { display: none; }
+
+    .loaded-files {
+      margin-top: 16px;
+      padding: 14px 16px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .loaded-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.88rem;
+    }
+
+    .loaded-label {
+      font-weight: 700;
+      color: var(--text-muted);
+      min-width: 125px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.79rem;
+      font-weight: 600;
+      background: #e2e8f0;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .pill.ok { background: var(--success-soft); color: #065f46; border: 1px solid var(--success-border); }
+    .pill.info { background: var(--primary-soft); color: #1e40af; border: 1px solid #bfdbfe; }
+    .pill.warn { background: var(--warning-soft); color: #92400e; border: 1px solid var(--warning-border); }
+    .pill.danger { background: var(--danger-soft); color: #991b1b; border: 1px solid var(--danger-border); }
+    .pill.purple { background: var(--purple-soft); color: #5b21b6; border: 1px solid #ddd6fe; }
+    .pill.muted { background: #f1f5f9; color: var(--text-subtle); border: 1px solid var(--border); }
+
+    .params-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .param-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .param-field label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .param-field input[type="number"] {
+      width: 120px;
+      padding: 7px 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      font-size: 0.92rem;
+      font-weight: 600;
+      font-family: inherit;
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .param-help {
+      font-size: 0.78rem;
+      color: var(--text-subtle);
+    }
+
+    .rule-callout {
+      padding: 12px 15px;
+      border-radius: var(--radius-sm);
+      background: var(--primary-soft);
+      border: 1px solid #bfdbfe;
+      color: #1e3a8a;
+      font-size: 0.86rem;
+      margin-bottom: 16px;
+    }
+
+    .checkbox-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .checkbox-item input {
+      margin-top: 3px;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .checkbox-desc {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-subtle);
+    }
+
+    .progress-wrap {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      background: var(--primary-soft);
+      border: 1px solid #bfdbfe;
+    }
+
+    .progress-wrap.visible { display: block; }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: #1e40af;
+      margin-bottom: 8px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #dbeafe;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      border-radius: 999px;
+      transition: width 0.15s ease;
+    }
+
+    #resultsSection { display: none; }
+    #resultsSection.visible { display: block; }
+
+    .alert-banner {
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      border: 1px solid var(--success-border);
+      background: var(--success-soft);
+      color: #065f46;
+    }
+
+    .alert-banner.warn {
+      border-color: var(--warning-border);
+      background: var(--warning-soft);
+      color: #92400e;
+    }
+
+    .alert-banner h2 { margin: 0 0 4px; font-size: 1.08rem; }
+    .alert-banner p { margin: 0; font-size: 0.9rem; }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .kpi-card.ok {
+      border-color: var(--success-border);
+      background: linear-gradient(180deg, #ecfdf5 0%, #ffffff 100%);
+    }
+
+    .kpi-card.danger {
+      border-color: var(--danger-border);
+      background: linear-gradient(180deg, #fef2f2 0%, #ffffff 100%);
+    }
+
+    .kpi-card.warn {
+      border-color: var(--warning-border);
+      background: linear-gradient(180deg, #fffbeb 0%, #ffffff 100%);
+    }
+
+    .kpi-card.info {
+      border-color: #bfdbfe;
+      background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+    }
+
+    .kpi-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-subtle);
+      margin-bottom: 6px;
+    }
+
+    .kpi-value {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .kpi-card.ok .kpi-value { color: var(--success); }
+    .kpi-card.danger .kpi-value { color: var(--danger); }
+    .kpi-card.warn .kpi-value { color: var(--warning); }
+    .kpi-card.info .kpi-value { color: var(--primary); }
+
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      background: var(--surface);
+    }
+
+    thead {
+      background: var(--surface-alt);
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      text-align: left;
+      padding: 10px 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #f8fafc; }
+    tbody tr.row-excluded { opacity: 0.5; background: #f8fafc; }
+    tbody tr.row-excluded td { text-decoration: line-through; }
+    tbody tr.row-excluded td.no-strike { text-decoration: none; }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.82rem;
+    }
+
+    .insights-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 860px) {
+      .insights-grid { grid-template-columns: 1fr; }
+    }
+
+    .insight-box {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+
+    .insight-box h4 {
+      margin: 0 0 10px;
+      font-size: 0.94rem;
+    }
+
+    .stat-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.85rem;
+    }
+
+    .stat-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .stat-list li:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .toolbar-left {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      flex: 1;
+    }
+
+    .search-input {
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      font-size: 0.88rem;
+      font-family: inherit;
+      background: var(--surface);
+      color: var(--text);
+      min-width: 200px;
+      flex: 1;
+      max-width: 360px;
+    }
+
+    .filter-select {
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      font-size: 0.86rem;
+      font-family: inherit;
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .pagination {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    .tab-btn {
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.86rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .hl-tail {
+      background: #fef3c7;
+      color: #92400e;
+      border-bottom: 2px solid #f59e0b;
+      padding: 0 3px;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+
+    .hl-limit {
+      background: #fee2e2;
+      color: #991b1b;
+      border-bottom: 2px solid #ef4444;
+      padding: 0 3px;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+
+    .error-box {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      background: var(--danger-soft);
+      border: 1px solid var(--danger-border);
+      color: #991b1b;
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    .error-box.visible { display: block; }
+    .tip-note { font-size: 0.81rem; color: var(--text-subtle); margin-top: 6px; }
+    .save-status { font-size: 0.84rem; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <h1>Detector de Títulos Truncados (<span class="mono">libros*.json</span> → <span class="mono">truncados.json</span>)</h1>
+        <p>Analiza los títulos de <strong>libros1.json, libros2.json, libros3.json…</strong> para detectar los probablemente truncados y generar <strong>truncados.json</strong>. <strong>Los títulos superiores a 60 caracteres se ignoran automáticamente</strong> (ya están completos).</p>
+      </div>
+      <div id="modeBadge" class="mode-badge">
+        <span class="dot"></span>
+        <span id="modeBadgeText">Modo descarga de ficheros</span>
+      </div>
+    </header>
+
+    <!-- PASO 1: SELECCIÓN DE FICHEROS -->
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title"><span class="step-num">1</span> Seleccionar ficheros <span class="mono">libros*.json</span></h2>
+        <button id="btnClear" class="btn btn-outline btn-sm" type="button">Limpiar selección</button>
+      </div>
+
+      <div class="upload-grid">
+        <div class="dropzone" id="folderZone">
+          <div>
+            <h3>Opción rápida: Carpeta completa</h3>
+            <p>Detecta automáticamente todos los <strong>libros1.json, libros2.json, libros3.json…</strong> en orden numérico (ignora <span class="mono">truncados.json</span>, <span class="mono">final.json</span> y lotes).</p>
+          </div>
+          <div class="btn-row">
+            <button id="btnDirectFolder" class="btn btn-success" type="button" style="display:none;">
+              Abrir carpeta (lectura/escritura directa)
+            </button>
+            <button id="btnPickFolder" class="btn btn-primary" type="button">
+              Seleccionar carpeta
+            </button>
+            <input id="inputFolder" class="hidden-input" type="file" webkitdirectory directory multiple />
+          </div>
+          <div id="directFolderHint" class="tip-note"></div>
+        </div>
+
+        <div class="dropzone" id="manualZone">
+          <div>
+            <h3>Opción manual o arrastrar y soltar</h3>
+            <p>Arrastra aquí los ficheros <strong>libros1.json, libros2.json…</strong> o selecciónalos manualmente (soporta formato de objetos y formato compacto en lista).</p>
+          </div>
+          <div class="btn-row">
+            <button id="btnPickLibros" class="btn btn-outline" type="button">Elegir libros*.json (varios)</button>
+            <input id="inputLibros" class="hidden-input" type="file" accept=".json,application/json" multiple />
+          </div>
+          <div class="tip-note">Los ficheros <span class="mono">libros*.json</span> solo se leen; nunca se modifican.</div>
+        </div>
+      </div>
+
+      <div class="loaded-files">
+        <div class="loaded-row">
+          <span class="loaded-label">Catálogo JSON:</span>
+          <div id="librosPills"><span class="pill muted">Ningún fichero libros*.json cargado</span></div>
+        </div>
+        <div class="loaded-row" id="ignoredRow" style="display:none;">
+          <span class="loaded-label">Ignorados:</span>
+          <div id="ignoredPills"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASO 2: PARÁMETROS Y REGLAS -->
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title"><span class="step-num">2</span> Reglas de detección de truncamiento</h2>
+        <button id="btnResetOpts" class="btn btn-outline btn-sm" type="button">Restaurar valores por defecto</button>
+      </div>
+
+      <div class="rule-callout">
+        <strong>Regla de exclusión de títulos completos:</strong> Todo título cuya longitud supere el límite de corte (<strong>&gt; 60 caracteres</strong> por defecto) se descarta automáticamente y <strong>no</strong> se evalúa ni se incluye en <span class="mono">truncados.json</span>. Solo se evalúan los títulos comprendidos entre la longitud mínima y el límite de corte (<strong>55 a 60 caracteres</strong>).
+      </div>
+
+      <div class="params-grid">
+        <div class="param-field">
+          <label for="optMinLen">Longitud mínima a evaluar</label>
+          <input id="optMinLen" type="number" min="1" max="200" value="55" />
+          <span class="param-help">Por defecto: 55 caracteres (igual que <span class="mono">2_truncados.py</span>). Títulos más cortos no se evalúan.</span>
+        </div>
+        <div class="param-field">
+          <label for="optMaxLen">Límite de corte del catálogo (máximo)</label>
+          <input id="optMaxLen" type="number" min="10" max="500" value="60" />
+          <span class="param-help">Por defecto: 60 caracteres. Cualquier título <strong>&gt; 60</strong> se ignora siempre.</span>
+        </div>
+      </div>
+
+      <div class="checkbox-list">
+        <label class="checkbox-item">
+          <input id="optIncludeExactLimit" type="checkbox" checked />
+          <span>
+            <strong>Marcar automáticamente los títulos que alcanzan exactamente el límite (60 caracteres)</strong>
+            <span class="checkbox-desc">Equivale al comportamiento por defecto de <span class="mono">2_truncados.py</span>. Si lo desmarcas (<span class="mono">--solo-heuristica</span>), solo se marcarán los que presenten señales lingüísticas: puntuación abierta (<span class="mono">- : / ( , ; « ¿ ¡</span>), paréntesis/corchetes sin cerrar, palabra colgante multilingüe (ES/EN/FR/DE/IT/CA/PT) o fragmento final de 1–2 letras.</span>
+          </span>
+        </label>
+        <label class="checkbox-item">
+          <input id="optNoDuplicates" type="checkbox" />
+          <span>
+            <strong>Eliminar duplicados bibliográficos en <span class="mono">truncados.json</span> (<span class="mono">--sin-duplicados</span>)</strong>
+            <span class="checkbox-desc">Si lo marcas, agrupa ejemplares repetidos con el mismo Autor, título, fecha y signatura (dejando un solo <span class="mono">cbarras</span>). Déjalo desmarcado para conservar cada ejemplar identificado por su <span class="mono">cbarras</span> único.</span>
+          </span>
+        </label>
+        <label class="checkbox-item">
+          <input id="optIncludeReason" type="checkbox" />
+          <span>
+            <strong>Añadir el campo <span class="mono">"motivo_truncado"</span> a cada registro del JSON generado (<span class="mono">--incluir-motivo</span>)</strong>
+            <span class="checkbox-desc">Desactivado por defecto para generar la estructura de 5 campos (<span class="mono">Autor</span>, <span class="mono">titulo</span>, <span class="mono">fecha</span>, <span class="mono">signatura</span>, <span class="mono">cbarras</span>) compatible con <span class="mono">3_buscarenopac.py</span>.</span>
+          </span>
+        </label>
+        <label class="checkbox-item">
+          <input id="optExcludeExp" type="checkbox" />
+          <span>
+            <strong>Omitir registros sin signatura o cuya signatura empiece por <span class="mono">EXP</span></strong>
+            <span class="checkbox-desc">Opcional (desactivado por defecto para igualar <span class="mono">2_truncados.py</span>). El paso siguiente (<span class="mono">3_buscarenopac.py</span>) descarta igualmente las signaturas <span class="mono">EXP</span> y vacías.</span>
+          </span>
+        </label>
+      </div>
+
+      <div class="btn-row">
+        <button id="btnRun" class="btn btn-primary btn-lg" type="button" disabled>
+          Analizar títulos y detectar truncados
+        </button>
+      </div>
+
+      <div id="errorBox" class="error-box"></div>
+
+      <div id="progressWrap" class="progress-wrap">
+        <div class="progress-top">
+          <span id="progressText">Preparando…</span>
+          <span id="progressPct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASO 3: RESULTADOS -->
+    <section id="resultsSection">
+      <div id="resultBanner" class="alert-banner">
+        <div>
+          <h2 id="bannerTitle">Análisis finalizado</h2>
+          <p id="bannerSub"></p>
+        </div>
+        <div class="btn-row" id="bannerActions"></div>
+      </div>
+
+      <div class="kpi-grid" id="kpiGrid"></div>
+
+      <!-- Resumen por fichero -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title"><span class="step-num">3</span> Desglose por fichero <span class="mono">libros*.json</span></h2>
+          <div class="btn-row" id="saveActionsRow"></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Fichero</th>
+                <th>Total registros</th>
+                <th>Descartados (&gt; límite)</th>
+                <th>Cortos (&lt; mín.)</th>
+                <th>Evaluados (rango)</th>
+                <th>Truncados hallados</th>
+                <th>% sobre total</th>
+                <th>Tamaño</th>
+              </tr>
+            </thead>
+            <tbody id="filesTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Diagnóstico y estadísticas -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title"><span class="step-num">4</span> Motivos de truncamiento y distribución</h2>
+          <div class="btn-row">
+            <button id="btnExportReportTxt" class="btn btn-outline btn-sm" type="button">Descargar informe (.txt)</button>
+            <button id="btnExportTruncCsv" class="btn btn-outline btn-sm" type="button">Exportar truncados (.csv)</button>
+          </div>
+        </div>
+        <div class="insights-grid">
+          <div class="insight-box">
+            <h4>Desglose por motivo de detección</h4>
+            <ul class="stat-list" id="reasonBreakdownList"></ul>
+          </div>
+          <div class="insight-box">
+            <h4>Distribución de longitudes y datos para OPAC</h4>
+            <ul class="stat-list" id="statsDetailList"></ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Explorador registro a registro -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title"><span class="step-num">5</span> Revisión registro a registro</h2>
+          <div class="btn-row">
+            <span id="manualExcludedNote" class="pill warn" style="display:none;"></span>
+            <button id="btnRestoreExcluded" class="btn btn-outline btn-sm" type="button" style="display:none;">Restaurar omitidos manualmente</button>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="truncated" type="button">Títulos truncados (<span id="tabTruncCount">0</span>)</button>
+          <button class="tab-btn" data-tab="overlimit" type="button">Descartados &gt; límite (<span id="tabOverCount">0</span>)</button>
+          <button class="tab-btn" data-tab="inrangeok" type="button">En rango no truncados (<span id="tabInRangeOkCount">0</span>)</button>
+        </div>
+
+        <!-- TAB TRUNCADOS -->
+        <div class="tab-panel active" id="panel-truncated">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <input id="searchTrunc" class="search-input" type="search" placeholder="Filtrar por título, autor, signatura, cbarras o fecha…" />
+              <select id="filterTruncReason" class="filter-select">
+                <option value="">Todos los motivos</option>
+              </select>
+              <select id="filterTruncFile" class="filter-select">
+                <option value="">Todos los ficheros</option>
+              </select>
+              <select id="filterTruncLen" class="filter-select">
+                <option value="">Todas las longitudes</option>
+              </select>
+            </div>
+            <span id="truncFilteredInfo" style="font-size:0.84rem; color:var(--text-muted);"></span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Fichero</th>
+                  <th>Motivo</th>
+                  <th>Long.</th>
+                  <th>Signatura / C. barras</th>
+                  <th>Autor / Fecha</th>
+                  <th>Título detectado</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="truncTableBody"></tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <span id="truncPageInfo"></span>
+            <div class="btn-row">
+              <button id="btnTruncPrev" class="btn btn-outline btn-sm" type="button">← Anterior</button>
+              <button id="btnTruncNext" class="btn btn-outline btn-sm" type="button">Siguiente →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB DESCARTADOS > LÍMITE -->
+        <div class="tab-panel" id="panel-overlimit">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <input id="searchOver" class="search-input" type="search" placeholder="Filtrar títulos completos (&gt; 60 chars) por título, autor, signatura o cbarras…" />
+              <select id="filterOverFile" class="filter-select">
+                <option value="">Todos los ficheros</option>
+              </select>
+            </div>
+            <span id="overFilteredInfo" style="font-size:0.84rem; color:var(--text-muted);"></span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Fichero</th>
+                  <th>Long.</th>
+                  <th>Signatura / C. barras</th>
+                  <th>Autor / Fecha</th>
+                  <th>Título completo (ignorado por superar el límite)</th>
+                </tr>
+              </thead>
+              <tbody id="overTableBody"></tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <span id="overPageInfo"></span>
+            <div class="btn-row">
+              <button id="btnOverPrev" class="btn btn-outline btn-sm" type="button">← Anterior</button>
+              <button id="btnOverNext" class="btn btn-outline btn-sm" type="button">Siguiente →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB EN RANGO NO TRUNCADOS -->
+        <div class="tab-panel" id="panel-inrangeok">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <input id="searchInRangeOk" class="search-input" type="search" placeholder="Filtrar títulos en rango por título, autor, signatura o cbarras…" />
+              <select id="filterInRangeOkFile" class="filter-select">
+                <option value="">Todos los ficheros</option>
+              </select>
+              <select id="filterInRangeOkLen" class="filter-select">
+                <option value="">Todas las longitudes</option>
+              </select>
+            </div>
+            <span id="inRangeOkFilteredInfo" style="font-size:0.84rem; color:var(--text-muted);"></span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Fichero</th>
+                  <th>Long.</th>
+                  <th>Signatura / C. barras</th>
+                  <th>Autor / Fecha</th>
+                  <th>Título (en rango, sin señal de truncamiento)</th>
+                </tr>
+              </thead>
+              <tbody id="inRangeOkTableBody"></tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <span id="inRangeOkPageInfo"></span>
+            <div class="btn-row">
+              <button id="btnInRangeOkPrev" class="btn btn-outline btn-sm" type="button">← Anterior</button>
+              <button id="btnInRangeOkNext" class="btn btn-outline btn-sm" type="button">Siguiente →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const PATRON_LIBROS = /^libros(\d+)\.json$/i;
+      const PAGE_SIZE = 50;
+
+      const CLAVES_AUTOR = ['Autor', 'autor', 'AUTOR'];
+      const CLAVES_TITULO = ['titulo', 'Titulo', 'TITULO', 'título', 'Título'];
+      const CLAVES_FECHA = ['fecha', 'Fecha', 'FECHA'];
+      const CLAVES_SIGNATURA = ['signatura', 'Signatura', 'SIGNATURA'];
+      const CLAVES_CBARRAS = ['cbarras', 'Cbarras', 'CBARRAS', 'codigo_barras', 'codbarras'];
+
+      // Artículos, preposiciones, conjunciones y determinantes que rara vez cierran un título
+      // (idéntico al conjunto multilingüe de 2_truncados.py)
+      const PALABRAS_COLGANTES = new Set([
+        // Español
+        'el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas',
+        'de', 'del', 'en', 'por', 'para', 'con', 'sin', 'sobre', 'entre',
+        'hacia', 'hasta', 'desde', 'según', 'segun', 'ante', 'bajo', 'contra',
+        'a', 'al', 'y', 'e', 'o', 'u', 'ni', 'que', 'como', 'cuando', 'donde',
+        'su', 'sus', 'mi', 'mis', 'tu', 'tus', 'este', 'esta', 'estos', 'estas',
+        'ese', 'esa', 'esos', 'esas', 'aquel', 'aquella',
+        // Inglés
+        'the', 'an', 'and', 'or', 'of', 'in', 'on', 'at', 'to', 'for', 'from',
+        'with', 'without', 'by', 'into', 'onto', 'upon', 'about', 'through',
+        'between', 'under', 'over', 'its', 'their', 'our', 'your', 'his', 'her',
+        // Francés
+        'le', 'les', 'du', 'des', 'au', 'aux', 'et', 'ou', 'dans', 'sur', 'sous',
+        'par', 'pour', 'avec', 'sans', 'chez', 'vers', 'entre', 'une', 'son', 'sa', 'ses',
+        // Alemán
+        'der', 'die', 'das', 'den', 'dem', 'ein', 'eine', 'einen', 'einem', 'einer',
+        'und', 'oder', 'von', 'vom', 'mit', 'für', 'fur', 'aus', 'bei', 'nach',
+        'über', 'uber', 'unter', 'durch', 'zum', 'zur', 'im', 'am', 'als', 'bis',
+        // Italiano / Catalán / Portugués
+        'il', 'lo', 'gli', 'di', 'da', 'dal', 'dalla', 'dalle', 'dello', 'della',
+        'delle', 'degli', 'nel', 'nella', 'nelle', 'negli', 'sul', 'sulla', 'per',
+        'tra', 'fra', 'che', 'ed', 'els', 'amb', 'pel', 'pels', 'dos', 'das', 'nos', 'nas'
+      ]);
+
+      // Numerales romanos cortos válidos al final de un título (ej. "Siglo XX", "Tomo IV")
+      const ROMANOS_CORTOS = new Set(['i', 'ii', 'iv', 'v', 'vi', 'ix', 'x', 'xi', 'xv', 'xx']);
+
+      // Palabras cortas completas que pueden cerrar legítimamente un título
+      const FINALES_CORTOS_VALIDOS = new Set([
+        'no', 'sí', 'si', 'ya', 'fe', 'yo', 'tú', 'tu', 'él', 'tv', 'cd', 'pc',
+        'me', 'te', 'se', 'us', 'up', 'go', 'ok', 'uk', 'eu', 'un'
+      ]);
+
+      const PATRON_SOLO_DIGITOS = /^\d+$/;
+      const PATRON_PUNTUACION_ABIERTA = /[-:/(,;«¿¡]$/;
+
+      const REASON_META = {
+        palabra_colgante: { label: 'Palabra colgante', pill: 'warn' },
+        fragmento_corto: { label: 'Fragmento corto (1-2 letras)', pill: 'danger' },
+        limite_caracteres: { label: 'Límite exacto de caracteres', pill: 'purple' },
+        puntuacion_abierta: { label: 'Puntuación abierta', pill: 'danger' },
+        parentesis_sin_cerrar: { label: 'Paréntesis/corchete sin cerrar', pill: 'danger' }
+      };
+
+      const state = {
+        dirHandle: null,
+        librosFiles: [], // [{ num, name, file, handle? }]
+        ignoredFiles: [],
+        lastResult: null,
+        manualExcludedIds: new Set(),
+        savedToDisk: false,
+        tables: {
+          truncated: { filtered: [], page: 1 },
+          overlimit: { filtered: [], page: 1 },
+          inrangeok: { filtered: [], page: 1 }
+        }
+      };
+
+      const $ = (id) => document.getElementById(id);
+      const els = {
+        modeBadge: $('modeBadge'),
+        modeBadgeText: $('modeBadgeText'),
+        btnDirectFolder: $('btnDirectFolder'),
+        directFolderHint: $('directFolderHint'),
+        btnPickFolder: $('btnPickFolder'),
+        inputFolder: $('inputFolder'),
+        btnPickLibros: $('btnPickLibros'),
+        inputLibros: $('inputLibros'),
+        folderZone: $('folderZone'),
+        manualZone: $('manualZone'),
+        btnClear: $('btnClear'),
+        librosPills: $('librosPills'),
+        ignoredRow: $('ignoredRow'),
+        ignoredPills: $('ignoredPills'),
+        optMinLen: $('optMinLen'),
+        optMaxLen: $('optMaxLen'),
+        optIncludeExactLimit: $('optIncludeExactLimit'),
+        optNoDuplicates: $('optNoDuplicates'),
+        optIncludeReason: $('optIncludeReason'),
+        optExcludeExp: $('optExcludeExp'),
+        btnResetOpts: $('btnResetOpts'),
+        btnRun: $('btnRun'),
+        errorBox: $('errorBox'),
+        progressWrap: $('progressWrap'),
+        progressText: $('progressText'),
+        progressPct: $('progressPct'),
+        progressFill: $('progressFill'),
+        resultsSection: $('resultsSection'),
+        resultBanner: $('resultBanner'),
+        bannerTitle: $('bannerTitle'),
+        bannerSub: $('bannerSub'),
+        bannerActions: $('bannerActions'),
+        kpiGrid: $('kpiGrid'),
+        saveActionsRow: $('saveActionsRow'),
+        filesTableBody: $('filesTableBody'),
+        reasonBreakdownList: $('reasonBreakdownList'),
+        statsDetailList: $('statsDetailList'),
+        btnExportReportTxt: $('btnExportReportTxt'),
+        btnExportTruncCsv: $('btnExportTruncCsv'),
+        manualExcludedNote: $('manualExcludedNote'),
+        btnRestoreExcluded: $('btnRestoreExcluded'),
+        tabTruncCount: $('tabTruncCount'),
+        tabOverCount: $('tabOverCount'),
+        tabInRangeOkCount: $('tabInRangeOkCount'),
+        searchTrunc: $('searchTrunc'),
+        filterTruncReason: $('filterTruncReason'),
+        filterTruncFile: $('filterTruncFile'),
+        filterTruncLen: $('filterTruncLen'),
+        truncFilteredInfo: $('truncFilteredInfo'),
+        truncTableBody: $('truncTableBody'),
+        truncPageInfo: $('truncPageInfo'),
+        btnTruncPrev: $('btnTruncPrev'),
+        btnTruncNext: $('btnTruncNext'),
+        searchOver: $('searchOver'),
+        filterOverFile: $('filterOverFile'),
+        overFilteredInfo: $('overFilteredInfo'),
+        overTableBody: $('overTableBody'),
+        overPageInfo: $('overPageInfo'),
+        btnOverPrev: $('btnOverPrev'),
+        btnOverNext: $('btnOverNext'),
+        searchInRangeOk: $('searchInRangeOk'),
+        filterInRangeOkFile: $('filterInRangeOkFile'),
+        filterInRangeOkLen: $('filterInRangeOkLen'),
+        inRangeOkFilteredInfo: $('inRangeOkFilteredInfo'),
+        inRangeOkTableBody: $('inRangeOkTableBody'),
+        inRangeOkPageInfo: $('inRangeOkPageInfo'),
+        btnInRangeOkPrev: $('btnInRangeOkPrev'),
+        btnInRangeOkNext: $('btnInRangeOkNext')
+      };
+
+      const supportsDirectFS = typeof window.showDirectoryPicker === 'function' && window.isSecureContext;
+      if (supportsDirectFS) {
+        els.btnDirectFolder.style.display = 'inline-flex';
+        els.modeBadge.classList.add('direct');
+        els.modeBadgeText.textContent = 'Escritura directa en carpeta disponible';
+        els.directFolderHint.textContent = 'Con "Abrir carpeta (lectura/escritura directa)" podrás guardar truncados.json directamente en la misma carpeta.';
+      } else {
+        els.directFolderHint.textContent = 'En modo local (file://) selecciona la carpeta o los ficheros y al terminar descarga truncados.json con un clic.';
+      }
+
+      // Utilidades
+      function fmtNum(n) { return Number(n).toLocaleString('es-ES'); }
+      function fmtPct(part, total) {
+        if (!total) return '0,0%';
+        return ((part / total) * 100).toFixed(1).replace('.', ',') + '%';
+      }
+      function fmtBytes(b) {
+        if (b < 1024) return `${b} B`;
+        if (b < 1024 * 1024) return `${(b / 1024).toFixed(1)} KB`;
+        return `${(b / (1024 * 1024)).toFixed(2)} MB`;
+      }
+      function escapeHtml(s) {
+        return String(s ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+      function showError(msg) {
+        if (!msg) {
+          els.errorBox.classList.remove('visible');
+          els.errorBox.textContent = '';
+          return;
+        }
+        els.errorBox.textContent = msg;
+        els.errorBox.classList.add('visible');
+      }
+      function setProgress(pct, text) {
+        els.progressWrap.classList.add('visible');
+        const c = Math.max(0, Math.min(100, Math.round(pct)));
+        els.progressFill.style.width = `${c}%`;
+        els.progressPct.textContent = `${c}%`;
+        if (text) els.progressText.textContent = text;
+      }
+      function yieldToUI() { return new Promise((r) => setTimeout(r, 0)); }
+
+      function downloadBlob(blob, filename) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+
+      function csvEsc(v) {
+        const s = String(v ?? '');
+        return /[";,\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+      }
+
+      function primeraClave(obj, claves) {
+        for (const k of claves) {
+          if (k in obj && obj[k] !== null && obj[k] !== undefined) {
+            return String(obj[k]).trim();
+          }
+        }
+        return '';
+      }
+
+      function extraerCampos(registro) {
+        if (Array.isArray(registro)) {
+          return {
+            autor: registro.length > 0 && registro[0] != null ? String(registro[0]).trim() : '',
+            titulo: registro.length > 1 && registro[1] != null ? String(registro[1]).trim() : '',
+            fecha: registro.length > 2 && registro[2] != null ? String(registro[2]).trim() : '',
+            signatura: registro.length > 3 && registro[3] != null ? String(registro[3]).trim() : '',
+            cbarras: registro.length > 4 && registro[4] != null ? String(registro[4]).trim() : ''
+          };
+        }
+        if (registro && typeof registro === 'object') {
+          return {
+            autor: primeraClave(registro, CLAVES_AUTOR),
+            titulo: primeraClave(registro, CLAVES_TITULO),
+            fecha: primeraClave(registro, CLAVES_FECHA),
+            signatura: primeraClave(registro, CLAVES_SIGNATURA),
+            cbarras: primeraClave(registro, CLAVES_CBARRAS)
+          };
+        }
+        return null;
+      }
+
+      function countChar(str, ch) {
+        let c = 0;
+        for (let i = 0; i < str.length; i++) {
+          if (str[i] === ch) c++;
+        }
+        return c;
+      }
+
+      /**
+       * Evalúa un título siguiendo la lógica de 2_truncados.py, descartando
+       * estrictamente cualquier título con longitud > limiteCorte (por defecto > 60).
+       */
+      function analizarTruncamiento(titulo, { minLen, limiteCorte, incluirExactosLimite }) {
+        const tituloLimpio = titulo.trim();
+        const len = tituloLimpio.length;
+
+        // Regla fundamental: títulos superiores al límite (> 60) se ignoran siempre
+        if (len > limiteCorte) {
+          return { status: 'over_limit', reason: null, len };
+        }
+        if (len < minLen) {
+          return { status: 'too_short', reason: null, len };
+        }
+
+        // 1. Puntuación final abierta o paréntesis/corchete sin cerrar
+        if (PATRON_PUNTUACION_ABIERTA.test(tituloLimpio)) {
+          return { status: 'truncated', reason: 'puntuacion_abierta', len };
+        }
+        if (
+          countChar(tituloLimpio, '(') > countChar(tituloLimpio, ')') ||
+          countChar(tituloLimpio, '[') > countChar(tituloLimpio, ']')
+        ) {
+          return { status: 'truncated', reason: 'parentesis_sin_cerrar', len };
+        }
+
+        const sinComillas = tituloLimpio.replace(/["']/g, '').trim();
+        const palabras = sinComillas ? sinComillas.split(/\s+/) : [];
+        if (palabras.length === 0) {
+          return { status: 'in_range_ok', reason: null, len };
+        }
+
+        const ultimaOriginal = palabras[palabras.length - 1];
+        const ultima = ultimaOriginal.replace(/[.,;:!?]+$/, '').toLowerCase();
+
+        if (ultima) {
+          // 2. Termina en palabra colgante (artículo, preposición, conjunción...)
+          if (PALABRAS_COLGANTES.has(ultima)) {
+            return { status: 'truncated', reason: 'palabra_colgante', len };
+          }
+
+          // 3. Termina en fragmento de 1 o 2 letras (descartando números, romanos y finales válidos)
+          if (
+            ultima.length <= 2 &&
+            !PATRON_SOLO_DIGITOS.test(ultima) &&
+            !ROMANOS_CORTOS.has(ultima) &&
+            !FINALES_CORTOS_VALIDOS.has(ultima)
+          ) {
+            return { status: 'truncated', reason: 'fragmento_corto', len };
+          }
+        }
+
+        // 4. Alcanza exactamente el límite de truncamiento del catálogo (60 caracteres)
+        if (incluirExactosLimite && len === limiteCorte) {
+          return { status: 'truncated', reason: 'limite_caracteres', len };
+        }
+
+        return { status: 'in_range_ok', reason: null, len };
+      }
+
+      function highlightTruncatedTitle(titulo, reason) {
+        const s = titulo.trim();
+        if (!s) return '';
+        if (reason === 'puntuacion_abierta') {
+          return escapeHtml(s.slice(0, -1)) + `<span class="hl-limit">${escapeHtml(s.slice(-1))}</span>`;
+        }
+        if (reason === 'palabra_colgante' || reason === 'fragmento_corto') {
+          const m = s.match(/^(.*?)(\S+)$/);
+          if (m) {
+            return escapeHtml(m[1]) + `<span class="hl-tail">${escapeHtml(m[2])}</span>`;
+          }
+        }
+        if (reason === 'limite_caracteres') {
+          const m = s.match(/^(.*?)(\S+)$/);
+          if (m) {
+            return escapeHtml(m[1]) + `<span class="hl-limit">${escapeHtml(m[2])}</span>`;
+          }
+        }
+        return escapeHtml(s);
+      }
+
+      // Gestión de ficheros seleccionados
+      function updateSelectionUI() {
+        if (state.librosFiles.length > 0) {
+          els.librosPills.innerHTML = state.librosFiles
+            .map((lf) => `<span class="pill ok">${escapeHtml(lf.name)} (${fmtBytes(lf.file.size)})</span>`)
+            .join('');
+        } else {
+          els.librosPills.innerHTML = `<span class="pill muted">Ningún fichero libros*.json cargado</span>`;
+        }
+
+        if (state.ignoredFiles.length > 0) {
+          els.ignoredRow.style.display = 'flex';
+          els.ignoredPills.innerHTML = state.ignoredFiles
+            .map((name) => `<span class="pill muted">${escapeHtml(name)}</span>`)
+            .join('');
+        } else {
+          els.ignoredRow.style.display = 'none';
+          els.ignoredPills.innerHTML = '';
+        }
+
+        els.btnRun.disabled = state.librosFiles.length === 0;
+      }
+
+      function addFilesList(fileList, replaceAll = false) {
+        showError('');
+        if (replaceAll) {
+          state.dirHandle = null;
+          state.librosFiles = [];
+          state.ignoredFiles = [];
+        }
+
+        const existingMap = new Map(state.librosFiles.map((j) => [j.name.toLowerCase(), j]));
+        const ignoredSet = new Set(state.ignoredFiles);
+
+        for (const file of Array.from(fileList)) {
+          if (file.webkitRelativePath) {
+            const depth = file.webkitRelativePath.split('/').length;
+            if (depth > 2) continue;
+          }
+          const lower = file.name.toLowerCase();
+          if (!lower.endsWith('.json')) continue;
+
+          const m = file.name.match(PATRON_LIBROS);
+          if (m) {
+            existingMap.set(lower, {
+              num: parseInt(m[1], 10),
+              name: file.name,
+              file,
+              handle: null
+            });
+          } else {
+            ignoredSet.add(file.name);
+          }
+        }
+
+        state.librosFiles = Array.from(existingMap.values()).sort(
+          (a, b) => a.num - b.num || a.name.localeCompare(b.name)
+        );
+        state.ignoredFiles = Array.from(ignoredSet).sort();
+        updateSelectionUI();
+
+        if (state.librosFiles.length === 0) {
+          showError('No se encontraron ficheros con el patrón "libros<N>.json" (ej. libros1.json, libros2.json…).');
+        }
+      }
+
+      els.btnDirectFolder.addEventListener('click', async () => {
+        showError('');
+        try {
+          const dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+          state.dirHandle = dirHandle;
+          state.librosFiles = [];
+          state.ignoredFiles = [];
+
+          for await (const [name, handle] of dirHandle.entries()) {
+            if (handle.kind !== 'file') continue;
+            const lower = name.toLowerCase();
+            if (!lower.endsWith('.json')) continue;
+
+            const m = name.match(PATRON_LIBROS);
+            if (m) {
+              const file = await handle.getFile();
+              state.librosFiles.push({
+                num: parseInt(m[1], 10),
+                name,
+                file,
+                handle
+              });
+            } else {
+              state.ignoredFiles.push(name);
+            }
+          }
+
+          state.librosFiles.sort((a, b) => a.num - b.num || a.name.localeCompare(b.name));
+          state.ignoredFiles.sort();
+          updateSelectionUI();
+
+          if (state.librosFiles.length === 0) {
+            showError('No se encontraron ficheros "libros<N>.json" en la carpeta seleccionada.');
+          }
+        } catch (err) {
+          if (err && err.name !== 'AbortError') {
+            showError(`No se pudo abrir la carpeta: ${err.message}`);
+          }
+        }
+      });
+
+      els.btnPickFolder.addEventListener('click', () => els.inputFolder.click());
+      els.inputFolder.addEventListener('change', (e) => {
+        if (e.target.files.length) addFilesList(e.target.files, true);
+        e.target.value = '';
+      });
+
+      els.btnPickLibros.addEventListener('click', () => els.inputLibros.click());
+      els.inputLibros.addEventListener('change', (e) => {
+        if (e.target.files.length) addFilesList(e.target.files, false);
+        e.target.value = '';
+      });
+
+      els.btnClear.addEventListener('click', () => {
+        state.dirHandle = null;
+        state.librosFiles = [];
+        state.ignoredFiles = [];
+        state.lastResult = null;
+        state.manualExcludedIds.clear();
+        state.savedToDisk = false;
+        els.resultsSection.classList.remove('visible');
+        els.progressWrap.classList.remove('visible');
+        showError('');
+        updateSelectionUI();
+      });
+
+      els.btnResetOpts.addEventListener('click', () => {
+        els.optMinLen.value = '55';
+        els.optMaxLen.value = '60';
+        els.optIncludeExactLimit.checked = true;
+        els.optNoDuplicates.checked = false;
+        els.optIncludeReason.checked = false;
+        els.optExcludeExp.checked = false;
+      });
+
+      [els.folderZone, els.manualZone].forEach((zone) => {
+        zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
+        zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+        zone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          zone.classList.remove('dragover');
+          if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+            addFilesList(e.dataTransfer.files, false);
+          }
+        });
+      });
+
+      // Construcción del JSON de salida truncados.json (respetando exclusiones manuales)
+      function buildActiveOutputRecords() {
+        const res = state.lastResult;
+        if (!res) return [];
+        const includeReason = res.opts.incluirMotivo;
+        const out = [];
+        for (const item of res.truncatedList) {
+          if (state.manualExcludedIds.has(item.id)) continue;
+          const obj = {
+            Autor: item.autor,
+            titulo: item.titulo,
+            fecha: item.fecha,
+            signatura: item.signatura,
+            cbarras: item.cbarras
+          };
+          if (includeReason) {
+            obj.motivo_truncado = item.reason;
+          }
+          out.push(obj);
+        }
+        return out;
+      }
+
+      function buildTruncadosBlob() {
+        const records = buildActiveOutputRecords();
+        const text = JSON.stringify(records, null, 4);
+        return {
+          blob: new Blob([text], { type: 'application/json;charset=utf-8' }),
+          count: records.length,
+          bytes: new Blob([text]).size
+        };
+      }
+
+      async function saveTruncadosToFolder() {
+        if (!state.dirHandle) return;
+        showError('');
+        try {
+          const { blob, count, bytes } = buildTruncadosBlob();
+          const fileHandle = await state.dirHandle.getFileHandle('truncados.json', { create: true });
+          const writable = await fileHandle.createWritable();
+          await writable.write(blob);
+          await writable.close();
+          state.savedToDisk = true;
+          updateActionButtons();
+          els.bannerSub.textContent =
+            `Se ha guardado truncados.json en la carpeta con ${fmtNum(count)} registros (${fmtBytes(bytes)}).`;
+        } catch (err) {
+          showError(`Error al guardar truncados.json en la carpeta: ${err.message}`);
+        }
+      }
+
+      function downloadTruncadosJson() {
+        const { blob } = buildTruncadosBlob();
+        downloadBlob(blob, 'truncados.json');
+      }
+
+      function updateActionButtons() {
+        const res = state.lastResult;
+        if (!res) return;
+        const activeCount = res.truncatedList.length - state.manualExcludedIds.size;
+        const excludedCount = state.manualExcludedIds.size;
+
+        els.manualExcludedNote.style.display = excludedCount > 0 ? 'inline-flex' : 'none';
+        els.manualExcludedNote.textContent = `${fmtNum(excludedCount)} omitido(s) manualmente`;
+        els.btnRestoreExcluded.style.display = excludedCount > 0 ? 'inline-flex' : 'none';
+
+        const makeButtons = () => {
+          const frag = document.createDocumentFragment();
+          if (state.dirHandle) {
+            const btnSave = document.createElement('button');
+            btnSave.type = 'button';
+            btnSave.className = 'btn btn-success';
+            btnSave.textContent = state.savedToDisk
+              ? `Guardar truncados.json de nuevo (${fmtNum(activeCount)})`
+              : `Guardar truncados.json en carpeta (${fmtNum(activeCount)})`;
+            btnSave.addEventListener('click', saveTruncadosToFolder);
+            frag.appendChild(btnSave);
+          }
+          const btnDl = document.createElement('button');
+          btnDl.type = 'button';
+          btnDl.className = state.dirHandle ? 'btn btn-outline' : 'btn btn-primary';
+          btnDl.textContent = `Descargar truncados.json (${fmtNum(activeCount)})`;
+          btnDl.addEventListener('click', downloadTruncadosJson);
+          frag.appendChild(btnDl);
+          return frag;
+        };
+
+        els.bannerActions.innerHTML = '';
+        els.bannerActions.appendChild(makeButtons());
+        els.saveActionsRow.innerHTML = '';
+        els.saveActionsRow.appendChild(makeButtons());
+      }
+
+      // Proceso principal
+      async function runAnalysis() {
+        showError('');
+        const minLen = parseInt(els.optMinLen.value, 10);
+        const limiteCorte = parseInt(els.optMaxLen.value, 10);
+
+        if (!Number.isFinite(minLen) || minLen < 1) {
+          showError('La longitud mínima debe ser un número entero mayor o igual a 1.');
+          return;
+        }
+        if (!Number.isFinite(limiteCorte) || limiteCorte < minLen) {
+          showError('El límite de corte debe ser mayor o igual que la longitud mínima.');
+          return;
+        }
+
+        const opts = {
+          minLen,
+          limiteCorte,
+          incluirExactosLimite: els.optIncludeExactLimit.checked,
+          sinDuplicados: els.optNoDuplicates.checked,
+          incluirMotivo: els.optIncludeReason.checked,
+          excluirExp: els.optExcludeExp.checked
+        };
+
+        const t0 = performance.now();
+        els.btnRun.disabled = true;
+        els.resultsSection.classList.remove('visible');
+        state.manualExcludedIds.clear();
+        state.savedToDisk = false;
+
+        try {
+          const fileSummaries = [];
+          const truncatedList = [];
+          const overLimitList = [];
+          const inRangeOkList = [];
+
+          const vistos = new Set();
+          const reasonCounts = {};
+          const lenCountsAllInRange = {};
+          const lenCountsTrunc = {};
+
+          let totalRecords = 0;
+          let totalOverLimit = 0;
+          let totalTooShort = 0;
+          let totalInRange = 0;
+          let totalDuplicatesSkipped = 0;
+          let totalExpOrEmptySkipped = 0;
+          let truncHgCount = 0;
+          let truncExpOrEmptyCount = 0;
+          let nextId = 1;
+
+          const numFiles = state.librosFiles.length;
+
+          for (let fIdx = 0; fIdx < numFiles; fIdx++) {
+            const lf = state.librosFiles[fIdx];
+            const basePct = (fIdx / numFiles) * 90;
+            setProgress(basePct + 2, `Leyendo ${lf.name} (${fIdx + 1}/${numFiles})…`);
+            await yieldToUI();
+
+            const raw = await lf.file.text();
+            let datos;
+            try {
+              datos = JSON.parse(raw);
+            } catch (e) {
+              throw new Error(`El fichero ${lf.name} no es un JSON válido: ${e.message}`);
+            }
+            if (!Array.isArray(datos)) {
+              throw new Error(`Se esperaba una lista JSON en ${lf.name}.`);
+            }
+
+            let fOver = 0;
+            let fShort = 0;
+            let fInRange = 0;
+            let fTrunc = 0;
+
+            const CHUNK = 8000;
+            for (let start = 0; start < datos.length; start += CHUNK) {
+              const end = Math.min(start + CHUNK, datos.length);
+              for (let i = start; i < end; i++) {
+                const campos = extraerCampos(datos[i]);
+                if (!campos) continue;
+
+                totalRecords++;
+                const { autor, titulo, fecha, signatura, cbarras } = campos;
+                const evalRes = analizarTruncamiento(titulo, opts);
+
+                if (evalRes.status === 'over_limit') {
+                  totalOverLimit++;
+                  fOver++;
+                  overLimitList.push({
+                    file: lf.name,
+                    recordIdx: i + 1,
+                    autor,
+                    titulo,
+                    fecha,
+                    signatura,
+                    cbarras,
+                    len: evalRes.len
+                  });
+                  continue;
+                }
+
+                if (evalRes.status === 'too_short') {
+                  totalTooShort++;
+                  fShort++;
+                  continue;
+                }
+
+                // Dentro de [minLen, limiteCorte]
+                totalInRange++;
+                fInRange++;
+                lenCountsAllInRange[evalRes.len] = (lenCountsAllInRange[evalRes.len] || 0) + 1;
+
+                if (evalRes.status !== 'truncated') {
+                  inRangeOkList.push({
+                    file: lf.name,
+                    recordIdx: i + 1,
+                    autor,
+                    titulo,
+                    fecha,
+                    signatura,
+                    cbarras,
+                    len: evalRes.len
+                  });
+                  continue;
+                }
+
+                // Es truncado
+                const isExpOrEmpty = !signatura || signatura.toUpperCase().startsWith('EXP');
+                if (opts.excluirExp && isExpOrEmpty) {
+                  totalExpOrEmptySkipped++;
+                  continue;
+                }
+
+                const dedupKey = `${autor}\x1f${titulo}\x1f${fecha}\x1f${signatura}`;
+                if (opts.sinDuplicados && vistos.has(dedupKey)) {
+                  totalDuplicatesSkipped++;
+                  continue;
+                }
+                vistos.add(dedupKey);
+
+                fTrunc++;
+                reasonCounts[evalRes.reason] = (reasonCounts[evalRes.reason] || 0) + 1;
+                lenCountsTrunc[evalRes.len] = (lenCountsTrunc[evalRes.len] || 0) + 1;
+
+                if (signatura.toLowerCase().startsWith('hg')) truncHgCount++;
+                if (isExpOrEmpty) truncExpOrEmptyCount++;
+
+                truncatedList.push({
+                  id: nextId++,
+                  file: lf.name,
+                  recordIdx: i + 1,
+                  autor,
+                  titulo,
+                  fecha,
+                  signatura,
+                  cbarras,
+                  len: evalRes.len,
+                  reason: evalRes.reason
+                });
+              }
+
+              const subPct = basePct + ((end / Math.max(1, datos.length)) * (90 / numFiles));
+              setProgress(subPct, `Analizando ${lf.name}: ${fmtNum(end)} / ${fmtNum(datos.length)} registros…`);
+              await yieldToUI();
+            }
+
+            fileSummaries.push({
+              name: lf.name,
+              size: lf.file.size,
+              total: datos.length,
+              overLimit: fOver,
+              tooShort: fShort,
+              inRange: fInRange,
+              truncated: fTrunc
+            });
+          }
+
+          setProgress(98, 'Preparando informe y tablas interactivas…');
+          await yieldToUI();
+
+          const elapsedMs = performance.now() - t0;
+          const uniqueTruncSet = new Set(
+            truncatedList.map((r) => `${r.autor}\x1f${r.titulo}\x1f${r.fecha}\x1f${r.signatura}`)
+          );
+
+          state.lastResult = {
+            opts,
+            elapsedMs,
+            fileSummaries,
+            totalRecords,
+            totalOverLimit,
+            totalTooShort,
+            totalInRange,
+            totalDuplicatesSkipped,
+            totalExpOrEmptySkipped,
+            truncHgCount,
+            truncExpOrEmptyCount,
+            uniqueTruncCount: uniqueTruncSet.size,
+            reasonCounts,
+            lenCountsAllInRange,
+            lenCountsTrunc,
+            truncatedList,
+            overLimitList,
+            inRangeOkList
+          };
+
+          renderResults(state.lastResult);
+          setProgress(100, `Análisis completado en ${(elapsedMs / 1000).toFixed(2)} s.`);
+        } catch (err) {
+          showError(err.message || String(err));
+          els.progressWrap.classList.remove('visible');
+        } finally {
+          els.btnRun.disabled = state.librosFiles.length === 0;
+        }
+      }
+
+      function renderResults(res) {
+        els.resultsSection.classList.add('visible');
+
+        const { minLen, limiteCorte } = res.opts;
+        const truncCount = res.truncatedList.length;
+
+        // Banner
+        els.resultBanner.className = truncCount > 0 ? 'alert-banner' : 'alert-banner warn';
+        els.bannerTitle.textContent = truncCount > 0
+          ? `Detectados ${fmtNum(truncCount)} títulos truncados listos para truncados.json`
+          : 'No se detectaron títulos truncados con los criterios seleccionados';
+        els.bannerSub.textContent =
+          `Se analizaron ${fmtNum(res.totalRecords)} registros en ${res.fileSummaries.length} fichero(s) ` +
+          `en ${(res.elapsedMs / 1000).toFixed(2)} s. Se descartaron ${fmtNum(res.totalOverLimit)} títulos ` +
+          `por superar los ${limiteCorte} caracteres.`;
+        updateActionButtons();
+
+        // KPIs
+        const approxBytes = new Blob([JSON.stringify(buildActiveOutputRecords(), null, 4)]).size;
+        els.kpiGrid.innerHTML = `
+          <div class="kpi-card">
+            <div class="kpi-label">Registros totales</div>
+            <div class="kpi-value">${fmtNum(res.totalRecords)}</div>
+            <div class="kpi-sub">${res.fileSummaries.length} fichero(s) libros*.json</div>
+          </div>
+          <div class="kpi-card warn">
+            <div class="kpi-label">Truncados detectados</div>
+            <div class="kpi-value">${fmtNum(truncCount)}</div>
+            <div class="kpi-sub">${fmtPct(truncCount, res.totalRecords)} del total · ${fmtNum(res.uniqueTruncCount)} únicos · ~${fmtBytes(approxBytes)}</div>
+          </div>
+          <div class="kpi-card ok">
+            <div class="kpi-label">Descartados (&gt; ${limiteCorte} chars)</div>
+            <div class="kpi-value">${fmtNum(res.totalOverLimit)}</div>
+            <div class="kpi-sub">${fmtPct(res.totalOverLimit, res.totalRecords)} · Títulos ya completos</div>
+          </div>
+          <div class="kpi-card info">
+            <div class="kpi-label">Cortos (&lt; ${minLen} chars)</div>
+            <div class="kpi-value">${fmtNum(res.totalTooShort)}</div>
+            <div class="kpi-sub">${fmtPct(res.totalTooShort, res.totalRecords)} · No evaluados</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">En rango (${minLen}–${limiteCorte}) sin corte</div>
+            <div class="kpi-value">${fmtNum(res.inRangeOkList.length)}</div>
+            <div class="kpi-sub">De ${fmtNum(res.totalInRange)} evaluados en rango</div>
+          </div>
+        `;
+
+        // Tabla de ficheros
+        els.filesTableBody.innerHTML = res.fileSummaries
+          .map((f) => `
+            <tr>
+              <td class="mono" style="font-weight:700;">${escapeHtml(f.name)}</td>
+              <td>${fmtNum(f.total)}</td>
+              <td style="color:var(--success); font-weight:600;">${fmtNum(f.overLimit)}</td>
+              <td style="color:var(--text-muted);">${fmtNum(f.tooShort)}</td>
+              <td>${fmtNum(f.inRange)}</td>
+              <td style="font-weight:700; color:${f.truncated > 0 ? 'var(--warning)' : 'var(--text-subtle)'};">${fmtNum(f.truncated)}</td>
+              <td class="mono">${fmtPct(f.truncated, f.total)}</td>
+              <td>${fmtBytes(f.size)}</td>
+            </tr>
+          `)
+          .join('');
+
+        // Motivos
+        const reasonEntries = Object.entries(res.reasonCounts).sort((a, b) => b[1] - a[1]);
+        if (reasonEntries.length === 0) {
+          els.reasonBreakdownList.innerHTML = `<li><span>Sin títulos marcados como truncados</span><span class="pill ok">0</span></li>`;
+        } else {
+          els.reasonBreakdownList.innerHTML = reasonEntries
+            .map(([code, count]) => {
+              const meta = REASON_META[code] || { label: code, pill: 'muted' };
+              return `
+                <li>
+                  <span><span class="pill ${meta.pill}">${escapeHtml(meta.label)}</span> <span class="mono" style="color:var(--text-subtle);">${escapeHtml(code)}</span></span>
+                  <span><strong>${fmtNum(count)}</strong> <span style="color:var(--text-subtle);">(${fmtPct(count, truncCount)})</span></span>
+                </li>
+              `;
+            })
+            .join('');
+        }
+
+        // Distribución y métricas OPAC
+        const lenKeys = Object.keys(res.lenCountsAllInRange)
+          .map((n) => parseInt(n, 10))
+          .sort((a, b) => a - b);
+
+        const lenRows = lenKeys.map((len) => {
+          const totL = res.lenCountsAllInRange[len] || 0;
+          const trL = res.lenCountsTrunc[len] || 0;
+          return `
+            <li>
+              <span>Longitud <strong class="mono">${len}</strong> caracteres</span>
+              <span><strong>${fmtNum(trL)}</strong> truncados <span style="color:var(--text-subtle);">de ${fmtNum(totL)} (${fmtPct(trL, totL)})</span></span>
+            </li>
+          `;
+        });
+
+        const opacValidCount = truncCount - res.truncExpOrEmptyCount;
+        const extraRows = [
+          `<li><span>Truncados válidos para <span class="mono">3_buscarenopac.py</span> (sin <span class="mono">EXP</span>/vacías)</span><strong>${fmtNum(opacValidCount)}</strong></li>`,
+          `<li><span>De ellos, búsqueda por título+autor (<span class="mono">HG*</span>) / por signatura</span><span><strong>${fmtNum(res.truncHgCount)}</strong> / <strong>${fmtNum(Math.max(0, opacValidCount - res.truncHgCount))}</strong></span></li>`,
+          `<li><span>Truncados con signatura <span class="mono">EXP</span> o vacía</span><span>${fmtNum(res.truncExpOrEmptyCount)}${res.opts.excluirExp ? ` (${fmtNum(res.totalExpOrEmptySkipped)} omitidos)` : ''}</span></li>`,
+          `<li><span>Duplicados exactos omitidos</span><span>${fmtNum(res.totalDuplicatesSkipped)}</span></li>`
+        ];
+        els.statsDetailList.innerHTML = [...lenRows, ...extraRows].join('');
+
+        // Contadores pestañas
+        els.tabTruncCount.textContent = fmtNum(res.truncatedList.length);
+        els.tabOverCount.textContent = fmtNum(res.overLimitList.length);
+        els.tabInRangeOkCount.textContent = fmtNum(res.inRangeOkList.length);
+
+        // Poblar filtros
+        els.filterTruncReason.innerHTML =
+          `<option value="">Todos los motivos (${fmtNum(truncCount)})</option>` +
+          reasonEntries
+            .map(([code, count]) => {
+              const meta = REASON_META[code] || { label: code };
+              return `<option value="${escapeHtml(code)}">${escapeHtml(meta.label)} (${fmtNum(count)})</option>`;
+            })
+            .join('');
+
+        const fileOptsTrunc =
+          `<option value="">Todos los ficheros</option>` +
+          res.fileSummaries.map((f) => `<option value="${escapeHtml(f.name)}">${escapeHtml(f.name)} (${fmtNum(f.truncated)})</option>`).join('');
+        els.filterTruncFile.innerHTML = fileOptsTrunc;
+
+        const fileOptsOver =
+          `<option value="">Todos los ficheros</option>` +
+          res.fileSummaries.map((f) => `<option value="${escapeHtml(f.name)}">${escapeHtml(f.name)} (${fmtNum(f.overLimit)})</option>`).join('');
+        els.filterOverFile.innerHTML = fileOptsOver;
+
+        const fileOptsOk =
+          `<option value="">Todos los ficheros</option>` +
+          res.fileSummaries.map((f) => `<option value="${escapeHtml(f.name)}">${escapeHtml(f.name)}</option>`).join('');
+        els.filterInRangeOkFile.innerHTML = fileOptsOk;
+
+        const truncLenKeys = Object.keys(res.lenCountsTrunc).map((n) => parseInt(n, 10)).sort((a, b) => a - b);
+        els.filterTruncLen.innerHTML =
+          `<option value="">Todas las longitudes</option>` +
+          truncLenKeys.map((l) => `<option value="${l}">${l} chars (${fmtNum(res.lenCountsTrunc[l])})</option>`).join('');
+
+        els.filterInRangeOkLen.innerHTML =
+          `<option value="">Todas las longitudes</option>` +
+          lenKeys.map((l) => `<option value="${l}">${l} chars</option>`).join('');
+
+        els.searchTrunc.value = '';
+        els.searchOver.value = '';
+        els.searchInRangeOk.value = '';
+
+        filterTrunc();
+        filterOver();
+        filterInRangeOk();
+
+        els.resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      // Pestañas
+      document.querySelectorAll('.tab-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+          document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
+          btn.classList.add('active');
+          $(`panel-${btn.dataset.tab}`).classList.add('active');
+        });
+      });
+
+      // Filtrado y paginación: TRUNCADOS
+      function filterTrunc() {
+        const res = state.lastResult;
+        if (!res) return;
+        const q = els.searchTrunc.value.trim().toLowerCase();
+        const reason = els.filterTruncReason.value;
+        const file = els.filterTruncFile.value;
+        const lenVal = els.filterTruncLen.value ? parseInt(els.filterTruncLen.value, 10) : null;
+
+        state.tables.truncated.filtered = res.truncatedList.filter((r) => {
+          if (reason && r.reason !== reason) return false;
+          if (file && r.file !== file) return false;
+          if (lenVal !== null && r.len !== lenVal) return false;
+          if (!q) return true;
+          return (
+            r.titulo.toLowerCase().includes(q) ||
+            r.autor.toLowerCase().includes(q) ||
+            r.signatura.toLowerCase().includes(q) ||
+            r.cbarras.toLowerCase().includes(q) ||
+            r.fecha.toLowerCase().includes(q)
+          );
+        });
+        state.tables.truncated.page = 1;
+        renderTruncPage();
+      }
+
+      function renderTruncPage() {
+        const t = state.tables.truncated;
+        const total = t.filtered.length;
+        const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        t.page = Math.max(1, Math.min(t.page, totalPages));
+        const start = (t.page - 1) * PAGE_SIZE;
+        const slice = t.filtered.slice(start, start + PAGE_SIZE);
+
+        els.truncFilteredInfo.textContent = `Mostrando ${fmtNum(total)} de ${fmtNum(state.lastResult.truncatedList.length)} truncados`;
+        if (slice.length === 0) {
+          els.truncTableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:24px; color:var(--text-subtle);">Sin registros que coincidan con el filtro.</td></tr>`;
+        } else {
+          els.truncTableBody.innerHTML = slice
+            .map((r) => {
+              const meta = REASON_META[r.reason] || { label: r.reason, pill: 'muted' };
+              const excluded = state.manualExcludedIds.has(r.id);
+              return `
+                <tr class="${excluded ? 'row-excluded' : ''}">
+                  <td class="mono">#${fmtNum(r.id)}</td>
+                  <td><span class="pill info mono">${escapeHtml(r.file)}</span></td>
+                  <td><span class="pill ${meta.pill}">${escapeHtml(meta.label)}</span></td>
+                  <td class="mono" style="font-weight:700;">${r.len}</td>
+                  <td>
+                    <div class="mono" style="font-weight:700; color:var(--primary);">${escapeHtml(r.signatura || '—')}</div>
+                    <div class="mono" style="color:var(--text-subtle); font-size:0.78rem;">${escapeHtml(r.cbarras || '—')}</div>
+                  </td>
+                  <td>
+                    <div>${escapeHtml(r.autor || '—')}</div>
+                    <div class="mono" style="color:var(--text-subtle);">${escapeHtml(r.fecha || 's/f')}</div>
+                  </td>
+                  <td>${highlightTruncatedTitle(r.titulo, r.reason)}</td>
+                  <td class="no-strike">
+                    <button type="button" class="btn btn-outline btn-xs btn-toggle-excl" data-id="${r.id}">
+                      ${excluded ? 'Incluir' : 'Omitir'}
+                    </button>
+                  </td>
+                </tr>
+              `;
+            })
+            .join('');
+        }
+        els.truncPageInfo.textContent = `Página ${t.page} de ${totalPages} (${fmtNum(total)} registros)`;
+        els.btnTruncPrev.disabled = t.page <= 1;
+        els.btnTruncNext.disabled = t.page >= totalPages;
+      }
+
+      els.truncTableBody.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn-toggle-excl');
+        if (!btn) return;
+        const id = parseInt(btn.dataset.id, 10);
+        if (state.manualExcludedIds.has(id)) {
+          state.manualExcludedIds.delete(id);
+        } else {
+          state.manualExcludedIds.add(id);
+        }
+        state.savedToDisk = false;
+        updateActionButtons();
+        renderTruncPage();
+      });
+
+      els.btnRestoreExcluded.addEventListener('click', () => {
+        state.manualExcludedIds.clear();
+        state.savedToDisk = false;
+        updateActionButtons();
+        renderTruncPage();
+      });
+
+      // Filtrado y paginación: DESCARTADOS > LÍMITE
+      function filterOver() {
+        const res = state.lastResult;
+        if (!res) return;
+        const q = els.searchOver.value.trim().toLowerCase();
+        const file = els.filterOverFile.value;
+
+        state.tables.overlimit.filtered = res.overLimitList.filter((r) => {
+          if (file && r.file !== file) return false;
+          if (!q) return true;
+          return (
+            r.titulo.toLowerCase().includes(q) ||
+            r.autor.toLowerCase().includes(q) ||
+            r.signatura.toLowerCase().includes(q) ||
+            r.cbarras.toLowerCase().includes(q) ||
+            r.fecha.toLowerCase().includes(q)
+          );
+        });
+        state.tables.overlimit.page = 1;
+        renderOverPage();
+      }
+
+      function renderOverPage() {
+        const t = state.tables.overlimit;
+        const total = t.filtered.length;
+        const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        t.page = Math.max(1, Math.min(t.page, totalPages));
+        const start = (t.page - 1) * PAGE_SIZE;
+        const slice = t.filtered.slice(start, start + PAGE_SIZE);
+
+        els.overFilteredInfo.textContent = `Mostrando ${fmtNum(total)} de ${fmtNum(state.lastResult.overLimitList.length)} descartados (> ${state.lastResult.opts.limiteCorte} chars)`;
+        if (slice.length === 0) {
+          els.overTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-subtle);">No hay títulos que superen el límite.</td></tr>`;
+        } else {
+          els.overTableBody.innerHTML = slice
+            .map((r, idx) => `
+              <tr>
+                <td class="mono">#${fmtNum(start + idx + 1)}</td>
+                <td><span class="pill info mono">${escapeHtml(r.file)}</span></td>
+                <td><span class="pill ok mono">${r.len}</span></td>
+                <td>
+                  <div class="mono" style="font-weight:700;">${escapeHtml(r.signatura || '—')}</div>
+                  <div class="mono" style="color:var(--text-subtle); font-size:0.78rem;">${escapeHtml(r.cbarras || '—')}</div>
+                </td>
+                <td>
+                  <div>${escapeHtml(r.autor || '—')}</div>
+                  <div class="mono" style="color:var(--text-subtle);">${escapeHtml(r.fecha || 's/f')}</div>
+                </td>
+                <td>${escapeHtml(r.titulo)}</td>
+              </tr>
+            `)
+            .join('');
+        }
+        els.overPageInfo.textContent = `Página ${t.page} de ${totalPages} (${fmtNum(total)} registros)`;
+        els.btnOverPrev.disabled = t.page <= 1;
+        els.btnOverNext.disabled = t.page >= totalPages;
+      }
+
+      // Filtrado y paginación: EN RANGO NO TRUNCADOS
+      function filterInRangeOk() {
+        const res = state.lastResult;
+        if (!res) return;
+        const q = els.searchInRangeOk.value.trim().toLowerCase();
+        const file = els.filterInRangeOkFile.value;
+        const lenVal = els.filterInRangeOkLen.value ? parseInt(els.filterInRangeOkLen.value, 10) : null;
+
+        state.tables.inrangeok.filtered = res.inRangeOkList.filter((r) => {
+          if (file && r.file !== file) return false;
+          if (lenVal !== null && r.len !== lenVal) return false;
+          if (!q) return true;
+          return (
+            r.titulo.toLowerCase().includes(q) ||
+            r.autor.toLowerCase().includes(q) ||
+            r.signatura.toLowerCase().includes(q) ||
+            r.cbarras.toLowerCase().includes(q) ||
+            r.fecha.toLowerCase().includes(q)
+          );
+        });
+        state.tables.inrangeok.page = 1;
+        renderInRangeOkPage();
+      }
+
+      function renderInRangeOkPage() {
+        const t = state.tables.inrangeok;
+        const total = t.filtered.length;
+        const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        t.page = Math.max(1, Math.min(t.page, totalPages));
+        const start = (t.page - 1) * PAGE_SIZE;
+        const slice = t.filtered.slice(start, start + PAGE_SIZE);
+
+        els.inRangeOkFilteredInfo.textContent = `Mostrando ${fmtNum(total)} de ${fmtNum(state.lastResult.inRangeOkList.length)} registros`;
+        if (slice.length === 0) {
+          els.inRangeOkTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-subtle);">Sin registros en este grupo.</td></tr>`;
+        } else {
+          els.inRangeOkTableBody.innerHTML = slice
+            .map((r, idx) => `
+              <tr>
+                <td class="mono">#${fmtNum(start + idx + 1)}</td>
+                <td><span class="pill info mono">${escapeHtml(r.file)}</span></td>
+                <td class="mono">${r.len}</td>
+                <td>
+                  <div class="mono" style="font-weight:700;">${escapeHtml(r.signatura || '—')}</div>
+                  <div class="mono" style="color:var(--text-subtle); font-size:0.78rem;">${escapeHtml(r.cbarras || '—')}</div>
+                </td>
+                <td>
+                  <div>${escapeHtml(r.autor || '—')}</div>
+                  <div class="mono" style="color:var(--text-subtle);">${escapeHtml(r.fecha || 's/f')}</div>
+                </td>
+                <td>${escapeHtml(r.titulo)}</td>
+              </tr>
+            `)
+            .join('');
+        }
+        els.inRangeOkPageInfo.textContent = `Página ${t.page} de ${totalPages} (${fmtNum(total)} registros)`;
+        els.btnInRangeOkPrev.disabled = t.page <= 1;
+        els.btnInRangeOkNext.disabled = t.page >= totalPages;
+      }
+
+      // Eventos filtros y paginación
+      els.searchTrunc.addEventListener('input', filterTrunc);
+      els.filterTruncReason.addEventListener('change', filterTrunc);
+      els.filterTruncFile.addEventListener('change', filterTrunc);
+      els.filterTruncLen.addEventListener('change', filterTrunc);
+      els.btnTruncPrev.addEventListener('click', () => { state.tables.truncated.page--; renderTruncPage(); });
+      els.btnTruncNext.addEventListener('click', () => { state.tables.truncated.page++; renderTruncPage(); });
+
+      els.searchOver.addEventListener('input', filterOver);
+      els.filterOverFile.addEventListener('change', filterOver);
+      els.btnOverPrev.addEventListener('click', () => { state.tables.overlimit.page--; renderOverPage(); });
+      els.btnOverNext.addEventListener('click', () => { state.tables.overlimit.page++; renderOverPage(); });
+
+      els.searchInRangeOk.addEventListener('input', filterInRangeOk);
+      els.filterInRangeOkFile.addEventListener('change', filterInRangeOk);
+      els.filterInRangeOkLen.addEventListener('change', filterInRangeOk);
+      els.btnInRangeOkPrev.addEventListener('click', () => { state.tables.inrangeok.page--; renderInRangeOkPage(); });
+      els.btnInRangeOkNext.addEventListener('click', () => { state.tables.inrangeok.page++; renderInRangeOkPage(); });
+
+      // Exportaciones adicionales (CSV y TXT)
+      els.btnExportTruncCsv.addEventListener('click', () => {
+        const res = state.lastResult;
+        if (!res) return;
+        const header = ['Fichero', 'Indice', 'Motivo', 'Longitud', 'Signatura', 'Cbarras', 'Autor', 'Fecha', 'Titulo'];
+        const rows = res.truncatedList
+          .filter((r) => !state.manualExcludedIds.has(r.id))
+          .map((r) => [r.file, r.recordIdx, r.reason, r.len, r.signatura, r.cbarras, r.autor, r.fecha, r.titulo].map(csvEsc).join(';'));
+        downloadBlob(
+          new Blob(['\uFEFF' + [header.join(';'), ...rows].join('\r\n')], { type: 'text/csv;charset=utf-8' }),
+          'truncados.csv'
+        );
+      });
+
+      els.btnExportReportTxt.addEventListener('click', () => {
+        const res = state.lastResult;
+        if (!res) return;
+        const activeCount = res.truncatedList.length - state.manualExcludedIds.size;
+        const lines = [
+          '=== INFORME DE DETECCIÓN DE TÍTULOS TRUNCADOS ===',
+          `Fecha del informe              : ${new Date().toLocaleString('es-ES')}`,
+          `Tiempo de ejecución            : ${(res.elapsedMs / 1000).toFixed(2)} s`,
+          `Rango evaluado                 : ${res.opts.minLen} a ${res.opts.limiteCorte} caracteres (> ${res.opts.limiteCorte} descartados)`,
+          `Incluir límite exacto (${res.opts.limiteCorte})     : ${res.opts.incluirExactosLimite ? 'Sí' : 'No (solo heurísticas)'}`,
+          `Sin duplicados                 : ${res.opts.sinDuplicados ? 'Sí' : 'No'}`,
+          `Incluir campo motivo_truncado  : ${res.opts.incluirMotivo ? 'Sí' : 'No'}`,
+          `Excluir EXP / sin signatura    : ${res.opts.excluirExp ? 'Sí' : 'No'}`,
+          '',
+          '--- RESUMEN GENERAL ---',
+          `Registros totales revisados    : ${fmtNum(res.totalRecords)}`,
+          `Descartados (> ${res.opts.limiteCorte} caracteres)  : ${fmtNum(res.totalOverLimit)}`,
+          `Descartados (< ${res.opts.minLen} caracteres)  : ${fmtNum(res.totalTooShort)}`,
+          `Evaluados en rango             : ${fmtNum(res.totalInRange)}`,
+          `Truncados detectados           : ${fmtNum(res.truncatedList.length)}`,
+          `Omitidos manualmente           : ${fmtNum(state.manualExcludedIds.size)}`,
+          `Registros en truncados.json    : ${fmtNum(activeCount)}`,
+          `Duplicados exactos omitidos    : ${fmtNum(res.totalDuplicatesSkipped)}`,
+          '',
+          '--- DESGLOSE POR MOTIVO ---',
+          ...Object.entries(res.reasonCounts)
+            .sort((a, b) => b[1] - a[1])
+            .map(([k, v]) => `  - ${k.padEnd(24)} : ${fmtNum(v)}`),
+          '',
+          '--- DESGLOSE POR FICHERO ---',
+          ...res.fileSummaries.map(
+            (f) =>
+              `${f.name.padEnd(16)} | Total: ${String(f.total).padStart(7)} | >${res.opts.limiteCorte}: ${String(f.overLimit).padStart(6)} | Rango: ${String(f.inRange).padStart(6)} | Truncados: ${String(f.truncated).padStart(6)}`
+          )
+        ];
+        downloadBlob(
+          new Blob([lines.join('\r\n')], { type: 'text/plain;charset=utf-8' }),
+          'informe_truncados.txt'
+        );
+      });
+
+      els.btnRun.addEventListener('click', runAnalysis);
+    })();
+  </script>
+</body>
+</html>

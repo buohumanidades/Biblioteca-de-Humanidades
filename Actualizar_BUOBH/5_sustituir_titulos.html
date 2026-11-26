@@ -1,0 +1,2271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sustituidor de Títulos Completos (final.json → libros*.json)</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --surface: #ffffff;
+      --surface-alt: #f8fafc;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-subtle: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-soft: #eff6ff;
+      --success: #059669;
+      --success-soft: #ecfdf5;
+      --success-border: #a7f3d0;
+      --warning: #d97706;
+      --warning-soft: #fffbeb;
+      --warning-border: #fde68a;
+      --danger: #dc2626;
+      --danger-soft: #fef2f2;
+      --danger-border: #fecaca;
+      --purple: #7c3aed;
+      --purple-soft: #f5f3ff;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.04);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 28px 20px 64px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .brand h1 {
+      margin: 0 0 6px;
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      box-shadow: var(--shadow);
+    }
+
+    .mode-badge .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+
+    .mode-badge.direct .dot { background: var(--success); }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 1.08rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .upload-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 820px) {
+      .upload-grid { grid-template-columns: 1fr; }
+    }
+
+    .dropzone {
+      border: 2px dashed var(--border-strong);
+      border-radius: var(--radius);
+      padding: 20px;
+      background: var(--surface-alt);
+      transition: border-color 0.15s, background-color 0.15s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .dropzone.dragover {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+    }
+
+    .dropzone h3 {
+      margin: 0 0 4px;
+      font-size: 0.98rem;
+      font-weight: 700;
+    }
+
+    .dropzone p {
+      margin: 0;
+      font-size: 0.86rem;
+      color: var(--text-muted);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover:not(:disabled) { background: #047857; }
+    .btn-outline { background: var(--surface); color: var(--text); border-color: var(--border-strong); }
+    .btn-outline:hover:not(:disabled) { background: var(--surface-alt); border-color: var(--text-subtle); }
+    .btn-sm { padding: 6px 11px; font-size: 0.8rem; }
+    .btn-lg { padding: 12px 24px; font-size: 0.98rem; }
+
+    input[type="file"].hidden-input { display: none; }
+
+    .loaded-files {
+      margin-top: 16px;
+      padding: 14px 16px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .loaded-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.88rem;
+    }
+
+    .loaded-label {
+      font-weight: 700;
+      color: var(--text-muted);
+      min-width: 125px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.79rem;
+      font-weight: 600;
+      background: #e2e8f0;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .pill.ok { background: var(--success-soft); color: #065f46; border: 1px solid var(--success-border); }
+    .pill.info { background: var(--primary-soft); color: #1e40af; border: 1px solid #bfdbfe; }
+    .pill.warn { background: var(--warning-soft); color: #92400e; border: 1px solid var(--warning-border); }
+    .pill.danger { background: var(--danger-soft); color: #991b1b; border: 1px solid var(--danger-border); }
+    .pill.purple { background: var(--purple-soft); color: #5b21b6; border: 1px solid #ddd6fe; }
+    .pill.muted { background: #f1f5f9; color: var(--text-subtle); border: 1px solid var(--border); }
+
+    .checkbox-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .checkbox-item input {
+      margin-top: 3px;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .checkbox-desc {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-subtle);
+    }
+
+    .progress-wrap {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      background: var(--primary-soft);
+      border: 1px solid #bfdbfe;
+    }
+
+    .progress-wrap.visible { display: block; }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: #1e40af;
+      margin-bottom: 8px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #dbeafe;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      border-radius: 999px;
+      transition: width 0.15s ease;
+    }
+
+    #resultsSection { display: none; }
+    #resultsSection.visible { display: block; }
+
+    .alert-banner {
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      border: 1px solid var(--success-border);
+      background: var(--success-soft);
+      color: #065f46;
+    }
+
+    .alert-banner.warn {
+      border-color: var(--warning-border);
+      background: var(--warning-soft);
+      color: #92400e;
+    }
+
+    .alert-banner h2 { margin: 0 0 4px; font-size: 1.08rem; }
+    .alert-banner p { margin: 0; font-size: 0.9rem; }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .kpi-card.ok {
+      border-color: var(--success-border);
+      background: linear-gradient(180deg, #ecfdf5 0%, #ffffff 100%);
+    }
+
+    .kpi-card.danger {
+      border-color: var(--danger-border);
+      background: linear-gradient(180deg, #fef2f2 0%, #ffffff 100%);
+    }
+
+    .kpi-card.warn {
+      border-color: var(--warning-border);
+      background: linear-gradient(180deg, #fffbeb 0%, #ffffff 100%);
+    }
+
+    .kpi-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-subtle);
+      margin-bottom: 6px;
+    }
+
+    .kpi-value {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .kpi-card.ok .kpi-value { color: var(--success); }
+    .kpi-card.danger .kpi-value { color: var(--danger); }
+    .kpi-card.warn .kpi-value { color: var(--warning); }
+
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      background: var(--surface);
+    }
+
+    thead {
+      background: var(--surface-alt);
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      text-align: left;
+      padding: 10px 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #f8fafc; }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.82rem;
+    }
+
+    .insights-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 860px) {
+      .insights-grid { grid-template-columns: 1fr; }
+    }
+
+    .insight-box {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+
+    .insight-box h4 {
+      margin: 0 0 10px;
+      font-size: 0.94rem;
+    }
+
+    .stat-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.85rem;
+    }
+
+    .stat-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .stat-list li:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .toolbar-left {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      flex: 1;
+    }
+
+    .search-input {
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      font-size: 0.88rem;
+      font-family: inherit;
+      background: var(--surface);
+      color: var(--text);
+      min-width: 240px;
+      flex: 1;
+      max-width: 400px;
+    }
+
+    .pagination {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    .tab-btn {
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.86rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .diff-old {
+      color: #991b1b;
+      background: #fef2f2;
+      padding: 3px 6px;
+      border-radius: 4px;
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.82rem;
+    }
+
+    .diff-new {
+      color: #065f46;
+      background: #ecfdf5;
+      padding: 3px 6px;
+      border-radius: 4px;
+      display: block;
+      font-size: 0.82rem;
+    }
+
+    .error-box {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      background: var(--danger-soft);
+      border: 1px solid var(--danger-border);
+      color: #991b1b;
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    .error-box.visible { display: block; }
+    .tip-note { font-size: 0.81rem; color: var(--text-subtle); margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <h1>Sustituidor de Títulos Completos (<span class="mono">final.json</span> → <span class="mono">libros*.json</span>)</h1>
+        <p>Recorre cada registro de <strong>final.json</strong>, verifica con exactitud su correspondencia en <strong>libros1.json, libros2.json, libros3.json…</strong> y sustituye el título truncado por el título completo.</p>
+      </div>
+      <div id="modeBadge" class="mode-badge">
+        <span class="dot"></span>
+        <span id="modeBadgeText">Modo descarga de ficheros</span>
+      </div>
+    </header>
+
+    <!-- PASO 1: SELECCIÓN DE FICHEROS -->
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title"><span class="step-num">1</span> Seleccionar <span class="mono">final.json</span> y ficheros <span class="mono">libros*.json</span></h2>
+        <button id="btnClear" class="btn btn-outline btn-sm" type="button">Limpiar selección</button>
+      </div>
+
+      <div class="upload-grid">
+        <div class="dropzone" id="folderZone">
+          <div>
+            <h3>Opción rápida: Carpeta completa (<span class="mono">d:\Truncados</span>)</h3>
+            <p>Detecta automáticamente <strong>final.json</strong> y todos los <strong>libros1.json, libros2.json, libros3.json…</strong> (ignora <span class="mono">truncados.json</span> y lotes).</p>
+          </div>
+          <div class="btn-row">
+            <button id="btnDirectFolder" class="btn btn-success" type="button" style="display:none;">
+              Abrir carpeta (lectura/escritura directa)
+            </button>
+            <button id="btnPickFolder" class="btn btn-primary" type="button">
+              Seleccionar carpeta
+            </button>
+            <input id="inputFolder" class="hidden-input" type="file" webkitdirectory directory multiple />
+          </div>
+          <div id="directFolderHint" class="tip-note"></div>
+        </div>
+
+        <div class="dropzone" id="manualZone">
+          <div>
+            <h3>Opción manual o arrastrar y soltar</h3>
+            <p>Arrastra aquí <strong>final.json</strong> junto con <strong>libros1.json, libros2.json, libros3.json…</strong> o selecciónalos por separado.</p>
+          </div>
+          <div class="btn-row">
+            <button id="btnPickFinal" class="btn btn-outline" type="button">Elegir final.json</button>
+            <button id="btnPickLibros" class="btn btn-outline" type="button">Elegir libros*.json (varios)</button>
+            <input id="inputFinal" class="hidden-input" type="file" accept=".json,application/json" />
+            <input id="inputLibros" class="hidden-input" type="file" accept=".json,application/json" multiple />
+          </div>
+          <div class="tip-note">No se modificará ningún archivo en disco hasta que pulses Guardar o Descargar.</div>
+        </div>
+      </div>
+
+      <div class="loaded-files">
+        <div class="loaded-row">
+          <span class="loaded-label">Origen títulos:</span>
+          <div id="finalPills"><span class="pill muted">Ningún fichero final.json cargado</span></div>
+        </div>
+        <div class="loaded-row">
+          <span class="loaded-label">Catálogo JSON:</span>
+          <div id="librosPills"><span class="pill muted">Ningún fichero libros*.json cargado</span></div>
+        </div>
+        <div class="loaded-row" id="ignoredRow" style="display:none;">
+          <span class="loaded-label">Ignorados:</span>
+          <div id="ignoredPills"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASO 2: REGLAS DE COMPROBACIÓN -->
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title"><span class="step-num">2</span> Reglas de verificación exacta y limpieza</h2>
+      </div>
+
+      <div class="checkbox-list">
+        <label class="checkbox-item">
+          <input id="optCleanNewlines" type="checkbox" checked />
+          <span>
+            <strong>Limpiar saltos de línea (<span class="mono">\n</span>) y espacios múltiples en los títulos de <span class="mono">final.json</span></strong>
+            <span class="checkbox-desc">Recomendado: los títulos extraídos del OPAC suelen incluir saltos de línea internos que se reemplazan por un espacio limpio.</span>
+          </span>
+        </label>
+        <label class="checkbox-item">
+          <input id="optRequireTitleCoherence" type="checkbox" checked />
+          <span>
+            <strong>Exigir coherencia de título (protección contra falsos positivos del OPAC)</strong>
+            <span class="checkbox-desc">Verifica que el título truncado actual de <span class="mono">librosX.json</span> esté contenido o coincida con el inicio del título completo de <span class="mono">final.json</span> (ignorando tildes, mayúsculas y puntuación). Si no coincide, se bloquea la sustitución y se registra como error.</span>
+          </span>
+        </label>
+        <label class="checkbox-item">
+          <input id="optRequireExactDate" type="checkbox" checked />
+          <span>
+            <strong>Exigir coincidencia exacta de fecha (además de signatura y autor)</strong>
+            <span class="checkbox-desc">Recomendado para máxima exactitud. Si lo desmarcas, permitirá actualizar cuando coincidan exactamente signatura, autor y prefijo de título aunque varíe el año de edición (y lo indicará en el informe).</span>
+          </span>
+        </label>
+        <label class="checkbox-item">
+          <input id="optStripSlash" type="checkbox" />
+          <span>
+            <strong>Recortar mención de responsabilidad tras "<span class="mono"> / </span>" (ej. "<span class="mono"> / Nombre del Autor.</span>")</strong>
+            <span class="checkbox-desc">Desactivado por defecto para conservar el título completo íntegro tal como aparece en <span class="mono">final.json</span>.</span>
+          </span>
+        </label>
+        <label class="checkbox-item">
+          <input id="optRejectShorter" type="checkbox" checked />
+          <span>
+            <strong>No sustituir si el título de <span class="mono">final.json</span> es más corto que el actual en <span class="mono">librosX.json</span></strong>
+            <span class="checkbox-desc">Evita empeorar un título que ya era más largo; se registrará como aviso/error en el informe.</span>
+          </span>
+        </label>
+      </div>
+
+      <div class="btn-row">
+        <button id="btnRun" class="btn btn-primary btn-lg" type="button" disabled>
+          Comprobar coincidencias y sustituir títulos
+        </button>
+      </div>
+
+      <div id="errorBox" class="error-box"></div>
+
+      <div id="progressWrap" class="progress-wrap">
+        <div class="progress-top">
+          <span id="progressText">Preparando…</span>
+          <span id="progressPct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASO 3: RESULTADOS E INFORME -->
+    <section id="resultsSection">
+      <div id="resultBanner" class="alert-banner">
+        <div>
+          <h2 id="bannerTitle">Proceso finalizado</h2>
+          <p id="bannerSub"></p>
+        </div>
+        <div class="btn-row" id="bannerActions"></div>
+      </div>
+
+      <div class="kpi-grid" id="kpiGrid"></div>
+
+      <!-- Estado de ficheros libros*.json -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title"><span class="step-num">3</span> Estado de los ficheros <span class="mono">libros*.json</span></h2>
+          <div class="btn-row" id="bulkFileActions"></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Fichero</th>
+                <th>Estado</th>
+                <th>Total registros</th>
+                <th>Títulos sustituidos</th>
+                <th>Tamaño inicial</th>
+                <th>Tamaño final</th>
+                <th>Diferencia</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="filesTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Diagnóstico y desglose -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title"><span class="step-num">4</span> Resumen de errores, avisos e información adicional</h2>
+          <div class="btn-row">
+            <button id="btnExportReportTxt" class="btn btn-outline btn-sm" type="button">Descargar informe completo (.txt)</button>
+            <button id="btnExportUnchangedJson" class="btn btn-outline btn-sm" type="button" style="display:none;">Exportar no completados en OPAC (.json)</button>
+          </div>
+        </div>
+        <div class="insights-grid">
+          <div class="insight-box">
+            <h4>Desglose de incidencias y errores detectados</h4>
+            <ul class="stat-list" id="errorBreakdownList"></ul>
+          </div>
+          <div class="insight-box">
+            <h4>Métricas de calidad y transformación</h4>
+            <ul class="stat-list" id="qualityStatsList"></ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pestañas de detalle: Errores | Sustituidos | Sin cambio / Duplicados -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title"><span class="step-num">5</span> Detalle registro a registro</h2>
+          <div class="btn-row">
+            <button id="btnExportErrorsCsv" class="btn btn-outline btn-sm" type="button">Exportar errores (.csv)</button>
+            <button id="btnExportErrorsJson" class="btn btn-outline btn-sm" type="button">Exportar errores (.json)</button>
+            <button id="btnExportReplacedCsv" class="btn btn-outline btn-sm" type="button">Exportar sustituidos (.csv)</button>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="errors" type="button">Errores e incidencias (<span id="tabErrorsCount">0</span>)</button>
+          <button class="tab-btn" data-tab="replaced" type="button">Títulos sustituidos (<span id="tabReplacedCount">0</span>)</button>
+          <button class="tab-btn" data-tab="skipped" type="button">Sin cambio / Duplicados (<span id="tabSkippedCount">0</span>)</button>
+        </div>
+
+        <!-- TAB ERRORES -->
+        <div class="tab-panel active" id="panel-errors">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <input id="searchErrors" class="search-input" type="search" placeholder="Filtrar errores por signatura, autor, título o motivo…" />
+              <select id="filterErrorType" class="search-input" style="max-width: 300px; min-width: 220px;">
+                <option value="">Todos los tipos de error</option>
+              </select>
+            </div>
+            <span id="errorsFilteredInfo" style="font-size:0.84rem; color:var(--text-muted);"></span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th># final.json</th>
+                  <th>Tipo de error</th>
+                  <th>Signatura</th>
+                  <th>Autor / Fecha</th>
+                  <th>Título actual en libros*.json vs Título en final.json</th>
+                  <th>Detalle / Diagnóstico</th>
+                </tr>
+              </thead>
+              <tbody id="errorsTableBody"></tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <span id="errorsPageInfo"></span>
+            <div class="btn-row">
+              <button id="btnErrorsPrev" class="btn btn-outline btn-sm" type="button">← Anterior</button>
+              <button id="btnErrorsNext" class="btn btn-outline btn-sm" type="button">Siguiente →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB SUSTITUIDOS -->
+        <div class="tab-panel" id="panel-replaced">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <input id="searchReplaced" class="search-input" type="search" placeholder="Filtrar sustituidos por signatura, autor o título…" />
+              <select id="filterReplacedFile" class="search-input" style="max-width: 220px; min-width: 170px;">
+                <option value="">Todos los ficheros</option>
+              </select>
+            </div>
+            <span id="replacedFilteredInfo" style="font-size:0.84rem; color:var(--text-muted);"></span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th># final</th>
+                  <th>Fichero</th>
+                  <th>Signatura</th>
+                  <th>Autor / Fecha</th>
+                  <th>Antes (truncado) → Después (completo)</th>
+                  <th>Δ chars</th>
+                </tr>
+              </thead>
+              <tbody id="replacedTableBody"></tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <span id="replacedPageInfo"></span>
+            <div class="btn-row">
+              <button id="btnReplacedPrev" class="btn btn-outline btn-sm" type="button">← Anterior</button>
+              <button id="btnReplacedNext" class="btn btn-outline btn-sm" type="button">Siguiente →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB SIN CAMBIO / DUPLICADOS -->
+        <div class="tab-panel" id="panel-skipped">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <input id="searchSkipped" class="search-input" type="search" placeholder="Filtrar por signatura, autor o título…" />
+              <select id="filterSkippedType" class="search-input" style="max-width: 280px; min-width: 210px;">
+                <option value="">Todos (sin cambio y duplicados)</option>
+                <option value="unchanged_opac">Sin cambio (no completado en OPAC)</option>
+                <option value="duplicate_in_final">Duplicado en final.json (ya actualizado)</option>
+              </select>
+            </div>
+            <span id="skippedFilteredInfo" style="font-size:0.84rem; color:var(--text-muted);"></span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th># final</th>
+                  <th>Motivo</th>
+                  <th>Fichero</th>
+                  <th>Signatura</th>
+                  <th>Autor / Fecha</th>
+                  <th>Título</th>
+                </tr>
+              </thead>
+              <tbody id="skippedTableBody"></tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <span id="skippedPageInfo"></span>
+            <div class="btn-row">
+              <button id="btnSkippedPrev" class="btn btn-outline btn-sm" type="button">← Anterior</button>
+              <button id="btnSkippedNext" class="btn btn-outline btn-sm" type="button">Siguiente →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const PATRON_LIBROS = /^libros(\d+)\.json$/i;
+      const PAGE_SIZE = 50;
+
+      const ERROR_LABELS = {
+        title_mismatch: { label: 'Título incompatible (posible fallo OPAC)', pill: 'danger' },
+        date_mismatch: { label: 'Fecha distinta (misma signatura, autor y título)', pill: 'warn' },
+        author_mismatch: { label: 'Autor distinto (misma signatura)', pill: 'warn' },
+        not_found_sig: { label: 'Signatura no encontrada en libros*.json', pill: 'danger' },
+        sig_different_book: { label: 'Signatura existe pero corresponde a otro libro', pill: 'danger' },
+        ambiguous_match: { label: 'Coincidencia ambigua (múltiples registros)', pill: 'purple' },
+        shorter_title: { label: 'Título en final.json más corto que el actual', pill: 'warn' },
+        invalid_record: { label: 'Registro incompleto o inválido en final.json', pill: 'danger' }
+      };
+
+      const state = {
+        dirHandle: null,
+        finalFile: null,
+        librosFiles: [],     // [{ num, name, file, handle? }]
+        ignoredFiles: [],
+        lastResult: null,
+        tables: {
+          errors: { filtered: [], page: 1 },
+          replaced: { filtered: [], page: 1 },
+          skipped: { filtered: [], page: 1 }
+        }
+      };
+
+      const $ = (id) => document.getElementById(id);
+      const els = {
+        modeBadge: $('modeBadge'),
+        modeBadgeText: $('modeBadgeText'),
+        btnDirectFolder: $('btnDirectFolder'),
+        directFolderHint: $('directFolderHint'),
+        btnPickFolder: $('btnPickFolder'),
+        inputFolder: $('inputFolder'),
+        btnPickFinal: $('btnPickFinal'),
+        btnPickLibros: $('btnPickLibros'),
+        inputFinal: $('inputFinal'),
+        inputLibros: $('inputLibros'),
+        folderZone: $('folderZone'),
+        manualZone: $('manualZone'),
+        btnClear: $('btnClear'),
+        finalPills: $('finalPills'),
+        librosPills: $('librosPills'),
+        ignoredRow: $('ignoredRow'),
+        ignoredPills: $('ignoredPills'),
+        optCleanNewlines: $('optCleanNewlines'),
+        optRequireTitleCoherence: $('optRequireTitleCoherence'),
+        optRequireExactDate: $('optRequireExactDate'),
+        optStripSlash: $('optStripSlash'),
+        optRejectShorter: $('optRejectShorter'),
+        btnRun: $('btnRun'),
+        errorBox: $('errorBox'),
+        progressWrap: $('progressWrap'),
+        progressText: $('progressText'),
+        progressPct: $('progressPct'),
+        progressFill: $('progressFill'),
+        resultsSection: $('resultsSection'),
+        resultBanner: $('resultBanner'),
+        bannerTitle: $('bannerTitle'),
+        bannerSub: $('bannerSub'),
+        bannerActions: $('bannerActions'),
+        kpiGrid: $('kpiGrid'),
+        bulkFileActions: $('bulkFileActions'),
+        filesTableBody: $('filesTableBody'),
+        errorBreakdownList: $('errorBreakdownList'),
+        qualityStatsList: $('qualityStatsList'),
+        btnExportReportTxt: $('btnExportReportTxt'),
+        btnExportUnchangedJson: $('btnExportUnchangedJson'),
+        btnExportErrorsCsv: $('btnExportErrorsCsv'),
+        btnExportErrorsJson: $('btnExportErrorsJson'),
+        btnExportReplacedCsv: $('btnExportReplacedCsv'),
+        tabErrorsCount: $('tabErrorsCount'),
+        tabReplacedCount: $('tabReplacedCount'),
+        tabSkippedCount: $('tabSkippedCount'),
+        searchErrors: $('searchErrors'),
+        filterErrorType: $('filterErrorType'),
+        errorsFilteredInfo: $('errorsFilteredInfo'),
+        errorsTableBody: $('errorsTableBody'),
+        errorsPageInfo: $('errorsPageInfo'),
+        btnErrorsPrev: $('btnErrorsPrev'),
+        btnErrorsNext: $('btnErrorsNext'),
+        searchReplaced: $('searchReplaced'),
+        filterReplacedFile: $('filterReplacedFile'),
+        replacedFilteredInfo: $('replacedFilteredInfo'),
+        replacedTableBody: $('replacedTableBody'),
+        replacedPageInfo: $('replacedPageInfo'),
+        btnReplacedPrev: $('btnReplacedPrev'),
+        btnReplacedNext: $('btnReplacedNext'),
+        searchSkipped: $('searchSkipped'),
+        filterSkippedType: $('filterSkippedType'),
+        skippedFilteredInfo: $('skippedFilteredInfo'),
+        skippedTableBody: $('skippedTableBody'),
+        skippedPageInfo: $('skippedPageInfo'),
+        btnSkippedPrev: $('btnSkippedPrev'),
+        btnSkippedNext: $('btnSkippedNext')
+      };
+
+      const supportsDirectFS = typeof window.showDirectoryPicker === 'function' && window.isSecureContext;
+      if (supportsDirectFS) {
+        els.btnDirectFolder.style.display = 'inline-flex';
+        els.modeBadge.classList.add('direct');
+        els.modeBadgeText.textContent = 'Escritura directa en carpeta disponible';
+        els.directFolderHint.textContent = 'Con "Abrir carpeta (lectura/escritura directa)" podrás sobrescribir directamente los libros*.json actualizados.';
+      } else {
+        els.directFolderHint.textContent = 'En modo local (file://) selecciona la carpeta o los ficheros y al terminar descarga los libros*.json actualizados con un clic.';
+      }
+
+      // Utilidades
+      function fmtNum(n) { return Number(n).toLocaleString('es-ES'); }
+      function fmtBytes(b) {
+        if (b < 1024) return `${b} B`;
+        if (b < 1024 * 1024) return `${(b / 1024).toFixed(1)} KB`;
+        return `${(b / (1024 * 1024)).toFixed(2)} MB`;
+      }
+      function escapeHtml(s) {
+        return String(s ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+      function showError(msg) {
+        if (!msg) {
+          els.errorBox.classList.remove('visible');
+          els.errorBox.textContent = '';
+          return;
+        }
+        els.errorBox.textContent = msg;
+        els.errorBox.classList.add('visible');
+      }
+      function setProgress(pct, text) {
+        els.progressWrap.classList.add('visible');
+        const c = Math.max(0, Math.min(100, Math.round(pct)));
+        els.progressFill.style.width = `${c}%`;
+        els.progressPct.textContent = `${c}%`;
+        if (text) els.progressText.textContent = text;
+      }
+      function yieldToUI() { return new Promise((r) => setTimeout(r, 0)); }
+
+      function normText(str) {
+        if (!str) return '';
+        return String(str)
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^\p{L}\p{N}\s]/gu, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+
+      function normNoSpace(str) {
+        return normText(str).replace(/\s+/g, '');
+      }
+
+      function titlesAreCoherent(origTitle, finalTitle) {
+        const ntOrig = normText(origTitle);
+        const ntFinal = normText(finalTitle);
+        if (!ntOrig || !ntFinal) return false;
+        if (ntFinal.startsWith(ntOrig) || ntFinal.includes(ntOrig)) return true;
+        const nsOrig = ntOrig.replace(/\s+/g, '');
+        const nsFinal = ntFinal.replace(/\s+/g, '');
+        return nsFinal.startsWith(nsOrig) || nsFinal.includes(nsOrig);
+      }
+
+      function extractRecordFields(rec) {
+        if (Array.isArray(rec)) {
+          return {
+            autor: rec.length > 0 && rec[0] != null ? String(rec[0]).trim() : '',
+            titulo: rec.length > 1 && rec[1] != null ? String(rec[1]).trim() : '',
+            fecha: rec.length > 2 && rec[2] != null ? String(rec[2]).trim() : '',
+            signatura: rec.length > 3 && rec[3] != null ? String(rec[3]).trim() : ''
+          };
+        }
+        if (rec && typeof rec === 'object') {
+          const getFirst = (keys) => {
+            for (const k of keys) {
+              if (rec[k] != null) return String(rec[k]).trim();
+            }
+            return '';
+          };
+          return {
+            autor: getFirst(['Autor', 'autor', 'AUTOR']),
+            titulo: getFirst(['titulo', 'Titulo', 'TITULO', 'título', 'Título']),
+            fecha: getFirst(['fecha', 'Fecha', 'FECHA']),
+            signatura: getFirst(['signatura', 'Signatura', 'SIGNATURA'])
+          };
+        }
+        return null;
+      }
+
+      function setRecordTitle(rec, newTitle) {
+        if (Array.isArray(rec)) {
+          rec[1] = newTitle;
+          return;
+        }
+        if (rec && typeof rec === 'object') {
+          for (const k of ['titulo', 'Titulo', 'TITULO', 'título', 'Título']) {
+            if (k in rec) {
+              rec[k] = newTitle;
+              return;
+            }
+          }
+          rec.titulo = newTitle;
+        }
+      }
+
+      function cleanCandidateTitle(rawTitle, { cleanNewlines, stripSlash }) {
+        let t = String(rawTitle ?? '');
+        const hadNewline = /[\r\n]/.test(t);
+        if (cleanNewlines) {
+          t = t.replace(/[\r\n\t]+/g, ' ').replace(/\s+/g, ' ').trim();
+        } else {
+          t = t.trim();
+        }
+        if (stripSlash) {
+          const idx = t.indexOf(' /');
+          if (idx > 0) {
+            t = t.slice(0, idx).trim();
+          }
+        }
+        return { title: t, hadNewline };
+      }
+
+      // Selección de ficheros
+      function updateSelectionUI() {
+        if (state.finalFile) {
+          els.finalPills.innerHTML = `<span class="pill ok">${escapeHtml(state.finalFile.name)} (${fmtBytes(state.finalFile.size)})</span>`;
+        } else {
+          els.finalPills.innerHTML = `<span class="pill muted">Ningún fichero final.json cargado</span>`;
+        }
+
+        if (state.librosFiles.length > 0) {
+          els.librosPills.innerHTML = state.librosFiles
+            .map((lf) => `<span class="pill ok">${escapeHtml(lf.name)} (${fmtBytes(lf.file.size)})</span>`)
+            .join('');
+        } else {
+          els.librosPills.innerHTML = `<span class="pill muted">Ningún fichero libros*.json cargado</span>`;
+        }
+
+        if (state.ignoredFiles.length > 0) {
+          els.ignoredRow.style.display = 'flex';
+          els.ignoredPills.innerHTML = state.ignoredFiles
+            .map((name) => `<span class="pill muted">${escapeHtml(name)}</span>`)
+            .join('');
+        } else {
+          els.ignoredRow.style.display = 'none';
+          els.ignoredPills.innerHTML = '';
+        }
+
+        els.btnRun.disabled = !(state.finalFile && state.librosFiles.length > 0);
+      }
+
+      function addFilesList(fileList, replaceAll = false) {
+        showError('');
+        if (replaceAll) {
+          state.dirHandle = null;
+          state.finalFile = null;
+          state.librosFiles = [];
+          state.ignoredFiles = [];
+        }
+
+        const existingMap = new Map(state.librosFiles.map((j) => [j.name.toLowerCase(), j]));
+        const ignoredSet = new Set(state.ignoredFiles);
+
+        for (const file of Array.from(fileList)) {
+          if (file.webkitRelativePath) {
+            const depth = file.webkitRelativePath.split('/').length;
+            if (depth > 2) continue;
+          }
+          const lower = file.name.toLowerCase();
+          if (!lower.endsWith('.json')) continue;
+
+          if (lower === 'final.json') {
+            state.finalFile = file;
+          } else {
+            const m = file.name.match(PATRON_LIBROS);
+            if (m) {
+              existingMap.set(lower, {
+                num: parseInt(m[1], 10),
+                name: file.name,
+                file,
+                handle: null
+              });
+            } else {
+              ignoredSet.add(file.name);
+            }
+          }
+        }
+
+        state.librosFiles = Array.from(existingMap.values()).sort((a, b) => a.num - b.num || a.name.localeCompare(b.name));
+        state.ignoredFiles = Array.from(ignoredSet).sort();
+        updateSelectionUI();
+      }
+
+      els.btnDirectFolder.addEventListener('click', async () => {
+        showError('');
+        try {
+          const dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+          state.dirHandle = dirHandle;
+          state.finalFile = null;
+          state.librosFiles = [];
+          state.ignoredFiles = [];
+
+          for await (const [name, handle] of dirHandle.entries()) {
+            if (handle.kind !== 'file') continue;
+            const lower = name.toLowerCase();
+            if (!lower.endsWith('.json')) continue;
+
+            if (lower === 'final.json') {
+              state.finalFile = await handle.getFile();
+            } else {
+              const m = name.match(PATRON_LIBROS);
+              if (m) {
+                const file = await handle.getFile();
+                state.librosFiles.push({
+                  num: parseInt(m[1], 10),
+                  name,
+                  file,
+                  handle
+                });
+              } else {
+                state.ignoredFiles.push(name);
+              }
+            }
+          }
+
+          state.librosFiles.sort((a, b) => a.num - b.num || a.name.localeCompare(b.name));
+          state.ignoredFiles.sort();
+          updateSelectionUI();
+
+          if (!state.finalFile) {
+            showError('No se encontró "final.json" en la carpeta seleccionada. Puedes elegirlo manualmente.');
+          }
+        } catch (err) {
+          if (err && err.name !== 'AbortError') {
+            showError(`No se pudo abrir la carpeta: ${err.message}`);
+          }
+        }
+      });
+
+      els.btnPickFolder.addEventListener('click', () => els.inputFolder.click());
+      els.inputFolder.addEventListener('change', (e) => {
+        if (e.target.files.length) addFilesList(e.target.files, true);
+        e.target.value = '';
+      });
+
+      els.btnPickFinal.addEventListener('click', () => els.inputFinal.click());
+      els.inputFinal.addEventListener('change', (e) => {
+        if (e.target.files.length) {
+          state.finalFile = e.target.files[0];
+          showError('');
+          updateSelectionUI();
+        }
+        e.target.value = '';
+      });
+
+      els.btnPickLibros.addEventListener('click', () => els.inputLibros.click());
+      els.inputLibros.addEventListener('change', (e) => {
+        if (e.target.files.length) addFilesList(e.target.files, false);
+        e.target.value = '';
+      });
+
+      els.btnClear.addEventListener('click', () => {
+        state.dirHandle = null;
+        state.finalFile = null;
+        state.librosFiles = [];
+        state.ignoredFiles = [];
+        state.lastResult = null;
+        els.resultsSection.classList.remove('visible');
+        els.progressWrap.classList.remove('visible');
+        showError('');
+        updateSelectionUI();
+      });
+
+      [els.folderZone, els.manualZone].forEach((zone) => {
+        zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
+        zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+        zone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          zone.classList.remove('dragover');
+          if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+            addFilesList(e.dataTransfer.files, false);
+          }
+        });
+      });
+
+      // Proceso principal
+      async function runReplacement() {
+        showError('');
+        const t0 = performance.now();
+
+        const opts = {
+          cleanNewlines: els.optCleanNewlines.checked,
+          requireTitleCoherence: els.optRequireTitleCoherence.checked,
+          requireExactDate: els.optRequireExactDate.checked,
+          stripSlash: els.optStripSlash.checked,
+          rejectShorter: els.optRejectShorter.checked
+        };
+
+        els.btnRun.disabled = true;
+        els.resultsSection.classList.remove('visible');
+
+        try {
+          // 1. Leer e indexar todos los libros*.json
+          const librosEntries = [];
+          const bySig = new Map();       // signatura -> [item]
+          const byAFS = new Map();       // "autor\x1ffecha\x1fsig" -> [item]
+          const byAS = new Map();        // "autor\x1fsig" -> [item]
+          let totalCatalogRecords = 0;
+
+          for (let i = 0; i < state.librosFiles.length; i++) {
+            const lf = state.librosFiles[i];
+            setProgress(5 + (i / state.librosFiles.length) * 40, `Leyendo e indexando ${lf.name} (${i + 1}/${state.librosFiles.length})…`);
+            await yieldToUI();
+
+            const raw = await lf.file.text();
+            let parsed;
+            try {
+              parsed = JSON.parse(raw);
+            } catch (e) {
+              throw new Error(`El fichero ${lf.name} no es un JSON válido: ${e.message}`);
+            }
+            if (!Array.isArray(parsed)) {
+              throw new Error(`El fichero ${lf.name} no contiene una lista JSON raíz.`);
+            }
+
+            const entry = {
+              num: lf.num,
+              name: lf.name,
+              handle: lf.handle || null,
+              records: parsed,
+              totalCount: parsed.length,
+              replacedCount: 0,
+              initialBytes: lf.file.size,
+              finalBytes: lf.file.size,
+              blob: null,
+              savedToDisk: false
+            };
+            librosEntries.push(entry);
+            totalCatalogRecords += parsed.length;
+
+            for (let idx = 0; idx < parsed.length; idx++) {
+              const fields = extractRecordFields(parsed[idx]);
+              if (!fields || !fields.signatura) continue;
+              const item = {
+                entry,
+                idx,
+                rawRec: parsed[idx],
+                autor: fields.autor,
+                origTitle: fields.titulo,
+                currentTitle: fields.titulo,
+                fecha: fields.fecha,
+                signatura: fields.signatura,
+                updated: false,
+                updatedByFinalIdx: null
+              };
+
+              const sig = fields.signatura;
+              if (!bySig.has(sig)) bySig.set(sig, []);
+              bySig.get(sig).push(item);
+
+              const afsKey = `${fields.autor}\x1f${fields.fecha}\x1f${sig}`;
+              if (!byAFS.has(afsKey)) byAFS.set(afsKey, []);
+              byAFS.get(afsKey).push(item);
+
+              const asKey = `${fields.autor}\x1f${sig}`;
+              if (!byAS.has(asKey)) byAS.set(asKey, []);
+              byAS.get(asKey).push(item);
+            }
+          }
+
+          // 2. Leer final.json
+          setProgress(50, `Leyendo ${state.finalFile.name}…`);
+          await yieldToUI();
+
+          let finalData;
+          try {
+            finalData = JSON.parse(await state.finalFile.text());
+          } catch (e) {
+            throw new Error(`El fichero ${state.finalFile.name} no es un JSON válido: ${e.message}`);
+          }
+          if (!Array.isArray(finalData)) {
+            throw new Error(`El fichero ${state.finalFile.name} debe contener una lista JSON de registros.`);
+          }
+
+          // 3. Recorrer registro a registro final.json
+          const replacedList = [];
+          const errorsList = [];
+          const skippedList = [];
+          const unchangedRawRecords = [];
+          const errorCounts = {};
+          const bumpError = (code) => { errorCounts[code] = (errorCounts[code] || 0) + 1; };
+
+          let newlinesCleanedCount = 0;
+          let matchedWithRelaxedDateCount = 0;
+          let sumOrigLen = 0;
+          let sumNewLen = 0;
+
+          const totalFinal = finalData.length;
+          const CHUNK = 1000;
+
+          for (let start = 0; start < totalFinal; start += CHUNK) {
+            const end = Math.min(start + CHUNK, totalFinal);
+            for (let i = start; i < end; i++) {
+              const rawRec = finalData[i];
+              const finalNum = i + 1;
+              const fields = extractRecordFields(rawRec);
+
+              if (!fields || !fields.signatura || !fields.titulo) {
+                bumpError('invalid_record');
+                errorsList.push({
+                  finalNum,
+                  code: 'invalid_record',
+                  signatura: fields ? fields.signatura : '',
+                  autor: fields ? fields.autor : '',
+                  fecha: fields ? fields.fecha : '',
+                  currentTitle: '—',
+                  finalTitle: fields ? fields.titulo : '',
+                  detail: 'Falta la signatura o el título en este registro de final.json.'
+                });
+                continue;
+              }
+
+              const { title: newTitle, hadNewline } = cleanCandidateTitle(fields.titulo, opts);
+              if (!newTitle) {
+                bumpError('invalid_record');
+                errorsList.push({
+                  finalNum,
+                  code: 'invalid_record',
+                  signatura: fields.signatura,
+                  autor: fields.autor,
+                  fecha: fields.fecha,
+                  currentTitle: '—',
+                  finalTitle: fields.titulo,
+                  detail: 'El título quedó vacío tras la limpieza.'
+                });
+                continue;
+              }
+
+              const sig = fields.signatura;
+              const afsKey = `${fields.autor}\x1f${fields.fecha}\x1f${sig}`;
+              const asKey = `${fields.autor}\x1f${sig}`;
+
+              const afsCands = byAFS.get(afsKey) || [];
+              const sigCands = bySig.get(sig) || [];
+
+              // Caso A: La signatura no existe en ningún libros*.json
+              if (sigCands.length === 0) {
+                bumpError('not_found_sig');
+                errorsList.push({
+                  finalNum,
+                  code: 'not_found_sig',
+                  signatura: sig,
+                  autor: fields.autor,
+                  fecha: fields.fecha,
+                  currentTitle: '—',
+                  finalTitle: newTitle,
+                  detail: 'No existe ningún registro con esta signatura en los ficheros libros*.json cargados.'
+                });
+                continue;
+              }
+
+              // Buscar candidato(s) válidos
+              let candidates = afsCands;
+              let usedRelaxedDate = false;
+
+              if (candidates.length === 0) {
+                // La signatura existe, pero no coincide exactamente (Autor, Fecha, Signatura)
+                const asCands = byAS.get(asKey) || [];
+                const asCoherent = asCands.filter((c) => titlesAreCoherent(c.origTitle, newTitle) || c.currentTitle === newTitle);
+
+                if (asCoherent.length > 0) {
+                  if (!opts.requireExactDate) {
+                    candidates = asCoherent;
+                    usedRelaxedDate = true;
+                  } else {
+                    bumpError('date_mismatch');
+                    const sample = asCoherent[0];
+                    errorsList.push({
+                      finalNum,
+                      code: 'date_mismatch',
+                      signatura: sig,
+                      autor: fields.autor,
+                      fecha: fields.fecha,
+                      currentTitle: `[${sample.entry.name} · año ${sample.fecha || 's/f'}] ${sample.origTitle}`,
+                      finalTitle: newTitle,
+                      detail: `Misma signatura, autor y título, pero fecha distinta: final.json tiene "${fields.fecha || 'vacía'}" y ${sample.entry.name} tiene "${sample.fecha || 'vacía'}".`
+                    });
+                    continue;
+                  }
+                } else {
+                  // Comprobar si coincide título con otro autor
+                  const sigTitleCoherent = sigCands.filter((c) => titlesAreCoherent(c.origTitle, newTitle));
+                  if (sigTitleCoherent.length > 0) {
+                    bumpError('author_mismatch');
+                    const sample = sigTitleCoherent[0];
+                    errorsList.push({
+                      finalNum,
+                      code: 'author_mismatch',
+                      signatura: sig,
+                      autor: fields.autor,
+                      fecha: fields.fecha,
+                      currentTitle: `[${sample.entry.name} · ${sample.autor || 'Sin autor'} · ${sample.fecha}] ${sample.origTitle}`,
+                      finalTitle: newTitle,
+                      detail: `Misma signatura y título compatible, pero autor diferente en ${sample.entry.name}: "${sample.autor}".`
+                    });
+                  } else {
+                    bumpError('sig_different_book');
+                    const sample = sigCands[0];
+                    errorsList.push({
+                      finalNum,
+                      code: 'sig_different_book',
+                      signatura: sig,
+                      autor: fields.autor,
+                      fecha: fields.fecha,
+                      currentTitle: `[${sample.entry.name} · ${sample.autor} · ${sample.fecha}] ${sample.origTitle}`,
+                      finalTitle: newTitle,
+                      detail: `La signatura existe (${sigCands.length} reg.), pero autor/fecha/título no corresponden al mismo registro.`
+                    });
+                  }
+                  continue;
+                }
+              }
+
+              // Tenemos candidatos en `candidates` (exactos AFS o fecha relajada si el usuario lo activó)
+              // Comprobar si ya se actualizó exactamente este mismo registro antes en final.json (duplicado en final.json)
+              const alreadyUpdatedMatch = candidates.filter(
+                (c) => c.updated && (c.currentTitle === newTitle || normText(c.currentTitle) === normText(newTitle))
+              );
+              if (alreadyUpdatedMatch.length > 0) {
+                const target = alreadyUpdatedMatch[0];
+                skippedList.push({
+                  finalNum,
+                  type: 'duplicate_in_final',
+                  file: target.entry.name,
+                  signatura: sig,
+                  autor: fields.autor,
+                  fecha: fields.fecha,
+                  title: newTitle,
+                  detail: `Registro repetido en final.json (ya actualizado por el registro #${target.updatedByFinalIdx}).`
+                });
+                continue;
+              }
+
+              // Comprobar si el título de final.json es idéntico al que ya tenía libros*.json (OPAC no lo completó)
+              const alreadyIdentical = candidates.filter(
+                (c) => !c.updated && (c.origTitle === newTitle || normText(c.origTitle) === normText(newTitle))
+              );
+              if (alreadyIdentical.length > 0) {
+                const target = alreadyIdentical[0];
+                skippedList.push({
+                  finalNum,
+                  type: 'unchanged_opac',
+                  file: target.entry.name,
+                  signatura: sig,
+                  autor: fields.autor,
+                  fecha: fields.fecha,
+                  title: newTitle,
+                  detail: 'El título en final.json es idéntico al actual en libros*.json (probablemente el OPAC no encontró coincidencia).'
+                });
+                unchangedRawRecords.push(rawRec);
+                continue;
+              }
+
+              // Filtrar candidatos por coherencia de título
+              const coherentCands = candidates.filter((c) => !c.updated && titlesAreCoherent(c.origTitle, newTitle));
+              let chosenList = coherentCands;
+
+              if (chosenList.length === 0) {
+                if (opts.requireTitleCoherence) {
+                  bumpError('title_mismatch');
+                  const preview = candidates
+                    .slice(0, 3)
+                    .map((c) => `[${c.entry.name}] ${c.origTitle}`)
+                    .join(' | ');
+                  errorsList.push({
+                    finalNum,
+                    code: 'title_mismatch',
+                    signatura: sig,
+                    autor: fields.autor,
+                    fecha: fields.fecha,
+                    currentTitle: preview,
+                    finalTitle: newTitle,
+                    detail: 'Coinciden signatura, autor y fecha, pero el título de final.json NO coincide con el título truncado actual (probable falso positivo del OPAC).'
+                  });
+                  continue;
+                } else {
+                  chosenList = candidates.filter((c) => !c.updated);
+                }
+              }
+
+              if (chosenList.length === 0) {
+                // Todos los candidatos ya fueron actualizados con otro título diferente
+                bumpError('ambiguous_match');
+                const sample = candidates[0];
+                errorsList.push({
+                  finalNum,
+                  code: 'ambiguous_match',
+                  signatura: sig,
+                  autor: fields.autor,
+                  fecha: fields.fecha,
+                  currentTitle: `[${sample.entry.name}] Ya actualizado a: ${sample.currentTitle}`,
+                  finalTitle: newTitle,
+                  detail: `Este registro ya fue actualizado antes por #${sample.updatedByFinalIdx} con un título diferente.`
+                });
+                continue;
+              }
+
+              if (chosenList.length > 1) {
+                bumpError('ambiguous_match');
+                const preview = chosenList
+                  .slice(0, 3)
+                  .map((c) => `[${c.entry.name}#${c.idx + 1}] ${c.origTitle}`)
+                  .join(' | ');
+                errorsList.push({
+                  finalNum,
+                  code: 'ambiguous_match',
+                  signatura: sig,
+                  autor: fields.autor,
+                  fecha: fields.fecha,
+                  currentTitle: preview,
+                  finalTitle: newTitle,
+                  detail: `Se encontraron ${chosenList.length} registros candidatos idénticos en libros*.json; no se sustituyó por seguridad.`
+                });
+                continue;
+              }
+
+              const target = chosenList[0];
+
+              // Comprobar que el título nuevo no sea más corto que el actual
+              if (opts.rejectShorter && newTitle.length < target.origTitle.length) {
+                bumpError('shorter_title');
+                errorsList.push({
+                  finalNum,
+                  code: 'shorter_title',
+                  signatura: sig,
+                  autor: fields.autor,
+                  fecha: fields.fecha,
+                  currentTitle: `[${target.entry.name}] ${target.origTitle} (${target.origTitle.length} chars)`,
+                  finalTitle: `${newTitle} (${newTitle.length} chars)`,
+                  detail: 'El título de final.json es más corto que el que ya existía en libros*.json.'
+                });
+                continue;
+              }
+
+              // ¡SUSTITUCIÓN VERIFICADA!
+              setRecordTitle(target.rawRec, newTitle);
+              target.currentTitle = newTitle;
+              target.updated = true;
+              target.updatedByFinalIdx = finalNum;
+              target.entry.replacedCount++;
+
+              if (hadNewline && opts.cleanNewlines) newlinesCleanedCount++;
+              if (usedRelaxedDate) matchedWithRelaxedDateCount++;
+              sumOrigLen += target.origTitle.length;
+              sumNewLen += newTitle.length;
+
+              replacedList.push({
+                finalNum,
+                file: target.entry.name,
+                recordIdx: target.idx + 1,
+                signatura: sig,
+                autor: target.autor,
+                fecha: target.fecha,
+                finalFecha: fields.fecha,
+                usedRelaxedDate,
+                oldTitle: target.origTitle,
+                newTitle,
+                deltaChars: newTitle.length - target.origTitle.length
+              });
+            }
+
+            const pct = 50 + ((end / totalFinal) * 42);
+            setProgress(pct, `Procesando final.json: ${fmtNum(end)} / ${fmtNum(totalFinal)} registros…`);
+            await yieldToUI();
+          }
+
+          // 4. Generar Blobs de los ficheros libros*.json modificados
+          setProgress(95, 'Generando ficheros JSON actualizados e informe…');
+          await yieldToUI();
+
+          for (const entry of librosEntries) {
+            if (entry.replacedCount > 0) {
+              const jsonStr = JSON.stringify(entry.records);
+              const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+              entry.blob = blob;
+              entry.finalBytes = blob.size;
+            }
+          }
+
+          const elapsedMs = performance.now() - t0;
+
+          state.lastResult = {
+            elapsedMs,
+            opts,
+            totalFinal,
+            totalCatalogRecords,
+            librosEntries,
+            replacedList,
+            errorsList,
+            skippedList,
+            unchangedRawRecords,
+            errorCounts,
+            newlinesCleanedCount,
+            matchedWithRelaxedDateCount,
+            avgOrigLen: replacedList.length ? (sumOrigLen / replacedList.length) : 0,
+            avgNewLen: replacedList.length ? (sumNewLen / replacedList.length) : 0
+          };
+
+          setProgress(100, `Proceso completado en ${(elapsedMs / 1000).toFixed(2)} s.`);
+          renderResults(state.lastResult);
+        } catch (err) {
+          console.error(err);
+          showError(`Error durante el proceso: ${err.message}`);
+          els.progressWrap.classList.remove('visible');
+        } finally {
+          els.btnRun.disabled = !(state.finalFile && state.librosFiles.length > 0);
+        }
+      }
+
+      // Guardado directo o descarga
+      async function saveEntryToDisk(entry) {
+        if (!state.dirHandle || !entry.blob) return false;
+        const handle = entry.handle || (await state.dirHandle.getFileHandle(entry.name, { create: true }));
+        const writable = await handle.createWritable();
+        await writable.write(entry.blob);
+        await writable.close();
+        entry.handle = handle;
+        entry.savedToDisk = true;
+        return true;
+      }
+
+      async function saveAllModifiedToDisk() {
+        const res = state.lastResult;
+        if (!res || !state.dirHandle) return;
+        const modified = res.librosEntries.filter((e) => e.replacedCount > 0);
+        if (!modified.length) return;
+        try {
+          for (const entry of modified) {
+            await saveEntryToDisk(entry);
+          }
+          renderFilesTable(res);
+          alert(`Guardados en disco correctamente: ${modified.map((m) => m.name).join(', ')}`);
+        } catch (err) {
+          showError(`No se pudieron guardar los archivos en disco: ${err.message}`);
+        }
+      }
+
+      function downloadBlob(blob, filename) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+
+      function downloadAllModified() {
+        const res = state.lastResult;
+        if (!res) return;
+        const modified = res.librosEntries.filter((e) => e.replacedCount > 0);
+        modified.forEach((entry, i) => {
+          setTimeout(() => downloadBlob(entry.blob, entry.name), i * 250);
+        });
+      }
+
+      // Renderizado de resultados
+      function renderResults(res) {
+        els.resultsSection.classList.add('visible');
+
+        const modifiedFiles = res.librosEntries.filter((e) => e.replacedCount > 0);
+        const unchangedCount = res.skippedList.filter((s) => s.type === 'unchanged_opac').length;
+        const dupFinalCount = res.skippedList.filter((s) => s.type === 'duplicate_in_final').length;
+
+        // Banner
+        if (res.replacedList.length > 0) {
+          els.resultBanner.className = 'alert-banner';
+          els.bannerTitle.textContent = `Se sustituyeron ${fmtNum(res.replacedList.length)} títulos completos en ${modifiedFiles.length} fichero(s)`;
+          els.bannerSub.textContent = `Se bloquearon ${fmtNum(res.errorsList.length)} incidencias/errores para proteger la integridad del catálogo. Además hubo ${fmtNum(unchangedCount)} sin cambio (OPAC) y ${fmtNum(dupFinalCount)} duplicados en final.json.`;
+        } else {
+          els.resultBanner.className = 'alert-banner warn';
+          els.bannerTitle.textContent = 'No se realizó ninguna sustitución';
+          els.bannerSub.textContent = `Se detectaron ${fmtNum(res.errorsList.length)} errores/incidencias y ${fmtNum(res.skippedList.length)} registros omitidos.`;
+        }
+
+        els.bannerActions.innerHTML = '';
+        els.bulkFileActions.innerHTML = '';
+        if (modifiedFiles.length > 0) {
+          if (state.dirHandle) {
+            const btnSave = document.createElement('button');
+            btnSave.className = 'btn btn-success';
+            btnSave.textContent = `Guardar en carpeta (${modifiedFiles.length})`;
+            btnSave.addEventListener('click', saveAllModifiedToDisk);
+            els.bannerActions.appendChild(btnSave);
+          }
+          const btnDl = document.createElement('button');
+          btnDl.className = state.dirHandle ? 'btn btn-outline' : 'btn btn-success';
+          btnDl.textContent = `Descargar ${modifiedFiles.length} JSON actualizados`;
+          btnDl.addEventListener('click', downloadAllModified);
+          els.bannerActions.appendChild(btnDl);
+
+          const btnDl2 = btnDl.cloneNode(true);
+          btnDl2.className = 'btn btn-primary btn-sm';
+          btnDl2.addEventListener('click', downloadAllModified);
+          els.bulkFileActions.appendChild(btnDl2);
+        }
+
+        // KPIs
+        const kpis = [
+          {
+            label: 'Títulos sustituidos',
+            value: fmtNum(res.replacedList.length),
+            sub: `${((res.replacedList.length / Math.max(1, res.totalFinal)) * 100).toFixed(1)}% de final.json`,
+            cls: 'ok'
+          },
+          {
+            label: 'Errores / Bloqueados',
+            value: fmtNum(res.errorsList.length),
+            sub: 'No sustituidos por seguridad',
+            cls: res.errorsList.length > 0 ? 'danger' : ''
+          },
+          {
+            label: 'Sin cambio (OPAC)',
+            value: fmtNum(unchangedCount),
+            sub: 'Título idéntico al truncado',
+            cls: unchangedCount > 0 ? 'warn' : ''
+          },
+          {
+            label: 'Duplicados en final.json',
+            value: fmtNum(dupFinalCount),
+            sub: 'Ya actualizados en esta pasada',
+            cls: ''
+          },
+          {
+            label: 'Registros en final.json',
+            value: fmtNum(res.totalFinal),
+            sub: `Frente a ${fmtNum(res.totalCatalogRecords)} en catálogo`,
+            cls: ''
+          },
+          {
+            label: 'Ganancia media título',
+            value: res.replacedList.length ? `+${Math.round(res.avgNewLen - res.avgOrigLen)} chars` : '—',
+            sub: res.replacedList.length ? `${res.avgOrigLen.toFixed(0)} → ${res.avgNewLen.toFixed(0)} caracteres` : `Tiempo: ${(res.elapsedMs / 1000).toFixed(2)} s`,
+            cls: ''
+          }
+        ];
+
+        els.kpiGrid.innerHTML = kpis
+          .map(
+            (k) => `
+          <div class="kpi-card ${k.cls}">
+            <div class="kpi-label">${escapeHtml(k.label)}</div>
+            <div class="kpi-value">${escapeHtml(k.value)}</div>
+            <div class="kpi-sub">${escapeHtml(k.sub)}</div>
+          </div>`
+          )
+          .join('');
+
+        renderFilesTable(res);
+
+        // Desglose de errores
+        const errorEntries = Object.entries(res.errorCounts).sort((a, b) => b[1] - a[1]);
+        if (errorEntries.length === 0) {
+          els.errorBreakdownList.innerHTML = '<li><span>No se produjo ningún error de coincidencia.</span><strong class="pill ok">0</strong></li>';
+        } else {
+          els.errorBreakdownList.innerHTML = errorEntries
+            .map(([code, count]) => {
+              const meta = ERROR_LABELS[code] || { label: code, pill: 'muted' };
+              return `<li><span>${escapeHtml(meta.label)}</span><span class="pill ${meta.pill}">${fmtNum(count)}</span></li>`;
+            })
+            .join('');
+        }
+
+        // Métricas de calidad
+        const qualityItems = [
+          ['Tiempo total de ejecución', `${(res.elapsedMs / 1000).toFixed(2)} s`],
+          ['Saltos de línea (\\n) limpiados en títulos', fmtNum(res.newlinesCleanedCount)],
+          ['Coincidencias con fecha relajada (si activado)', fmtNum(res.matchedWithRelaxedDateCount)],
+          ['Títulos no completados en OPAC (idénticos)', fmtNum(unchangedCount)],
+          ['Duplicados internos en final.json omitidos', fmtNum(dupFinalCount)],
+          ['Longitud media antes → después', res.replacedList.length ? `${res.avgOrigLen.toFixed(1)} → ${res.avgNewLen.toFixed(1)} chars` : '—']
+        ];
+        els.qualityStatsList.innerHTML = qualityItems
+          .map(([label, val]) => `<li><span>${escapeHtml(label)}</span><strong>${escapeHtml(val)}</strong></li>`)
+          .join('');
+
+        els.btnExportUnchangedJson.style.display = res.unchangedRawRecords.length > 0 ? 'inline-flex' : 'none';
+
+        // Contadores de pestañas
+        els.tabErrorsCount.textContent = fmtNum(res.errorsList.length);
+        els.tabReplacedCount.textContent = fmtNum(res.replacedList.length);
+        els.tabSkippedCount.textContent = fmtNum(res.skippedList.length);
+
+        // Poblar filtros
+        els.filterErrorType.innerHTML =
+          `<option value="">Todos los tipos de error (${fmtNum(res.errorsList.length)})</option>` +
+          errorEntries
+            .map(([code, count]) => {
+              const meta = ERROR_LABELS[code] || { label: code };
+              return `<option value="${escapeHtml(code)}">${escapeHtml(meta.label)} (${fmtNum(count)})</option>`;
+            })
+            .join('');
+
+        els.filterReplacedFile.innerHTML =
+          `<option value="">Todos los ficheros</option>` +
+          modifiedFiles.map((f) => `<option value="${escapeHtml(f.name)}">${escapeHtml(f.name)} (${fmtNum(f.replacedCount)})</option>`).join('');
+
+        els.searchErrors.value = '';
+        els.searchReplaced.value = '';
+        els.searchSkipped.value = '';
+        els.filterSkippedType.value = '';
+
+        filterErrors();
+        filterReplaced();
+        filterSkipped();
+
+        els.resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      function renderFilesTable(res) {
+        els.filesTableBody.innerHTML = '';
+        for (const entry of res.librosEntries) {
+          const deltaBytes = entry.finalBytes - entry.initialBytes;
+          let statusPill = '<span class="pill muted">Sin cambios</span>';
+          if (entry.replacedCount > 0) {
+            statusPill = entry.savedToDisk
+              ? '<span class="pill ok">Guardado en disco</span>'
+              : '<span class="pill warn">Modificado</span>';
+          }
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="mono" style="font-weight:700;">${escapeHtml(entry.name)}</td>
+            <td>${statusPill}</td>
+            <td>${fmtNum(entry.totalCount)}</td>
+            <td style="font-weight:700; color:${entry.replacedCount > 0 ? 'var(--success)' : 'var(--text-subtle)'};">
+              ${fmtNum(entry.replacedCount)}
+            </td>
+            <td>${fmtBytes(entry.initialBytes)}</td>
+            <td style="font-weight:600;">${fmtBytes(entry.finalBytes)}</td>
+            <td class="mono">${deltaBytes > 0 ? '+' + fmtBytes(deltaBytes) : deltaBytes < 0 ? '-' + fmtBytes(-deltaBytes) : '0 B'}</td>
+            <td class="action-cell"></td>
+          `;
+
+          const actionCell = tr.querySelector('.action-cell');
+          if (entry.blob) {
+            const wrap = document.createElement('div');
+            wrap.className = 'btn-row';
+            if (state.dirHandle) {
+              const btnSave = document.createElement('button');
+              btnSave.className = 'btn btn-success btn-sm';
+              btnSave.textContent = entry.savedToDisk ? 'Guardar de nuevo' : 'Guardar';
+              btnSave.addEventListener('click', async () => {
+                try {
+                  await saveEntryToDisk(entry);
+                  renderFilesTable(res);
+                } catch (e) {
+                  showError(`Error al guardar ${entry.name}: ${e.message}`);
+                }
+              });
+              wrap.appendChild(btnSave);
+            }
+            const btnDl = document.createElement('button');
+            btnDl.className = 'btn btn-outline btn-sm';
+            btnDl.textContent = 'Descargar';
+            btnDl.addEventListener('click', () => downloadBlob(entry.blob, entry.name));
+            wrap.appendChild(btnDl);
+            actionCell.appendChild(wrap);
+          } else {
+            actionCell.innerHTML = '<span style="color:var(--text-subtle);">—</span>';
+          }
+
+          els.filesTableBody.appendChild(tr);
+        }
+      }
+
+      // Pestañas
+      document.querySelectorAll('.tab-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+          document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
+          btn.classList.add('active');
+          $(`panel-${btn.dataset.tab}`).classList.add('active');
+        });
+      });
+
+      // Filtrado y paginación: ERRORES
+      function filterErrors() {
+        const res = state.lastResult;
+        if (!res) return;
+        const q = els.searchErrors.value.trim().toLowerCase();
+        const type = els.filterErrorType.value;
+
+        state.tables.errors.filtered = res.errorsList.filter((e) => {
+          if (type && e.code !== type) return false;
+          if (!q) return true;
+          return (
+            e.signatura.toLowerCase().includes(q) ||
+            e.autor.toLowerCase().includes(q) ||
+            e.currentTitle.toLowerCase().includes(q) ||
+            e.finalTitle.toLowerCase().includes(q) ||
+            e.detail.toLowerCase().includes(q)
+          );
+        });
+        state.tables.errors.page = 1;
+        renderErrorsPage();
+      }
+
+      function renderErrorsPage() {
+        const t = state.tables.errors;
+        const total = t.filtered.length;
+        const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        t.page = Math.max(1, Math.min(t.page, totalPages));
+        const start = (t.page - 1) * PAGE_SIZE;
+        const slice = t.filtered.slice(start, start + PAGE_SIZE);
+
+        els.errorsFilteredInfo.textContent = `Mostrando ${fmtNum(total)} de ${fmtNum(state.lastResult.errorsList.length)} incidencias`;
+        if (slice.length === 0) {
+          els.errorsTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-subtle);">Sin incidencias que mostrar.</td></tr>`;
+        } else {
+          els.errorsTableBody.innerHTML = slice
+            .map((e) => {
+              const meta = ERROR_LABELS[e.code] || { label: e.code, pill: 'muted' };
+              return `
+                <tr>
+                  <td class="mono">#${fmtNum(e.finalNum)}</td>
+                  <td><span class="pill ${meta.pill}">${escapeHtml(meta.label)}</span></td>
+                  <td class="mono" style="font-weight:700;">${escapeHtml(e.signatura || '—')}</td>
+                  <td><div>${escapeHtml(e.autor || '—')}</div><div class="mono" style="color:var(--text-subtle);">${escapeHtml(e.fecha || 's/f')}</div></td>
+                  <td>
+                    <span class="diff-old"><strong>libros*.json:</strong> ${escapeHtml(e.currentTitle)}</span>
+                    <span class="diff-new" style="background:#eff6ff; color:#1e3a8a;"><strong>final.json:</strong> ${escapeHtml(e.finalTitle)}</span>
+                  </td>
+                  <td style="font-size:0.82rem; color:var(--text-muted);">${escapeHtml(e.detail)}</td>
+                </tr>`;
+            })
+            .join('');
+        }
+        els.errorsPageInfo.textContent = `Página ${t.page} de ${totalPages} (${fmtNum(total)} registros)`;
+        els.btnErrorsPrev.disabled = t.page <= 1;
+        els.btnErrorsNext.disabled = t.page >= totalPages;
+      }
+
+      // Filtrado y paginación: SUSTITUIDOS
+      function filterReplaced() {
+        const res = state.lastResult;
+        if (!res) return;
+        const q = els.searchReplaced.value.trim().toLowerCase();
+        const file = els.filterReplacedFile.value;
+
+        state.tables.replaced.filtered = res.replacedList.filter((r) => {
+          if (file && r.file !== file) return false;
+          if (!q) return true;
+          return (
+            r.signatura.toLowerCase().includes(q) ||
+            r.autor.toLowerCase().includes(q) ||
+            r.oldTitle.toLowerCase().includes(q) ||
+            r.newTitle.toLowerCase().includes(q)
+          );
+        });
+        state.tables.replaced.page = 1;
+        renderReplacedPage();
+      }
+
+      function renderReplacedPage() {
+        const t = state.tables.replaced;
+        const total = t.filtered.length;
+        const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        t.page = Math.max(1, Math.min(t.page, totalPages));
+        const start = (t.page - 1) * PAGE_SIZE;
+        const slice = t.filtered.slice(start, start + PAGE_SIZE);
+
+        els.replacedFilteredInfo.textContent = `Mostrando ${fmtNum(total)} de ${fmtNum(state.lastResult.replacedList.length)} sustituidos`;
+        if (slice.length === 0) {
+          els.replacedTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-subtle);">Sin sustituciones que mostrar.</td></tr>`;
+        } else {
+          els.replacedTableBody.innerHTML = slice
+            .map((r) => `
+              <tr>
+                <td class="mono">#${fmtNum(r.finalNum)}</td>
+                <td><span class="pill info mono">${escapeHtml(r.file)}</span></td>
+                <td class="mono" style="font-weight:700; color:var(--primary);">${escapeHtml(r.signatura)}</td>
+                <td>
+                  <div>${escapeHtml(r.autor || '—')}</div>
+                  <div class="mono" style="color:var(--text-subtle);">
+                    ${escapeHtml(r.fecha || 's/f')}${r.usedRelaxedDate ? ` (final: ${escapeHtml(r.finalFecha)})` : ''}
+                  </div>
+                </td>
+                <td>
+                  <span class="diff-old">${escapeHtml(r.oldTitle)}</span>
+                  <span class="diff-new">${escapeHtml(r.newTitle)}</span>
+                </td>
+                <td class="mono" style="font-weight:700; color:var(--success);">${r.deltaChars >= 0 ? '+' : ''}${r.deltaChars}</td>
+              </tr>`)
+            .join('');
+        }
+        els.replacedPageInfo.textContent = `Página ${t.page} de ${totalPages} (${fmtNum(total)} registros)`;
+        els.btnReplacedPrev.disabled = t.page <= 1;
+        els.btnReplacedNext.disabled = t.page >= totalPages;
+      }
+
+      // Filtrado y paginación: OMITIDOS
+      function filterSkipped() {
+        const res = state.lastResult;
+        if (!res) return;
+        const q = els.searchSkipped.value.trim().toLowerCase();
+        const type = els.filterSkippedType.value;
+
+        state.tables.skipped.filtered = res.skippedList.filter((s) => {
+          if (type && s.type !== type) return false;
+          if (!q) return true;
+          return (
+            s.signatura.toLowerCase().includes(q) ||
+            s.autor.toLowerCase().includes(q) ||
+            s.title.toLowerCase().includes(q)
+          );
+        });
+        state.tables.skipped.page = 1;
+        renderSkippedPage();
+      }
+
+      function renderSkippedPage() {
+        const t = state.tables.skipped;
+        const total = t.filtered.length;
+        const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        t.page = Math.max(1, Math.min(t.page, totalPages));
+        const start = (t.page - 1) * PAGE_SIZE;
+        const slice = t.filtered.slice(start, start + PAGE_SIZE);
+
+        els.skippedFilteredInfo.textContent = `Mostrando ${fmtNum(total)} de ${fmtNum(state.lastResult.skippedList.length)} registros`;
+        if (slice.length === 0) {
+          els.skippedTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-subtle);">Sin registros omitidos.</td></tr>`;
+        } else {
+          els.skippedTableBody.innerHTML = slice
+            .map((s) => {
+              const badge =
+                s.type === 'unchanged_opac'
+                  ? '<span class="pill warn">Sin cambio (OPAC)</span>'
+                  : '<span class="pill muted">Duplicado en final.json</span>';
+              return `
+                <tr>
+                  <td class="mono">#${fmtNum(s.finalNum)}</td>
+                  <td>${badge}</td>
+                  <td><span class="pill info mono">${escapeHtml(s.file)}</span></td>
+                  <td class="mono" style="font-weight:700;">${escapeHtml(s.signatura)}</td>
+                  <td><div>${escapeHtml(s.autor || '—')}</div><div class="mono" style="color:var(--text-subtle);">${escapeHtml(s.fecha || 's/f')}</div></td>
+                  <td><div>${escapeHtml(s.title)}</div><div style="font-size:0.78rem; color:var(--text-subtle);">${escapeHtml(s.detail)}</div></td>
+                </tr>`;
+            })
+            .join('');
+        }
+        els.skippedPageInfo.textContent = `Página ${t.page} de ${totalPages} (${fmtNum(total)} registros)`;
+        els.btnSkippedPrev.disabled = t.page <= 1;
+        els.btnSkippedNext.disabled = t.page >= totalPages;
+      }
+
+      els.searchErrors.addEventListener('input', filterErrors);
+      els.filterErrorType.addEventListener('change', filterErrors);
+      els.btnErrorsPrev.addEventListener('click', () => { state.tables.errors.page--; renderErrorsPage(); });
+      els.btnErrorsNext.addEventListener('click', () => { state.tables.errors.page++; renderErrorsPage(); });
+
+      els.searchReplaced.addEventListener('input', filterReplaced);
+      els.filterReplacedFile.addEventListener('change', filterReplaced);
+      els.btnReplacedPrev.addEventListener('click', () => { state.tables.replaced.page--; renderReplacedPage(); });
+      els.btnReplacedNext.addEventListener('click', () => { state.tables.replaced.page++; renderReplacedPage(); });
+
+      els.searchSkipped.addEventListener('input', filterSkipped);
+      els.filterSkippedType.addEventListener('change', filterSkipped);
+      els.btnSkippedPrev.addEventListener('click', () => { state.tables.skipped.page--; renderSkippedPage(); });
+      els.btnSkippedNext.addEventListener('click', () => { state.tables.skipped.page++; renderSkippedPage(); });
+
+      // Exportaciones
+      function csvEsc(v) {
+        const s = String(v ?? '');
+        return /[";,\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+      }
+
+      els.btnExportErrorsCsv.addEventListener('click', () => {
+        const res = state.lastResult;
+        if (!res) return;
+        const header = ['Registro_final_json', 'Codigo_Error', 'Tipo_Error', 'Signatura', 'Autor', 'Fecha', 'Titulo_Actual_Libros', 'Titulo_Final_Json', 'Detalle'];
+        const rows = res.errorsList.map((e) => {
+          const label = (ERROR_LABELS[e.code] || { label: e.code }).label;
+          return [e.finalNum, e.code, label, e.signatura, e.autor, e.fecha, e.currentTitle, e.finalTitle, e.detail].map(csvEsc).join(';');
+        });
+        downloadBlob(new Blob(['\uFEFF' + [header.join(';'), ...rows].join('\r\n')], { type: 'text/csv;charset=utf-8' }), 'errores_sustitucion_titulos.csv');
+      });
+
+      els.btnExportErrorsJson.addEventListener('click', () => {
+        const res = state.lastResult;
+        if (!res) return;
+        downloadBlob(new Blob([JSON.stringify(res.errorsList, null, 2)], { type: 'application/json;charset=utf-8' }), 'errores_sustitucion_titulos.json');
+      });
+
+      els.btnExportReplacedCsv.addEventListener('click', () => {
+        const res = state.lastResult;
+        if (!res) return;
+        const header = ['Registro_final_json', 'Fichero', 'Indice_Registro', 'Signatura', 'Autor', 'Fecha', 'Titulo_Anterior', 'Titulo_Nuevo', 'Delta_Caracteres'];
+        const rows = res.replacedList.map((r) =>
+          [r.finalNum, r.file, r.recordIdx, r.signatura, r.autor, r.fecha, r.oldTitle, r.newTitle, r.deltaChars].map(csvEsc).join(';')
+        );
+        downloadBlob(new Blob(['\uFEFF' + [header.join(';'), ...rows].join('\r\n')], { type: 'text/csv;charset=utf-8' }), 'titulos_sustituidos.csv');
+      });
+
+      els.btnExportUnchangedJson.addEventListener('click', () => {
+        const res = state.lastResult;
+        if (!res) return;
+        downloadBlob(
+          new Blob([JSON.stringify(res.unchangedRawRecords, null, 4)], { type: 'application/json;charset=utf-8' }),
+          'pendientes_no_completados_opac.json'
+        );
+      });
+
+      els.btnExportReportTxt.addEventListener('click', () => {
+        const res = state.lastResult;
+        if (!res) return;
+        const unchangedCount = res.skippedList.filter((s) => s.type === 'unchanged_opac').length;
+        const dupFinalCount = res.skippedList.filter((s) => s.type === 'duplicate_in_final').length;
+        const lines = [
+          '=== INFORME DE SUSTITUCIÓN DE TÍTULOS (final.json -> libros*.json) ===',
+          `Fecha del informe              : ${new Date().toLocaleString('es-ES')}`,
+          `Tiempo de ejecución            : ${(res.elapsedMs / 1000).toFixed(2)} s`,
+          `Registros en final.json        : ${fmtNum(res.totalFinal)}`,
+          `Registros totales en libros*   : ${fmtNum(res.totalCatalogRecords)}`,
+          '',
+          '--- RESUMEN DE RESULTADOS ---',
+          `TÍTULOS SUSTITUIDOS CON ÉXITO  : ${fmtNum(res.replacedList.length)}`,
+          `ERRORES / BLOQUEADOS           : ${fmtNum(res.errorsList.length)}`,
+          `Sin cambio (OPAC no completó)  : ${fmtNum(unchangedCount)}`,
+          `Duplicados en final.json       : ${fmtNum(dupFinalCount)}`,
+          `Saltos de línea limpiados      : ${fmtNum(res.newlinesCleanedCount)}`,
+          `Longitud media antes -> después: ${res.avgOrigLen.toFixed(1)} -> ${res.avgNewLen.toFixed(1)} chars`,
+          '',
+          '--- DESGLOSE DE ERRORES ---',
+          ...Object.entries(res.errorCounts).map(([code, count]) => {
+            const label = (ERROR_LABELS[code] || { label: code }).label;
+            return `- ${label}: ${fmtNum(count)}`;
+          }),
+          '',
+          '--- FICHEROS LIBROS*.JSON ---',
+          ...res.librosEntries.map(
+            (e) => `${e.name.padEnd(16)} | Sustituidos: ${String(e.replacedCount).padStart(6)} / ${String(e.totalCount).padStart(7)} | ${fmtBytes(e.initialBytes)} -> ${fmtBytes(e.finalBytes)}`
+          ),
+          '',
+          '--- DETALLE DE ERRORES E INCIDENCIAS ---',
+          ...res.errorsList.map((e) => {
+            const label = (ERROR_LABELS[e.code] || { label: e.code }).label;
+            return `[#${e.finalNum}] [${label}] ${e.signatura} | ${e.autor} (${e.fecha})\n    Actual : ${e.currentTitle}\n    final  : ${e.finalTitle}\n    Motivo : ${e.detail}`;
+          })
+        ];
+        downloadBlob(new Blob([lines.join('\r\n')], { type: 'text/plain;charset=utf-8' }), 'informe_sustitucion_titulos.txt');
+      });
+
+      els.btnRun.addEventListener('click', runReplacement);
+    })();
+  </script>
+</body>
+</html>

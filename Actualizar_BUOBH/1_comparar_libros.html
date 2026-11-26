@@ -1,0 +1,3020 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fusión y Sincronización de Catálogo (codbarras + signatura → libros.json → libros1..N.json)</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --surface: #ffffff;
+      --surface-alt: #f8fafc;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-subtle: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-soft: #eff6ff;
+      --success: #059669;
+      --success-soft: #ecfdf5;
+      --success-border: #a7f3d0;
+      --warning: #d97706;
+      --warning-soft: #fffbeb;
+      --warning-border: #fde68a;
+      --danger: #dc2626;
+      --danger-soft: #fef2f2;
+      --danger-border: #fecaca;
+      --purple: #7c3aed;
+      --purple-soft: #f5f3ff;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.04);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 20px 64px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .brand {
+      max-width: 900px;
+    }
+
+    .brand h1 {
+      margin: 0 0 6px;
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .brand p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.94rem;
+    }
+
+    .mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      box-shadow: var(--shadow);
+    }
+
+    .mode-badge .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+
+    .mode-badge.direct .dot {
+      background: var(--success);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 1.08rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    /* Dropzone & File pickers */
+    .upload-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 820px) {
+      .upload-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .dropzone {
+      border: 2px dashed var(--border-strong);
+      border-radius: var(--radius);
+      padding: 20px;
+      background: var(--surface-alt);
+      transition: border-color 0.15s, background-color 0.15s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .dropzone.dragover {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+    }
+
+    .dropzone h3 {
+      margin: 0 0 4px;
+      font-size: 0.98rem;
+      font-weight: 700;
+    }
+
+    .dropzone p {
+      margin: 0;
+      font-size: 0.86rem;
+      color: var(--text-muted);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      font-family: inherit;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-hover);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .btn-success:hover:not(:disabled) {
+      background: #047857;
+    }
+
+    .btn-outline {
+      background: var(--surface);
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+
+    .btn-outline:hover:not(:disabled) {
+      background: var(--surface-alt);
+      border-color: var(--text-subtle);
+    }
+
+    .btn-sm {
+      padding: 6px 11px;
+      font-size: 0.8rem;
+    }
+
+    .btn-lg {
+      padding: 12px 24px;
+      font-size: 0.98rem;
+    }
+
+    input[type="file"].hidden-input {
+      display: none;
+    }
+
+    .loaded-files {
+      margin-top: 16px;
+      padding: 14px 16px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .loaded-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.88rem;
+    }
+
+    .loaded-label {
+      font-weight: 700;
+      color: var(--text-muted);
+      min-width: 155px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: #e2e8f0;
+      color: var(--text);
+    }
+
+    .pill.ok {
+      background: var(--success-soft);
+      color: #065f46;
+      border: 1px solid var(--success-border);
+    }
+
+    .pill.info {
+      background: var(--primary-soft);
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+
+    .pill.warn {
+      background: var(--warning-soft);
+      color: #92400e;
+      border: 1px solid var(--warning-border);
+    }
+
+    .pill.danger {
+      background: var(--danger-soft);
+      color: #991b1b;
+      border: 1px solid var(--danger-border);
+    }
+
+    .pill.new {
+      background: var(--purple-soft);
+      color: #5b21b6;
+      border: 1px solid #ddd6fe;
+    }
+
+    .pill.muted {
+      background: #f1f5f9;
+      color: var(--text-subtle);
+      border: 1px solid var(--border);
+    }
+
+    /* Options */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-group label {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .field-group input[type="number"],
+    .field-group select,
+    .search-input {
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      font-size: 0.9rem;
+      font-family: inherit;
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .checkbox-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .checkbox-item input {
+      margin-top: 3px;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .checkbox-desc {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-subtle);
+    }
+
+    /* Progress */
+    .progress-wrap {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      background: var(--primary-soft);
+      border: 1px solid #bfdbfe;
+    }
+
+    .progress-wrap.visible {
+      display: block;
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: #1e40af;
+      margin-bottom: 8px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #dbeafe;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      border-radius: 999px;
+      transition: width 0.15s ease;
+    }
+
+    /* Results */
+    #resultsSection {
+      display: none;
+    }
+
+    #resultsSection.visible {
+      display: block;
+    }
+
+    .alert-banner {
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      border: 1px solid var(--success-border);
+      background: var(--success-soft);
+      color: #065f46;
+    }
+
+    .alert-banner.neutral {
+      border-color: #bfdbfe;
+      background: var(--primary-soft);
+      color: #1e40af;
+    }
+
+    .alert-banner h2 {
+      margin: 0 0 4px;
+      font-size: 1.08rem;
+    }
+
+    .alert-banner p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    /* KPI grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .kpi-card.highlight {
+      border-color: var(--success-border);
+      background: linear-gradient(180deg, #ecfdf5 0%, #ffffff 100%);
+    }
+
+    .kpi-card.danger-highlight {
+      border-color: var(--danger-border);
+      background: linear-gradient(180deg, #fef2f2 0%, #ffffff 100%);
+    }
+
+    .kpi-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-subtle);
+      margin-bottom: 6px;
+    }
+
+    .kpi-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .kpi-card.highlight .kpi-value {
+      color: var(--success);
+    }
+
+    .kpi-card.danger-highlight .kpi-value {
+      color: var(--danger);
+    }
+
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      background: var(--surface);
+    }
+
+    thead {
+      background: var(--surface-alt);
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      text-align: left;
+      padding: 11px 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    tbody tr.master-row {
+      background: #eff6ff;
+    }
+
+    tbody tr.master-row:hover {
+      background: #dbeafe;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.83rem;
+    }
+
+    .capacity-bar {
+      width: 115px;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .capacity-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 999px;
+    }
+
+    .capacity-fill.near-full {
+      background: var(--warning);
+    }
+
+    .capacity-fill.over {
+      background: var(--danger);
+    }
+
+    /* Insights grid */
+    .insights-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 860px) {
+      .insights-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .insight-box {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+
+    .insight-box h4 {
+      margin: 0 0 10px;
+      font-size: 0.94rem;
+      color: var(--text);
+    }
+
+    .stat-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.86rem;
+    }
+
+    .stat-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .stat-list li:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .prefix-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .prefix-row {
+      display: grid;
+      grid-template-columns: 78px 1fr 60px;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.83rem;
+    }
+
+    .prefix-track {
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .prefix-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 999px;
+    }
+
+    /* Tabs */
+    .tabs-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn:hover {
+      border-color: var(--border-strong);
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .tab-badge {
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: rgba(15, 23, 42, 0.08);
+      color: inherit;
+    }
+
+    .tab-btn.active .tab-badge {
+      background: rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+    }
+
+    /* Filter bar & Pagination */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .toolbar-left {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      flex: 1;
+    }
+
+    .search-input {
+      min-width: 260px;
+      flex: 1;
+      max-width: 440px;
+    }
+
+    .pagination {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .error-box {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      background: var(--danger-soft);
+      border: 1px solid var(--danger-border);
+      color: #991b1b;
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    .error-box.visible {
+      display: block;
+    }
+
+    .tip-note {
+      font-size: 0.82rem;
+      color: var(--text-subtle);
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <h1>Fusión y Sincronización de Catálogo (TXT → libros.json → libros1..N.json)</h1>
+        <p>
+          Fusiona <strong>codbarras.txt</strong> y <strong>signatura.txt</strong> en <strong>libros.json</strong>
+          (<span class="mono">{Autor, titulo, fecha, signatura, cbarras}</span>) y crea o sincroniza
+          <strong>libros1.json, libros2.json…</strong> (altas en el último fichero y bajas eliminadas) respetando el límite de 10 MB.
+        </p>
+      </div>
+      <div id="modeBadge" class="mode-badge" title="Disponibilidad de escritura directa en carpeta">
+        <span class="dot"></span>
+        <span id="modeBadgeText">Modo descarga de ficheros</span>
+      </div>
+    </header>
+
+    <!-- PASO 1: CARGA DE FICHEROS -->
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title"><span class="step-num">1</span> Seleccionar ficheros de origen</h2>
+        <button id="btnClear" class="btn btn-outline btn-sm" type="button">Limpiar selección</button>
+      </div>
+
+      <div class="upload-grid">
+        <!-- Opción rápida: carpeta entera -->
+        <div class="dropzone" id="folderZone">
+          <div>
+            <h3>Opción rápida: Carpeta completa</h3>
+            <p>
+              Detecta automáticamente <strong>codbarras.txt</strong>, <strong>signatura.txt</strong> y, si ya existen,
+              todos los <strong>libros1.json, libros2.json…</strong> (si no existen, se crearán automáticamente en lotes de ≤ 10 MB).
+            </p>
+          </div>
+          <div class="btn-row">
+            <button id="btnDirectFolder" class="btn btn-success" type="button" style="display:none;">
+              Abrir carpeta (lectura/escritura directa)
+            </button>
+            <button id="btnPickFolder" class="btn btn-primary" type="button">
+              Seleccionar carpeta
+            </button>
+            <input id="inputFolder" class="hidden-input" type="file" webkitdirectory directory multiple />
+          </div>
+          <div id="directFolderHint" class="tip-note"></div>
+        </div>
+
+        <!-- Opción manual / arrastrar -->
+        <div class="dropzone" id="manualZone">
+          <div>
+            <h3>Opción manual o arrastrar y soltar</h3>
+            <p>
+              Arrastra aquí <strong>codbarras.txt</strong> y <strong>signatura.txt</strong> (más los <strong>libros*.json</strong> si ya existen),
+              o selecciónalos por separado.
+            </p>
+          </div>
+          <div class="btn-row">
+            <button id="btnPickCodbarras" class="btn btn-outline" type="button">Elegir codbarras.txt</button>
+            <button id="btnPickSignatura" class="btn btn-outline" type="button">Elegir signatura.txt</button>
+            <button id="btnPickJson" class="btn btn-outline" type="button">Elegir libros1..N.json (opcional)</button>
+            <input id="inputCodbarras" class="hidden-input" type="file" accept=".txt,text/plain" />
+            <input id="inputSignatura" class="hidden-input" type="file" accept=".txt,text/plain" />
+            <input id="inputJson" class="hidden-input" type="file" accept=".json,application/json" multiple />
+          </div>
+          <div class="tip-note">Si no cargas ningún <span class="mono">libros1.json…</span>, se crearán todos desde cero a partir de <span class="mono">libros.json</span>.</div>
+        </div>
+      </div>
+
+      <div class="loaded-files" id="loadedSummary">
+        <div class="loaded-row">
+          <span class="loaded-label">TXT Códigos barras:</span>
+          <div id="codbarrasPills"><span class="pill muted">Ningún fichero codbarras.txt cargado</span></div>
+        </div>
+        <div class="loaded-row">
+          <span class="loaded-label">TXT Signaturas:</span>
+          <div id="signaturaPills"><span class="pill muted">Ningún fichero signatura.txt cargado</span></div>
+        </div>
+        <div class="loaded-row">
+          <span class="loaded-label">Lotes libros1..N.json:</span>
+          <div id="jsonPills"><span class="pill info">Ninguno cargado (se crearán libros1.json, libros2.json… desde cero)</span></div>
+        </div>
+        <div class="loaded-row" id="ignoredRow" style="display:none;">
+          <span class="loaded-label">Otros en carpeta:</span>
+          <div id="ignoredPills"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASO 2: OPCIONES Y EJECUCIÓN -->
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title"><span class="step-num">2</span> Configuración y ejecución</h2>
+      </div>
+
+      <div class="options-grid">
+        <div class="field-group">
+          <label for="maxSizeMb">Tamaño máximo por fichero librosN.json (MB)</label>
+          <input id="maxSizeMb" type="number" min="0.5" max="100" step="0.5" value="10" />
+        </div>
+        <div class="field-group">
+          <label for="txtEncoding">Codificación de codbarras.txt y signatura.txt</label>
+          <select id="txtEncoding">
+            <option value="auto" selected>Automática (UTF-8 → Windows-1252 / Latin-1)</option>
+            <option value="windows-1252">Windows-1252 / ISO-8859-1 (estándar OPAC)</option>
+            <option value="utf-8">UTF-8</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label for="jsonFormat">Formato de escritura JSON</label>
+          <select id="jsonFormat">
+            <option value="compact" selected>Compacto (menor tamaño, menos ficheros)</option>
+            <option value="pretty">Identado (4 espacios, estilo final.json)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="checkbox-list">
+        <label class="checkbox-item">
+          <input id="optNeaFallback" type="checkbox" checked />
+          <span>
+            <strong>Usar columna NEA cuando Cod./Bar. esté en blanco en codbarras.txt</strong>
+            <span class="checkbox-desc">Garantiza que todos los ejemplares (incluidas publicaciones periódicas o registros sin código de barras impreso) tengan identificador en <span class="mono">cbarras</span>.</span>
+          </span>
+        </label>
+        <label class="checkbox-item">
+          <input id="optCleanTitle" type="checkbox" />
+          <span>
+            <strong>Limpiar signos de puntuación de los títulos al crear registros nuevos</strong>
+            <span class="checkbox-desc">Desactivado por defecto para conservar la puntuación exacta como en <span class="mono">final.json</span> y facilitar la detección posterior de títulos truncados.</span>
+          </span>
+        </label>
+        <label class="checkbox-item">
+          <input id="optCaseInsensitive" type="checkbox" />
+          <span>
+            <strong>Ignorar mayúsculas/minúsculas al comparar signaturas y códigos</strong>
+            <span class="checkbox-desc">Por defecto la comparación respeta mayúsculas/minúsculas (recortando espacios laterales y contemplando el truncado a 19 caracteres de <span class="mono">codbarras.txt</span>).</span>
+          </span>
+        </label>
+      </div>
+
+      <div class="btn-row">
+        <button id="btnRun" class="btn btn-primary btn-lg" type="button" disabled>
+          Fusionar en libros.json y generar libros1..N.json
+        </button>
+      </div>
+
+      <div id="errorBox" class="error-box"></div>
+
+      <div id="progressWrap" class="progress-wrap">
+        <div class="progress-top">
+          <span id="progressText">Preparando…</span>
+          <span id="progressPct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASO 3: RESULTADOS E INFORME -->
+    <section id="resultsSection">
+      <div id="resultBanner" class="alert-banner">
+        <div>
+          <h2 id="bannerTitle">Proceso completado</h2>
+          <p id="bannerSub"></p>
+        </div>
+        <div class="btn-row" id="bannerActions"></div>
+      </div>
+
+      <div class="kpi-grid" id="kpiGrid"></div>
+
+      <!-- Estado de ficheros JSON -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title"><span class="step-num">3</span> Ficheros JSON generados y actualizados (límite <span id="lblMaxMb">10</span> MB en libros1..N)</h2>
+          <div class="btn-row" id="jsonBulkActions"></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Fichero</th>
+                <th>Estado</th>
+                <th>Iniciales</th>
+                <th>Añadidos (+)</th>
+                <th>Eliminados (−)</th>
+                <th>Finales</th>
+                <th>Tamaño inicial</th>
+                <th>Tamaño final</th>
+                <th>Uso límite</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="filesTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Información adicional y diagnóstico -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title"><span class="step-num">4</span> Diagnóstico de fusión y sincronización</h2>
+          <div class="btn-row">
+            <button id="btnExportSummaryTxt" class="btn btn-outline btn-sm" type="button">Descargar informe (.txt)</button>
+            <button id="btnExportUnmatchedCsv" class="btn btn-outline btn-sm" type="button" style="display:none;">Exportar incidencias de cruce TXT (.csv)</button>
+          </div>
+        </div>
+        <div class="insights-grid">
+          <div class="insight-box">
+            <h4>Detalle técnico de la fusión (codbarras ↔ signatura) y comparación</h4>
+            <ul class="stat-list" id="diagnosticsList"></ul>
+          </div>
+          <div class="insight-box">
+            <h4>Principales prefijos de signatura en libros.json</h4>
+            <div id="prefixChart" class="prefix-bars"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Explorador de registros (Añadidos / Eliminados / libros.json) -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title"><span class="step-num">5</span> Explorador de registros</h2>
+          <div class="btn-row">
+            <button id="btnExportAddedCsv" class="btn btn-outline btn-sm" type="button">Exportar añadidos (.csv)</button>
+            <button id="btnExportRemovedCsv" class="btn btn-outline btn-sm" type="button" style="display:none;">Exportar eliminados (.csv)</button>
+          </div>
+        </div>
+
+        <div class="tabs-bar">
+          <button id="tabBtnAdded" class="tab-btn active" type="button">
+            Añadidos a libros1..N <span id="badgeAdded" class="tab-badge">0</span>
+          </button>
+          <button id="tabBtnRemoved" class="tab-btn" type="button">
+            Eliminados de libros1..N <span id="badgeRemoved" class="tab-badge">0</span>
+          </button>
+          <button id="tabBtnMerged" class="tab-btn" type="button">
+            Catálogo fusionado (libros.json) <span id="badgeMerged" class="tab-badge">0</span>
+          </button>
+        </div>
+
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <input id="searchRecords" class="search-input" type="search" placeholder="Filtrar por código de barras, signatura, autor, título o año…" />
+            <select id="filterFileSelect" class="search-input" style="max-width: 230px; min-width: 175px;">
+              <option value="">Todos los ficheros</option>
+            </select>
+          </div>
+          <span id="filteredInfo" style="font-size:0.84rem; color:var(--text-muted);"></span>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Código barras</th>
+                <th>Signatura</th>
+                <th>Fecha</th>
+                <th>Autor</th>
+                <th>Título</th>
+                <th id="colFileHeader">Fichero</th>
+              </tr>
+            </thead>
+            <tbody id="recordsTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="pagination" id="paginationBar">
+          <span id="pageInfo"></span>
+          <div class="btn-row">
+            <button id="btnPrevPage" class="btn btn-outline btn-sm" type="button">← Anterior</button>
+            <button id="btnNextPage" class="btn btn-outline btn-sm" type="button">Siguiente →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const PATRON_LIBROS_PART = /^libros(\d+)\.json$/i;
+      const PATRON_PAGINA_CB = /^\s*\d{2}\/\d{2}\/\d{4}\s+.*p[áa]gina\s+\d+\s*$/i;
+      const PATRON_SEPARADOR_CB = /^[\s-]+$/;
+      const PAGE_SIZE = 50;
+      const textEncoder = new TextEncoder();
+
+      // Estado global
+      const state = {
+        dirHandle: null,              // FileSystemDirectoryHandle si se usa lectura/escritura directa
+        librosJsonHandle: null,       // FileSystemFileHandle previo de libros.json si existía
+        codbarrasFile: null,          // File object (codbarras.txt)
+        signaturaFile: null,          // File object (signatura.txt)
+        jsonFiles: [],                // [{ num, name, file, handle? }] ordenados por num
+        ignoredFiles: [],             // otros archivos JSON/TXT informativos
+        lastResult: null,
+        activeTab: 'added',           // 'added' | 'removed' | 'merged'
+        filteredRows: [],
+        currentPage: 1
+      };
+
+      const $ = (id) => document.getElementById(id);
+      const els = {
+        modeBadge: $('modeBadge'),
+        modeBadgeText: $('modeBadgeText'),
+        btnDirectFolder: $('btnDirectFolder'),
+        directFolderHint: $('directFolderHint'),
+        btnPickFolder: $('btnPickFolder'),
+        inputFolder: $('inputFolder'),
+        btnPickCodbarras: $('btnPickCodbarras'),
+        btnPickSignatura: $('btnPickSignatura'),
+        btnPickJson: $('btnPickJson'),
+        inputCodbarras: $('inputCodbarras'),
+        inputSignatura: $('inputSignatura'),
+        inputJson: $('inputJson'),
+        manualZone: $('manualZone'),
+        folderZone: $('folderZone'),
+        btnClear: $('btnClear'),
+        codbarrasPills: $('codbarrasPills'),
+        signaturaPills: $('signaturaPills'),
+        jsonPills: $('jsonPills'),
+        ignoredRow: $('ignoredRow'),
+        ignoredPills: $('ignoredPills'),
+        maxSizeMb: $('maxSizeMb'),
+        txtEncoding: $('txtEncoding'),
+        jsonFormat: $('jsonFormat'),
+        optNeaFallback: $('optNeaFallback'),
+        optCleanTitle: $('optCleanTitle'),
+        optCaseInsensitive: $('optCaseInsensitive'),
+        btnRun: $('btnRun'),
+        errorBox: $('errorBox'),
+        progressWrap: $('progressWrap'),
+        progressText: $('progressText'),
+        progressPct: $('progressPct'),
+        progressFill: $('progressFill'),
+        resultsSection: $('resultsSection'),
+        resultBanner: $('resultBanner'),
+        bannerTitle: $('bannerTitle'),
+        bannerSub: $('bannerSub'),
+        bannerActions: $('bannerActions'),
+        kpiGrid: $('kpiGrid'),
+        lblMaxMb: $('lblMaxMb'),
+        jsonBulkActions: $('jsonBulkActions'),
+        filesTableBody: $('filesTableBody'),
+        diagnosticsList: $('diagnosticsList'),
+        prefixChart: $('prefixChart'),
+        btnExportSummaryTxt: $('btnExportSummaryTxt'),
+        btnExportUnmatchedCsv: $('btnExportUnmatchedCsv'),
+        btnExportAddedCsv: $('btnExportAddedCsv'),
+        btnExportRemovedCsv: $('btnExportRemovedCsv'),
+        tabBtnAdded: $('tabBtnAdded'),
+        tabBtnRemoved: $('tabBtnRemoved'),
+        tabBtnMerged: $('tabBtnMerged'),
+        badgeAdded: $('badgeAdded'),
+        badgeRemoved: $('badgeRemoved'),
+        badgeMerged: $('badgeMerged'),
+        searchRecords: $('searchRecords'),
+        filterFileSelect: $('filterFileSelect'),
+        filteredInfo: $('filteredInfo'),
+        colFileHeader: $('colFileHeader'),
+        recordsTableBody: $('recordsTableBody'),
+        pageInfo: $('pageInfo'),
+        btnPrevPage: $('btnPrevPage'),
+        btnNextPage: $('btnNextPage')
+      };
+
+      const supportsDirectFS = typeof window.showDirectoryPicker === 'function';
+      if (supportsDirectFS) {
+        els.btnDirectFolder.style.display = 'inline-flex';
+        els.modeBadge.classList.add('direct');
+        els.modeBadgeText.textContent = 'Escritura directa en carpeta disponible';
+        els.directFolderHint.textContent = 'Con "Abrir carpeta (lectura/escritura directa)" se guardarán libros.json y libros1..N.json directamente en disco.';
+      } else {
+        els.directFolderHint.textContent = 'Selecciona la carpeta o los ficheros y al terminar podrás descargar libros.json y todos los libros1..N.json creados o modificados.';
+      }
+
+      // Utilidades de formato
+      function fmtNum(n) {
+        return Number(n).toLocaleString('es-ES');
+      }
+
+      function fmtBytes(bytes) {
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+      }
+
+      function escapeHtml(str) {
+        return String(str ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function showError(msg) {
+        if (!msg) {
+          els.errorBox.classList.remove('visible');
+          els.errorBox.textContent = '';
+          return;
+        }
+        els.errorBox.textContent = msg;
+        els.errorBox.classList.add('visible');
+      }
+
+      function setProgress(pct, text) {
+        els.progressWrap.classList.add('visible');
+        const clamped = Math.max(0, Math.min(100, Math.round(pct)));
+        els.progressFill.style.width = `${clamped}%`;
+        els.progressPct.textContent = `${clamped}%`;
+        if (text) els.progressText.textContent = text;
+      }
+
+      function yieldToUI() {
+        return new Promise((resolve) => setTimeout(resolve, 0));
+      }
+
+      // Clasificación automática de nombres de archivo TXT
+      function classifyTxtFileName(name) {
+        const lower = name.toLowerCase();
+        if (lower === 'codbarras.txt' || lower.includes('codbarras') || lower.includes('barras')) {
+          return 'codbarras';
+        }
+        if (lower === 'signatura.txt' || lower.includes('signatura')) {
+          return 'signatura';
+        }
+        return null;
+      }
+
+      function updateSelectionUI() {
+        if (state.codbarrasFile) {
+          els.codbarrasPills.innerHTML = `<span class="pill ok">${escapeHtml(state.codbarrasFile.name)} (${fmtBytes(state.codbarrasFile.size)})</span>`;
+        } else {
+          els.codbarrasPills.innerHTML = `<span class="pill muted">Ningún fichero codbarras.txt cargado</span>`;
+        }
+
+        if (state.signaturaFile) {
+          els.signaturaPills.innerHTML = `<span class="pill ok">${escapeHtml(state.signaturaFile.name)} (${fmtBytes(state.signaturaFile.size)})</span>`;
+        } else {
+          els.signaturaPills.innerHTML = `<span class="pill muted">Ningún fichero signatura.txt cargado</span>`;
+        }
+
+        if (state.jsonFiles.length > 0) {
+          els.jsonPills.innerHTML = state.jsonFiles
+            .map((jf, i) => {
+              const isLast = i === state.jsonFiles.length - 1;
+              return `<span class="pill ${isLast ? 'info' : 'ok'}" title="${isLast ? 'Último fichero existente (destino inicial de altas)' : ''}">
+                ${escapeHtml(jf.name)} (${fmtBytes(jf.file.size)})${isLast ? ' ★ último' : ''}
+              </span>`;
+            })
+            .join('');
+        } else {
+          els.jsonPills.innerHTML = `<span class="pill info">Ninguno cargado — se crearán libros1.json, libros2.json… desde cero (≤ ${escapeHtml(els.maxSizeMb.value || '10')} MB)</span>`;
+        }
+
+        if (state.ignoredFiles.length > 0) {
+          els.ignoredRow.style.display = 'flex';
+          els.ignoredPills.innerHTML = state.ignoredFiles
+            .map((name) => `<span class="pill muted">${escapeHtml(name)}</span>`)
+            .join('');
+        } else {
+          els.ignoredRow.style.display = 'none';
+          els.ignoredPills.innerHTML = '';
+        }
+
+        const ready = Boolean(state.codbarrasFile && state.signaturaFile);
+        els.btnRun.disabled = !ready;
+        els.btnRun.textContent = state.jsonFiles.length > 0
+          ? `Fusionar en libros.json y sincronizar ${state.jsonFiles.length} fichero(s) libros1..N.json`
+          : 'Fusionar en libros.json y crear libros1..N.json desde cero';
+      }
+
+      function addFilesList(fileList, replaceAll = false) {
+        showError('');
+        if (replaceAll) {
+          state.dirHandle = null;
+          state.librosJsonHandle = null;
+          state.codbarrasFile = null;
+          state.signaturaFile = null;
+          state.jsonFiles = [];
+          state.ignoredFiles = [];
+        }
+
+        const existingMap = new Map(state.jsonFiles.map((j) => [j.name.toLowerCase(), j]));
+        const ignoredSet = new Set(state.ignoredFiles);
+
+        for (const file of Array.from(fileList)) {
+          if (file.webkitRelativePath) {
+            const depth = file.webkitRelativePath.split('/').length;
+            if (depth > 2) continue;
+          }
+
+          const lower = file.name.toLowerCase();
+          if (lower.endsWith('.txt')) {
+            const kind = classifyTxtFileName(file.name);
+            if (kind === 'codbarras') {
+              state.codbarrasFile = file;
+            } else if (kind === 'signatura') {
+              state.signaturaFile = file;
+            } else {
+              ignoredSet.add(file.name);
+            }
+          } else if (lower.endsWith('.json')) {
+            const m = file.name.match(PATRON_LIBROS_PART);
+            if (m) {
+              existingMap.set(lower, {
+                num: parseInt(m[1], 10),
+                name: file.name,
+                file,
+                handle: null
+              });
+            } else if (lower === 'libros.json') {
+              ignoredSet.add(`${file.name} (previo, se regenerará)`);
+            } else {
+              ignoredSet.add(file.name);
+            }
+          }
+        }
+
+        state.jsonFiles = Array.from(existingMap.values()).sort((a, b) => a.num - b.num || a.name.localeCompare(b.name));
+        state.ignoredFiles = Array.from(ignoredSet).sort();
+        updateSelectionUI();
+
+        const missing = [];
+        if (!state.codbarrasFile) missing.push('codbarras.txt');
+        if (!state.signaturaFile) missing.push('signatura.txt');
+        if (replaceAll && missing.length > 0) {
+          showError(`Falta seleccionar: ${missing.join(' y ')}. Puedes elegirlos manualmente con los botones de la derecha.`);
+        }
+      }
+
+      // Abrir carpeta directa (File System Access API)
+      els.btnDirectFolder.addEventListener('click', async () => {
+        showError('');
+        try {
+          const dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+          state.dirHandle = dirHandle;
+          state.librosJsonHandle = null;
+          state.codbarrasFile = null;
+          state.signaturaFile = null;
+          state.jsonFiles = [];
+          state.ignoredFiles = [];
+
+          for await (const [name, handle] of dirHandle.entries()) {
+            if (handle.kind !== 'file') continue;
+            const lower = name.toLowerCase();
+            if (lower.endsWith('.txt')) {
+              const kind = classifyTxtFileName(name);
+              if (kind === 'codbarras') {
+                state.codbarrasFile = await handle.getFile();
+              } else if (kind === 'signatura') {
+                state.signaturaFile = await handle.getFile();
+              } else {
+                state.ignoredFiles.push(name);
+              }
+            } else if (lower.endsWith('.json')) {
+              const m = name.match(PATRON_LIBROS_PART);
+              if (m) {
+                const file = await handle.getFile();
+                state.jsonFiles.push({
+                  num: parseInt(m[1], 10),
+                  name,
+                  file,
+                  handle
+                });
+              } else if (lower === 'libros.json') {
+                state.librosJsonHandle = handle;
+                state.ignoredFiles.push(`${name} (previo, se sobrescribirá)`);
+              } else {
+                state.ignoredFiles.push(name);
+              }
+            }
+          }
+
+          state.jsonFiles.sort((a, b) => a.num - b.num || a.name.localeCompare(b.name));
+          state.ignoredFiles.sort();
+          updateSelectionUI();
+
+          const missing = [];
+          if (!state.codbarrasFile) missing.push('codbarras.txt');
+          if (!state.signaturaFile) missing.push('signatura.txt');
+          if (missing.length > 0) {
+            showError(`No se encontró ${missing.join(' ni ')} en la carpeta seleccionada. Puedes elegirlos manualmente.`);
+          }
+        } catch (err) {
+          if (err && err.name !== 'AbortError') {
+            showError(`No se pudo abrir la carpeta en modo directo: ${err.message}`);
+          }
+        }
+      });
+
+      // Selectores estándar
+      els.btnPickFolder.addEventListener('click', () => els.inputFolder.click());
+      els.inputFolder.addEventListener('change', (e) => {
+        if (e.target.files.length) addFilesList(e.target.files, true);
+        e.target.value = '';
+      });
+
+      els.btnPickCodbarras.addEventListener('click', () => els.inputCodbarras.click());
+      els.inputCodbarras.addEventListener('change', (e) => {
+        if (e.target.files.length) {
+          state.codbarrasFile = e.target.files[0];
+          showError('');
+          updateSelectionUI();
+        }
+        e.target.value = '';
+      });
+
+      els.btnPickSignatura.addEventListener('click', () => els.inputSignatura.click());
+      els.inputSignatura.addEventListener('change', (e) => {
+        if (e.target.files.length) {
+          state.signaturaFile = e.target.files[0];
+          showError('');
+          updateSelectionUI();
+        }
+        e.target.value = '';
+      });
+
+      els.btnPickJson.addEventListener('click', () => els.inputJson.click());
+      els.inputJson.addEventListener('change', (e) => {
+        if (e.target.files.length) addFilesList(e.target.files, false);
+        e.target.value = '';
+      });
+
+      els.maxSizeMb.addEventListener('input', updateSelectionUI);
+
+      els.btnClear.addEventListener('click', () => {
+        state.dirHandle = null;
+        state.librosJsonHandle = null;
+        state.codbarrasFile = null;
+        state.signaturaFile = null;
+        state.jsonFiles = [];
+        state.ignoredFiles = [];
+        state.lastResult = null;
+        els.resultsSection.classList.remove('visible');
+        els.progressWrap.classList.remove('visible');
+        showError('');
+        updateSelectionUI();
+      });
+
+      [els.manualZone, els.folderZone].forEach((zone) => {
+        zone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          zone.classList.add('dragover');
+        });
+        zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+        zone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          zone.classList.remove('dragover');
+          if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+            addFilesList(e.dataTransfer.files, false);
+          }
+        });
+      });
+
+      // Decodificación de ficheros TXT
+      async function decodeTxtBuffer(buffer, mode) {
+        if (mode === 'utf-8') {
+          return {
+            text: new TextDecoder('utf-8').decode(buffer),
+            detectedEncoding: 'UTF-8 (seleccionada)'
+          };
+        }
+        if (mode === 'windows-1252') {
+          return {
+            text: new TextDecoder('windows-1252').decode(buffer),
+            detectedEncoding: 'Windows-1252 / ISO-8859-1 (seleccionada)'
+          };
+        }
+        try {
+          const text = new TextDecoder('utf-8', { fatal: true }).decode(buffer);
+          return { text, detectedEncoding: 'UTF-8 (auto)' };
+        } catch {
+          const text = new TextDecoder('windows-1252').decode(buffer);
+          return { text, detectedEncoding: 'Windows-1252 / ISO-8859-1 (auto)' };
+        }
+      }
+
+      // Helpers de normalización y limpieza
+      function cleanTitlePunctuation(raw) {
+        if (!raw) return '';
+        return raw
+          .replace(/[^\p{L}\p{N}_\s]/gu, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+
+      function normCompareText(str) {
+        if (!str) return '';
+        return String(str)
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^\p{L}\p{N}\s]/gu, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+
+      function titlesAreCoherent(shortOrTxtTitle, existingJsonTitle) {
+        const ntA = normCompareText(shortOrTxtTitle);
+        const ntB = normCompareText(existingJsonTitle);
+        if (!ntA && !ntB) return true;
+        if (!ntA || !ntB) return false;
+        if (ntB === ntA || ntB.startsWith(ntA) || ntB.includes(ntA) || ntA.startsWith(ntB)) return true;
+        const nsA = ntA.replace(/\s+/g, '');
+        const nsB = ntB.replace(/\s+/g, '');
+        return nsB === nsA || nsB.startsWith(nsA) || nsB.includes(nsA) || nsA.startsWith(nsB);
+      }
+
+      function normExactKey(val, caseInsensitive) {
+        const s = String(val ?? '').trim();
+        return caseInsensitive ? s.toLowerCase() : s;
+      }
+
+      function extractSigPrefix(sig) {
+        const m = String(sig || '').match(/^([A-Za-zÁÉÍÓÚÑ]+)/);
+        return m ? m[1].toUpperCase() : '(Otros)';
+      }
+
+      // Detectar posiciones de columna a partir de la línea de guiones de codbarras.txt
+      function detectCodbarrasLayout(sepLine) {
+        // Por defecto en listados Absys OPAC:
+        // 0..19 Signatura | 21..27 Supl. | 28..29 S | 30..38 NA | 40..44 Suc. | 45..51 Loc. | 53..63 Cod./Bar. | 64..72 NEA | 74.. Título
+        const spans = [];
+        const re = /-+/g;
+        let m;
+        while ((m = re.exec(sepLine)) !== null) {
+          spans.push([m.index, m.index + m[0].length]);
+        }
+        if (spans.length >= 8) {
+          return {
+            sigStart: spans[0][0],
+            sigEnd: spans[0][1],
+            barStart: spans[6][0],
+            barEnd: spans[6][1],
+            neaStart: spans[7][0],
+            neaEnd: spans[7][1],
+            titleStart: spans.length >= 9 ? spans[8][0] : spans[7][1] + 2
+          };
+        }
+        return {
+          sigStart: 0,
+          sigEnd: 19,
+          barStart: 53,
+          barEnd: 63,
+          neaStart: 64,
+          neaEnd: 72,
+          titleStart: 74
+        };
+      }
+
+      function isSignaturaHeaderLine(line) {
+        const lower = line.toLowerCase();
+        return lower.includes('autor') && (lower.includes('título') || lower.includes('titulo')) && lower.includes('signatura');
+      }
+
+      /**
+       * Parsea una línea de signatura.txt respetando primero las posiciones fijas de tabulador
+       * del listado OPAC (60, 122, 129) para que tabuladores internos no desplacen campos,
+       * con respaldo general por split('\t').
+       */
+      function parseSignaturaLine(rawLine) {
+        const line = rawLine.replace(/[\r\n]+$/, '');
+        if (!line.replace(/[\s\t]+/g, '')) return null;
+
+        if (line.length > 129 && line[60] === '\t' && line[122] === '\t' && line[129] === '\t') {
+          const autor = line.slice(0, 60).replace(/\t+/g, ' ').replace(/\s+/g, ' ').replace(/\s+\./g, '.').trim();
+          const titulo = line.slice(61, 122).replace(/^\t+/, '').replace(/\t+$/, '').trim();
+          const fecha = line.slice(123, 129).trim();
+          const signatura = line.slice(130).trim();
+          return { autor, titulo, fecha, signatura };
+        }
+
+        if (line.includes('\t')) {
+          const withoutTrailingTabs = line.replace(/\t+\s*$/, '');
+          const parts = withoutTrailingTabs.split('\t');
+          if (parts.length >= 4) {
+            const signatura = parts[parts.length - 1].trim();
+            const fecha = parts[parts.length - 2].trim();
+            const titulo = parts[parts.length - 3].trim();
+            const autor = parts
+              .slice(0, parts.length - 3)
+              .map((p) => p.trim())
+              .filter(Boolean)
+              .join(' ')
+              .replace(/\s+\./g, '.');
+            return { autor, titulo, fecha, signatura };
+          }
+        }
+
+        const fallbackRegex = /^(.*?)(?:\s+)(\d{1,4})(?:\s+)(\S.*)$/;
+        const m = line.trim().match(fallbackRegex);
+        if (m) {
+          const left = m[1].trim();
+          const fecha = m[2].trim();
+          const signatura = m[3].trim();
+          const splitLeft = left.split(/\s{2,}/);
+          const autor = splitLeft.length >= 2 ? splitLeft[0].trim() : '';
+          const titulo = splitLeft.length >= 2 ? splitLeft.slice(1).join(' ').trim() : left;
+          return { autor, titulo, fecha, signatura };
+        }
+
+        return null;
+      }
+
+      // Extraer campos de cualquier registro existente en libros1..N.json
+      function extractExistingJsonFields(rec) {
+        if (Array.isArray(rec)) {
+          return {
+            autor: rec.length > 0 && rec[0] != null ? String(rec[0]).trim() : '',
+            titulo: rec.length > 1 && rec[1] != null ? String(rec[1]).trim() : '',
+            fecha: rec.length > 2 && rec[2] != null ? String(rec[2]).trim() : '',
+            signatura: rec.length > 3 && rec[3] != null ? String(rec[3]).trim() : '',
+            cbarras: rec.length > 4 && rec[4] != null ? String(rec[4]).trim() : ''
+          };
+        }
+        if (rec && typeof rec === 'object') {
+          const pick = (keys) => {
+            for (const k of keys) {
+              if (rec[k] != null) return String(rec[k]).trim();
+            }
+            return '';
+          };
+          return {
+            autor: pick(['Autor', 'autor', 'AUTOR']),
+            titulo: pick(['titulo', 'Titulo', 'TITULO', 'título', 'Título']),
+            fecha: pick(['fecha', 'Fecha', 'FECHA']),
+            signatura: pick(['signatura', 'Signatura', 'SIGNATURA']),
+            cbarras: pick(['cbarras', 'Cbarras', 'CBARRAS', 'codbarras'])
+          };
+        }
+        return null;
+      }
+
+      // Serialización exacta en bytes y construcción eficiente de Blobs sin picos de memoria
+      function serializeSingleRecord(rec, pretty) {
+        if (!pretty) {
+          return JSON.stringify(rec);
+        }
+        const raw = JSON.stringify(rec, null, 4);
+        return '    ' + raw.replace(/\n/g, '\n    ');
+      }
+
+      function recordExtraBytes(serializedRec, currentCount, pretty) {
+        const recBytes = textEncoder.encode(serializedRec).length;
+        if (!pretty) {
+          // Compacto: "[]" (2 B) -> "[rec]" (+recBytes) -> "[rec,rec2]" (+1+recBytes)
+          return currentCount === 0 ? recBytes : 1 + recBytes;
+        }
+        // Identado: "[]" (2 B) -> "[\n" + rec + "\n]" (4 + recBytes => +2 + recBytes)
+        // Siguientes: ",\n" + rec (+2 + recBytes)
+        return 2 + recBytes;
+      }
+
+      function computeTotalArrayBytes(records, pretty) {
+        if (records.length === 0) return 2;
+        let bytes = 2;
+        for (let i = 0; i < records.length; i++) {
+          const s = serializeSingleRecord(records[i], pretty);
+          bytes += recordExtraBytes(s, i, pretty);
+        }
+        return bytes;
+      }
+
+      function buildJsonArrayBlob(records, pretty) {
+        if (records.length === 0) {
+          return new Blob(['[]'], { type: 'application/json;charset=utf-8' });
+        }
+        const CHUNK = 4000;
+        const parts = [pretty ? '[\n' : '['];
+        for (let start = 0; start < records.length; start += CHUNK) {
+          const end = Math.min(start + CHUNK, records.length);
+          const sliceStrs = new Array(end - start);
+          for (let i = start; i < end; i++) {
+            sliceStrs[i - start] = serializeSingleRecord(records[i], pretty);
+          }
+          if (start > 0) {
+            parts.push(pretty ? ',\n' : ',');
+          }
+          parts.push(sliceStrs.join(pretty ? ',\n' : ','));
+        }
+        parts.push(pretty ? '\n]' : ']');
+        return new Blob(parts, { type: 'application/json;charset=utf-8' });
+      }
+
+      // Cola indexada O(1) para emparejamiento 1-a-1
+      function pushToQueueMap(map, key, item) {
+        let q = map.get(key);
+        if (!q) {
+          q = { items: [item], head: 0 };
+          map.set(key, q);
+        } else {
+          q.items.push(item);
+        }
+      }
+
+      function popFromQueueMap(map, key) {
+        const q = map.get(key);
+        if (!q) return null;
+        while (q.head < q.items.length) {
+          const item = q.items[q.head++];
+          if (!item.matched) {
+            item.matched = true;
+            return item;
+          }
+        }
+        return null;
+      }
+
+      // Proceso principal
+      async function runProcess() {
+        showError('');
+        const t0 = performance.now();
+
+        const maxMb = parseFloat(els.maxSizeMb.value);
+        if (!Number.isFinite(maxMb) || maxMb <= 0) {
+          showError('Introduce un tamaño máximo válido en MB (por ejemplo, 10).');
+          return;
+        }
+        const MAX_BYTES = Math.floor(maxMb * 1024 * 1024);
+        const encodingMode = els.txtEncoding.value;
+        const prettyJson = els.jsonFormat.value === 'pretty';
+        const useNeaFallback = els.optNeaFallback.checked;
+        const doCleanTitle = els.optCleanTitle.checked;
+        const caseInsensitive = els.optCaseInsensitive.checked;
+
+        els.btnRun.disabled = true;
+        els.resultsSection.classList.remove('visible');
+
+        try {
+          // =========================================================================
+          // FASE 1: LEER Y PARSEAR codbarras.txt
+          // =========================================================================
+          setProgress(4, `Leyendo y decodificando ${state.codbarrasFile.name}…`);
+          await yieldToUI();
+
+          let cbEncoding = '';
+          const cbItems = [];
+          let cbTotalLines = 0;
+          let cbHeadersSkipped = 0;
+          let cbEmptySkipped = 0;
+          let cbFromDirectBar = 0;
+          let cbFromNeaFallback = 0;
+          let cbEmptyCode = 0;
+
+          {
+            const cbBuf = await state.codbarrasFile.arrayBuffer();
+            const decodedCb = await decodeTxtBuffer(cbBuf, encodingMode);
+            cbEncoding = decodedCb.detectedEncoding;
+            const cbLines = decodedCb.text.split(/\r?\n/);
+            cbTotalLines = cbLines.length;
+
+            let layout = null;
+            const CHUNK_CB = 25000;
+            for (let start = 0; start < cbTotalLines; start += CHUNK_CB) {
+              const end = Math.min(start + CHUNK_CB, cbTotalLines);
+              for (let i = start; i < end; i++) {
+                const rawLine = cbLines[i];
+                if (!rawLine) {
+                  cbEmptySkipped++;
+                  continue;
+                }
+                const cleaned = rawLine.replace(/^\f+/, '');
+                if (!cleaned.trim()) {
+                  cbEmptySkipped++;
+                  continue;
+                }
+                if (PATRON_PAGINA_CB.test(cleaned)) {
+                  cbHeadersSkipped++;
+                  continue;
+                }
+                if (cleaned.includes('Signatura') && (cleaned.includes('Cod./Bar.') || cleaned.includes('NEA'))) {
+                  cbHeadersSkipped++;
+                  continue;
+                }
+                if (cleaned.includes('-----') && PATRON_SEPARADOR_CB.test(cleaned)) {
+                  if (!layout) layout = detectCodbarrasLayout(cleaned);
+                  cbHeadersSkipped++;
+                  continue;
+                }
+
+                if (!layout) {
+                  layout = detectCodbarrasLayout('');
+                }
+
+                const sig = cleaned.slice(layout.sigStart, layout.sigEnd).trim();
+                const barRaw = cleaned.slice(layout.barStart, layout.barEnd).trim();
+                const neaRaw = cleaned.slice(layout.neaStart, layout.neaEnd).trim();
+                const titulo = cleaned.slice(layout.titleStart).replace(/^\t+/, '').replace(/\t+$/, '').trim();
+
+                let cbarras = barRaw;
+                if (barRaw) {
+                  cbFromDirectBar++;
+                } else if (useNeaFallback && neaRaw) {
+                  cbarras = neaRaw;
+                  cbFromNeaFallback++;
+                } else {
+                  cbarras = '';
+                  cbEmptyCode++;
+                }
+
+                cbItems.push({
+                  lineNum: i + 1,
+                  sig,
+                  cbarras,
+                  titulo,
+                  matched: false
+                });
+              }
+
+              setProgress(4 + (end / cbTotalLines) * 18, `Procesando ${state.codbarrasFile.name}: ${fmtNum(end)} / ${fmtNum(cbTotalLines)} líneas…`);
+              await yieldToUI();
+            }
+          }
+
+          // Indexar codbarras por (titulo, signatura) exacta
+          setProgress(24, 'Indexando códigos de barras por título y signatura…');
+          await yieldToUI();
+
+          const cbExactMap = new Map();
+          for (let i = 0; i < cbItems.length; i++) {
+            const item = cbItems[i];
+            const key = `${normExactKey(item.titulo, caseInsensitive)}\x1f${normExactKey(item.sig, caseInsensitive)}`;
+            pushToQueueMap(cbExactMap, key, item);
+          }
+
+          // =========================================================================
+          // FASE 2: LEER signatura.txt Y FUSIONAR EN libros.json
+          // =========================================================================
+          setProgress(28, `Leyendo y decodificando ${state.signaturaFile.name}…`);
+          await yieldToUI();
+
+          let sigEncoding = '';
+          let sigTotalLines = 0;
+          let sigHeaderSkipped = 0;
+          let sigEmptySkipped = 0;
+          let sigInvalidSkipped = 0;
+
+          const librosRecords = [];
+          const unmatchedSigIndices = [];
+          const sigTitleCounts = new Map();
+          const prefixCounts = new Map();
+
+          let matchedExactCount = 0;
+          let matchedTrunc19Count = 0;
+          let matchedNormFallbackCount = 0;
+
+          {
+            const sigBuf = await state.signaturaFile.arrayBuffer();
+            const decodedSig = await decodeTxtBuffer(sigBuf, encodingMode);
+            sigEncoding = decodedSig.detectedEncoding;
+            const sigLines = decodedSig.text.split(/\r?\n/);
+            sigTotalLines = sigLines.length;
+
+            const CHUNK_SIG = 25000;
+            for (let start = 0; start < sigTotalLines; start += CHUNK_SIG) {
+              const end = Math.min(start + CHUNK_SIG, sigTotalLines);
+              for (let i = start; i < end; i++) {
+                const rawLine = sigLines[i];
+                if (!rawLine || !rawLine.replace(/[\s\t]+/g, '')) {
+                  sigEmptySkipped++;
+                  continue;
+                }
+                if (i === 0 && isSignaturaHeaderLine(rawLine)) {
+                  sigHeaderSkipped++;
+                  continue;
+                }
+
+                const parsed = parseSignaturaLine(rawLine);
+                if (!parsed || (!parsed.signatura && !parsed.titulo)) {
+                  sigInvalidSkipped++;
+                  continue;
+                }
+
+                const rawTitulo = parsed.titulo;
+                const finalTitle = doCleanTitle ? cleanTitlePunctuation(rawTitulo) : rawTitulo;
+                const sig = parsed.signatura;
+
+                // Contabilizar ejemplares con mismo (título, signatura)
+                const pairKey = `${normExactKey(rawTitulo, caseInsensitive)}\x1f${normExactKey(sig, caseInsensitive)}`;
+                sigTitleCounts.set(pairKey, (sigTitleCounts.get(pairKey) || 0) + 1);
+
+                const pref = extractSigPrefix(sig);
+                prefixCounts.set(pref, (prefixCounts.get(pref) || 0) + 1);
+
+                // Pasada 1: coincidencia exacta (título, signatura)
+                const cbMatch = popFromQueueMap(cbExactMap, pairKey);
+                const recIdx = librosRecords.length;
+
+                const rec = {
+                  Autor: parsed.autor,
+                  titulo: finalTitle,
+                  fecha: parsed.fecha,
+                  signatura: sig,
+                  cbarras: cbMatch ? cbMatch.cbarras : ''
+                };
+                librosRecords.push(rec);
+
+                if (cbMatch) {
+                  matchedExactCount++;
+                } else {
+                  unmatchedSigIndices.push({ recIdx, rawTitulo, lineNum: i + 1 });
+                }
+              }
+
+              setProgress(28 + (end / sigTotalLines) * 22, `Fusionando ${state.signaturaFile.name}: ${fmtNum(end)} / ${fmtNum(sigTotalLines)} líneas…`);
+              await yieldToUI();
+            }
+          }
+
+          // Pasada 2: signaturas > 19 caracteres truncadas en la columna fija de 19 chars de codbarras.txt
+          if (unmatchedSigIndices.length > 0) {
+            const cbTrunc19Map = new Map();
+            for (let i = 0; i < cbItems.length; i++) {
+              const item = cbItems[i];
+              if (!item.matched) {
+                const key19 = `${normExactKey(item.titulo, caseInsensitive)}\x1f${normExactKey(item.sig, caseInsensitive)}`;
+                pushToQueueMap(cbTrunc19Map, key19, item);
+              }
+            }
+
+            const stillUnmatched = [];
+            for (const u of unmatchedSigIndices) {
+              const rec = librosRecords[u.recIdx];
+              const sig19 = rec.signatura.slice(0, 19).trim();
+              const key19 = `${normExactKey(u.rawTitulo, caseInsensitive)}\x1f${normExactKey(sig19, caseInsensitive)}`;
+              const cbMatch = popFromQueueMap(cbTrunc19Map, key19);
+              if (cbMatch) {
+                rec.cbarras = cbMatch.cbarras;
+                matchedTrunc19Count++;
+              } else {
+                stillUnmatched.push(u);
+              }
+            }
+
+            // Pasada 3: respaldo normalizando puntuación/espacios por si hubiera mínimas diferencias
+            if (stillUnmatched.length > 0) {
+              const cbNormMap = new Map();
+              for (let i = 0; i < cbItems.length; i++) {
+                const item = cbItems[i];
+                if (!item.matched) {
+                  const nKey = `${normCompareText(item.titulo)}\x1f${item.sig.toLowerCase().replace(/\s+/g, '')}`;
+                  pushToQueueMap(cbNormMap, nKey, item);
+                }
+              }
+
+              unmatchedSigIndices.length = 0;
+              for (const u of stillUnmatched) {
+                const rec = librosRecords[u.recIdx];
+                const sigShort = rec.signatura.slice(0, 19).trim().toLowerCase().replace(/\s+/g, '');
+                const sigFull = rec.signatura.toLowerCase().replace(/\s+/g, '');
+                const nt = normCompareText(u.rawTitulo);
+                const cbMatch =
+                  popFromQueueMap(cbNormMap, `${nt}\x1f${sigFull}`) ||
+                  popFromQueueMap(cbNormMap, `${nt}\x1f${sigShort}`);
+                if (cbMatch) {
+                  rec.cbarras = cbMatch.cbarras;
+                  matchedNormFallbackCount++;
+                } else {
+                  unmatchedSigIndices.push(u);
+                }
+              }
+            } else {
+              unmatchedSigIndices.length = 0;
+            }
+          }
+
+          const leftoverCbItems = cbItems.filter((it) => !it.matched);
+
+          // Estadística de obras con múltiples ejemplares (mismo título y signatura, distinto cbarras)
+          let multiCopyWorks = 0;
+          let multiCopyTotalRecords = 0;
+          for (const count of sigTitleCounts.values()) {
+            if (count > 1) {
+              multiCopyWorks++;
+              multiCopyTotalRecords += count;
+            }
+          }
+
+          // Generar Blob de libros.json (catálogo completo fusionado)
+          setProgress(54, 'Generando fichero fusionado libros.json…');
+          await yieldToUI();
+
+          const librosMasterBlob = buildJsonArrayBlob(librosRecords, prettyJson);
+          const librosMasterEntry = {
+            isMaster: true,
+            num: 0,
+            name: 'libros.json',
+            handle: state.librosJsonHandle || null,
+            initialCount: 0,
+            addedCount: librosRecords.length,
+            removedCount: 0,
+            finalCount: librosRecords.length,
+            initialBytes: 0,
+            finalBytes: librosMasterBlob.size,
+            blob: librosMasterBlob,
+            status: 'master',
+            savedToDisk: false
+          };
+
+          // =========================================================================
+          // FASE 3: CREACIÓN O SINCRONIZACIÓN CON libros1.json, libros2.json, ...
+          // =========================================================================
+          const createdFromScratch = state.jsonFiles.length === 0;
+          const jsonEntries = [];
+          const addedRecords = [];     // { rec, file }
+          const removedRecords = [];   // { rec, file }
+          let totalJsonInitial = 0;
+          let preservedExistingCount = 0;
+
+          if (createdFromScratch) {
+            // --- MODO CREACIÓN DESDE CERO (libros1.json, libros2.json, ... ≤ MAX_BYTES) ---
+            setProgress(60, `Particionando ${fmtNum(librosRecords.length)} registros en libros1.json, libros2.json… (límite ${maxMb} MB)…`);
+            await yieldToUI();
+
+            let nextNum = 1;
+            let activeEntry = {
+              isMaster: false,
+              num: nextNum++,
+              name: 'libros1.json',
+              handle: null,
+              initialCount: 0,
+              addedCount: 0,
+              removedCount: 0,
+              initialBytes: 0,
+              currentBytes: 2,
+              records: [],
+              status: 'new',
+              savedToDisk: false
+            };
+            jsonEntries.push(activeEntry);
+
+            const CHUNK_SPLIT = 20000;
+            for (let start = 0; start < librosRecords.length; start += CHUNK_SPLIT) {
+              const end = Math.min(start + CHUNK_SPLIT, librosRecords.length);
+              for (let i = start; i < end; i++) {
+                const rec = librosRecords[i];
+                const serialized = serializeSingleRecord(rec, prettyJson);
+                const extra = recordExtraBytes(serialized, activeEntry.records.length, prettyJson);
+
+                if (activeEntry.records.length > 0 && activeEntry.currentBytes + extra > MAX_BYTES) {
+                  activeEntry = {
+                    isMaster: false,
+                    num: nextNum,
+                    name: `libros${nextNum}.json`,
+                    handle: null,
+                    initialCount: 0,
+                    addedCount: 0,
+                    removedCount: 0,
+                    initialBytes: 0,
+                    currentBytes: 2,
+                    records: [],
+                    status: 'new',
+                    savedToDisk: false
+                  };
+                  nextNum++;
+                  jsonEntries.push(activeEntry);
+                }
+
+                const finalExtra = recordExtraBytes(serialized, activeEntry.records.length, prettyJson);
+                activeEntry.records.push(rec);
+                activeEntry.addedCount++;
+                activeEntry.currentBytes += finalExtra;
+                addedRecords.push({ rec, file: activeEntry.name });
+              }
+
+              setProgress(60 + (end / librosRecords.length) * 32, `Generando lotes JSON (≤ ${maxMb} MB): ${fmtNum(end)} / ${fmtNum(librosRecords.length)}…`);
+              await yieldToUI();
+            }
+          } else {
+            // --- MODO SINCRONIZACIÓN CON libros1.json, libros2.json, ... EXISTENTES ---
+            // Leer todos los libros1..N.json e indexar sus registros
+            const existingWrappersByKey = new Map(); // "${sigKey}\x1f${barKey}" -> [wrapper]
+
+            for (let i = 0; i < state.jsonFiles.length; i++) {
+              const jf = state.jsonFiles[i];
+              setProgress(58 + (i / state.jsonFiles.length) * 16, `Leyendo ${jf.name} (${i + 1}/${state.jsonFiles.length})…`);
+              await yieldToUI();
+
+              let parsed;
+              try {
+                parsed = JSON.parse(await jf.file.text());
+              } catch (e) {
+                throw new Error(`El fichero ${jf.name} no es un JSON válido: ${e.message}`);
+              }
+              if (!Array.isArray(parsed)) {
+                throw new Error(`El fichero ${jf.name} no contiene una lista JSON raíz.`);
+              }
+
+              totalJsonInitial += parsed.length;
+              const isLast = i === state.jsonFiles.length - 1;
+
+              const entry = {
+                isMaster: false,
+                num: jf.num,
+                name: jf.name,
+                handle: jf.handle || null,
+                initialCount: parsed.length,
+                addedCount: 0,
+                removedCount: 0,
+                initialBytes: jf.file.size,
+                currentBytes: isLast ? computeTotalArrayBytes(parsed, prettyJson) : jf.file.size,
+                records: parsed,
+                keepFlags: new Uint8Array(parsed.length), // 1 = se mantiene en libros.json, 0 = eliminar
+                status: 'unchanged',
+                savedToDisk: false
+              };
+              jsonEntries.push(entry);
+
+              for (let rIdx = 0; rIdx < parsed.length; rIdx++) {
+                const fields = extractExistingJsonFields(parsed[rIdx]);
+                if (!fields) continue;
+                const sigKey = normExactKey(fields.signatura, caseInsensitive);
+                const barKey = normExactKey(fields.cbarras, caseInsensitive);
+                const bucketKey = `${sigKey}\x1f${barKey}`;
+
+                const wrapper = {
+                  entry,
+                  rIdx,
+                  fields,
+                  normAutor: normCompareText(fields.autor),
+                  normTitulo: normCompareText(fields.titulo),
+                  matched: false
+                };
+                let arr = existingWrappersByKey.get(bucketKey);
+                if (!arr) {
+                  arr = [wrapper];
+                  existingWrappersByKey.set(bucketKey, arr);
+                } else {
+                  arr.push(wrapper);
+                }
+              }
+            }
+
+            // Emparejar libros.json contra los registros de libros1..N.json
+            // Soporta tanto ejemplares múltiples con distinto cbarras como volúmenes facticios (mismo sig+cbarras)
+            // y preserva los títulos ya enriquecidos en libros1..N.json por 5_sustituir_titulos.html.
+            setProgress(76, 'Comprobando libros de libros.json frente a libros1..N.json…');
+            await yieldToUI();
+
+            const librosByBucket = new Map();
+            for (let i = 0; i < librosRecords.length; i++) {
+              const rec = librosRecords[i];
+              const sigKey = normExactKey(rec.signatura, caseInsensitive);
+              const barKey = normExactKey(rec.cbarras, caseInsensitive);
+              const bucketKey = `${sigKey}\x1f${barKey}`;
+              let arr = librosByBucket.get(bucketKey);
+              if (!arr) {
+                arr = [i];
+                librosByBucket.set(bucketKey, arr);
+              } else {
+                arr.push(i);
+              }
+            }
+
+            const librosMatchedFlags = new Uint8Array(librosRecords.length);
+
+            for (const [bucketKey, lIndices] of librosByBucket.entries()) {
+              const jCandidates = existingWrappersByKey.get(bucketKey);
+              if (!jCandidates || jCandidates.length === 0) continue;
+
+              // Sub-pasada 1: Coincidencia exacta de autor + título + fecha dentro del mismo (signatura, cbarras)
+              for (let a = 0; a < lIndices.length; a++) {
+                const lIdx = lIndices[a];
+                const lRec = librosRecords[lIdx];
+                const nAutor = normCompareText(lRec.Autor);
+                const nTitulo = normCompareText(lRec.titulo);
+                for (let b = 0; b < jCandidates.length; b++) {
+                  const jw = jCandidates[b];
+                  if (jw.matched) continue;
+                  if (jw.normAutor === nAutor && jw.normTitulo === nTitulo && jw.fields.fecha === lRec.fecha) {
+                    jw.matched = true;
+                    jw.entry.keepFlags[jw.rIdx] = 1;
+                    librosMatchedFlags[lIdx] = 1;
+                    preservedExistingCount++;
+                    break;
+                  }
+                }
+              }
+
+              // Sub-pasada 2: Mismo autor y título coherente (p.ej. título ampliado por OPAC en libros1..N.json)
+              for (let a = 0; a < lIndices.length; a++) {
+                const lIdx = lIndices[a];
+                if (librosMatchedFlags[lIdx]) continue;
+                const lRec = librosRecords[lIdx];
+                const nAutor = normCompareText(lRec.Autor);
+                for (let b = 0; b < jCandidates.length; b++) {
+                  const jw = jCandidates[b];
+                  if (jw.matched) continue;
+                  if (jw.normAutor === nAutor && titlesAreCoherent(lRec.titulo, jw.fields.titulo)) {
+                    jw.matched = true;
+                    jw.entry.keepFlags[jw.rIdx] = 1;
+                    librosMatchedFlags[lIdx] = 1;
+                    preservedExistingCount++;
+                    break;
+                  }
+                }
+              }
+
+              // Sub-pasada 3: Mismo (signatura, cbarras no vacío) cuando es ejemplar único o título coherente
+              for (let a = 0; a < lIndices.length; a++) {
+                const lIdx = lIndices[a];
+                if (librosMatchedFlags[lIdx]) continue;
+                const lRec = librosRecords[lIdx];
+                if (!lRec.cbarras) continue;
+                for (let b = 0; b < jCandidates.length; b++) {
+                  const jw = jCandidates[b];
+                  if (jw.matched) continue;
+                  if ((lIndices.length === 1 && jCandidates.length === 1) || titlesAreCoherent(lRec.titulo, jw.fields.titulo)) {
+                    jw.matched = true;
+                    jw.entry.keepFlags[jw.rIdx] = 1;
+                    librosMatchedFlags[lIdx] = 1;
+                    preservedExistingCount++;
+                    break;
+                  }
+                }
+              }
+            }
+
+            // PASO A DE SINCRONIZACIÓN: Añadir los libros que están en libros.json y NO en libros1..N.json
+            // al último fichero (creando nuevos si supera MAX_BYTES)
+            setProgress(84, `Añadiendo altas nuevas al último fichero (límite ${maxMb} MB)…`);
+            await yieldToUI();
+
+            let activeEntry = jsonEntries[jsonEntries.length - 1];
+            let nextFileNum = activeEntry.num + 1;
+
+            for (let i = 0; i < librosRecords.length; i++) {
+              if (librosMatchedFlags[i]) continue;
+
+              const rec = librosRecords[i];
+              const serialized = serializeSingleRecord(rec, prettyJson);
+              const extra = recordExtraBytes(serialized, activeEntry.records.length, prettyJson);
+
+              if (activeEntry.records.length > 0 && activeEntry.currentBytes + extra > MAX_BYTES) {
+                const newEntry = {
+                  isMaster: false,
+                  num: nextFileNum,
+                  name: `libros${nextFileNum}.json`,
+                  handle: null,
+                  initialCount: 0,
+                  addedCount: 0,
+                  removedCount: 0,
+                  initialBytes: 0,
+                  currentBytes: 2,
+                  records: [],
+                  keepFlags: null,
+                  status: 'new',
+                  savedToDisk: false
+                };
+                nextFileNum++;
+                jsonEntries.push(newEntry);
+                activeEntry = newEntry;
+              }
+
+              const finalExtra = recordExtraBytes(serialized, activeEntry.records.length, prettyJson);
+              activeEntry.records.push(rec);
+              activeEntry.addedCount++;
+              activeEntry.currentBytes += finalExtra;
+              if (activeEntry.status === 'unchanged') {
+                activeEntry.status = 'modified';
+              }
+              addedRecords.push({ rec, file: activeEntry.name });
+            }
+
+            // PASO B DE SINCRONIZACIÓN: Comprobar qué libros de libros1..N.json NO están en libros.json
+            // y eliminarlos de libros1..N.json
+            setProgress(90, 'Eliminando de libros1..N.json los registros ausentes en libros.json…');
+            await yieldToUI();
+
+            for (const entry of jsonEntries) {
+              if (!entry.keepFlags) continue; // fichero recién creado en el Paso A: solo contiene altas válidas
+              const origLen = entry.initialCount;
+              let removedHere = 0;
+
+              for (let rIdx = 0; rIdx < origLen; rIdx++) {
+                if (!entry.keepFlags[rIdx]) {
+                  removedHere++;
+                  const f = extractExistingJsonFields(entry.records[rIdx]);
+                  removedRecords.push({
+                    rec: {
+                      Autor: f ? f.autor : '',
+                      titulo: f ? f.titulo : '',
+                      fecha: f ? f.fecha : '',
+                      signatura: f ? f.signatura : '',
+                      cbarras: f ? f.cbarras : ''
+                    },
+                    file: entry.name
+                  });
+                }
+              }
+
+              if (removedHere > 0) {
+                const filtered = [];
+                for (let rIdx = 0; rIdx < entry.records.length; rIdx++) {
+                  // Los registros con índice >= origLen fueron añadidos en el Paso A y se conservan siempre
+                  if (rIdx >= origLen || entry.keepFlags[rIdx]) {
+                    filtered.push(entry.records[rIdx]);
+                  }
+                }
+                entry.records = filtered;
+                entry.removedCount = removedHere;
+                if (entry.status === 'unchanged') {
+                  entry.status = 'modified';
+                }
+              }
+              entry.keepFlags = null;
+            }
+
+            // PASO C DE SEGURIDAD DE TAMAÑO: Si algún fichero previo superó MAX_BYTES
+            // (p. ej. tras haberse ampliado títulos desde el OPAC o cambiar formato a identado),
+            // mover los registros sobrantes al último fichero respetando siempre MAX_BYTES.
+            activeEntry = jsonEntries[jsonEntries.length - 1];
+            activeEntry.currentBytes = computeTotalArrayBytes(activeEntry.records, prettyJson);
+
+            for (let idx = 0; idx < jsonEntries.length; idx++) {
+              const entry = jsonEntries[idx];
+              if (entry.records.length <= 1) continue;
+              let entryBytes = computeTotalArrayBytes(entry.records, prettyJson);
+              if (entryBytes <= MAX_BYTES) continue;
+
+              const moved = [];
+              while (entry.records.length > 1 && entryBytes > MAX_BYTES) {
+                const popped = entry.records.pop();
+                const sPop = serializeSingleRecord(popped, prettyJson);
+                entryBytes -= recordExtraBytes(sPop, entry.records.length, prettyJson);
+                moved.push(popped);
+              }
+              if (entry.status === 'unchanged') {
+                entry.status = 'modified';
+              }
+              entry.currentBytes = entryBytes;
+
+              // Reubicar en orden original al final (creando nuevos lotes si el último se llena)
+              for (let m = moved.length - 1; m >= 0; m--) {
+                const rec = moved[m];
+                if (activeEntry === entry) {
+                  const newEntry = {
+                    isMaster: false,
+                    num: nextFileNum,
+                    name: `libros${nextFileNum}.json`,
+                    handle: null,
+                    initialCount: 0,
+                    addedCount: 0,
+                    removedCount: 0,
+                    initialBytes: 0,
+                    currentBytes: 2,
+                    records: [],
+                    keepFlags: null,
+                    status: 'new',
+                    savedToDisk: false
+                  };
+                  nextFileNum++;
+                  jsonEntries.push(newEntry);
+                  activeEntry = newEntry;
+                }
+
+                const serialized = serializeSingleRecord(rec, prettyJson);
+                const extra = recordExtraBytes(serialized, activeEntry.records.length, prettyJson);
+                if (activeEntry.records.length > 0 && activeEntry.currentBytes + extra > MAX_BYTES) {
+                  const newEntry = {
+                    isMaster: false,
+                    num: nextFileNum,
+                    name: `libros${nextFileNum}.json`,
+                    handle: null,
+                    initialCount: 0,
+                    addedCount: 0,
+                    removedCount: 0,
+                    initialBytes: 0,
+                    currentBytes: 2,
+                    records: [],
+                    keepFlags: null,
+                    status: 'new',
+                    savedToDisk: false
+                  };
+                  nextFileNum++;
+                  jsonEntries.push(newEntry);
+                  activeEntry = newEntry;
+                }
+
+                const finalExtra = recordExtraBytes(serialized, activeEntry.records.length, prettyJson);
+                activeEntry.records.push(rec);
+                activeEntry.currentBytes += finalExtra;
+                if (activeEntry.status === 'unchanged') {
+                  activeEntry.status = 'modified';
+                }
+              }
+            }
+          }
+
+          // =========================================================================
+          // FASE 4: CONSTRUIR BLOBS FINALES Y MÉTRICAS
+          // =========================================================================
+          setProgress(95, 'Generando ficheros JSON resultantes e informe…');
+          await yieldToUI();
+
+          let totalJsonFinal = 0;
+          for (const entry of jsonEntries) {
+            entry.finalCount = entry.records.length;
+            totalJsonFinal += entry.finalCount;
+
+            if (entry.status === 'modified' || entry.status === 'new') {
+              const blob = buildJsonArrayBlob(entry.records, prettyJson);
+              entry.blob = blob;
+              entry.finalBytes = blob.size;
+            } else {
+              entry.blob = null;
+              entry.finalBytes = entry.initialBytes;
+            }
+            // Liberar array intermedio si no hace falta (ya tenemos el Blob listo para guardar/descargar)
+            entry.records = null;
+          }
+
+          const elapsedMs = performance.now() - t0;
+
+          state.lastResult = {
+            elapsedMs,
+            createdFromScratch,
+            maxBytes: MAX_BYTES,
+            maxMb,
+            prettyJson,
+            cbEncoding,
+            sigEncoding,
+            cbTotalLines,
+            cbDataCount: cbItems.length,
+            cbHeadersSkipped,
+            cbEmptySkipped,
+            cbFromDirectBar,
+            cbFromNeaFallback,
+            cbEmptyCode,
+            sigTotalLines,
+            sigHeaderSkipped,
+            sigEmptySkipped,
+            sigInvalidSkipped,
+            matchedExactCount,
+            matchedTrunc19Count,
+            matchedNormFallbackCount,
+            unmatchedSigList: unmatchedSigIndices.map((u) => ({
+              lineNum: u.lineNum,
+              rec: librosRecords[u.recIdx]
+            })),
+            leftoverCbItems,
+            multiCopyWorks,
+            multiCopyTotalRecords,
+            preservedExistingCount,
+            totalJsonInitial,
+            totalJsonFinal,
+            prefixCounts: Array.from(prefixCounts.entries()).sort((a, b) => b[1] - a[1]),
+            librosMasterEntry,
+            librosRecords,
+            jsonEntries,
+            addedRecords,
+            removedRecords
+          };
+
+          setProgress(100, `Completado en ${(elapsedMs / 1000).toFixed(2)} s.`);
+          renderResults(state.lastResult);
+        } catch (err) {
+          console.error(err);
+          showError(`Error durante el proceso: ${err.message}`);
+          els.progressWrap.classList.remove('visible');
+        } finally {
+          els.btnRun.disabled = !(state.codbarrasFile && state.signaturaFile);
+        }
+      }
+
+      // Guardado en disco mediante File System Access API
+      async function saveEntryToDisk(entry, dirHandle) {
+        const targetDir = dirHandle || state.dirHandle;
+        if (!targetDir || !entry.blob) return false;
+        const fileHandle = entry.handle || (await targetDir.getFileHandle(entry.name, { create: true }));
+        const writable = await fileHandle.createWritable();
+        await writable.write(entry.blob);
+        await writable.close();
+        entry.handle = fileHandle;
+        entry.savedToDisk = true;
+        return true;
+      }
+
+      async function saveAllOutputsToDisk(chooseFolderIfNeeded = false) {
+        const res = state.lastResult;
+        if (!res) return;
+        try {
+          let targetDir = state.dirHandle;
+          if (!targetDir && chooseFolderIfNeeded && supportsDirectFS) {
+            targetDir = await window.showDirectoryPicker({ mode: 'readwrite' });
+            state.dirHandle = targetDir;
+          }
+          if (!targetDir) return;
+
+          const toSave = [
+            res.librosMasterEntry,
+            ...res.jsonEntries.filter((e) => e.status === 'modified' || e.status === 'new')
+          ];
+
+          for (let i = 0; i < toSave.length; i++) {
+            const entry = toSave[i];
+            setProgress(Math.round(((i + 1) / toSave.length) * 100), `Guardando en carpeta ${entry.name} (${i + 1}/${toSave.length})…`);
+            await saveEntryToDisk(entry, targetDir);
+          }
+
+          setProgress(100, `Guardados ${toSave.length} ficheros correctamente en la carpeta.`);
+          renderFilesTable(res);
+          renderBannerActions(res);
+          alert(`Se han guardado correctamente en la carpeta:\n- ${toSave.map((e) => `${e.name} (${fmtBytes(e.finalBytes)})`).join('\n- ')}`);
+        } catch (err) {
+          if (err && err.name !== 'AbortError') {
+            showError(`No se pudieron guardar los archivos en disco: ${err.message}`);
+          }
+        }
+      }
+
+      function downloadBlob(blob, filename) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+      }
+
+      function downloadChangedParts() {
+        const res = state.lastResult;
+        if (!res) return;
+        const changed = res.jsonEntries.filter((e) => e.status === 'modified' || e.status === 'new');
+        changed.forEach((entry, i) => {
+          setTimeout(() => downloadBlob(entry.blob, entry.name), i * 280);
+        });
+      }
+
+      function downloadEverything() {
+        const res = state.lastResult;
+        if (!res) return;
+        const all = [
+          res.librosMasterEntry,
+          ...res.jsonEntries.filter((e) => e.status === 'modified' || e.status === 'new')
+        ];
+        all.forEach((entry, i) => {
+          setTimeout(() => downloadBlob(entry.blob, entry.name), i * 300);
+        });
+      }
+
+      function renderBannerActions(res) {
+        els.bannerActions.innerHTML = '';
+        els.jsonBulkActions.innerHTML = '';
+
+        const changedParts = res.jsonEntries.filter((e) => e.status === 'modified' || e.status === 'new');
+        const totalWritable = 1 + changedParts.length; // libros.json + libros1..N modificados/nuevos
+
+        if (state.dirHandle) {
+          const btnSave = document.createElement('button');
+          btnSave.className = 'btn btn-success';
+          btnSave.textContent = `Guardar todo en carpeta (${totalWritable} JSON)`;
+          btnSave.addEventListener('click', () => saveAllOutputsToDisk(false));
+          els.bannerActions.appendChild(btnSave);
+        } else if (supportsDirectFS) {
+          const btnSavePick = document.createElement('button');
+          btnSavePick.className = 'btn btn-success';
+          btnSavePick.textContent = `Guardar en carpeta… (${totalWritable} JSON)`;
+          btnSavePick.addEventListener('click', () => saveAllOutputsToDisk(true));
+          els.bannerActions.appendChild(btnSavePick);
+        }
+
+        const btnDlMaster = document.createElement('button');
+        btnDlMaster.className = 'btn btn-outline';
+        btnDlMaster.textContent = `Descargar libros.json (${fmtBytes(res.librosMasterEntry.finalBytes)})`;
+        btnDlMaster.addEventListener('click', () => downloadBlob(res.librosMasterEntry.blob, 'libros.json'));
+        els.bannerActions.appendChild(btnDlMaster);
+
+        if (changedParts.length > 0) {
+          const btnDlParts = document.createElement('button');
+          btnDlParts.className = supportsDirectFS ? 'btn btn-outline' : 'btn btn-primary';
+          btnDlParts.textContent = changedParts.length === 1
+            ? `Descargar ${changedParts[0].name}`
+            : `Descargar ${changedParts.length} lotes libros1..N`;
+          btnDlParts.addEventListener('click', downloadChangedParts);
+          els.bannerActions.appendChild(btnDlParts);
+        }
+
+        const btnBulkAll = document.createElement('button');
+        btnBulkAll.className = 'btn btn-primary btn-sm';
+        btnBulkAll.textContent = `Descargar todos los generados/modificados (${totalWritable})`;
+        btnBulkAll.addEventListener('click', downloadEverything);
+        els.jsonBulkActions.appendChild(btnBulkAll);
+      }
+
+      // Renderizado completo de resultados
+      function renderResults(res) {
+        els.resultsSection.classList.add('visible');
+        els.lblMaxMb.textContent = res.maxMb;
+
+        const changedParts = res.jsonEntries.filter((e) => e.status === 'modified' || e.status === 'new');
+        const newParts = res.jsonEntries.filter((e) => e.status === 'new');
+
+        // Banner superior
+        if (res.createdFromScratch) {
+          els.resultBanner.className = 'alert-banner';
+          els.bannerTitle.textContent = `Fusión completada y ${res.jsonEntries.length} ficheros libros1..${res.jsonEntries.length}.json creados`;
+          els.bannerSub.textContent = `Se fusionaron ${fmtNum(res.librosRecords.length)} libros en libros.json y se repartieron en ${res.jsonEntries.length} ficheros (${res.jsonEntries.map((f) => f.name).join(', ')}) sin superar ${res.maxMb} MB.`;
+        } else if (res.addedRecords.length > 0 || res.removedRecords.length > 0) {
+          els.resultBanner.className = 'alert-banner';
+          els.bannerTitle.textContent = `Sincronización completada: +${fmtNum(res.addedRecords.length)} altas y −${fmtNum(res.removedRecords.length)} bajas`;
+          const newMsg = newParts.length > 0 ? ` Nuevos ficheros creados por límite de ${res.maxMb} MB: ${newParts.map((f) => f.name).join(', ')}.` : '';
+          els.bannerSub.textContent = `libros.json generado (${fmtNum(res.librosRecords.length)} reg.). Ficheros actualizados: ${changedParts.map((f) => f.name).join(', ')}.${newMsg}`;
+        } else {
+          els.resultBanner.className = 'alert-banner neutral';
+          els.bannerTitle.textContent = 'libros.json generado · Catálogo libros1..N.json sin altas ni bajas';
+          els.bannerSub.textContent = `Los ${fmtNum(res.librosRecords.length)} libros de libros.json coinciden exactamente con los registros existentes en libros1..${res.jsonEntries.length}.json.`;
+        }
+
+        renderBannerActions(res);
+
+        // KPIs
+        const totalMatchedCodes = res.matchedExactCount + res.matchedTrunc19Count + res.matchedNormFallbackCount;
+        const kpis = [
+          {
+            label: 'Registros en libros.json',
+            value: fmtNum(res.librosRecords.length),
+            sub: `Tamaño: ${fmtBytes(res.librosMasterEntry.finalBytes)}`,
+            highlight: true
+          },
+          {
+            label: 'Códigos asignados',
+            value: fmtNum(totalMatchedCodes),
+            sub: `${fmtNum(res.cbFromDirectBar)} Cod./Bar. + ${fmtNum(res.cbFromNeaFallback)} NEA`
+          },
+          {
+            label: res.createdFromScratch ? 'Creados en libros1..N' : 'Altas añadidas (+)',
+            value: fmtNum(res.addedRecords.length),
+            sub: res.createdFromScratch
+              ? `En ${res.jsonEntries.length} ficheros ≤ ${res.maxMb} MB`
+              : (res.addedRecords.length > 0 ? 'Añadidos al último fichero' : 'Ninguna alta nueva'),
+            highlight: res.addedRecords.length > 0
+          },
+          {
+            label: 'Bajas eliminadas (−)',
+            value: fmtNum(res.removedRecords.length),
+            sub: res.createdFromScratch ? 'Creación inicial desde cero' : 'Ausentes en libros.json',
+            dangerHighlight: res.removedRecords.length > 0
+          },
+          {
+            label: 'Catálogo libros1..N final',
+            value: fmtNum(res.totalJsonFinal),
+            sub: res.createdFromScratch
+              ? `${res.jsonEntries.length} ficheros creados`
+              : `Antes: ${fmtNum(res.totalJsonInitial)} en ${state.jsonFiles.length} ficheros`
+          },
+          {
+            label: 'Tiempo total',
+            value: `${(res.elapsedMs / 1000).toFixed(2)} s`,
+            sub: `${fmtNum(res.multiCopyTotalRecords)} reg. con múltiples ejemplares`
+          }
+        ];
+
+        els.kpiGrid.innerHTML = kpis
+          .map(
+            (k) => `
+          <div class="kpi-card ${k.highlight ? 'highlight' : ''} ${k.dangerHighlight ? 'danger-highlight' : ''}">
+            <div class="kpi-label">${escapeHtml(k.label)}</div>
+            <div class="kpi-value">${escapeHtml(k.value)}</div>
+            <div class="kpi-sub">${escapeHtml(k.sub)}</div>
+          </div>`
+          )
+          .join('');
+
+        renderFilesTable(res);
+
+        // Diagnóstico detallado
+        const diagItems = [
+          ['Codificación codbarras.txt / signatura.txt', `${res.cbEncoding} / ${res.sigEncoding}`],
+          ['Registros válidos en signatura.txt / codbarras.txt', `${fmtNum(res.librosRecords.length)} / ${fmtNum(res.cbDataCount)}`],
+          ['Cabeceras y separadores omitidos en codbarras.txt', fmtNum(res.cbHeadersSkipped + res.cbEmptySkipped)],
+          ['Emparejados por (título + signatura exacta)', fmtNum(res.matchedExactCount)],
+          ['Emparejados por signatura > 19 caract. (truncada en codbarras)', fmtNum(res.matchedTrunc19Count)],
+          ['Emparejados por respaldo normalizado', fmtNum(res.matchedNormFallbackCount)],
+          ['Obras con >1 ejemplar (mismo título+signatura, distinto cbarras)', `${fmtNum(res.multiCopyWorks)} obras (${fmtNum(res.multiCopyTotalRecords)} ejemplares)`],
+          ['Códigos tomados de Cod./Bar. vs respaldo NEA', `${fmtNum(res.cbFromDirectBar)} / ${fmtNum(res.cbFromNeaFallback)}`],
+          ['Sin coincidencia en signatura.txt / sobrantes en codbarras.txt', `${fmtNum(res.unmatchedSigList.length)} / ${fmtNum(res.leftoverCbItems.length)}`],
+          ['Registros existentes conservados en libros1..N.json', res.createdFromScratch ? '— (creados desde cero)' : fmtNum(res.preservedExistingCount)]
+        ];
+
+        els.diagnosticsList.innerHTML = diagItems
+          .map(([label, val]) => `<li><span>${escapeHtml(label)}</span><strong>${escapeHtml(val)}</strong></li>`)
+          .join('');
+
+        const hasUnmatched = res.unmatchedSigList.length > 0 || res.leftoverCbItems.length > 0;
+        els.btnExportUnmatchedCsv.style.display = hasUnmatched ? 'inline-flex' : 'none';
+        els.btnExportRemovedCsv.style.display = res.removedRecords.length > 0 ? 'inline-flex' : 'none';
+
+        // Gráfico de prefijos
+        const topPrefixes = res.prefixCounts.slice(0, 12);
+        if (topPrefixes.length === 0) {
+          els.prefixChart.innerHTML = '<p style="margin:0; font-size:0.86rem; color:var(--text-subtle);">Sin registros.</p>';
+        } else {
+          const maxCount = topPrefixes[0][1] || 1;
+          els.prefixChart.innerHTML = topPrefixes
+            .map(([pref, count]) => {
+              const pct = Math.max(4, Math.round((count / maxCount) * 100));
+              return `
+                <div class="prefix-row">
+                  <span class="mono" style="font-weight:700;">${escapeHtml(pref)}</span>
+                  <div class="prefix-track"><div class="prefix-fill" style="width:${pct}%"></div></div>
+                  <span style="text-align:right; font-weight:600;">${fmtNum(count)}</span>
+                </div>`;
+            })
+            .join('');
+        }
+
+        // Actualizar badges de pestañas y elegir pestaña inicial más útil
+        els.badgeAdded.textContent = fmtNum(res.addedRecords.length);
+        els.badgeRemoved.textContent = fmtNum(res.removedRecords.length);
+        els.badgeMerged.textContent = fmtNum(res.librosRecords.length);
+
+        if (res.addedRecords.length > 0) {
+          switchTab('added');
+        } else if (res.removedRecords.length > 0) {
+          switchTab('removed');
+        } else {
+          switchTab('merged');
+        }
+
+        els.resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      function renderFilesTable(res) {
+        els.filesTableBody.innerHTML = '';
+
+        const allRows = [res.librosMasterEntry, ...res.jsonEntries];
+        for (const entry of allRows) {
+          const tr = document.createElement('tr');
+          if (entry.isMaster) tr.className = 'master-row';
+
+          let statusPill = '<span class="pill muted">Sin cambios</span>';
+          if (entry.isMaster) {
+            statusPill = entry.savedToDisk
+              ? '<span class="pill ok">Fusionado (guardado)</span>'
+              : '<span class="pill info">Catálogo fusionado</span>';
+          } else if (entry.status === 'modified') {
+            statusPill = entry.savedToDisk
+              ? '<span class="pill ok">Modificado (guardado)</span>'
+              : '<span class="pill warn">Modificado</span>';
+          } else if (entry.status === 'new') {
+            statusPill = entry.savedToDisk
+              ? '<span class="pill ok">Nuevo (guardado)</span>'
+              : '<span class="pill new">Nuevo archivo</span>';
+          }
+
+          let capacityHtml = '<span style="font-size:0.8rem; color:var(--text-subtle);">Sin límite (maestro)</span>';
+          if (!entry.isMaster) {
+            const pct = (entry.finalBytes / res.maxBytes) * 100;
+            const barClass = pct > 100 ? 'over' : pct >= 88 ? 'near-full' : '';
+            capacityHtml = `
+              <div style="font-size:0.78rem; color:var(--text-muted);">${pct.toFixed(1)}%</div>
+              <div class="capacity-bar"><div class="capacity-fill ${barClass}" style="width:${Math.min(100, pct).toFixed(1)}%"></div></div>
+            `;
+          }
+
+          tr.innerHTML = `
+            <td class="mono" style="font-weight:700;">${escapeHtml(entry.name)}</td>
+            <td>${statusPill}</td>
+            <td>${entry.isMaster ? '—' : fmtNum(entry.initialCount)}</td>
+            <td style="font-weight:700; color:${entry.addedCount > 0 ? 'var(--success)' : 'var(--text-subtle)'};">
+              ${entry.addedCount > 0 ? '+' + fmtNum(entry.addedCount) : '0'}
+            </td>
+            <td style="font-weight:700; color:${entry.removedCount > 0 ? 'var(--danger)' : 'var(--text-subtle)'};">
+              ${entry.removedCount > 0 ? '−' + fmtNum(entry.removedCount) : '0'}
+            </td>
+            <td style="font-weight:700;">${fmtNum(entry.finalCount)}</td>
+            <td>${entry.initialBytes ? fmtBytes(entry.initialBytes) : '—'}</td>
+            <td style="font-weight:600;">${fmtBytes(entry.finalBytes)}</td>
+            <td>${capacityHtml}</td>
+            <td class="action-cell"></td>
+          `;
+
+          const actionCell = tr.querySelector('.action-cell');
+          if (entry.blob) {
+            const btnWrap = document.createElement('div');
+            btnWrap.className = 'btn-row';
+            if (state.dirHandle) {
+              const btnSave = document.createElement('button');
+              btnSave.className = 'btn btn-success btn-sm';
+              btnSave.textContent = entry.savedToDisk ? 'Guardar de nuevo' : 'Guardar';
+              btnSave.addEventListener('click', async () => {
+                try {
+                  await saveEntryToDisk(entry);
+                  renderFilesTable(res);
+                } catch (e) {
+                  showError(`Error al guardar ${entry.name}: ${e.message}`);
+                }
+              });
+              btnWrap.appendChild(btnSave);
+            }
+            const btnDl = document.createElement('button');
+            btnDl.className = 'btn btn-outline btn-sm';
+            btnDl.textContent = 'Descargar';
+            btnDl.addEventListener('click', () => downloadBlob(entry.blob, entry.name));
+            btnWrap.appendChild(btnDl);
+            actionCell.appendChild(btnWrap);
+          } else {
+            actionCell.innerHTML = '<span style="color:var(--text-subtle); font-size:0.82rem;">—</span>';
+          }
+
+          els.filesTableBody.appendChild(tr);
+        }
+      }
+
+      // Pestañas y tabla paginada del explorador de registros
+      function getActiveDataset(res) {
+        if (state.activeTab === 'added') return res.addedRecords;
+        if (state.activeTab === 'removed') return res.removedRecords;
+        return res.librosRecords; // array directo de { Autor, titulo, fecha, signatura, cbarras }
+      }
+
+      function switchTab(tabName) {
+        state.activeTab = tabName;
+        els.tabBtnAdded.classList.toggle('active', tabName === 'added');
+        els.tabBtnRemoved.classList.toggle('active', tabName === 'removed');
+        els.tabBtnMerged.classList.toggle('active', tabName === 'merged');
+
+        const res = state.lastResult;
+        if (!res) return;
+
+        if (tabName === 'merged') {
+          els.filterFileSelect.style.display = 'none';
+          els.colFileHeader.textContent = 'Origen';
+        } else {
+          els.filterFileSelect.style.display = 'inline-block';
+          els.colFileHeader.textContent = tabName === 'added' ? 'Fichero destino' : 'Eliminado de';
+          const list = getActiveDataset(res);
+          const fileNames = Array.from(new Set(list.map((x) => x.file)));
+          els.filterFileSelect.innerHTML =
+            `<option value="">Todos los ficheros (${fileNames.length})</option>` +
+            fileNames.map((n) => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('');
+        }
+
+        els.searchRecords.value = '';
+        state.currentPage = 1;
+        applyRecordsFilter();
+      }
+
+      function applyRecordsFilter() {
+        const res = state.lastResult;
+        if (!res) return;
+
+        const dataset = getActiveDataset(res);
+        const isMerged = state.activeTab === 'merged';
+        const q = els.searchRecords.value.trim().toLowerCase();
+        const fileFilter = isMerged ? '' : els.filterFileSelect.value;
+
+        if (!q && !fileFilter) {
+          state.filteredRows = dataset;
+        } else {
+          state.filteredRows = dataset.filter((item) => {
+            const rec = isMerged ? item : item.rec;
+            const file = isMerged ? 'libros.json' : item.file;
+            if (fileFilter && file !== fileFilter) return false;
+            if (!q) return true;
+            return (
+              rec.cbarras.toLowerCase().includes(q) ||
+              rec.signatura.toLowerCase().includes(q) ||
+              rec.Autor.toLowerCase().includes(q) ||
+              rec.titulo.toLowerCase().includes(q) ||
+              rec.fecha.toLowerCase().includes(q) ||
+              file.toLowerCase().includes(q)
+            );
+          });
+        }
+
+        state.currentPage = 1;
+        renderRecordsPage();
+      }
+
+      function renderRecordsPage() {
+        const res = state.lastResult;
+        if (!res) return;
+
+        const dataset = getActiveDataset(res);
+        const isMerged = state.activeTab === 'merged';
+        const list = state.filteredRows;
+        const total = list.length;
+        const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        state.currentPage = Math.max(1, Math.min(state.currentPage, totalPages));
+
+        const startIdx = (state.currentPage - 1) * PAGE_SIZE;
+        const pageItems = list.slice(startIdx, startIdx + PAGE_SIZE);
+
+        els.filteredInfo.textContent =
+          total === dataset.length
+            ? `Mostrando ${fmtNum(total)} registros`
+            : `Filtrados ${fmtNum(total)} de ${fmtNum(dataset.length)} registros`;
+
+        if (pageItems.length === 0) {
+          const emptyMsg =
+            dataset.length === 0
+              ? (state.activeTab === 'added'
+                  ? 'No se añadieron registros nuevos en esta ejecución.'
+                  : state.activeTab === 'removed'
+                    ? 'No se eliminó ningún registro de libros1..N.json.'
+                    : 'No hay registros en libros.json.')
+              : 'Ningún registro coincide con el filtro actual.';
+          els.recordsTableBody.innerHTML = `
+            <tr>
+              <td colspan="7" style="text-align:center; padding:24px; color:var(--text-subtle);">${escapeHtml(emptyMsg)}</td>
+            </tr>`;
+        } else {
+          const pillClass = state.activeTab === 'removed' ? 'danger' : 'info';
+          els.recordsTableBody.innerHTML = pageItems
+            .map((item, i) => {
+              const num = startIdx + i + 1;
+              const rec = isMerged ? item : item.rec;
+              const fileLabel = isMerged ? 'libros.json' : item.file;
+              return `
+                <tr>
+                  <td style="color:var(--text-subtle);">${fmtNum(num)}</td>
+                  <td class="mono" style="font-weight:700;">${escapeHtml(rec.cbarras || '—')}</td>
+                  <td class="mono" style="font-weight:700; color:var(--primary);">${escapeHtml(rec.signatura || '—')}</td>
+                  <td class="mono">${escapeHtml(rec.fecha || '—')}</td>
+                  <td>${escapeHtml(rec.Autor || '—')}</td>
+                  <td>${escapeHtml(rec.titulo || '—')}</td>
+                  <td><span class="pill ${pillClass} mono">${escapeHtml(fileLabel)}</span></td>
+                </tr>`;
+            })
+            .join('');
+        }
+
+        els.pageInfo.textContent = `Página ${fmtNum(state.currentPage)} de ${fmtNum(totalPages)} (${fmtNum(total)} registros)`;
+        els.btnPrevPage.disabled = state.currentPage <= 1;
+        els.btnNextPage.disabled = state.currentPage >= totalPages;
+      }
+
+      els.tabBtnAdded.addEventListener('click', () => switchTab('added'));
+      els.tabBtnRemoved.addEventListener('click', () => switchTab('removed'));
+      els.tabBtnMerged.addEventListener('click', () => switchTab('merged'));
+      els.searchRecords.addEventListener('input', applyRecordsFilter);
+      els.filterFileSelect.addEventListener('change', applyRecordsFilter);
+      els.btnPrevPage.addEventListener('click', () => {
+        state.currentPage--;
+        renderRecordsPage();
+      });
+      els.btnNextPage.addEventListener('click', () => {
+        state.currentPage++;
+        renderRecordsPage();
+      });
+
+      // Exportaciones CSV / TXT
+      function csvEscape(val) {
+        const s = String(val ?? '');
+        if (/[";,\r\n]/.test(s)) {
+          return `"${s.replace(/"/g, '""')}"`;
+        }
+        return s;
+      }
+
+      els.btnExportAddedCsv.addEventListener('click', () => {
+        const res = state.lastResult;
+        if (!res) return;
+        const header = ['Num', 'Cbarras', 'Signatura', 'Fecha', 'Autor', 'Titulo', 'Fichero_Destino'];
+        const rows = res.addedRecords.map((r, i) =>
+          [i + 1, r.rec.cbarras, r.rec.signatura, r.rec.fecha, r.rec.Autor, r.rec.titulo, r.file].map(csvEscape).join(';')
+        );
+        const csv = '\uFEFF' + [header.join(';'), ...rows].join('\r\n');
+        downloadBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }), 'registros_anadidos.csv');
+      });
+
+      els.btnExportRemovedCsv.addEventListener('click', () => {
+        const res = state.lastResult;
+        if (!res || !res.removedRecords.length) return;
+        const header = ['Num', 'Cbarras', 'Signatura', 'Fecha', 'Autor', 'Titulo', 'Fichero_Origen'];
+        const rows = res.removedRecords.map((r, i) =>
+          [i + 1, r.rec.cbarras, r.rec.signatura, r.rec.fecha, r.rec.Autor, r.rec.titulo, r.file].map(csvEscape).join(';')
+        );
+        const csv = '\uFEFF' + [header.join(';'), ...rows].join('\r\n');
+        downloadBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }), 'registros_eliminados.csv');
+      });
+
+      els.btnExportUnmatchedCsv.addEventListener('click', () => {
+        const res = state.lastResult;
+        if (!res) return;
+        const header = ['Origen', 'Linea', 'Signatura', 'Cbarras', 'Titulo'];
+        const rows = [
+          ...res.unmatchedSigList.map((u) => ['signatura.txt_sin_pareja', u.lineNum, u.rec.signatura, '', u.rec.titulo].map(csvEscape).join(';')),
+          ...res.leftoverCbItems.map((c) => ['codbarras.txt_sobrante', c.lineNum, c.sig, c.cbarras, c.titulo].map(csvEscape).join(';'))
+        ];
+        const csv = '\uFEFF' + [header.join(';'), ...rows].join('\r\n');
+        downloadBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }), 'incidencias_cruce_txt.csv');
+      });
+
+      els.btnExportSummaryTxt.addEventListener('click', () => {
+        const res = state.lastResult;
+        if (!res) return;
+        const lines = [
+          '=== INFORME DE FUSIÓN Y SINCRONIZACIÓN DE CATÁLOGO ===',
+          `Fecha del informe         : ${new Date().toLocaleString('es-ES')}`,
+          `Fichero códigos barras    : ${state.codbarrasFile ? state.codbarrasFile.name : ''} (${res.cbEncoding})`,
+          `Fichero signaturas        : ${state.signaturaFile ? state.signaturaFile.name : ''} (${res.sigEncoding})`,
+          `Modo operación JSON       : ${res.createdFromScratch ? 'Creación desde cero de libros1..N.json' : 'Sincronización (altas y bajas) sobre libros1..N.json existentes'}`,
+          `Límite por fichero lote   : ${res.maxMb} MB (${fmtNum(res.maxBytes)} bytes)`,
+          `Tiempo total              : ${(res.elapsedMs / 1000).toFixed(2)} s`,
+          '',
+          '--- FUSIÓN EN libros.json ---',
+          `Total en libros.json      : ${fmtNum(res.librosRecords.length)} (${fmtBytes(res.librosMasterEntry.finalBytes)})`,
+          `Registros codbarras.txt   : ${fmtNum(res.cbDataCount)}`,
+          `Cruce exacto (tít.+sig.)  : ${fmtNum(res.matchedExactCount)}`,
+          `Cruce sig. > 19 caract.   : ${fmtNum(res.matchedTrunc19Count)}`,
+          `Cruce normalizado         : ${fmtNum(res.matchedNormFallbackCount)}`,
+          `Códigos Cod./Bar. directo : ${fmtNum(res.cbFromDirectBar)}`,
+          `Códigos respaldo NEA      : ${fmtNum(res.cbFromNeaFallback)}`,
+          `Sin pareja signatura/cb   : ${res.unmatchedSigList.length} / ${res.leftoverCbItems.length}`,
+          '',
+          '--- SINCRONIZACIÓN libros1..N.json ---',
+          `Registros iniciales       : ${fmtNum(res.totalJsonInitial)}`,
+          `Altas añadidas (+)        : ${fmtNum(res.addedRecords.length)}`,
+          `Bajas eliminadas (-)      : ${fmtNum(res.removedRecords.length)}`,
+          `Registros finales         : ${fmtNum(res.totalJsonFinal)}`,
+          '',
+          '--- DETALLE DE FICHEROS JSON ---',
+          ...[res.librosMasterEntry, ...res.jsonEntries].map(
+            (e) =>
+              `${e.name.padEnd(16)} | ${e.status.padEnd(10)} | Inic: ${String(e.initialCount).padStart(7)} | +${String(e.addedCount).padStart(7)} | -${String(e.removedCount).padStart(7)} | Final: ${String(e.finalCount).padStart(7)} | ${fmtBytes(e.finalBytes)}`
+          )
+        ];
+        downloadBlob(new Blob([lines.join('\r\n')], { type: 'text/plain;charset=utf-8' }), 'informe_actualizacion_libros.txt');
+      });
+
+      els.btnRun.addEventListener('click', runProcess);
+    })();
+  </script>
+</body>
+</html>
