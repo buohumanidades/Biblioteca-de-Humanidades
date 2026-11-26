@@ -139,25 +139,44 @@ class ResultadoBusqueda:
 # 1. NORMALIZACIÓN, LIMPIEZA DE TÍTULOS Y DETECCIÓN DE IDIOMA
 # =============================================================================
 
-def normalizar_texto(texto: str) -> str:
-    """Minúsculas, sin tildes, puntuación reemplazada por espacios y colapsado."""
+MAPA_CARACTERES_ESPECIALES = str.maketrans({
+    "ß": "ss",
+    "œ": "oe",
+    "æ": "ae",
+    "ø": "o",
+    "đ": "d",
+    "ð": "d",
+    "þ": "th",
+    "ł": "l",
+    "ª": "a",
+    "º": "o",
+    "_": " ",
+})
+
+
+def a_ascii_seguro(texto: str) -> str:
+    """Convierte texto a ASCII puro sin tildes ni caracteres especiales (`ß->ss`, `œ->oe`, `ø->o`, `_-> `)."""
     if not texto:
         return ""
-    s = unicodedata.normalize("NFD", str(texto).lower())
+    s = str(texto).lower().translate(MAPA_CARACTERES_ESPECIALES)
+    s = unicodedata.normalize("NFD", s)
     s = "".join(c for c in s if unicodedata.category(c) != "Mn")
-    s = re.sub(r"[^\w\s]", " ", s)
+    s = re.sub(r"[^a-z0-9\s]", " ", s)
     return " ".join(s.split())
+
+
+def normalizar_texto(texto: str) -> str:
+    """Minúsculas, sin tildes/especiales, puntuación y `_` reemplazados por espacios."""
+    return a_ascii_seguro(texto)
 
 
 def normalizar_compacto(texto: str) -> str:
     """Alfanumérico puro sin tildes, puntuación ni espacios.
-    Resuelve fusiones como `GijónXixón` vs `Gijón-Xixón` o `lEurope` vs `l'Europe`.
+    Resuelve fusiones como `GijónXixón` vs `Gijón-Xixón`, `lEurope` vs `l'Europe` o `noche_` vs `noche...`.
     """
     if not texto:
         return ""
-    s = unicodedata.normalize("NFD", str(texto).lower())
-    s = "".join(c for c in s if unicodedata.category(c) != "Mn")
-    return re.sub(r"[^a-z0-9]", "", s)
+    return re.sub(r"[^a-z0-9]", "", a_ascii_seguro(texto))
 
 
 def limpiar_titulo_salida(texto: str, quitar_barra: bool = True) -> str:
@@ -251,13 +270,13 @@ def extraer_apellido_principal(autor: str) -> str:
 
 
 def separar_camel_y_limpiar_tokens(titulo: str) -> list[str]:
-    """Divide fusiones CamelCase (`lEurope` -> `Europe`, `GijónXixón` -> `Gijón Xixón`)
-    y devuelve tokens limpios adecuados para consulta en buscadores.
+    """Divide fusiones CamelCase (`lEurope` -> `Europe`, `GijónXixón` -> `Gijón Xixón`),
+    elimina `_` (usado por `...` en exportaciones) y devuelve tokens limpios para búsqueda.
     """
     if not titulo:
         return []
-    # Quitar puntuación especial pero preservar letras con tilde
-    s = re.sub(r'["\'()\[\]{}:;/\\?¿!¡«»*]', " ", titulo)
+    # Quitar puntuación especial y guiones bajos preservando letras con tilde
+    s = re.sub(r'["\'()\[\]{}:;/\\?¿!¡«»*_]', " ", titulo)
     tokens_salida: list[str] = []
     for raw in s.split():
         # Caso francés/italiano elidido sin apóstrofo: lEurope, dHistoire, dellArte, nellItalia
@@ -269,7 +288,7 @@ def separar_camel_y_limpiar_tokens(titulo: str) -> list[str]:
         # División general CamelCase (GijónXixón, XVIeXVIIIe, indigenousAustralian)
         dividido = re.sub(r"([a-zà-ÿ])([A-ZÀ-Ý])", r"\1 \2", raw)
         for p in dividido.split():
-            p_limpio = re.sub(r"[^\w]", "", p)
+            p_limpio = re.sub(r"[^\w]", "", p).replace("_", "")
             if p_limpio:
                 tokens_salida.append(p_limpio)
     return tokens_salida
@@ -290,51 +309,102 @@ def recortar_palabras_truncadas(titulo: str) -> list[str]:
     return separar_camel_y_limpiar_tokens(base_str)
 
 
+def construir_consulta_palabras_clave_seguras(
+    titulo_orig: str,
+    minimo: int = 4,
+    maximo: int = 5,
+) -> str:
+    """Construye una consulta de respaldo con al menos `minimo` (4) palabras clave seguras
+    evitando caracteres especiales, tildes y palabras fusionadas que puedan hacer fallar
+    el primer intento de búsqueda.
+
+    Estrategia:
+      1. Prioriza palabras clave puramente ASCII (`^[A-Za-z]{3,14}$`, sin stopwords ni acentos).
+      2. Si hay < `minimo`, completa con el resto de palabras clave transliteradas a ASCII puro
+         (sin tildes ni `ñ/ç/ä/ö/ü/ß/ø`), respetando su orden de aparición en el título.
+    """
+    tokens = recortar_palabras_truncadas(titulo_orig)
+    if not tokens:
+        tokens = separar_camel_y_limpiar_tokens(titulo_orig)
+
+    # Clasificar cada token preservando su posición original
+    puros_ascii: list[tuple[int, str]] = []
+    con_especiales_ascii: list[tuple[int, str]] = []
+    vistos: set[str] = set()
+
+    for pos, tok in enumerate(tokens):
+        tok_ascii = a_ascii_seguro(tok)
+        if not tok_ascii or " " in tok_ascii or tok_ascii in vistos:
+            continue
+        if tok_ascii in STOPWORDS or len(tok_ascii) < 3 or tok_ascii.isdigit():
+            continue
+        # Evitar posibles palabras fusionadas sin guion (p. ej. `françaisespagnol`) salvo falta de opciones
+        es_puro_ascii = bool(re.fullmatch(r"[A-Za-z]{3,14}", tok))
+        vistos.add(tok_ascii)
+        if es_puro_ascii:
+            puros_ascii.append((pos, tok_ascii))
+        elif len(tok_ascii) <= 14:
+            con_especiales_ascii.append((pos, tok_ascii))
+
+    # 1. Si ya tenemos >= minimo palabras clave 100% libres de caracteres especiales, usar solo esas
+    if len(puros_ascii) >= minimo:
+        seleccion = puros_ascii[:maximo]
+    else:
+        # 2. Completar hasta `minimo` (o `maximo`) con palabras clave transliteradas a ASCII puro
+        faltan = maximo - len(puros_ascii)
+        seleccion = puros_ascii + con_especiales_ascii[:faltan]
+        # 3. Solo incluir palabras muy largas (>14 chars, posibles fusiones sin guion) si tenemos menos de 3 palabras
+        if len(seleccion) < 3:
+            ya_incluidas = {w for _, w in seleccion}
+            for pos, tok in enumerate(tokens):
+                tok_ascii = a_ascii_seguro(tok)
+                if tok_ascii and " " not in tok_ascii and len(tok_ascii) >= 3 and tok_ascii not in ya_incluidas and tok_ascii not in STOPWORDS:
+                    seleccion.append((pos, tok_ascii))
+                    ya_incluidas.add(tok_ascii)
+                    if len(seleccion) >= 3:
+                        break
+        seleccion.sort(key=lambda item: item[0])
+
+    return " ".join(w for _, w in seleccion[:maximo])
+
+
 def generar_frases_consulta(titulo_orig: str) -> list[str]:
-    """Genera entre 2 y 3 consultas progresivas y limpias (sin la palabra final cortada)."""
+    """Genera consultas progresivas:
+      - Intento 1: primeras ~6 palabras limpias del título original (sin la palabra final cortada).
+      - Intento 2: >=4 palabras clave seguras sin caracteres especiales ni tildes (inmune a
+        problemas de codificación/diacríticos/fusiones).
+      - Intento 3 (opcional): palabras clave reducidas si fueran distintas.
+    """
     tokens = recortar_palabras_truncadas(titulo_orig)
     if not tokens:
         tokens = separar_camel_y_limpiar_tokens(titulo_orig)
 
     tokens_norm = [t for t in tokens if len(t) >= 2]
-    palabras_clave_todas = [
-        t for t in tokens_norm
-        if normalizar_texto(t) not in STOPWORDS and len(t) >= 3 and not t.isdigit()
-    ]
-    # Versión sin palabras sospechosas de fusión sin guión (p. ej. `françaisespagnol`, `seventeenthcentury`)
-    palabras_clave_cortas = [t for t in palabras_clave_todas if len(t) <= 14]
-    palabras_clave = palabras_clave_cortas if len(palabras_clave_cortas) >= 3 else palabras_clave_todas
-
     candidatas: list[str] = []
 
-    # Consulta 1: primeras 6 palabras limpias (sin la palabra final cortada ni palabras >18 chars si hay suficientes)
+    # Consulta 1: primeras 6 palabras limpias (sin la palabra final cortada ni fusiones >18 chars)
     tokens_q1 = [t for t in tokens_norm if len(t) <= 18]
     if len(tokens_q1) < 3:
         tokens_q1 = tokens_norm
     if tokens_q1:
         candidatas.append(" ".join(tokens_q1[:6]))
 
-    # Consulta 2: 3-5 palabras clave distintivas (sin stopwords y evitando fusiones largas)
-    if len(palabras_clave) >= 3:
-        candidatas.append(" ".join(palabras_clave[:5]))
-    elif len(palabras_clave_todas) >= 2:
-        candidatas.append(" ".join(palabras_clave_todas[:4]))
+    # Consulta 2: >=4 palabras clave seguras sin caracteres especiales/diacríticos ni fusiones
+    q_segura = construir_consulta_palabras_clave_seguras(titulo_orig, minimo=4, maximo=5)
+    if q_segura:
+        candidatas.append(q_segura)
 
-    # Consulta 3: 3 palabras clave más limpias/seguras (priorizando longitud media 4..14 para esquivar fusiones)
-    if len(palabras_clave) >= 4:
-        candidatas.append(" ".join(palabras_clave[:3]))
-    elif len(palabras_clave_todas) >= 3:
-        candidatas.append(" ".join(palabras_clave_todas[:3]))
-    elif len(tokens_norm) >= 3:
-        candidatas.append(" ".join(tokens_norm[:3]))
+    # Consulta 3: exactamente 4 palabras clave seguras si la 2 tenía 5 (o 3 si el título es muy corto)
+    if q_segura and len(q_segura.split()) >= 5:
+        candidatas.append(" ".join(q_segura.split()[:4]))
 
-    # Deduplicar preservando orden
+    # Deduplicar preservando orden (distinguiendo si una lleva tildes/especiales y la otra es ASCII puro)
     unicas: list[str] = []
     vistas: set[str] = set()
     for q in candidatas:
-        qn = normalizar_texto(q)
-        if qn and qn not in vistas:
-            vistas.add(qn)
+        clave_q = " ".join(q.lower().split())
+        if clave_q and clave_q not in vistas:
+            vistas.add(clave_q)
             unicas.append(q)
     return unicas[:3]
 
@@ -1249,7 +1319,9 @@ async def buscar_en_opac(
     frases = generar_frases_consulta(titulo_orig)
     apellido = extraer_apellido_principal(autor)
 
-    # 3a) Con filtro Biblioteca de Humanidades (&subcat=BH)
+    # 3a) Con filtro Biblioteca de Humanidades (&subcat=BH):
+    #     Intento 1: frase inicial limpia (+ apellido)
+    #     Intento 2 (si falla): >=4 palabras clave seguras sin caracteres especiales ni tildes
     for idx, frase in enumerate(frases[:2]):
         params: dict[str, str] = {"ACC": "DOSEARCH", "xsqf02": frase}
         if apellido and idx == 0:
@@ -1260,12 +1332,14 @@ async def buscar_en_opac(
             extraer_candidatos_opac(html), titulo_orig, autor, fecha, "opac_texto", quitar_barra
         )
         if mejor:
-            return ResultadoBusqueda(mejor[0], "opac:campos_bh", mejor[1], peticiones), html, peticiones
+            etiqueta = "opac:campos_bh" if idx == 0 else "opac:kw4_bh"
+            return ResultadoBusqueda(mejor[0], etiqueta, mejor[1], peticiones), html, peticiones
 
     # 3b) Si falló con subcat=BH, reintentar en todo el catálogo Uniovi (sin subcat=BH)
-    if frases:
-        params_global: dict[str, str] = {"ACC": "DOSEARCH", "xsqf02": frases[0]}
-        if apellido:
+    #     probando primero frase principal y, si falla, >=4 palabras clave seguras sin especiales
+    for idx, frase in enumerate(frases[:2]):
+        params_global: dict[str, str] = {"ACC": "DOSEARCH", "xsqf02": frase}
+        if apellido and idx == 0:
             params_global["xsqf03"] = apellido
         url_global = f"{OPAC_BASE_URL}?{urllib.parse.urlencode(params_global)}"
         html = await _fetch_opac(url_global)
@@ -1273,7 +1347,8 @@ async def buscar_en_opac(
             extraer_candidatos_opac(html), titulo_orig, autor, fecha, "opac_texto", quitar_barra
         )
         if mejor:
-            return ResultadoBusqueda(mejor[0], "opac:global", mejor[1], peticiones), html, peticiones
+            etiqueta = "opac:global" if idx == 0 else "opac:kw4_global"
+            return ResultadoBusqueda(mejor[0], etiqueta, mejor[1], peticiones), html, peticiones
 
     return None, ultimo_html, peticiones
 
@@ -1282,15 +1357,25 @@ def _escapar_cql(texto: str) -> str:
     return re.sub(r'["\\]', " ", texto).strip()
 
 
-def _elegir_frase_externa(frases: list[str]) -> str:
-    """Si la primera frase contiene una palabra sospechosa de fusión (>=15 chars),
-    prefiere la segunda frase de palabras clave limpias para maximizar aciertos en SRU/APIs.
+def _preparar_intentos_externos(titulo_orig: str) -> list[str]:
+    """Devuelve hasta 2 consultas para fuentes externas:
+      1. Frase principal limpia (o la de palabras clave si la 1.ª tiene fusiones largas).
+      2. Respaldo de >=4 palabras clave seguras sin caracteres especiales/tildes.
     """
+    frases = generar_frases_consulta(titulo_orig)
     if not frases:
-        return ""
+        return []
     if len(frases) >= 2 and any(len(w) >= 15 for w in frases[0].split()):
-        return frases[1]
-    return frases[0]
+        primera = frases[1]
+        segunda = frases[2] if len(frases) >= 3 else ""
+    else:
+        primera = frases[0]
+        segunda = frases[1] if len(frases) >= 2 else ""
+
+    intentos = [primera]
+    if segunda and segunda.lower() != primera.lower():
+        intentos.append(segunda)
+    return intentos
 
 
 async def buscar_en_bne(
@@ -1301,17 +1386,25 @@ async def buscar_en_bne(
     quitar_barra: bool,
 ) -> tuple[ResultadoBusqueda | None, int]:
     """Consulta la API SRU 1.2 oficial de la Biblioteca Nacional de España (MARCXML)."""
-    frases = generar_frases_consulta(titulo_orig)
-    if not frases:
+    intentos = _preparar_intentos_externos(titulo_orig)
+    if not intentos:
         return None, 0
     apellido = extraer_apellido_principal(autor)
     peticiones = 0
 
     consultas_cql: list[str] = []
-    t1 = _escapar_cql(_elegir_frase_externa(frases))
+    t1 = _escapar_cql(intentos[0])
     if apellido:
         consultas_cql.append(f'alma.title="{t1}" and alma.creator="{_escapar_cql(apellido)}"')
-    consultas_cql.append(f'alma.title="{t1}"')
+    else:
+        consultas_cql.append(f'alma.title="{t1}"')
+
+    # 2.º intento: >=4 palabras clave seguras sin caracteres especiales/tildes (sin restricción rígida de autor)
+    if len(intentos) >= 2:
+        t2 = _escapar_cql(intentos[1])
+        consultas_cql.append(f'alma.title all "{t2}"')
+    elif apellido:
+        consultas_cql.append(f'alma.title all "{t1}"')
 
     for cql in consultas_cql[:2]:
         params = {
@@ -1328,9 +1421,6 @@ async def buscar_en_bne(
         mejor = elegir_mejor_candidato(cands, titulo_orig, autor, fecha, "externo", quitar_barra)
         if mejor:
             return ResultadoBusqueda(mejor[0], "bne", mejor[1], peticiones), peticiones
-        if cands:
-            # Si ya devolvió resultados con título+autor pero ninguno encajó, no hace falta ampliar
-            break
     return None, peticiones
 
 
@@ -1342,27 +1432,33 @@ async def buscar_en_bnf(
     quitar_barra: bool,
 ) -> tuple[ResultadoBusqueda | None, int]:
     """Consulta la API SRU 1.2 de la Bibliothèque nationale de France (UNIMARCXchange)."""
-    frases = generar_frases_consulta(titulo_orig)
-    if not frases:
+    intentos = _preparar_intentos_externos(titulo_orig)
+    if not intentos:
         return None, 0
     apellido = extraer_apellido_principal(autor)
-    t1 = _escapar_cql(_elegir_frase_externa(frases))
-    cql = f'(bib.title all "{t1}") and (bib.author all "{_escapar_cql(apellido)}")' if apellido else f'(bib.title all "{t1}")'
+    peticiones = 0
 
-    params = {
-        "version": "1.2",
-        "operation": "searchRetrieve",
-        "recordSchema": "unimarcXchange",
-        "maximumRecords": "10",
-        "query": cql,
-    }
-    url = f"{BNF_SRU_URL}?{urllib.parse.urlencode(params)}"
-    xml_text = await cliente.obtener(url, reintentos=1)
-    cands = extraer_candidatos_unimarcxml(xml_text, fuente="bnf")
-    mejor = elegir_mejor_candidato(cands, titulo_orig, autor, fecha, "externo", quitar_barra)
-    if mejor:
-        return ResultadoBusqueda(mejor[0], "bnf", mejor[1], 1), 1
-    return None, 1
+    for idx, frase in enumerate(intentos[:2]):
+        t = _escapar_cql(frase)
+        if apellido and idx == 0:
+            cql = f'(bib.title all "{t}") and (bib.author all "{_escapar_cql(apellido)}")'
+        else:
+            cql = f'(bib.title all "{t}")'
+        params = {
+            "version": "1.2",
+            "operation": "searchRetrieve",
+            "recordSchema": "unimarcXchange",
+            "maximumRecords": "10",
+            "query": cql,
+        }
+        url = f"{BNF_SRU_URL}?{urllib.parse.urlencode(params)}"
+        xml_text = await cliente.obtener(url, reintentos=1)
+        peticiones += 1
+        cands = extraer_candidatos_unimarcxml(xml_text, fuente="bnf")
+        mejor = elegir_mejor_candidato(cands, titulo_orig, autor, fecha, "externo", quitar_barra)
+        if mejor:
+            return ResultadoBusqueda(mejor[0], "bnf", mejor[1], peticiones), peticiones
+    return None, peticiones
 
 
 async def buscar_en_dnb(
@@ -1373,27 +1469,33 @@ async def buscar_en_dnb(
     quitar_barra: bool,
 ) -> tuple[ResultadoBusqueda | None, int]:
     """Consulta la API SRU 1.1 de la Deutsche Nationalbibliothek (MARC21-XML)."""
-    frases = generar_frases_consulta(titulo_orig)
-    if not frases:
+    intentos = _preparar_intentos_externos(titulo_orig)
+    if not intentos:
         return None, 0
     apellido = extraer_apellido_principal(autor)
-    t1 = _escapar_cql(_elegir_frase_externa(frases))
-    cql = f'tit="{t1}" and per="{_escapar_cql(apellido)}"' if apellido else f'tit="{t1}"'
+    peticiones = 0
 
-    params = {
-        "version": "1.1",
-        "operation": "searchRetrieve",
-        "recordSchema": "MARC21-xml",
-        "maximumRecords": "10",
-        "query": cql,
-    }
-    url = f"{DNB_SRU_URL}?{urllib.parse.urlencode(params)}"
-    xml_text = await cliente.obtener(url, reintentos=1)
-    cands = extraer_candidatos_marcxml(xml_text, fuente="dnb")
-    mejor = elegir_mejor_candidato(cands, titulo_orig, autor, fecha, "externo", quitar_barra)
-    if mejor:
-        return ResultadoBusqueda(mejor[0], "dnb", mejor[1], 1), 1
-    return None, 1
+    for idx, frase in enumerate(intentos[:2]):
+        t = _escapar_cql(frase)
+        if apellido and idx == 0:
+            cql = f'tit="{t}" and per="{_escapar_cql(apellido)}"'
+        else:
+            cql = f'tit all "{t}"'
+        params = {
+            "version": "1.1",
+            "operation": "searchRetrieve",
+            "recordSchema": "MARC21-xml",
+            "maximumRecords": "10",
+            "query": cql,
+        }
+        url = f"{DNB_SRU_URL}?{urllib.parse.urlencode(params)}"
+        xml_text = await cliente.obtener(url, reintentos=1)
+        peticiones += 1
+        cands = extraer_candidatos_marcxml(xml_text, fuente="dnb")
+        mejor = elegir_mejor_candidato(cands, titulo_orig, autor, fecha, "externo", quitar_barra)
+        if mejor:
+            return ResultadoBusqueda(mejor[0], "dnb", mejor[1], peticiones), peticiones
+    return None, peticiones
 
 
 async def buscar_en_loc(
@@ -1404,27 +1506,33 @@ async def buscar_en_loc(
     quitar_barra: bool,
 ) -> tuple[ResultadoBusqueda | None, int]:
     """Consulta la API SRU 1.1 de la Library of Congress (MARCXML)."""
-    frases = generar_frases_consulta(titulo_orig)
-    if not frases:
+    intentos = _preparar_intentos_externos(titulo_orig)
+    if not intentos:
         return None, 0
     apellido = extraer_apellido_principal(autor)
-    t1 = _escapar_cql(_elegir_frase_externa(frases))
-    cql = f'dc.title="{t1}" and bath.name="{_escapar_cql(apellido)}"' if apellido else f'dc.title="{t1}"'
+    peticiones = 0
 
-    params = {
-        "version": "1.1",
-        "operation": "searchRetrieve",
-        "recordSchema": "marcxml",
-        "maximumRecords": "10",
-        "query": cql,
-    }
-    url = f"{LOC_SRU_URL}?{urllib.parse.urlencode(params)}"
-    xml_text = await cliente.obtener(url, reintentos=1)
-    cands = extraer_candidatos_marcxml(xml_text, fuente="loc")
-    mejor = elegir_mejor_candidato(cands, titulo_orig, autor, fecha, "externo", quitar_barra)
-    if mejor:
-        return ResultadoBusqueda(mejor[0], "loc", mejor[1], 1), 1
-    return None, 1
+    for idx, frase in enumerate(intentos[:2]):
+        t = _escapar_cql(frase)
+        if apellido and idx == 0:
+            cql = f'dc.title="{t}" and bath.name="{_escapar_cql(apellido)}"'
+        else:
+            cql = f'dc.title all "{t}"'
+        params = {
+            "version": "1.1",
+            "operation": "searchRetrieve",
+            "recordSchema": "marcxml",
+            "maximumRecords": "10",
+            "query": cql,
+        }
+        url = f"{LOC_SRU_URL}?{urllib.parse.urlencode(params)}"
+        xml_text = await cliente.obtener(url, reintentos=1)
+        peticiones += 1
+        cands = extraer_candidatos_marcxml(xml_text, fuente="loc")
+        mejor = elegir_mejor_candidato(cands, titulo_orig, autor, fecha, "externo", quitar_barra)
+        if mejor:
+            return ResultadoBusqueda(mejor[0], "loc", mejor[1], peticiones), peticiones
+    return None, peticiones
 
 
 async def buscar_en_openlibrary(
@@ -1435,24 +1543,28 @@ async def buscar_en_openlibrary(
     quitar_barra: bool,
 ) -> tuple[ResultadoBusqueda | None, int]:
     """Consulta la API REST de Open Library."""
-    frases = generar_frases_consulta(titulo_orig)
-    if not frases:
+    intentos = _preparar_intentos_externos(titulo_orig)
+    if not intentos:
         return None, 0
     apellido = extraer_apellido_principal(autor)
-    params: dict[str, str] = {
-        "title": _elegir_frase_externa(frases),
-        "limit": "10",
-        "fields": "title,subtitle,author_name,first_publish_year",
-    }
-    if apellido:
-        params["author"] = apellido
-    url = f"{OPENLIBRARY_URL}?{urllib.parse.urlencode(params)}"
-    js = await cliente.obtener(url, reintentos=1)
-    cands = extraer_candidatos_openlibrary(js)
-    mejor = elegir_mejor_candidato(cands, titulo_orig, autor, fecha, "externo", quitar_barra)
-    if mejor:
-        return ResultadoBusqueda(mejor[0], "openlibrary", mejor[1], 1), 1
-    return None, 1
+    peticiones = 0
+
+    for idx, frase in enumerate(intentos[:2]):
+        params: dict[str, str] = {
+            "title": frase,
+            "limit": "10",
+            "fields": "title,subtitle,author_name,first_publish_year",
+        }
+        if apellido and idx == 0:
+            params["author"] = apellido
+        url = f"{OPENLIBRARY_URL}?{urllib.parse.urlencode(params)}"
+        js = await cliente.obtener(url, reintentos=1)
+        peticiones += 1
+        cands = extraer_candidatos_openlibrary(js)
+        mejor = elegir_mejor_candidato(cands, titulo_orig, autor, fecha, "externo", quitar_barra)
+        if mejor:
+            return ResultadoBusqueda(mejor[0], "openlibrary", mejor[1], peticiones), peticiones
+    return None, peticiones
 
 
 async def buscar_en_googlebooks(
@@ -1464,28 +1576,36 @@ async def buscar_en_googlebooks(
     api_key: str = "",
 ) -> tuple[ResultadoBusqueda | None, int]:
     """Consulta Google Books API."""
-    frases = generar_frases_consulta(titulo_orig)
-    if not frases:
+    intentos = _preparar_intentos_externos(titulo_orig)
+    if not intentos:
         return None, 0
     apellido = extraer_apellido_principal(autor)
-    q_parts = [f'intitle:"{_escapar_cql(_elegir_frase_externa(frases))}"']
-    if apellido:
-        q_parts.append(f"inauthor:{_escapar_cql(apellido)}")
-    params: dict[str, str] = {
-        "q": " ".join(q_parts),
-        "maxResults": "10",
-        "printType": "books",
-        "fields": "items(volumeInfo(title,subtitle,authors,publishedDate))",
-    }
-    if api_key:
-        params["key"] = api_key
-    url = f"{GOOGLE_BOOKS_URL}?{urllib.parse.urlencode(params)}"
-    js = await cliente.obtener(url, reintentos=1)
-    cands = extraer_candidatos_googlebooks(js)
-    mejor = elegir_mejor_candidato(cands, titulo_orig, autor, fecha, "externo", quitar_barra)
-    if mejor:
-        return ResultadoBusqueda(mejor[0], "googlebooks", mejor[1], 1), 1
-    return None, 1
+    peticiones = 0
+
+    for idx, frase in enumerate(intentos[:2]):
+        if idx == 0:
+            q_parts = [f'intitle:"{_escapar_cql(frase)}"']
+            if apellido:
+                q_parts.append(f"inauthor:{_escapar_cql(apellido)}")
+        else:
+            # 2.º intento: >=4 palabras clave seguras sin comillas de frase exacta
+            q_parts = [f"intitle:{_escapar_cql(w)}" for w in frase.split() if w]
+        params: dict[str, str] = {
+            "q": " ".join(q_parts),
+            "maxResults": "10",
+            "printType": "books",
+            "fields": "items(volumeInfo(title,subtitle,authors,publishedDate))",
+        }
+        if api_key:
+            params["key"] = api_key
+        url = f"{GOOGLE_BOOKS_URL}?{urllib.parse.urlencode(params)}"
+        js = await cliente.obtener(url, reintentos=1)
+        peticiones += 1
+        cands = extraer_candidatos_googlebooks(js)
+        mejor = elegir_mejor_candidato(cands, titulo_orig, autor, fecha, "externo", quitar_barra)
+        if mejor:
+            return ResultadoBusqueda(mejor[0], "googlebooks", mejor[1], peticiones), peticiones
+    return None, peticiones
 
 
 def ordenar_fuentes_externas(fuentes_activas: list[str], idioma: str) -> list[str]:
